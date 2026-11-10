@@ -1,7 +1,80 @@
 {
-  "parent": "minecraft:block/cube_column",
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
   "textures": {
-    "side": "joulesmith:block/rubber_log_wet",
-    "end": "joulesmith:block/rubber_log_top"
-  }
+    "particle": "#side",
+    "side": "joulesmith:block/rubber_log",
+    "end": "joulesmith:block/rubber_log_top",
+    "spot": "joulesmith:block/rubber_log_spot_wet"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#end",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#end",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#side",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#side",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#side",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#side",
+          "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#spot",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#spot",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#spot",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#spot",
+          "cullface": "east"
+        }
+      }
+    }
+  ]
 }

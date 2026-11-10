@@ -657,9 +657,21 @@ for axis, rot in (("y", {}), ("x", {"x": 90, "y": 90}), ("z", {"x": 90})):
         log_model = f"{MOD}:block/rubber_log" + ("" if latex == "none" else f"_{latex}")
         log_variants[f"axis={axis},latex={latex}"] = dict({"model": log_model}, **rot)
 write(os.path.join(ASSETS, "blockstates", "rubber_log.json"), {"variants": log_variants})
-for suffix, side in (("", "rubber_log"), ("_dry", "rubber_log_dry"), ("_wet", "rubber_log_wet")):
-    model(f"rubber_log{suffix}", {"parent": "minecraft:block/cube_column",
-          "textures": {"side": f"{MOD}:block/{side}", "end": f"{MOD}:block/rubber_log_top"}})
+# bark, log ends, planks and leaves are made in game from vanilla wood (see MetalTexturePack); the tap
+# spot is a separate overlay laid on the bark, like grass on a grass block
+model("rubber_log", {"parent": "minecraft:block/cube_column",
+      "textures": {"side": f"{MOD}:block/rubber_log", "end": f"{MOD}:block/rubber_log_top"}})
+CUBE_FACES = {"down": "#end", "up": "#end", "north": "#side", "south": "#side", "west": "#side", "east": "#side"}
+for state in ("dry", "wet"):
+    model(f"rubber_log_{state}", {
+        "parent": "minecraft:block/block", "render_type": "minecraft:cutout",
+        "textures": {"particle": "#side", "side": f"{MOD}:block/rubber_log", "end": f"{MOD}:block/rubber_log_top",
+                     "spot": f"{MOD}:block/rubber_log_spot_{state}"},
+        "elements": [
+            {"from": [0, 0, 0], "to": [16, 16, 16],
+             "faces": {f: {"texture": t, "cullface": f} for f, t in CUBE_FACES.items()}},
+            {"from": [0, 0, 0], "to": [16, 16, 16],
+             "faces": {f: {"texture": "#spot", "cullface": f} for f in ("north", "south", "west", "east")}}]})
 write(os.path.join(ASSETS, "models", "item", "rubber_log.json"), {"parent": f"{MOD}:block/rubber_log"})
 for bid in ("rubber_leaves", "rubber_planks"):
     write(os.path.join(ASSETS, "blockstates", f"{bid}.json"), {"variants": {"": {"model": f"{MOD}:block/{bid}"}}})
@@ -932,5 +944,5 @@ write(os.path.join(ROOT, "tools", "texture_manifest.json"), {
     "block": [f"{b}_overlay" for b, k, m in blocks if k in ("ore", "deepslate_ore")] +
              [b for b, k, m in blocks if k == "storage"],
     "item": [i for i, f, m in items if f not in GENERATED_ITEM_FORMS],
-    "generated": gear_generated + [f"block/{b}" for b, k, m in blocks if k in GENERATED_BLOCK_KINDS] +
+    "generated": gear_generated + ["block/rubber_log", "block/rubber_log_top", "block/rubber_planks", "block/rubber_leaves"] + [f"block/{b}" for b, k, m in blocks if k in GENERATED_BLOCK_KINDS] +
                  [f"item/{i}" for i, f, m in items if f in GENERATED_ITEM_FORMS]})

@@ -768,56 +768,102 @@ LEAF = ["#16351a", "#1f4a24", "#2c6430", "#3b7f3c", "#4f9a48", "#6cb85a", "#8fd0
 AMBER = ["#5a3608", "#8a5410", "#c27d1a", "#e8a838", "#f8d070"]
 
 
+RUBBER_BARK = ["#2b231c", "#3a3027", "#4a3f33", "#5b4f41", "#6c5f4f", "#7e705e", "#91836f", "#a69882"]
+
+
 def rubber_log_side(spot=None):
-    """Pale grey-brown bark in long vertical strips; with a tap spot cut in the middle, full of amber
-    latex ("wet") or empty ("dry")."""
+    """Rubber tree bark: smooth, pale grey-brown, in long vertical streaks of many tones, with darker
+    furrows and the short horizontal pores (lenticels) rubber trees have. Tiles top to bottom. With a tap
+    spot cut in the middle: full of amber latex ("wet") or empty ("dry")."""
     import random
     r = random.Random(41)
-    img = Image.new("RGBA", (16, 16))
-    px = img.load()
-    cols = [r.choice([2, 3, 3, 4]) for _ in range(16)]
+    lv = [[4] * 16 for _ in range(16)]
+    # each column has its own base tone, smoothed so neighbours belong together
+    base = [r.choice([3, 4, 4, 5, 5, 6]) for _ in range(16)]
+    base = [round((base[x - 1] + 2 * base[x] + base[(x + 1) % 16]) / 4) for x in range(16)]
     for x in range(16):
         for y in range(16):
-            v = cols[x]
-            if (x * 7 + y * 3) % 11 == 0:
-                v -= 1
-            if x % 4 == 0:
-                v = 1
-            if r.random() < 0.08:
-                v += 1
-            px[x, y] = rgba(BARK[max(0, min(5, v))])
-    if spot:
-        for y in range(6, 11):
-            for x in range(6, 10):
-                edge = x in (6, 9) or y in (6, 10)
-                if edge:
-                    px[x, y] = rgba(BARK[0] if (x == 6 or y == 6) else BARK[4])
-                elif spot == "wet":
-                    px[x, y] = rgba(AMBER[4] if (x, y) == (7, 7) else AMBER[3] if y < 9 else AMBER[2])
-                else:
-                    px[x, y] = rgba("#1a130c")
-        if spot == "wet":
-            px[8, 11] = rgba(AMBER[3])                  # a drip running down
-            px[8, 12] = rgba(AMBER[2])
-    return img
-
-
-def rubber_log_top():
+            lv[y][x] = base[x]
+    # vertical strokes: lighter ridges and darker furrows of varying length (wrapping so it tiles)
+    for _ in range(26):
+        x, y0, n = r.randrange(16), r.randrange(16), r.randint(2, 7)
+        d = r.choice([-2, -1, -1, 1, 1, 2])
+        for i in range(n):
+            y = (y0 + i) % 16
+            lv[y][x] = max(1, min(7, lv[y][x] + d))
+    # two deep furrows running most of the length
+    for x0 in (3, 11):
+        for y in range(16):
+            x = x0 + (1 if (y // 5) % 2 else 0)
+            lv[y][x] = 1 if y % 7 else 2
+            lv[y][(x + 1) % 16] = max(lv[y][(x + 1) % 16], 5)          # its lit edge
+    # lenticels: short dark dashes with a light lip under them
+    for _ in range(7):
+        x, y = r.randrange(14), r.randrange(15)
+        for i in range(r.choice([2, 3])):
+            lv[y][x + i] = 0
+            lv[(y + 1) % 16][x + i] = min(7, lv[(y + 1) % 16][x + i] + 2)
     img = Image.new("RGBA", (16, 16))
     px = img.load()
     for y in range(16):
         for x in range(16):
-            d = max(abs(x - 7.5), abs(y - 7.5))
-            if d > 6.5:
-                c = BARK[2]
-            elif d > 5.5:
-                c = BARK[4]
+            px[x, y] = rgba(RUBBER_BARK[lv[y][x]])
+    if spot:
+        # a V-shaped tapping cut with a little spout under it
+        cut = [(6, 6), (7, 6), (8, 6), (9, 6), (6, 7), (7, 7), (8, 7), (9, 7), (7, 8), (8, 8)]
+        for x, y in cut:
+            if spot == "wet":
+                px[x, y] = rgba(AMBER[4] if (x, y) in ((7, 6), (6, 6)) else AMBER[3] if y < 8 else AMBER[2])
             else:
-                ring = int(d) % 2
-                c = RUBBER_WOOD[3] if ring else RUBBER_WOOD[2]
-                if d < 1:
-                    c = AMBER[2]                        # a little latex in the heart
+                px[x, y] = rgba("#16100a" if y < 8 else "#24190f")
+        for x, y in ((5, 5), (6, 5), (7, 5), (8, 5), (9, 5), (10, 5)):
+            px[x, y] = rgba(RUBBER_BARK[1])                       # the cut's upper lip in shadow
+        for x, y in ((5, 6), (10, 6), (6, 8), (9, 8), (7, 9), (8, 9)):
+            px[x, y] = rgba(RUBBER_BARK[7])                       # its lower edge catching light
+        if spot == "wet":
+            for y, c in ((10, AMBER[3]), (11, AMBER[2]), (12, AMBER[1])):
+                px[8, y] = rgba(c)                                # latex running down
+            px[7, 10] = rgba(AMBER[1])
+    return img
+
+
+RUBBER_RINGS = ["#6e5638", "#86693f", "#9c7c4a", "#b08f58", "#c2a166", "#d3b477", "#e2c78b"]
+
+
+def rubber_log_top():
+    """The cut end: pale wood with uneven, slightly squared growth rings, a darker heartwood, a dot of
+    latex in the middle, and a ring of bark round the edge."""
+    import math
+    import random
+    r = random.Random(17)
+    img = Image.new("RGBA", (16, 16))
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            dx, dy = x - 7.5, y - 7.5
+            edge = max(abs(dx), abs(dy))
+            if edge > 6.5:                                        # bark rim
+                c = RUBBER_BARK[2] if (x * 5 + y * 3) % 4 else RUBBER_BARK[4]
+                if (x == 0 or y == 0) and 0 < x < 15 and 0 < y < 15:
+                    c = RUBBER_BARK[5]
+            elif edge > 5.6:
+                c = RUBBER_BARK[1]                                # the dark line just inside the bark
+            else:
+                # rings: a blend of square and round distance, with a wobble
+                d = 0.55 * edge + 0.45 * math.hypot(dx, dy) + 0.35 * math.sin(x * 1.3 + y * 0.7)
+                ring = int(d * 1.15)
+                t = 5 - ring % 3 * 2 + (1 if (d * 1.15) % 1 < 0.35 else 0)
+                if d < 2.0:
+                    t -= 2                                        # darker heartwood
+                if r.random() < 0.07:
+                    t -= 1
+                c = RUBBER_RINGS[max(0, min(6, t))]
+                if d < 0.9:
+                    c = AMBER[2] if d < 0.6 else AMBER[1]         # latex at the heart
             px[x, y] = rgba(c)
+    # a couple of drying cracks running in from the edge
+    for x, y in ((11, 4), (12, 3), (4, 11), (3, 12)):
+        px[x, y] = rgba(RUBBER_RINGS[0])
     return img
 
 
@@ -1184,6 +1230,120 @@ def crate_gui():
     return img
 
 
+# ------------------------------------------------------------------ rubber items, in the metal items' style
+# Same method as tools/make_textures.py: a shape lit from the top-left on an eight-step ramp, bright
+# top-left edges, darkest bottom-right edges, no full outline.
+AMBER8 = ["#4a2a06", "#6e3f0a", "#93560f", "#b46e16", "#d28a22", "#e8a838", "#f6c55a", "#fde08e"]
+RUBBER8 = ["#101012", "#18181b", "#212125", "#2b2b30", "#36363c", "#43434a", "#55555d", "#6c6c75"]
+WOOD8 = ["#3a2412", "#55361c", "#704926", "#8a5e32", "#a37542", "#b98c54", "#cca468", "#dcbb80"]
+STEEL8 = ["#22262e", "#30353f", "#3e4450", "#4d5461", "#5f6774", "#767e8b", "#939aa6", "#b8bec8"]
+LEAF8 = ["#12301a", "#1a4422", "#245a2c", "#2f7136", "#3d8a42", "#52a450", "#6cbd60", "#8fd47a"]
+
+
+def _mt():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("mt", os.path.join(os.path.dirname(os.path.abspath(__file__)), "make_textures.py"))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _lit(mask, lo=2, hi=7):
+    """Levels for a shape: brighter toward its top-left, then the reference-style edges."""
+    mt = _mt()
+    pts = [(x, y) for y in range(16) for x in range(16) if mask[y][x]]
+    x0 = min(p[0] for p in pts); x1 = max(p[0] for p in pts)
+    y0 = min(p[1] for p in pts); y1 = max(p[1] for p in pts)
+    lv = mt.blank()
+    for x, y in pts:
+        t = 1 - (((x - x0) / max(1, x1 - x0)) + ((y - y0) / max(1, y1 - y0))) / 2
+        lv[y][x] = max(lo, min(hi, int(lo + t * (hi - lo + 0.99))))
+    return mt.edge_light(lv, mask)
+
+
+def _paint(img, lv, ramp):
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            if lv[y][x] is not None:
+                px[x, y] = rgba(ramp[max(0, min(len(ramp) - 1, lv[y][x]))])
+
+
+def _mask(rows):
+    m = [[False] * 16 for _ in range(16)]
+    for y, (a, b) in rows.items():
+        for x in range(a, b + 1):
+            m[y][x] = True
+    return m
+
+
+def latex_item():
+    """A glossy amber drop of latex with a bright glint."""
+    mask = _mask({3: (7, 8), 4: (6, 9), 5: (6, 9), 6: (5, 10), 7: (4, 11), 8: (4, 11), 9: (3, 12), 10: (3, 12),
+                  11: (3, 12), 12: (4, 11), 13: (5, 10)})
+    lv = _lit(mask)
+    for x, y in ((6, 6), (5, 8), (5, 9)):
+        lv[y][x] = 7
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    _paint(img, lv, AMBER8)
+    return img
+
+
+def rubber_item():
+    """A sheet of rubber: the plate's shape, in near-black rubber tones."""
+    mt = _mt()
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    _paint(img, mt.plate(), RUBBER8)
+    return img
+
+
+def tree_tap_item():
+    """A wooden spout with a steel tip, angled down to the right like it is tapped into a tree."""
+    wood = _mask({4: (2, 6), 5: (2, 7), 6: (2, 8), 7: (3, 9), 8: (4, 10), 9: (5, 10), 10: (6, 10), 11: (8, 10)})
+    tip = _mask({10: (11, 12), 11: (11, 13), 12: (12, 13), 13: (12, 13)})
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    _paint(img, _lit(wood), WOOD8)
+    _paint(img, _lit(tip, 3, 7), STEEL8)
+    lv = _mt().blank()
+    for y in (5, 6):                                   # the spout's open channel
+        lv[y][4] = 0
+        lv[y][5] = 1
+    _paint(img, lv, WOOD8)
+    return img
+
+
+def sapling_item():
+    """A young rubber tree: a thin stem and a pointed crown of leaves."""
+    stem = _mask({y: (7, 8) for y in range(9, 15)})
+    crown = _mask({1: (7, 8), 2: (6, 9), 3: (5, 10), 4: (5, 10), 5: (4, 11), 6: (3, 12), 7: (3, 12), 8: (4, 11), 9: (5, 6)})
+    crown[9][9] = crown[9][10] = True
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    _paint(img, _lit(stem, 2, 5), WOOD8)
+    _paint(img, _lit(crown), LEAF8)
+    return img
+
+
+def rubber_spot(state):
+    """The tapping cut on a rubber log, drawn alone (transparent elsewhere) to lay over the bark:
+    a V-shaped notch, amber with latex when "wet", dark and empty when "dry"."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    cut = [(6, 6), (7, 6), (8, 6), (9, 6), (6, 7), (7, 7), (8, 7), (9, 7), (7, 8), (8, 8)]
+    for x, y in cut:
+        if state == "wet":
+            px[x, y] = rgba(AMBER8[7] if (x, y) == (7, 6) else AMBER8[6] if y == 6 else AMBER8[5] if y == 7 else AMBER8[3])
+        else:
+            px[x, y] = rgba("#16100a" if y < 8 else "#24190f")
+    for x in range(5, 11):
+        px[x, 5] = rgba("#2e251d")                     # the cut's upper lip, in shadow
+    for x, y in ((5, 6), (10, 6), (6, 8), (9, 8), (7, 9), (8, 9)):
+        px[x, y] = rgba("#b8a994")                     # its lower edge, catching light
+    if state == "wet":
+        for y, c in ((10, AMBER8[5]), (11, AMBER8[4]), (12, AMBER8[2])):
+            px[8, y] = rgba(c)                         # latex running down
+    return img
+
+
 # ------------------------------------------------------------------ screen
 LIGHT = (255, 255, 255, 255)
 
@@ -1319,13 +1479,9 @@ def main():
         "block/sawmill_front_on": sawmill_front(True),
         "item/sawdust": sawdust_item(),
         "item/basic_circuit": basic_circuit_item(),
-        "block/rubber_log": rubber_log_side(),
-        "block/rubber_log_dry": rubber_log_side("dry"),
-        "block/rubber_log_wet": rubber_log_side("wet"),
-        "block/rubber_log_top": rubber_log_top(),
-        "block/rubber_leaves": rubber_leaves(),
-        "block/rubber_sapling": rubber_sapling(),
-        "block/rubber_planks": rubber_planks(),
+        "block/rubber_sapling": sapling_item(),
+        "block/rubber_log_spot_dry": rubber_spot("dry"),
+        "block/rubber_log_spot_wet": rubber_spot("wet"),
         "item/latex": latex_item(),
         "item/rubber": rubber_item(),
         "item/tree_tap": tree_tap_item(),

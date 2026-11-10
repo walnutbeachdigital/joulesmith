@@ -30,8 +30,8 @@ import net.minecraft.server.packs.resources.IoSupplier;
 
 /**
  * A built-in resource pack that makes Joulesmith's vanilla-shaped textures while the game loads.
- * It reads Minecraft's own copper ingot, iron nugget, raw iron and raw iron block
- * textures from the player's copy of the game and swaps each of their shades for one step of a
+ * It reads Minecraft's own textures (copper ingot, iron nugget, raw iron, iron tools and armor, and
+ * birch and oak wood for rubber wood) from the player's copy of the game and swaps each of their shades for one step of a
  * metal's eight-step colour ramp, so ingots, nuggets, raw ore and raw blocks keep vanilla's shapes with
  * clean, hand-picked palettes. Ingots are made from the copper ingot, whose top face is shiny.
  * No Mojang texture is shipped inside the mod.
@@ -41,8 +41,28 @@ public final class MetalTexturePack implements PackResources {
             Joulesmith.MODID + "_metal_textures", Component.literal("Joulesmith metal textures"),
             PackSource.BUILT_IN, java.util.Optional.empty());
 
-    /** {@code metalOnly}: recolour only the grey (metal) pixels and keep coloured ones, like a tool's wooden handle. */
-    private record Source(Metal metal, ResourceLocation vanilla, boolean metalOnly) {}
+    /**
+     * A texture to make: the vanilla texture it starts from and the colour ramp (darkest first) its shades
+     * become. {@code metalOnly}: recolour only the grey (metal) pixels and keep coloured ones, like a
+     * tool's wooden handle.
+     */
+    private record Source(int[] ramp, ResourceLocation vanilla, boolean metalOnly, boolean byBrightness) {
+        Source(int[] ramp, ResourceLocation vanilla, boolean metalOnly) {
+            this(ramp, vanilla, metalOnly, false);
+        }
+    }
+
+    /** Rubber wood, in vanilla shapes: acacia's smooth streaked bark, oak's log ends, planks and leaves. */
+    private static final int[] RUBBER_BARK = {0x3D3127, 0x4F4235, 0x615244, 0x736353, 0x857463, 0x978673, 0xA89885, 0xB8A994};
+    private static final int[] RUBBER_END = {0x3A3027, 0x5B4F41, 0x7A6447, 0x97794E, 0xAD8E5C, 0xC2A26A, 0xD3B47A, 0xE2C78B};
+    private static final int[] RUBBER_PLANKS = {0x5A4128, 0x7A5A38, 0x96734A, 0xAD8A5A, 0xC09E6A, 0xD0B07A, 0xDDC08C, 0xE8D0A0};
+    private static final int[] RUBBER_LEAVES = {0x0F2814, 0x16351A, 0x1F4A24, 0x2A5F2E, 0x367539, 0x438843, 0x529A4C, 0x63AC58};
+
+    private static int[] ramp(Metal metal) {
+        int[] ramp = new int[metal.rampSize()];
+        for (int i = 0; i < ramp.length; i++) ramp[i] = metal.rampStep(i);
+        return ramp;
+    }
 
     /** Joulesmith texture path -> the vanilla texture and metal it is made from. */
     private static final Map<ResourceLocation, Source> TEXTURES = new LinkedHashMap<>();
@@ -69,16 +89,25 @@ public final class MetalTexturePack implements PackResources {
             addMetal(m, "models/armor/" + id + "_layer_1", "models/armor/iron_layer_1");
             addMetal(m, "models/armor/" + id + "_layer_2", "models/armor/iron_layer_2");
         }
+        addRamp(RUBBER_BARK, "block/rubber_log", "block/acacia_log");
+        addRamp(RUBBER_END, "block/rubber_log_top", "block/oak_log_top");
+        addRamp(RUBBER_PLANKS, "block/rubber_planks", "block/oak_planks");
+        addRamp(RUBBER_LEAVES, "block/rubber_leaves", "block/oak_leaves");
+    }
+
+    private static void addRamp(int[] ramp, String path, String vanillaPath) {
+        TEXTURES.put(Joulesmith.id("textures/" + path + ".png"),
+                new Source(ramp, ResourceLocation.withDefaultNamespace("textures/" + vanillaPath + ".png"), false, true));
     }
 
     private static void addMetal(Metal metal, String path, String vanillaPath) {
         TEXTURES.put(Joulesmith.id("textures/" + path + ".png"),
-                new Source(metal, ResourceLocation.withDefaultNamespace("textures/" + vanillaPath + ".png"), true));
+                new Source(ramp(metal), ResourceLocation.withDefaultNamespace("textures/" + vanillaPath + ".png"), true));
     }
 
     private static void add(Metal metal, String path, String vanillaPath) {
         TEXTURES.put(Joulesmith.id("textures/" + path + ".png"),
-                new Source(metal, ResourceLocation.withDefaultNamespace("textures/" + vanillaPath + ".png"), false));
+                new Source(ramp(metal), ResourceLocation.withDefaultNamespace("textures/" + vanillaPath + ".png"), false));
     }
 
     /** Adds this pack, always on and hidden from the resource pack screen. */
@@ -119,13 +148,23 @@ public final class MetalTexturePack implements PackResources {
                 }
             }
             java.util.List<Integer> order = new java.util.ArrayList<>(shades);
-            Metal metal = src.metal();
-            int steps = metal.rampSize();
+            int[] ramp = src.ramp();
+            int steps = ramp.length;
             int[] ranks = new int[w * h];
             for (int y = 0; y < h; y++) {
                 for (int x = 0; x < w; x++) {
                     int abgr = image.getPixelRGBA(x, y);
                     ranks[y * w + x] = (abgr >>> 24) == 0 || !recolour(src, abgr) ? -1 : order.indexOf(shade(abgr));
+                }
+            }
+            // Wood keeps vanilla's own contrast: shades map onto the ramp by brightness, not by rank.
+            double lo = Double.MAX_VALUE, hi = -1;
+            for (int y = 0; y < h; y++) {
+                for (int x = 0; x < w; x++) {
+                    int abgr = image.getPixelRGBA(x, y);
+                    if ((abgr >>> 24) == 0) continue;
+                    lo = Math.min(lo, luminance(abgr));
+                    hi = Math.max(hi, luminance(abgr));
                 }
             }
             // Each vanilla shade becomes one exact ramp colour: a clean palette swap, no blending or noise.
@@ -136,8 +175,13 @@ public final class MetalTexturePack implements PackResources {
                     if (alpha == 0) continue;
                     int i = ranks[y * w + x];
                     if (i < 0) continue;                                  // a kept pixel (e.g. the handle)
-                    int step = order.size() == 1 ? steps - 1 : Math.round(i * (steps - 1) / (float) (order.size() - 1));
-                    int rgb = metal.rampStep(step);
+                    int step;
+                    if (src.byBrightness()) {
+                        step = (int) Math.round((luminance(abgr) - lo) / Math.max(1e-6, hi - lo) * (steps - 1));
+                    } else {
+                        step = order.size() == 1 ? steps - 1 : Math.round(i * (steps - 1) / (float) (order.size() - 1));
+                    }
+                    int rgb = ramp[step];
                     // NativeImage stores pixels as ABGR
                     image.setPixelRGBA(x, y, alpha << 24 | (rgb & 0xFF) << 16 | (rgb & 0xFF00) | (rgb >> 16 & 0xFF));
                 }
