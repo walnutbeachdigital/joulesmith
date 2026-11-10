@@ -33,7 +33,8 @@ import net.minecraft.server.packs.resources.IoSupplier;
  * It reads Minecraft's own iron ingot, iron nugget, raw iron, iron block and raw iron block
  * textures from the player's copy of the game and swaps each of their shades for one step of a
  * metal's eight-step colour ramp, so ingots, nuggets, raw ore and blocks keep vanilla's shapes with
- * clean, hand-picked palettes. No Mojang texture is shipped inside the mod.
+ * clean, hand-picked palettes. Ingots also get a glossy, Thermal-style top face.
+ * No Mojang texture is shipped inside the mod.
  */
 public final class MetalTexturePack implements PackResources {
     private static final PackLocationInfo INFO = new PackLocationInfo(
@@ -106,21 +107,51 @@ public final class MetalTexturePack implements PackResources {
             java.util.List<Integer> order = new java.util.ArrayList<>(shades);
             Metal metal = src.metal();
             int steps = metal.rampSize();
+            boolean ingot = target.getPath().endsWith("_ingot.png");
+            int topFace = order.size() - 2;          // vanilla's ingot top face is its second-brightest shade
+            int[] ranks = new int[w * h];
+            for (int y = 0; y < h; y++) {
+                for (int x = 0; x < w; x++) {
+                    int abgr = image.getPixelRGBA(x, y);
+                    ranks[y * w + x] = (abgr >>> 24) == 0 ? -1 : order.indexOf(shade(abgr));
+                }
+            }
             // Each vanilla shade becomes one exact ramp colour: a clean palette swap, no blending or noise.
             for (int y = 0; y < h; y++) {
                 for (int x = 0; x < w; x++) {
                     int abgr = image.getPixelRGBA(x, y);
                     int alpha = abgr >>> 24;
                     if (alpha == 0) continue;
-                    int i = order.indexOf(shade(abgr));
+                    int i = ranks[y * w + x];
                     int step = order.size() == 1 ? steps - 1 : Math.round(i * (steps - 1) / (float) (order.size() - 1));
                     int rgb = metal.rampStep(step);
+                    if (ingot && i == topFace) {
+                        rgb = glossyTop(metal, steps, x, y, y == 0 || ranks[(y - 1) * w + x] < topFace);
+                    }
                     // NativeImage stores pixels as ABGR
                     image.setPixelRGBA(x, y, alpha << 24 | (rgb & 0xFF) << 16 | (rgb & 0xFF00) | (rgb >> 16 & 0xFF));
                 }
             }
             return image.asByteArray();
         }
+    }
+
+    /**
+     * Thermal-style gloss on an ingot's top face: the back edge a step darker, a pale glint streak
+     * running diagonally across the face, softer steps on either side of it.
+     */
+    private static int glossyTop(Metal metal, int steps, int x, int y, boolean backEdge) {
+        int d = x - y;
+        if (d >= 1 && d <= 3) return mix(metal.rampStep(steps - 1), 0xFFFFFF, 0.55);
+        if (d == 0 || d == 4) return metal.rampStep(steps - 1);
+        return backEdge ? metal.rampStep(steps - 3) : metal.rampStep(steps - 2);
+    }
+
+    private static int mix(int a, int b, double t) {
+        int r = (int) Math.round((a >> 16 & 0xFF) * (1 - t) + (b >> 16 & 0xFF) * t);
+        int g = (int) Math.round((a >> 8 & 0xFF) * (1 - t) + (b >> 8 & 0xFF) * t);
+        int bl = (int) Math.round((a & 0xFF) * (1 - t) + (b & 0xFF) * t);
+        return r << 16 | g << 8 | bl;
     }
 
     /** A pixel's brightness, rounded so identical vanilla shades group together. */

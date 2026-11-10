@@ -179,56 +179,72 @@ def plate(band_axis="v"):
     return edge_light(lv, mask)
 
 
+GEAR_TEETH = [(8, 2), (12, 6), (11, 11), (6, 12), (2, 8), (3, 3)]   # top-left cell of each 2x2 tooth
+
+
 def gear():
-    """A six-tooth gear turned slightly off-axis: full round body, short wide teeth, small axle hole,
-    lit from the top-left with the darkest tones only along the bottom-right edges."""
+    """A compact, rounded six-tooth gear: a full round body, six square 2x2 teeth turned slightly
+    off-axis, and a small axle hole. Patchy shading lit from the top-left, darkest along the
+    bottom-right edges."""
     lv, mask = blank(), [[False] * 16 for _ in range(16)]
     cx = cy = 7.5
-    off = math.radians(15)
     for y in range(16):
         for x in range(16):
-            dx, dy = x - cx, y - cy
-            r = math.hypot(dx, dy)
-            tooth = math.cos(6 * (math.atan2(dy, dx) - off)) > -0.15
-            if 1.2 < r <= (6.9 if tooth else 5.3):
+            if math.hypot(x - cx, y - cy) <= 5.1:
                 mask[y][x] = True
-    hole = [(x, y) for y in range(16) for x in range(16) if 0 < math.hypot(x - cx, y - cy) <= 1.2] + [(7, 7), (8, 7), (7, 8), (8, 8)]
+    for tx, ty in GEAR_TEETH:
+        for dx in (0, 1):
+            for dy in (0, 1):
+                mask[ty + dy][tx + dx] = True
+    hole = [(7, 7), (8, 7), (7, 8), (8, 8)]
+    for x, y in hole:
+        mask[y][x] = False
     n = noise(9)
     for y in range(16):
         for x in range(16):
             if not mask[y][x]:
                 continue
-            light = 1 - ((x - 1) + (y - 1)) / 26.0
-            speck = 1 if n[y][x] > 0.75 else (-1 if n[y][x] < 0.2 else 0)
-            lv[y][x] = max(2, min(7, int(2.5 + light * 4.3) + speck))
+            light = 1 - ((x - 1) + (y - 1)) / 24.0
+            patch = 1 if ((x // 2) + (y // 2)) % 2 == 0 else 0
+            if n[y][x] > 0.85:
+                patch += 1
+            lv[y][x] = max(2, min(7, int(2.2 + light * 4.2) + patch))
     lv = edge_light(lv, mask)
-    for x, y in set(hole):                                         # rim around the hole
-        for nx, ny, val in ((x - 1, y, 1), (x, y - 1, 1), (x + 1, y, 6), (x, y + 1, 6)):
-            if 0 <= nx < 16 and 0 <= ny < 16 and mask[ny][nx] and math.hypot(nx - cx, ny - cy) < 2.6:
+    for x, y in hole:                         # rim of the axle hole: shadow top-left, light bottom-right
+        for nx, ny, val in ((x - 1, y, 2), (x, y - 1, 2), (x + 1, y, 6), (x, y + 1, 6)):
+            if (nx, ny) not in hole:
                 lv[ny][nx] = val
     return lv
 
 
 def wire():
-    """A coil of wire: a thick wound ring with dark lines between the turns, and a loose end."""
+    """A coil of wire seen at a slight angle: three stacked loops of thick wire, each loop lit along
+    its top-left and shaded underneath, with a short loose end. Eight-step ramp, reference-style edges."""
     lv, mask = blank(), [[False] * 16 for _ in range(16)]
-    cx, cy = 7.0, 7.0
+    loops = [(7.5, 4.5), (7.5, 7.5), (7.5, 10.5)]                  # centres of the stacked loops
+    rx, ry, thick = 5.6, 2.3, 0.62
     for y in range(16):
         for x in range(16):
-            dx, dy = x - cx, y - cy
-            r = math.hypot(dx, dy)
-            if 2.4 <= r <= 6.8:
+            best = None
+            for k, (lx, ly) in enumerate(loops):
+                d = math.hypot((x - lx) / rx, (y - ly) / ry)
+                if abs(d - 1) * min(rx, ry) <= thick:
+                    best = (k, x - lx, y - ly)       # later (lower) loops draw over earlier ones
+            if best:
+                k, dx, dy = best
                 mask[y][x] = True
-                ang = math.degrees(math.atan2(dy, dx)) % 30
-                lit = -(dx + dy) / max(r, 0.01)
-                shade = 4 if lit > 0.55 else 3 if lit > -0.2 else 2
-                if 12 <= ang < 18:                 # gap between two turns
-                    shade = max(1, shade - 2)
-                lv[y][x] = shade
-    for x, y in ((12, 11), (13, 12), (14, 12), (15, 13)):   # loose end trailing down-right
+                front = dy > 0                              # near half of the loop faces us
+                lit = -(dx / rx * 0.6 + dy / ry)
+                v = 5 if front else 3
+                if lit > 0.5:
+                    v += 2
+                elif lit < -0.6:
+                    v -= 1
+                lv[y][x] = max(2, min(7, v))
+    for x, y in ((12, 13), (13, 13), (14, 14)):                    # loose end
         mask[y][x] = True
-        lv[y][x] = 3
-    return outline(lv, mask)
+        lv[y][x] = 5
+    return edge_light(lv, mask)
 
 
 def raw(seed):
@@ -343,6 +359,20 @@ def ore_overlay(seed):
                     lv[oy + y][ox + x] = shape[y][x]
                     taken.add((ox + x, oy + y))
         placed += 1
+    # centre the whole layout on the block
+    pts = [(x, y) for y in range(16) for x in range(16) if lv[y][x] is not None]
+    if pts:
+        mx = sum(p[0] for p in pts) / len(pts)
+        my = sum(p[1] for p in pts) / len(pts)
+        sx, sy = round(7.5 - mx), round(7.5 - my)
+        x_lo, x_hi = min(p[0] for p in pts), max(p[0] for p in pts)
+        y_lo, y_hi = min(p[1] for p in pts), max(p[1] for p in pts)
+        sx = max(-x_lo, min(15 - x_hi, sx))
+        sy = max(-y_lo, min(15 - y_hi, sy))
+        moved = blank()
+        for x, y in pts:
+            moved[y + sy][x + sx] = lv[y][x]
+        lv = moved
     return lv
 
 
@@ -361,11 +391,12 @@ def draw(kind, name):
         if name.startswith("raw_"):
             return paint(raw(seed), m)
         form = name.rsplit("_", 1)[1]
-        if form in ("plate", "gear", "dust"):
-            return paint8({"plate": plate, "gear": gear, "dust": dust}[form](), m)
+        if form in ("plate", "gear", "dust", "wire"):
+            return paint8({"plate": plate, "gear": gear, "dust": dust, "wire": wire}[form](), m)
         return paint({"ingot": ingot, "nugget": nugget, "dust": dust, "wire": wire}[form](), m)
     if name.endswith("_overlay"):
-        return paint8(ore_overlay(seed), m)
+        # stone and deepslate ores share one layout per metal; only the stone behind them differs
+        return paint8(ore_overlay(sum(map(ord, m)) * 7), m)
     if name.startswith("raw_"):
         return paint(raw_block(seed), m)
     return paint(storage_block(), m)
