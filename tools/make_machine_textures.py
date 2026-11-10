@@ -1721,6 +1721,10 @@ MODULE_ART = {
     "fall_protection": ("armor", ["...#...", "...#...", ".#.#.#.", "..###..", "#######"]),
     "chain_lightning": ("weapon", ["....##.", "...##..", "..####.", "...##..", "..##..."]),
     "lifesteal": ("weapon", [".##.##.", "#######", ".#####.", "..###..", "...#..."]),
+    "feeder": ("armor", ["..###..", ".#...#.", "#######", ".#####.", "..###.."]),
+    "plating": ("armor", ["#######", "#.#.#.#", "#######", "#.#.#.#", "#######"]),
+    "regeneration": ("armor", ["...#...", "...#...", "#######", "...#...", "...#..."]),
+    "fire_shield": ("armor", ["#.#.#.#", ".#.#.#.", "#.###.#", ".#####.", "..###.."]),
 }
 
 
@@ -1771,12 +1775,11 @@ def modification_table_side(front):
 
 
 def modification_table_gui():
-    """The Modification Table screen: the gear slot, a gold link, and two module slots."""
+    """The Modification Table screen: the gear slot and a gold link; the screen draws the module slots
+    (two to six, as many as the gear takes) itself."""
     img = gui_panel()
     d = ImageDraw.Draw(img)
     gui_slot(d, 43, 34)
-    gui_slot(d, 97, 34)
-    gui_slot(d, 115, 34)
     for x in range(64, 94):                            # the link from gear to modules
         for y in (42, 43):
             img.putpixel((x, y), rgba(ELECTRUM8[4 if y == 42 else 1]))

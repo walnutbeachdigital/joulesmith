@@ -39,10 +39,15 @@ public enum Module implements StringRepresentable {
     SWIFTNESS(Kind.LEGGINGS, null, 0),
     STEP_ASSIST(Kind.LEGGINGS, null, 0),
     JUMP_BOOST(Kind.BOOTS, null, 0),
-    FALL_PROTECTION(Kind.BOOTS, null, 0);
+    FALL_PROTECTION(Kind.BOOTS, null, 0),
+    FEEDER(Kind.HELMET, null, 0),
+    // any Exo-Suit piece
+    PLATING(Kind.ARMOR, null, 0),
+    REGENERATION(Kind.ARMOR, null, 0),
+    FIRE_SHIELD(Kind.ARMOR, null, 0);
 
     /** What a module can be fitted to. */
-    public enum Kind { TOOL, WEAPON, TOOL_OR_WEAPON, HELMET, CHESTPLATE, LEGGINGS, BOOTS }
+    public enum Kind { TOOL, WEAPON, TOOL_OR_WEAPON, HELMET, CHESTPLATE, LEGGINGS, BOOTS, ARMOR }
 
     public static final Codec<Module> CODEC = StringRepresentable.fromEnum(Module::values);
     public static final StreamCodec<FriendlyByteBuf, Module> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(Module.class);

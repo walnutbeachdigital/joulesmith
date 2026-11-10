@@ -27,18 +27,18 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 /**
- * The Modification Table: a slot for powered gear and two module slots. The module slots show what the
+ * The Modification Table: a slot for powered gear and up to six module slots (as many as the gear takes). The module slots show what the
  * item in the gear slot has fitted; putting a module in fits it, taking one out removes it. Modules stay
  * with the item when it is taken out.
  */
 public class ModificationTableMenu extends AbstractContainerMenu {
-    public static final int TOOL_X = 44, MODULE_X = 98, SLOT_Y = 35, INVENTORY_Y = 84;
-    private static final int TOOL = 0, FIRST_MODULE = 1, INV_START = 3, INV_END = 39;
+    public static final int TOOL_X = 44, MODULE_X = 98, MODULE_Y = 26, SLOT_Y = 35, INVENTORY_Y = 84, MAX = 6;
+    private static final int TOOL = 0, FIRST_MODULE = 1, INV_START = 1 + MAX, INV_END = INV_START + 36;
 
     private final ContainerLevelAccess access;
     private final Player player;
     private final SimpleContainer tool = new SimpleContainer(1);
-    private final SimpleContainer modules = new SimpleContainer(2);
+    private final SimpleContainer modules = new SimpleContainer(MAX);
     private boolean loading;
 
     public ModificationTableMenu(int id, Inventory inventory, RegistryFriendlyByteBuf buf) {
@@ -55,12 +55,14 @@ public class ModificationTableMenu extends AbstractContainerMenu {
             @Override public boolean mayPlace(ItemStack stack) { return stack.getItem() instanceof PoweredItem p && p != null && fitsAny(p); }
             @Override public int getMaxStackSize() { return 1; }
         });
-        for (int i = 0; i < 2; i++) {
+        // up to six module slots, two rows of three; only as many as the gear takes are shown
+        for (int i = 0; i < MAX; i++) {
             final int index = i;
-            addSlot(new Slot(modules, i, MODULE_X + i * 18, SLOT_Y) {
-                @Override public boolean mayPlace(ItemStack stack) { return canFit(stack, index); }
+            addSlot(new Slot(modules, i, MODULE_X + (i % 3) * 18, MODULE_Y + (i / 3) * 18) {
+                @Override public boolean mayPlace(ItemStack stack) { return index < slotCount() && canFit(stack, index); }
                 @Override public boolean mayPickup(Player p) { return !tool.getItem(0).isEmpty(); }
                 @Override public int getMaxStackSize() { return 1; }
+                @Override public boolean isActive() { return index < slotCount(); }
             });
         }
         for (int row = 0; row < 3; row++) {
@@ -83,8 +85,15 @@ public class ModificationTableMenu extends AbstractContainerMenu {
         ItemStack gear = tool.getItem(0);
         if (!(stack.getItem() instanceof ModuleItem module) || !(gear.getItem() instanceof PoweredItem powered)) return false;
         if (!powered.accepts(module.module)) return false;
-        ItemStack other = modules.getItem(1 - index);
-        return !(other.getItem() instanceof ModuleItem o) || !o.module.conflicts(module.module);
+        for (int i = 0; i < MAX; i++) {
+            if (i != index && modules.getItem(i).getItem() instanceof ModuleItem o && o.module.conflicts(module.module)) return false;
+        }
+        return true;
+    }
+
+    /** Module slots the item in the gear slot has (none when it's empty). */
+    public int slotCount() {
+        return tool.getItem(0).getItem() instanceof PoweredItem p ? Math.min(MAX, p.moduleSlots()) : 2;
     }
 
     /** Shows the gear's modules in the module slots, or empties them when the gear is taken out. */
@@ -92,7 +101,7 @@ public class ModificationTableMenu extends AbstractContainerMenu {
         loading = true;
         try {
             List<Module> fitted = PoweredItem.modules(tool.getItem(0));
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < MAX; i++) {
                 modules.setItem(i, i < fitted.size() ? new ItemStack(JSItems.MODULES.get(fitted.get(i)).get()) : ItemStack.EMPTY);
             }
         } finally {
@@ -105,7 +114,7 @@ public class ModificationTableMenu extends AbstractContainerMenu {
         ItemStack gear = tool.getItem(0);
         if (loading || gear.isEmpty()) return;
         List<Module> fitted = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < MAX; i++) {
             if (modules.getItem(i).getItem() instanceof ModuleItem m) fitted.add(m.module);
         }
         if (fitted.isEmpty()) gear.remove(JSDataComponents.MODULES.get());
@@ -134,7 +143,7 @@ public class ModificationTableMenu extends AbstractContainerMenu {
             if (!moveItemStackTo(stack, TOOL, TOOL + 1, false)) return ItemStack.EMPTY;
         } else if (stack.getItem() instanceof ModuleItem) {
             boolean moved = false;
-            for (int i = 0; i < 2 && !moved; i++) {
+            for (int i = 0; i < slotCount() && !moved; i++) {
                 Slot target = slots.get(FIRST_MODULE + i);
                 if (!target.hasItem() && target.mayPlace(stack)) {
                     target.setByPlayer(stack.split(1));

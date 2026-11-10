@@ -3,6 +3,8 @@
   "values": [
     "joulesmith:copper_chestplate",
     "joulesmith:bronze_chestplate",
-    "joulesmith:steel_chestplate"
+    "joulesmith:steel_chestplate",
+    "joulesmith:elite_exo_chestplate",
+    "joulesmith:ultimate_exo_chestplate"
   ]
 }

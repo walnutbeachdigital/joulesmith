@@ -1179,12 +1179,18 @@ MODULES = {
     "jump_boost": ("Jump Boost Module", "Jump about two blocks high", "boots", ["minecraft:rabbit_foot"]),
     "step_assist": ("Step Assist Module", "Walk straight up full blocks", "leggings", ["#minecraft:stairs", "minecraft:piston"]),
     "fall_protection": ("Fall Protection Module", "No fall damage while charged", "boots", ["minecraft:slime_ball", "minecraft:feather"]),
+    "feeder": ("Feeder Module", "Feeds you when you're hungry (1,000 FE a point)", "helmet", ["minecraft:golden_apple", "minecraft:cake"]),
+    "plating": ("Plating Module", "This piece soaks up a quarter more damage", "armor", ["#c:ingots/netherite", "#c:plates/steel"]),
+    "regeneration": ("Regeneration Module", "Heals half a heart every four seconds while hurt", "armor",
+                     ["minecraft:ghast_tear", "minecraft:golden_apple"]),
+    "fire_shield": ("Fire Shield Module", "Fire and lava can't hurt you while charged", "armor",
+                    ["minecraft:magma_cream", "minecraft:blaze_rod"]),
 }
 # the Flight module is a tier 5 part: its own recipe below takes the place of the Blank Module one
 FITS = {"tool": "Fits: Power Drill, Chainsaw, Omni-Tool", "weapon": "Fits: Energy Sword",
         "tool_or_weapon": "Fits: Power Drill, Chainsaw, Omni-Tool, Energy Sword",
         "helmet": "Fits: Exo-Suit Helmet", "chestplate": "Fits: Exo-Suit Chestplate", "leggings": "Fits: Exo-Suit Leggings",
-        "boots": "Fits: Exo-Suit Boots"}
+        "boots": "Fits: Exo-Suit Boots", "armor": "Fits: any Exo-Suit piece"}
 shaped("blank_module", ["EWE", "WCW", "EWE"], {"E": "#c:plates/electrum", "W": "#c:wires/gold", "C": f"{MOD}:advanced_circuit"})
 for mid, (name, desc, kind, extras) in MODULES.items():
     iid = f"{mid}_module"
@@ -1249,7 +1255,9 @@ lang.update({
     "tooltip.joulesmith.power_drill": "Pickaxe and shovel in one",
     "tooltip.joulesmith.chainsaw": "Fells a whole tree; sneak to cut one log",
     "tooltip.joulesmith.energy_sword": "Hits harder the fuller its charge",
-    "tooltip.joulesmith.exo_suit": "While charged, each piece soaks up 20% of damage",
+    "tooltip.joulesmith.exo_suit.3": "While charged, each piece soaks up 20% of damage; 2 module slots",
+    "tooltip.joulesmith.exo_suit.4": "While charged, each piece soaks up 22% of damage; 4 module slots",
+    "tooltip.joulesmith.exo_suit.5": "While charged, each piece soaks up 24% of damage; 6 module slots",
     "tooltip.joulesmith.energy_cell": "Charges the powered gear you carry (use to switch off)",
     "tooltip.joulesmith.energy_cell.off": "Switched off (use to switch on)",
     "message.joulesmith.energy_cell.on": "Energy Cell: charging your gear",
@@ -1790,6 +1798,34 @@ lang.update({
     "tooltip.joulesmith.imprint.blank": "Blank: right-click a mob to record it",
 })
 
+# ---- Elite (tier 4) and Ultimate (tier 5) Exo-Suits: upgraded at a Smithing Table, keeping modules and charge
+for tier, prev, template, addition, title in (("elite", "exo", f"{MOD}:processor", f"{MOD}:elite_energy_cell", "Elite"),
+                                              ("ultimate", "elite_exo", f"{MOD}:quantum_processor", f"{MOD}:ultimate_energy_cell", "Ultimate")):
+    for piece, (name, item_tag, pattern) in EXO.items():
+        iid = f"{tier}_exo_{piece}"
+        write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
+              {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{iid}"}})
+        lang[f"item.{MOD}.{iid}"] = f"{title} {name}"
+        write(os.path.join(DATA, MOD, "recipe", f"{iid}.json"), {
+            "type": "minecraft:smithing_transform", "template": ing(template), "base": ing(f"{MOD}:{prev}_{piece}"),
+            "addition": ing(addition), "result": {"id": f"{MOD}:{iid}"}})
+        recipes[iid] = True
+        tag("minecraft", "item", item_tag, f"{MOD}:{iid}")
+        gear_generated.append(f"item/{iid}")
+    gear_generated += [f"models/armor/{tier}_exo_layer_1", f"models/armor/{tier}_exo_layer_2"]
+X_DESC = {"elite_exo_chestplate": ("Four module slots", "The Elite Exo-Suit: upgrade each Exo-Suit piece at a Smithing Table with a "
+                                   "Processor and an Elite Energy Cell; its modules and charge carry over. Each piece holds 2,000,000 FE, "
+                                   "soaks up 22% of damage and takes four modules."),
+          "ultimate_exo_chestplate": ("Six module slots", "The Ultimate Exo-Suit: upgrade each Elite piece at a Smithing Table with a "
+                                      "Quantum Processor and an Ultimate Energy Cell. Each piece holds 8,000,000 FE, soaks up 24% of "
+                                      "damage, takes six modules and doesn't burn.")}
+DESC.update(X_DESC)
+for iid, (short, info) in X_DESC.items():
+    lang[f"desc.{MOD}.{iid}"] = short
+    lang[f"jei.{MOD}.info.{iid}"] = info
+for (ns, reg, path), values in tags.items():
+    write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+
 # ---- advancements: a guided path through the tiers (data/joulesmith/advancement)
 ADV = [
     # id, parent, icon, items needed (all of them; a "#" tag or a list means any one), frame, title, description
@@ -1820,6 +1856,7 @@ ADV = [
     ("quantum", "elite", "quantum_processor", [f"{MOD}:quantum_processor"], "challenge", "Quantum Leap", "Engrave a Quantum Processor: tier 5 begins"),
     ("railgun", "elite", "railgun", [f"{MOD}:railgun"], "task", "Rail Against the Machine", "Make a Railgun"),
     ("fission", "elite", "fission_reactor", [f"{MOD}:fission_reactor"], "goal", "Splitting Hairs", "Build a Fission Reactor"),
+    ("elite_exo", "exo_suit", "elite_exo_chestplate", [f"{MOD}:elite_exo_chestplate"], "goal", "Suit Upgrade", "Upgrade an Exo-Suit piece to Elite"),
     ("flight", "quantum", "flight_module", [f"{MOD}:flight_module"], "challenge", "Lift Off", "Make a Flight Module"),
 ]
 for aid, parent, icon, needs, frame, title, desc in ADV:

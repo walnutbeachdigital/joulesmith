@@ -32,6 +32,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 public final class PoweredGearEvents {
     private static final EquipmentSlot[] ARMOR = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
     /** FE per tick each active armor module uses, and the jetpack while flying. */
+    private static final int FIRE_COST_PER_POINT = 200, FEED_COST = 1_000, REGEN_COST = 400;
     private static final int MODULE_COST = 4, JETPACK_COST = 60, SOLAR = 25, FALL_COST_PER_BLOCK = 100;
 
     private static final ResourceLocation SWIFTNESS = Joulesmith.id("exo_swiftness");
@@ -134,7 +135,15 @@ public final class PoweredGearEvents {
         for (EquipmentSlot slot : ARMOR) {
             ItemStack piece = entity.getItemBySlot(slot);
             if (!(piece.getItem() instanceof ExoArmorItem)) continue;
-            float share = (float) (amount * com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.EXO_ABSORB));
+            if (event.getSource().is(DamageTypeTags.IS_FIRE) && PoweredItem.hasModule(piece, Module.FIRE_SHIELD)
+                    && PoweredItem.use(piece, (int) Math.ceil(amount * FIRE_COST_PER_POINT), entity)) {
+                event.setAmount(0);
+                return;
+            }
+            ExoArmorItem exo = (ExoArmorItem) piece.getItem();
+            float rate = (float) com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.EXO_ABSORB)
+                    * exo.absorbScale() * (PoweredItem.hasModule(piece, Module.PLATING) ? 1.25f : 1f);
+            float share = Math.min(amount - absorbed, amount * rate);
             int cost = (int) Math.ceil(share * ExoArmorItem.FE_PER_POINT);
             if (PoweredItem.use(piece, cost, entity)) absorbed += share;
         }
@@ -180,6 +189,21 @@ public final class PoweredGearEvents {
         }
 
         if (active(head, Module.NIGHT_VISION, player, server)) effect(player, MobEffects.NIGHT_VISION, 300, 220);
+        if (server && player.level().getGameTime() % 80 == 0) {
+            // Feeder: a point of food (and a little saturation) every four seconds while hungry
+            if (head != null && PoweredItem.hasModule(head, Module.FEEDER) && player.getFoodData().needsFood()
+                    && PoweredItem.use(head, FEED_COST, player)) {
+                player.getFoodData().eat(1, 0.5f);
+            }
+            // Regeneration: any piece; heals while hurt
+            for (ItemStack piece : new ItemStack[] {head, chest, legs, feet}) {
+                if (piece != null && PoweredItem.hasModule(piece, Module.REGENERATION) && player.getHealth() < player.getMaxHealth()
+                        && PoweredItem.use(piece, REGEN_COST, player)) {
+                    player.heal(1.0f);
+                    break;
+                }
+            }
+        }
         if (active(head, Module.WATER_BREATHING, player, server && player.isEyeInFluid(net.minecraft.tags.FluidTags.WATER))) {
             effect(player, MobEffects.WATER_BREATHING, 60, 40);
         }

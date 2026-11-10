@@ -110,6 +110,34 @@ public final class JSGear {
     public static final DeferredItem<ExoArmorItem> EXO_LEGGINGS = powered("exo_leggings", () -> new ExoArmorItem(EXO, ArmorItem.Type.LEGGINGS, new Item.Properties()));
     public static final DeferredItem<ExoArmorItem> EXO_BOOTS = powered("exo_boots", () -> new ExoArmorItem(EXO, ArmorItem.Type.BOOTS, new Item.Properties()));
 
+    /** Elite (tier 4, four module slots) and Ultimate (tier 5, six) Exo-Suits. */
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ELITE_EXO = exoMaterial("elite_exo", new int[] {3, 6, 8, 3}, 3.0f, 0.05f);
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ULTIMATE_EXO = exoMaterial("ultimate_exo", new int[] {3, 7, 9, 4}, 4.0f, 0.15f);
+    public static final List<DeferredItem<ExoArmorItem>> HIGHER_EXO = new ArrayList<>();
+    static {
+        for (var t : List.of(java.util.Map.entry("elite", 4), java.util.Map.entry("ultimate", 5))) {
+            var material = t.getValue() == 4 ? ELITE_EXO : ULTIMATE_EXO;
+            for (ArmorItem.Type type : new ArmorItem.Type[] {ArmorItem.Type.HELMET, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.LEGGINGS, ArmorItem.Type.BOOTS}) {
+                int tier = t.getValue();
+                HIGHER_EXO.add(powered(t.getKey() + "_exo_" + type.getName(), () -> new ExoArmorItem(tier, material, type,
+                        tier == 5 ? new Item.Properties().fireResistant() : new Item.Properties())));
+            }
+        }
+    }
+
+    private static DeferredHolder<ArmorMaterial, ArmorMaterial> exoMaterial(String id, int[] defense, float toughness, float knockback) {
+        return ARMOR_MATERIALS.register(id, () -> {
+            Map<ArmorItem.Type, Integer> def = new EnumMap<>(ArmorItem.Type.class);
+            def.put(ArmorItem.Type.BOOTS, defense[0]);
+            def.put(ArmorItem.Type.LEGGINGS, defense[1]);
+            def.put(ArmorItem.Type.CHESTPLATE, defense[2]);
+            def.put(ArmorItem.Type.HELMET, defense[3]);
+            def.put(ArmorItem.Type.BODY, defense[2]);
+            return new ArmorMaterial(def, 0, SoundEvents.ARMOR_EQUIP_NETHERITE, () -> Ingredient.EMPTY,
+                    List.of(new ArmorMaterial.Layer(Joulesmith.id(id))), toughness, knockback);
+        });
+    }
+
     private static <I extends Item> DeferredItem<I> powered(String name, java.util.function.Supplier<I> factory) {
         DeferredItem<I> item = JSItems.ITEMS.register(name, factory);
         POWERED.add(item);

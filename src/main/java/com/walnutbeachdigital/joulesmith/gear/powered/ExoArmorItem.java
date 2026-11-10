@@ -19,12 +19,30 @@ public class ExoArmorItem extends ArmorItem implements PoweredItem {
     public static final float ABSORB = 0.2f;
     public static final int FE_PER_POINT = 400;
 
+    private final int tier;
+
     public ExoArmorItem(Holder<ArmorMaterial> material, Type type, Properties properties) {
-        super(material, type, properties.stacksTo(1));
+        this(3, material, type, properties);
     }
 
-    @Override public int capacity() { return 400_000; }
-    @Override public int transferRate() { return 2000; }
+    /** {@code tier}: 3 (the first suit), 4 (Elite) or 5 (Ultimate). */
+    public ExoArmorItem(int tier, Holder<ArmorMaterial> material, Type type, Properties properties) {
+        super(material, type, properties.stacksTo(1));
+        this.tier = tier;
+    }
+
+    public int tier() {
+        return tier;
+    }
+
+    @Override public int capacity() { return tier >= 5 ? 8_000_000 : tier == 4 ? 2_000_000 : 400_000; }
+    @Override public int transferRate() { return tier >= 5 ? 20_000 : tier == 4 ? 8_000 : 2_000; }
+    @Override public int moduleSlots() { return tier >= 5 ? 6 : tier == 4 ? 4 : 2; }
+
+    /** How much more of the damage this piece soaks up than the first suit's. */
+    public float absorbScale() {
+        return tier >= 5 ? 1.2f : tier == 4 ? 1.1f : 1.0f;
+    }
 
     @Override
     public boolean accepts(Module module) {
@@ -33,6 +51,7 @@ public class ExoArmorItem extends ArmorItem implements PoweredItem {
             case CHESTPLATE -> getType() == Type.CHESTPLATE;
             case LEGGINGS -> getType() == Type.LEGGINGS;
             case BOOTS -> getType() == Type.BOOTS;
+            case ARMOR -> true;
             default -> false;
         };
     }
@@ -48,7 +67,7 @@ public class ExoArmorItem extends ArmorItem implements PoweredItem {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("tooltip.joulesmith.exo_suit").withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable("tooltip.joulesmith.exo_suit." + tier).withStyle(ChatFormatting.GRAY));
         PoweredItem.appendTooltip(stack, tooltip);
     }
 }

@@ -57,6 +57,11 @@ public interface PoweredItem {
         return user instanceof Player player && player.getAbilities().instabuild;
     }
 
+    /** How many modules fit (the Modification Table shows this many slots). */
+    default int moduleSlots() {
+        return 2;
+    }
+
     static List<Module> modules(ItemStack stack) {
         return stack.getOrDefault(JSDataComponents.MODULES.get(), List.of());
     }

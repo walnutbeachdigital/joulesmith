@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "joulesmith:processor"
+  },
+  "base": {
+    "item": "joulesmith:exo_chestplate"
+  },
+  "addition": {
+    "item": "joulesmith:elite_energy_cell"
+  },
+  "result": {
+    "id": "joulesmith:elite_exo_chestplate"
+  }
+}

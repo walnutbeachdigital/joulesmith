@@ -214,6 +214,46 @@
           }
         ]
       }
+    },
+    "has_0_20": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:feeder_module"
+          }
+        ]
+      }
+    },
+    "has_0_21": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:plating_module"
+          }
+        ]
+      }
+    },
+    "has_0_22": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:regeneration_module"
+          }
+        ]
+      }
+    },
+    "has_0_23": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:fire_shield_module"
+          }
+        ]
+      }
     }
   },
   "requirements": [
@@ -237,7 +277,11 @@
       "has_0_16",
       "has_0_17",
       "has_0_18",
-      "has_0_19"
+      "has_0_19",
+      "has_0_20",
+      "has_0_21",
+      "has_0_22",
+      "has_0_23"
     ]
   ],
   "parent": "joulesmith:drill"

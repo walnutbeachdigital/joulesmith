@@ -62,6 +62,8 @@ public final class MetalTexturePack implements PackResources {
     }
 
     /** Rubber wood, in vanilla shapes: acacia's smooth streaked bark, oak's log ends, planks and leaves. */
+    private static final int[] ELITE_EXO = {0x0D3C56, 0x114C72, 0x15598E, 0x1963AB, 0x1E6CC7, 0x2773DE, 0x6291E3, 0x9AB3EA};
+    private static final int[] ULTIMATE_EXO = {0x240F53, 0x34146E, 0x47198A, 0x5C1EA5, 0x7223C0, 0x8B2DD8, 0xAE65DE, 0xCC9CE7};
     private static final int[] EXO = {0x11161D, 0x1F2A35, 0x2F3E4C, 0x41566A, 0x557089, 0x6C8BA3, 0x8AAABF, 0xB4D4E4};
     private static final int[] RUBBER_BARK = {0x3D3127, 0x4F4235, 0x615244, 0x736353, 0x857463, 0x978673, 0xA89885, 0xB8A994};
     private static final int[] RUBBER_END = {0x3A3027, 0x5B4F41, 0x7A6447, 0x97794E, 0xAD8E5C, 0xC2A26A, 0xD3B47A, 0xE2C78B};
@@ -114,6 +116,15 @@ public final class MetalTexturePack implements PackResources {
         }
         addFull(EXO, "models/armor/exo_layer_1", "models/armor/diamond_layer_1");
         addFull(EXO, "models/armor/exo_layer_2", "models/armor/diamond_layer_2");
+        for (var tier : new Object[][] {{"elite_exo", ELITE_EXO}, {"ultimate_exo", ULTIMATE_EXO}}) {
+            String id = (String) tier[0];
+            int[] ramp = (int[]) tier[1];
+            for (String piece : new String[] {"helmet", "chestplate", "leggings", "boots"}) {
+                addFull(ramp, "item/" + id + "_" + piece, "item/netherite_" + piece);
+            }
+            addFull(ramp, "models/armor/" + id + "_layer_1", "models/armor/netherite_layer_1");
+            addFull(ramp, "models/armor/" + id + "_layer_2", "models/armor/netherite_layer_2");
+        }
         addRamp(RUBBER_BARK, "block/rubber_log", "block/acacia_log");
         addRamp(RUBBER_END, "block/rubber_log_top", "block/oak_log_top");
         addRamp(RUBBER_PLANKS, "block/rubber_planks", "block/oak_planks");
