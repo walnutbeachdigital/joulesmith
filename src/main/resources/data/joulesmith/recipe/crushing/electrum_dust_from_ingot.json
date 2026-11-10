@@ -1,12 +1,15 @@
 {
   "type": "joulesmith:crushing",
-  "ingredient": {
-    "tag": "c:ingots/electrum"
-  },
-  "result": {
-    "id": "joulesmith:electrum_dust",
-    "count": 1
-  },
+  "inputs": [
+    {
+      "tag": "c:ingots/electrum"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:electrum_dust"
+    }
+  ],
   "energy": 1600,
   "time": 80
 }

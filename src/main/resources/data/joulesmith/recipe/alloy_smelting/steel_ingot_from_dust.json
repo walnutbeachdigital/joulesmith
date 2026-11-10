@@ -1,0 +1,19 @@
+{
+  "type": "joulesmith:alloy_smelting",
+  "inputs": [
+    {
+      "tag": "c:dusts/iron"
+    },
+    {
+      "tag": "minecraft:coals",
+      "count": 2
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:steel_ingot",
+      "count": 1
+    }
+  ],
+  "energy": 3200
+}

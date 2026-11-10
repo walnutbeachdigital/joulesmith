@@ -1,0 +1,17 @@
+{
+  "type": "joulesmith:sawing",
+  "inputs": [
+    {
+      "tag": "minecraft:cherry_logs"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:cherry_planks",
+      "count": 6
+    },
+    {
+      "id": "joulesmith:sawdust"
+    }
+  ]
+}

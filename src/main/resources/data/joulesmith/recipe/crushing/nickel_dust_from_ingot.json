@@ -1,12 +1,15 @@
 {
   "type": "joulesmith:crushing",
-  "ingredient": {
-    "tag": "c:ingots/nickel"
-  },
-  "result": {
-    "id": "joulesmith:nickel_dust",
-    "count": 1
-  },
+  "inputs": [
+    {
+      "tag": "c:ingots/nickel"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:nickel_dust"
+    }
+  ],
   "energy": 1600,
   "time": 80
 }

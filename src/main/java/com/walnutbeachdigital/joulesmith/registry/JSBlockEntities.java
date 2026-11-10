@@ -4,7 +4,9 @@ import com.walnutbeachdigital.joulesmith.Joulesmith;
 import com.walnutbeachdigital.joulesmith.energy.cable.EnergyCableBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.battery.BatteryBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.creative.CreativePowerCellBlockEntity;
-import com.walnutbeachdigital.joulesmith.machine.crusher.CrusherBlockEntity;
+import com.walnutbeachdigital.joulesmith.machine.ProcessingMachineBlockEntity;
+import com.walnutbeachdigital.joulesmith.machine.SlotDef;
+import com.walnutbeachdigital.joulesmith.recipe.MachineRecipeKind;
 import com.walnutbeachdigital.joulesmith.machine.generator.CombustionGeneratorBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.furnace.ElectricFurnaceBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.pump.PumpBlockEntity;
@@ -12,7 +14,11 @@ import com.walnutbeachdigital.joulesmith.storage.tank.FluidTankBlockEntity;
 import com.walnutbeachdigital.joulesmith.transport.fluid.FluidPipeBlockEntity;
 import com.walnutbeachdigital.joulesmith.transport.item.ItemDuctBlockEntity;
 
+import java.util.List;
+import java.util.function.Supplier;
+
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -37,9 +43,16 @@ public final class JSBlockEntities {
             BLOCK_ENTITIES.register("basic_battery", () -> BlockEntityType.Builder
                     .of(BatteryBlockEntity::new, JSBlocks.BASIC_BATTERY.get()).build(null));
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrusherBlockEntity>> CRUSHER =
-            BLOCK_ENTITIES.register("crusher", () -> BlockEntityType.Builder
-                    .of(CrusherBlockEntity::new, JSBlocks.CRUSHER.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> CRUSHER =
+            processing("crusher", JSBlocks.CRUSHER, ProcessingMachineBlockEntity.ONE_TO_TWO, MachineRecipeKind.CRUSHING);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> ALLOY_SMELTER =
+            processing("alloy_smelter", JSBlocks.ALLOY_SMELTER, ProcessingMachineBlockEntity.TWO_TO_ONE, MachineRecipeKind.ALLOY_SMELTING);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> COMPRESSOR =
+            processing("compressor", JSBlocks.COMPRESSOR, ProcessingMachineBlockEntity.ONE_TO_ONE, MachineRecipeKind.COMPRESSING);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> WIRE_DRAWER =
+            processing("wire_drawer", JSBlocks.WIRE_DRAWER, ProcessingMachineBlockEntity.ONE_TO_ONE, MachineRecipeKind.WIRE_DRAWING);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> SAWMILL =
+            processing("sawmill", JSBlocks.SAWMILL, ProcessingMachineBlockEntity.ONE_TO_TWO, MachineRecipeKind.SAWING);
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnergyCableBlockEntity>> ENERGY_CABLE =
             BLOCK_ENTITIES.register("energy_cable", () -> BlockEntityType.Builder
@@ -60,6 +73,20 @@ public final class JSBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PumpBlockEntity>> PUMP =
             BLOCK_ENTITIES.register("pump", () -> BlockEntityType.Builder
                     .of(PumpBlockEntity::new, JSBlocks.PUMP.get()).build(null));
+
+    /** A recipe machine's block entity type: its block, its slot layout and the recipes it runs. */
+    private static DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> processing(
+            String name, Supplier<? extends Block> block, List<SlotDef> slots, MachineRecipeKind kind) {
+        Holder<BlockEntityType<ProcessingMachineBlockEntity>> self = new Holder<>();
+        self.value = BLOCK_ENTITIES.register(name, () -> BlockEntityType.Builder
+                .of((pos, state) -> new ProcessingMachineBlockEntity(self.value.get(), pos, state, slots, kind), block.get())
+                .build(null));
+        return self.value;
+    }
+
+    private static final class Holder<T extends BlockEntityType<?>> {
+        DeferredHolder<BlockEntityType<?>, T> value;
+    }
 
     private JSBlockEntities() {}
 }

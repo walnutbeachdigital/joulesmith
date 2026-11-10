@@ -1,0 +1,13 @@
+{
+  "type": "joulesmith:compressing",
+  "inputs": [
+    {
+      "tag": "c:ingots/nickel"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:nickel_plate"
+    }
+  ]
+}

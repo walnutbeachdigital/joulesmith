@@ -2,6 +2,7 @@ package com.walnutbeachdigital.joulesmith.machine;
 
 import java.util.List;
 
+import com.walnutbeachdigital.joulesmith.item.UpgradeCardItem;
 import com.walnutbeachdigital.joulesmith.registry.JSMenus;
 
 import net.minecraft.core.BlockPos;
@@ -10,6 +11,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -32,6 +34,7 @@ public class MachineMenu extends AbstractContainerMenu {
     private final List<SlotDef> slotDefs;
     private final MachineBlockEntity.ProgressStyle progressStyle;
     private final int tankX;
+    private final ResourceLocation recipeCategory;
 
     /** Server side: wraps the real machine. */
     public MachineMenu(int id, Inventory inventory, MachineBlockEntity machine) {
@@ -53,14 +56,15 @@ public class MachineMenu extends AbstractContainerMenu {
         this.slotDefs = be.slotDefs();
         this.progressStyle = be.progressStyle();
         this.tankX = be.tankX();
-        IItemHandler handler = items != null ? items : new ItemStackHandler(slotDefs.size());
+        this.recipeCategory = be.recipeCategory();
+        IItemHandler handler = items != null ? items : be.items();     // the client copy follows the same slot rules
         this.data = data != null ? data : new SimpleContainerData(MachineBlockEntity.VALUES * 2);
         for (int i = 0; i < slotDefs.size(); i++) {
             SlotDef def = slotDefs.get(i);
             addSlot(new SlotItemHandler(handler, i, def.x(), def.y()) {
                 @Override
                 public boolean mayPlace(ItemStack stack) {
-                    return def.role() == SlotRole.INPUT && super.mayPlace(stack);
+                    return def.role() != SlotRole.OUTPUT && super.mayPlace(stack);
                 }
             });
         }
@@ -90,6 +94,11 @@ public class MachineMenu extends AbstractContainerMenu {
     /** A machine value, rebuilt from the two 16-bit halves it is synced in. */
     public int value(int index) {
         return (data.get(index * 2) & 0xFFFF) | ((data.get(index * 2 + 1) & 0xFFFF) << 16);
+    }
+
+    /** The JEI category this machine runs (for the clickable arrow), or null. */
+    public ResourceLocation recipeCategory() {
+        return recipeCategory;
     }
 
     public int tankX() {
@@ -139,8 +148,9 @@ public class MachineMenu extends AbstractContainerMenu {
             if (!moveItemStackTo(stack, machineSlots, machineSlots + 36, true)) return ItemStack.EMPTY;
         } else {
             boolean moved = false;
+            SlotRole target = stack.getItem() instanceof UpgradeCardItem ? SlotRole.UPGRADE : SlotRole.INPUT;
             for (int i = 0; i < machineSlots; i++) {
-                if (slotDefs.get(i).role() == SlotRole.INPUT && moveItemStackTo(stack, i, i + 1, false)) {
+                if (slotDefs.get(i).role() == target && slots.get(i).mayPlace(stack) && moveItemStackTo(stack, i, i + 1, false)) {
                     moved = true;
                     break;
                 }

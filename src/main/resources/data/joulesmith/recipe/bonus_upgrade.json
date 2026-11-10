@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RQR",
+    "QPQ",
+    "RQR"
+  ],
+  "key": {
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "Q": {
+      "tag": "c:gems/quartz"
+    },
+    "P": {
+      "tag": "c:plates/electrum"
+    }
+  },
+  "result": {
+    "id": "joulesmith:bonus_upgrade",
+    "count": 1
+  }
+}

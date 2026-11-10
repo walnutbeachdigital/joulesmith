@@ -478,6 +478,163 @@ def filter_gui():
     return img
 
 
+# ------------------------------------------------------------------ tier 1 processing machines
+WOOD = ["#3b2410", "#5a3a1c", "#7a5428", "#9a6e38", "#b88a4c", "#d0a564", "#e4c185", "#f2dcaa"]
+
+
+def alloy_smelter_front(on):
+    """Two crucibles side by side under a hood; molten metal glows in them while running."""
+    img = casing()
+    px = img.load()
+    window(img, 3, 4, 12, 11)
+    for y in range(4, 12):
+        for x in range(3, 13):
+            px[x, y] = rgba("#16181c")
+    for cx in (5, 10):
+        for y in range(7, 12):
+            half = 2 if y < 11 else 1
+            for x in range(cx - half, cx + half + 1):
+                rim = y == 7 or abs(x - cx) == half
+                if rim:
+                    px[x, y] = rgba(STEEL[5] if x < cx else STEEL[3])
+                else:
+                    px[x, y] = rgba((FIRE[5] if y == 8 else FIRE[4]) if on else FIRE[1])
+        if on:
+            px[cx, 6] = rgba(FIRE[3])
+    for x in range(4, 12):                       # hood
+        px[x, 5] = rgba(STEEL[2])
+    for x in range(5, 11):
+        px[x, 13] = rgba(FIRE[4] if on else FIRE[2])
+    return img
+
+
+def compressor_front(on):
+    """A press: a heavy head on two rails over an anvil plate; the head is down while running."""
+    img = casing()
+    px = img.load()
+    window(img, 3, 3, 12, 12)
+    for y in range(3, 13):
+        for x in range(3, 13):
+            px[x, y] = rgba("#16181c")
+    for y in range(3, 13):                       # rails
+        px[4, y] = rgba(STEEL[4])
+        px[11, y] = rgba(STEEL[2])
+    top = 7 if on else 4
+    for y in range(top, top + 3):                # head
+        for x in range(5, 11):
+            px[x, y] = rgba(STEEL[6] if y == top else STEEL[4] if y == top + 1 else STEEL[2])
+    for x in range(5, 11):                        # plate on the anvil
+        px[x, 11] = rgba(COPPER[3] if on else COPPER[2])
+        px[x, 12] = rgba(STEEL[1])
+    if on:
+        for x in (5, 10):
+            px[x, 10] = rgba(COPPER[5])
+    return img
+
+
+def wire_drawer_front(on):
+    """A wire spool beside a die: copper wire runs from the die onto the spool."""
+    img = casing()
+    px = img.load()
+    window(img, 3, 4, 12, 11)
+    for y in range(4, 12):
+        for x in range(3, 13):
+            px[x, y] = rgba("#16181c")
+    for y in range(5, 11):                        # spool, wound with copper
+        for x in range(4, 9):
+            flange = x in (4, 8)
+            px[x, y] = rgba(STEEL[4] if flange else (COPPER[4] if (y + (1 if on else 0)) % 2 else COPPER[2]))
+    for y in (6, 7, 8, 9):                         # die block
+        for x in (10, 11):
+            px[x, y] = rgba(STEEL[5] if y == 6 else STEEL[3])
+    px[10, 7] = rgba("#0a0a0c")
+    for x in (9,):                                 # wire between them
+        px[x, 7] = rgba(COPPER[5] if on else COPPER[3])
+    for x in range(5, 11):
+        px[x, 13] = rgba(COPPER[3] if on else COPPER[1])
+    return img
+
+
+def sawmill_front(on):
+    """A toothed saw blade in a dark window under a copper guard; it blurs into a ring while running."""
+    import math
+    img = casing()
+    px = img.load()
+    window(img, 3, 4, 12, 12)
+    for y in range(4, 13):
+        for x in range(3, 13):
+            px[x, y] = rgba("#16181c")
+    cx, cy = 7.5, 8.5
+    for y in range(4, 13):
+        for x in range(3, 13):
+            dx, dy = x - cx, y - cy
+            r = math.hypot(dx, dy)
+            ang = math.atan2(dy, dx)
+            if on:
+                if 2.8 < r <= 4.3:
+                    px[x, y] = rgba(STEEL[6] if (x + y) % 2 else STEEL[4])
+                elif 1.0 < r <= 2.8:
+                    px[x, y] = rgba(STEEL[3])
+                elif r <= 1.0:
+                    px[x, y] = rgba(COPPER[3])
+                continue
+            tooth = math.cos(ang * 6) > 0.2
+            if r <= (4.3 if tooth else 3.3):
+                if r <= 1.0:
+                    c = COPPER[3]
+                elif r > 3.3:
+                    c = STEEL[6]
+                else:
+                    c = STEEL[5] if dx + dy < -0.5 else STEEL[4] if dx + dy < 1.5 else STEEL[3]
+                px[x, y] = rgba(c)
+    for x in range(3, 13):                         # guard across the top
+        px[x, 3] = rgba(COPPER[4])
+        px[x, 4] = rgba(COPPER[2])
+    if on:
+        for x, y in ((11, 12), (12, 11), (4, 12)):
+            px[x, y] = rgba(WOOD[6])
+    return img
+
+
+def upgrade_card(board, icon, icon_color):
+    """An upgrade card: the same card as the Filter Card, in its own colour, with its own symbol."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    for y in range(2, 14):
+        for x in range(1, 15):
+            edge = x in (1, 14) or y in (2, 13)
+            px[x, y] = rgba(board[0] if edge else board[3] if (x + y) < 12 else board[2])
+    for x in range(3, 13, 2):
+        px[x, 12] = rgba(COPPER[4])
+        px[x, 13] = rgba(COPPER[2])
+    for j, row in enumerate(icon):
+        for i, ch in enumerate(row):
+            if ch == "#":
+                px[4 + i, 4 + j] = rgba(icon_color)
+    return img
+
+
+UPGRADE_ART = {
+    "speed": (["#3a0d0d", "#6b1818", "#a82a2a", "#d04040"],
+              ["#..#...", ".#..#..", "..#..#.", ".#..#..", "#..#..."], "#ffe9a8"),
+    "efficiency": (["#0d2a3a", "#184d6b", "#2a78a8", "#3f9ad0"],
+                   ["....##.", "...##..", "..####.", "...##..", "..##..."], "#fff4a0"),
+    "bonus": (["#3a2a0a", "#6b4f14", "#a87f22", "#d0a634"],
+              ["...#...", "...#...", "#######", "...#...", "...#..."], "#ffffff"),
+    "eject": (["#1a1a3a", "#2a2a6b", "#3f3fa8", "#5a5ad0"],
+              ["...#...", "....#..", "#######", "....#..", "...#..."], "#ffffff"),
+}
+
+
+def sawdust_item():
+    """A pile of sawdust, drawn the same way as the metal dusts but in wood tones."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("mt", os.path.join(os.path.dirname(os.path.abspath(__file__)), "make_textures.py"))
+    mt = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mt)
+    return mt.paint_ramp(mt.dust(), WOOD)
+
+
 # ------------------------------------------------------------------ screen
 LIGHT = (255, 255, 255, 255)
 
@@ -603,6 +760,16 @@ def main():
         "item/wrench": wrench_item(),
         "item/filter_card": filter_card_item(),
         "gui/filter": filter_gui(),
+        "block/alloy_smelter_front": alloy_smelter_front(False),
+        "block/alloy_smelter_front_on": alloy_smelter_front(True),
+        "block/compressor_front": compressor_front(False),
+        "block/compressor_front_on": compressor_front(True),
+        "block/wire_drawer_front": wire_drawer_front(False),
+        "block/wire_drawer_front_on": wire_drawer_front(True),
+        "block/sawmill_front": sawmill_front(False),
+        "block/sawmill_front_on": sawmill_front(True),
+        "item/sawdust": sawdust_item(),
+        **{f"item/{u}_upgrade": upgrade_card(*art) for u, art in UPGRADE_ART.items()},
         "gui/machine": gui(),
     }
     for name, img in out.items():

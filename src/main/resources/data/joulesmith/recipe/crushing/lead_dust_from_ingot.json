@@ -1,12 +1,15 @@
 {
   "type": "joulesmith:crushing",
-  "ingredient": {
-    "tag": "c:ingots/lead"
-  },
-  "result": {
-    "id": "joulesmith:lead_dust",
-    "count": 1
-  },
+  "inputs": [
+    {
+      "tag": "c:ingots/lead"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:lead_dust"
+    }
+  ],
   "energy": 1600,
   "time": 80
 }

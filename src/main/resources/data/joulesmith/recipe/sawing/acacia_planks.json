@@ -1,0 +1,17 @@
+{
+  "type": "joulesmith:sawing",
+  "inputs": [
+    {
+      "tag": "minecraft:acacia_logs"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:acacia_planks",
+      "count": 6
+    },
+    {
+      "id": "joulesmith:sawdust"
+    }
+  ]
+}

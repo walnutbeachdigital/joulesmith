@@ -1,0 +1,13 @@
+{
+  "type": "joulesmith:compressing",
+  "inputs": [
+    {
+      "tag": "c:ingots/steel"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:steel_plate"
+    }
+  ]
+}

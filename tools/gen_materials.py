@@ -283,6 +283,10 @@ MACHINES = {
     "electric_furnace": {"name": "Electric Furnace", "front": "electric_furnace_front"},
     "crusher": {"name": "Crusher", "front": "crusher_front"},
     "pump": {"name": "Pump", "front": "pump_front"},
+    "alloy_smelter": {"name": "Alloy Smelter", "front": "alloy_smelter_front"},
+    "compressor": {"name": "Compressor", "front": "compressor_front"},
+    "wire_drawer": {"name": "Wire Drawer", "front": "wire_drawer_front"},
+    "sawmill": {"name": "Sawmill", "front": "sawmill_front"},
 }
 CREATIVE = {"creative_power_cell": "Creative Power Cell"}
 ROTATION = {"north": 0, "east": 90, "south": 180, "west": 270}
@@ -448,33 +452,129 @@ shaped("pump", ["IBI", "PGP", "IRI"],
        {"I": "#c:ingots/iron", "B": "minecraft:bucket", "P": f"{MOD}:fluid_pipe", "G": "#c:gears/copper", "R": "#c:dusts/redstone"})
 shaped("item_duct", ["LGL"], {"L": "#c:ingots/lead", "G": "#c:glass_blocks"}, count=6)
 shaped("fluid_pipe", ["TGT"], {"T": "#c:ingots/tin", "G": "#c:glass_blocks"}, count=6)
-# Tier 2 for now: eight tier 1 pipes around an iron gear. These move to steel and invar once the Alloy Smelter is in.
-shaped("reinforced_item_duct", ["DDD", "DGD", "DDD"], {"D": f"{MOD}:item_duct", "G": "#c:gears/iron"}, count=8)
-shaped("reinforced_fluid_pipe", ["DDD", "DGD", "DDD"], {"D": f"{MOD}:fluid_pipe", "G": "#c:gears/iron"}, count=8)
+# Tier 2: eight tier 1 pipes around a steel (ducts) or invar (pipes) plate from the Compressor.
+shaped("reinforced_item_duct", ["DDD", "DPD", "DDD"], {"D": f"{MOD}:item_duct", "P": "#c:plates/steel"}, count=8)
+shaped("reinforced_fluid_pipe", ["DDD", "DPD", "DDD"], {"D": f"{MOD}:fluid_pipe", "P": "#c:plates/invar"}, count=8)
 shaped("fluid_tank", ["IGI", "G G", "IGI"], {"I": "#c:ingots/copper", "G": "#c:glass_blocks"})
 shaped("wrench", ["I I", " T ", " I "], {"I": "#c:ingots/iron", "T": "#c:ingots/tin"})
 shaped("filter_card", ["NPN", "PRP", "NPN"], {"N": "#c:nuggets/tin", "P": "minecraft:paper", "R": "#c:dusts/redstone"})
 
-# ---- crushing recipes (Crusher)
-def crushing(name, ingredient, result, count=1, energy=2000, time=100):
-    write(os.path.join(DATA, MOD, "recipe", "crushing", f"{name}.json"), {
-        "type": f"{MOD}:crushing", "ingredient": ing(ingredient),
-        "result": {"id": result, "count": count}, "energy": energy, "time": time})
-    recipes["crushing/" + name] = True
+# ---- machine recipes: one JSON format for every machine (see MachineRecipe.java)
+def machine(kind, name, inputs, results, energy=None, time=None):
+    """inputs: [(ingredient, count)]; results: [(item id, count, chance)]."""
+    r = {"type": f"{MOD}:{kind}",
+         "inputs": [dict(ing(i), **({"count": c} if c != 1 else {})) for i, c in inputs],
+         "results": [dict({"id": rid}, **({"count": c} if c != 1 else {}), **({"chance": ch} if ch < 1 else {}))
+                     for rid, c, ch in results]}
+    if energy is not None:
+        r["energy"] = energy
+    if time is not None:
+        r["time"] = time
+    write(os.path.join(DATA, MOD, "recipe", kind, f"{name}.json"), r)
+    recipes[f"{kind}/{name}"] = True
 
 DUST = lambda m: f"{MOD}:{m}_dust"
+INGOT = lambda m: ingot_of(m)
+
+# Crusher: ores and raw metal give two dusts (ores sometimes a bonus dust of a related metal), ingots one.
+ORE_BONUS = {"iron": "nickel", "gold": "silver", "copper": "gold", "tin": "iron", "lead": "silver",
+             "silver": "lead", "nickel": "iron", "uranium": "lead"}
 for m, (src, dust, plate, gear, wire) in METALS.items():
     if not dust:
         continue
-    crushing(f"{m}_dust_from_ingot", f"#c:ingots/{m}", DUST(m), 1, 1600, 80)
+    machine("crushing", f"{m}_dust_from_ingot", [(f"#c:ingots/{m}", 1)], [(DUST(m), 1, 1)], 1600, 80)
     if src == "ore" or m in ("iron", "copper", "gold"):
-        crushing(f"{m}_dust_from_raw", f"#c:raw_materials/{m}", DUST(m), 2)
-        crushing(f"{m}_dust_from_ore", f"#c:ores/{m}", DUST(m), 2, 3000, 150)
-crushing("gravel_from_cobblestone", "#c:cobblestones/normal", "minecraft:gravel", 1, 1200, 60)
-crushing("sand_from_gravel", "#c:gravels", "minecraft:sand", 1, 1200, 60)
+        machine("crushing", f"{m}_dust_from_raw", [(f"#c:raw_materials/{m}", 1)], [(DUST(m), 2, 1)])
+        machine("crushing", f"{m}_dust_from_ore", [(f"#c:ores/{m}", 1)],
+                [(DUST(m), 2, 1), (DUST(ORE_BONUS[m]), 1, 0.1)], 3000, 150)
+machine("crushing", "gravel_from_cobblestone", [("#c:cobblestones/normal", 1)], [("minecraft:gravel", 1, 1)], 1200, 60)
+machine("crushing", "sand_from_gravel", [("#c:gravels", 1)], [("minecraft:sand", 1, 1), ("minecraft:flint", 1, 0.1)], 1200, 60)
+machine("crushing", "bone_meal_from_bone", [("minecraft:bone", 1)], [("minecraft:bone_meal", 6, 1)], 800, 40)
+machine("crushing", "blaze_powder_from_rod", [("minecraft:blaze_rod", 1)], [("minecraft:blaze_powder", 4, 1)], 1600, 80)
+
+# Alloy Smelter: ingots or dusts, mixed.
+ALLOYS = {"steel": ([("iron", 1)], "#minecraft:coals", 2, 1),
+          "bronze": ([("copper", 3), ("tin", 1)], None, 0, 4),
+          "invar": ([("iron", 2), ("nickel", 1)], None, 0, 3),
+          "electrum": ([("gold", 1), ("silver", 1)], None, 0, 2)}
+
+for alloy, (parts, extra, extra_count, out) in ALLOYS.items():
+    r = {"type": f"{MOD}:alloy_smelting", "inputs": [], "results": [{"id": INGOT(alloy), "count": out}]}
+    for m, c in parts:
+        entry = {"tag": f"c:ingots/{m}"}
+        r["inputs"].append(dict(entry, **({"count": c} if c != 1 else {})))
+    if extra:
+        r["inputs"].append(dict(ing(extra), count=extra_count))
+    write(os.path.join(DATA, MOD, "recipe", "alloy_smelting", f"{alloy}_ingot.json"), r)
+    recipes[f"alloy_smelting/{alloy}_ingot"] = True
+    # the same from dusts
+    d = {"type": f"{MOD}:alloy_smelting", "inputs": [], "results": [{"id": INGOT(alloy), "count": out}], "energy": 3200}
+    for m, c in parts:
+        d["inputs"].append(dict({"tag": f"c:dusts/{m}"}, **({"count": c} if c != 1 else {})))
+    if extra:
+        d["inputs"].append(dict(ing(extra), count=extra_count))
+    write(os.path.join(DATA, MOD, "recipe", "alloy_smelting", f"{alloy}_ingot_from_dust.json"), d)
+    recipes[f"alloy_smelting/{alloy}_ingot_from_dust"] = True
+machine("alloy_smelting", "netherite_scrap_ingot", [("minecraft:netherite_scrap", 4), ("#c:ingots/gold", 4)],
+        [("minecraft:netherite_ingot", 1, 1)], 16000, 400)
+
+# Compressor: ingots to plates.
+for m, (src, dust, plate, gear, wire) in METALS.items():
+    if plate:
+        machine("compressing", f"{m}_plate", [(f"#c:ingots/{m}", 1)], [(f"{MOD}:{m}_plate", 1, 1)])
+machine("compressing", "snow_block", [("minecraft:snowball", 4)], [("minecraft:snow_block", 1, 1)], 400, 20)
+
+# Wire Drawer: one ingot into two wires.
+for m, (src, dust, plate, gear, wire) in METALS.items():
+    if wire:
+        machine("wire_drawing", f"{m}_wire", [(f"#c:ingots/{m}", 1)], [(f"{MOD}:{m}_wire", 2, 1)])
+
+# Sawmill: a log into six planks and some sawdust.
+WOODS = {"oak": "oak_logs", "spruce": "spruce_logs", "birch": "birch_logs", "jungle": "jungle_logs",
+         "acacia": "acacia_logs", "dark_oak": "dark_oak_logs", "mangrove": "mangrove_logs",
+         "cherry": "cherry_logs", "crimson": "crimson_stems", "warped": "warped_stems"}
+for wood, log_tag in WOODS.items():
+    machine("sawing", f"{wood}_planks", [(f"#minecraft:{log_tag}", 1)],
+            [(f"minecraft:{wood}_planks", 6, 1), (f"{MOD}:sawdust", 1, 1)])
+machine("sawing", "bamboo_planks", [("#minecraft:bamboo_blocks", 1)], [("minecraft:bamboo_planks", 3, 1), (f"{MOD}:sawdust", 1, 0.5)])
+machine("sawing", "sticks", [("#minecraft:planks", 1)], [("minecraft:stick", 4, 1), (f"{MOD}:sawdust", 1, 0.25)], 600, 30)
+
+# ---- the new machines, upgrade cards and sawdust
+shaped("alloy_smelter", ["IGI", "BFB", "IRI"],
+       {"I": "#c:ingots/iron", "G": "#c:gears/copper", "B": "minecraft:bricks", "F": "minecraft:furnace", "R": "#c:dusts/redstone"})
+shaped("compressor", ["IPI", "GBG", "IRI"],
+       {"I": "#c:ingots/iron", "P": "minecraft:piston", "G": "#c:gears/copper", "B": "#c:storage_blocks/iron", "R": "#c:dusts/redstone"})
+shaped("wire_drawer", ["IGI", "TST", "IRI"],
+       {"I": "#c:ingots/iron", "G": "#c:gears/copper", "T": "#c:ingots/tin", "S": "minecraft:shears", "R": "#c:dusts/redstone"})
+shaped("sawmill", ["ISI", "GAG", "IRI"],
+       {"I": "#c:ingots/iron", "S": "minecraft:stonecutter", "G": "#c:gears/copper", "A": "minecraft:iron_axe", "R": "#c:dusts/redstone"})
+shaped("speed_upgrade", ["RGR", "GPG", "RGR"], {"R": "#c:dusts/redstone", "G": "#c:ingots/gold", "P": "#c:plates/bronze"})
+shaped("efficiency_upgrade", ["RLR", "LPL", "RLR"], {"R": "#c:dusts/redstone", "L": "#c:gems/lapis", "P": "#c:plates/invar"})
+shaped("bonus_upgrade", ["RQR", "QPQ", "RQR"], {"R": "#c:dusts/redstone", "Q": "#c:gems/quartz", "P": "#c:plates/electrum"})
+shaped("eject_upgrade", ["R R", "HPH", "R R"], {"R": "#c:dusts/redstone", "H": "minecraft:hopper", "P": "#c:plates/tin"})
+UPGRADES = {"speed": "Speed Upgrade", "efficiency": "Efficiency Upgrade", "bonus": "Output Bonus Upgrade", "eject": "Auto-Eject Upgrade"}
+for iid in [f"{u}_upgrade" for u in UPGRADES] + ["sawdust"]:
+    write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
+          {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{iid}"}})
 lang.update({f"block.{MOD}.{k}": v["name"] for k, v in MACHINES.items()})
 lang.update({f"block.{MOD}.{k}": v for k, v in CREATIVE.items()})
 lang[f"block.{MOD}.energy_cable"] = "Energy Cable"
+lang.update({f"item.{MOD}.{u}_upgrade": name for u, name in UPGRADES.items()})
+lang.update({
+    f"item.{MOD}.sawdust": "Sawdust",
+    "jei.joulesmith.alloy_smelting": "Alloy Smelting",
+    "jei.joulesmith.compressing": "Compressing",
+    "jei.joulesmith.wire_drawing": "Wire Drawing",
+    "jei.joulesmith.sawing": "Sawing",
+    "jei.joulesmith.chance": "%s%% chance",
+    "jei.joulesmith.time": "%s s",
+    "gui.joulesmith.upgrade_slot": "Upgrade slot",
+    "gui.joulesmith.upgrade_slot.hint": "Takes Speed, Efficiency, Output Bonus or Auto-Eject cards",
+    "tooltip.joulesmith.upgrade.speed": "Each card: runs 50% faster, using 25% more power per run",
+    "tooltip.joulesmith.upgrade.efficiency": "Each card: 20% less power per run",
+    "tooltip.joulesmith.upgrade.bonus": "Each card: +10% byproduct chance and 10% chance of an extra output",
+    "tooltip.joulesmith.upgrade.eject": "Pushes finished items out of the machine's output faces",
+})
 lang.update({f"block.{MOD}.{k}": v for k, v in PIPES.items()})
 lang.update({
     f"block.{MOD}.fluid_tank": "Fluid Tank",

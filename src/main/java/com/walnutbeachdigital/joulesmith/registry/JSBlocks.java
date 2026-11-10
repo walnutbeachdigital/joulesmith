@@ -10,7 +10,7 @@ import com.walnutbeachdigital.joulesmith.energy.cable.EnergyCableBlock;
 import com.walnutbeachdigital.joulesmith.machine.MachineBlock;
 import com.walnutbeachdigital.joulesmith.machine.SimpleMachineBlock;
 import com.walnutbeachdigital.joulesmith.machine.battery.BatteryBlockEntity;
-import com.walnutbeachdigital.joulesmith.machine.crusher.CrusherBlockEntity;
+import com.walnutbeachdigital.joulesmith.machine.ProcessingMachineBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.generator.CombustionGeneratorBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.creative.CreativePowerCellBlock;
 import com.walnutbeachdigital.joulesmith.machine.furnace.ElectricFurnaceBlock;
@@ -19,7 +19,10 @@ import com.walnutbeachdigital.joulesmith.storage.tank.FluidTankBlock;
 import com.walnutbeachdigital.joulesmith.transport.fluid.FluidPipeBlock;
 import com.walnutbeachdigital.joulesmith.transport.item.ItemDuctBlock;
 
+import java.util.function.Supplier;
+
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -62,8 +65,18 @@ public final class JSBlocks {
     public static final DeferredBlock<ElectricFurnaceBlock> ELECTRIC_FURNACE = BLOCKS.register("electric_furnace",
             () -> new ElectricFurnaceBlock(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 13 : 0)));
 
-    public static final DeferredBlock<SimpleMachineBlock<CrusherBlockEntity>> CRUSHER = BLOCKS.register("crusher",
-            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.CRUSHER::get, CrusherBlockEntity::new));
+    public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> CRUSHER = processing("crusher", () -> JSBlockEntities.CRUSHER.get());
+    public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> ALLOY_SMELTER = processing("alloy_smelter", () -> JSBlockEntities.ALLOY_SMELTER.get());
+    public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> COMPRESSOR = processing("compressor", () -> JSBlockEntities.COMPRESSOR.get());
+    public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> WIRE_DRAWER = processing("wire_drawer", () -> JSBlockEntities.WIRE_DRAWER.get());
+    public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> SAWMILL = processing("sawmill", () -> JSBlockEntities.SAWMILL.get());
+
+    /** A recipe machine block; its block entity type knows the slots and recipes. */
+    private static DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> processing(
+            String name, Supplier<BlockEntityType<ProcessingMachineBlockEntity>> type) {
+        return BLOCKS.register(name, () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 9 : 0),
+                type, (pos, state) -> type.get().create(pos, state)));
+    }
 
     public static final DeferredBlock<SimpleMachineBlock<CombustionGeneratorBlockEntity>> COMBUSTION_GENERATOR = BLOCKS.register("combustion_generator",
             () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 13 : 0),

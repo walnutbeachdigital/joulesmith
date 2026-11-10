@@ -1,0 +1,13 @@
+{
+  "type": "joulesmith:compressing",
+  "inputs": [
+    {
+      "tag": "c:ingots/invar"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:invar_plate"
+    }
+  ]
+}

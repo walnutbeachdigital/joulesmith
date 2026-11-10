@@ -1,0 +1,13 @@
+{
+  "type": "joulesmith:compressing",
+  "inputs": [
+    {
+      "tag": "c:ingots/electrum"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:electrum_plate"
+    }
+  ]
+}

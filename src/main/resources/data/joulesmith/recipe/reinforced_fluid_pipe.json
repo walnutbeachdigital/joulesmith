@@ -3,15 +3,15 @@
   "category": "misc",
   "pattern": [
     "DDD",
-    "DGD",
+    "DPD",
     "DDD"
   ],
   "key": {
     "D": {
       "item": "joulesmith:fluid_pipe"
     },
-    "G": {
-      "tag": "c:gears/iron"
+    "P": {
+      "tag": "c:plates/invar"
     }
   },
   "result": {

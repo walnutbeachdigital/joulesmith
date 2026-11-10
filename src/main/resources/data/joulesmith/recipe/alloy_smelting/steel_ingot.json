@@ -1,0 +1,18 @@
+{
+  "type": "joulesmith:alloy_smelting",
+  "inputs": [
+    {
+      "tag": "c:ingots/iron"
+    },
+    {
+      "tag": "minecraft:coals",
+      "count": 2
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:steel_ingot",
+      "count": 1
+    }
+  ]
+}

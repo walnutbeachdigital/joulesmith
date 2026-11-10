@@ -1,12 +1,15 @@
 {
   "type": "joulesmith:crushing",
-  "ingredient": {
-    "tag": "c:ingots/bronze"
-  },
-  "result": {
-    "id": "joulesmith:bronze_dust",
-    "count": 1
-  },
+  "inputs": [
+    {
+      "tag": "c:ingots/bronze"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:bronze_dust"
+    }
+  ],
   "energy": 1600,
   "time": 80
 }

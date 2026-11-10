@@ -1,0 +1,16 @@
+{
+  "type": "joulesmith:compressing",
+  "inputs": [
+    {
+      "item": "minecraft:snowball",
+      "count": 4
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:snow_block"
+    }
+  ],
+  "energy": 400,
+  "time": 20
+}

@@ -1,12 +1,14 @@
 {
   "type": "joulesmith:crushing",
-  "ingredient": {
-    "tag": "c:raw_materials/silver"
-  },
-  "result": {
-    "id": "joulesmith:silver_dust",
-    "count": 2
-  },
-  "energy": 2000,
-  "time": 100
+  "inputs": [
+    {
+      "tag": "c:raw_materials/silver"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:silver_dust",
+      "count": 2
+    }
+  ]
 }

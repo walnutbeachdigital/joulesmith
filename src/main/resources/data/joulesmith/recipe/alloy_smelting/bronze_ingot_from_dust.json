@@ -1,0 +1,19 @@
+{
+  "type": "joulesmith:alloy_smelting",
+  "inputs": [
+    {
+      "tag": "c:dusts/copper",
+      "count": 3
+    },
+    {
+      "tag": "c:dusts/tin"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:bronze_ingot",
+      "count": 4
+    }
+  ],
+  "energy": 3200
+}

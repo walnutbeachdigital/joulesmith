@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RGR",
+    "GPG",
+    "RGR"
+  ],
+  "key": {
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "G": {
+      "tag": "c:ingots/gold"
+    },
+    "P": {
+      "tag": "c:plates/bronze"
+    }
+  },
+  "result": {
+    "id": "joulesmith:speed_upgrade",
+    "count": 1
+  }
+}

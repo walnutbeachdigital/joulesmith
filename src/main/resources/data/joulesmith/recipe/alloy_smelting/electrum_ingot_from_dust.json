@@ -1,0 +1,18 @@
+{
+  "type": "joulesmith:alloy_smelting",
+  "inputs": [
+    {
+      "tag": "c:dusts/gold"
+    },
+    {
+      "tag": "c:dusts/silver"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:electrum_ingot",
+      "count": 2
+    }
+  ],
+  "energy": 3200
+}

@@ -1,12 +1,15 @@
 {
   "type": "joulesmith:crushing",
-  "ingredient": {
-    "tag": "c:ingots/silver"
-  },
-  "result": {
-    "id": "joulesmith:silver_dust",
-    "count": 1
-  },
+  "inputs": [
+    {
+      "tag": "c:ingots/silver"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:silver_dust"
+    }
+  ],
   "energy": 1600,
   "time": 80
 }

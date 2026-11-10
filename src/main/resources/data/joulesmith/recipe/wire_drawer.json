@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "IGI",
+    "TST",
+    "IRI"
+  ],
+  "key": {
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "G": {
+      "tag": "c:gears/copper"
+    },
+    "T": {
+      "tag": "c:ingots/tin"
+    },
+    "S": {
+      "item": "minecraft:shears"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:wire_drawer",
+    "count": 1
+  }
+}

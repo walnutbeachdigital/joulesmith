@@ -1,0 +1,14 @@
+{
+  "type": "joulesmith:wire_drawing",
+  "inputs": [
+    {
+      "tag": "c:ingots/copper"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:copper_wire",
+      "count": 2
+    }
+  ]
+}

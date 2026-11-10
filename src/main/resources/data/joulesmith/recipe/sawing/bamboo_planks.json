@@ -1,0 +1,18 @@
+{
+  "type": "joulesmith:sawing",
+  "inputs": [
+    {
+      "tag": "minecraft:bamboo_blocks"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:bamboo_planks",
+      "count": 3
+    },
+    {
+      "id": "joulesmith:sawdust",
+      "chance": 0.5
+    }
+  ]
+}

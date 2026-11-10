@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.walnutbeachdigital.joulesmith.Joulesmith;
+import com.walnutbeachdigital.joulesmith.item.UpgradeCardItem;
 import com.walnutbeachdigital.joulesmith.item.WrenchItem;
 import com.walnutbeachdigital.joulesmith.item.filter.FilterCardItem;
 import com.walnutbeachdigital.joulesmith.material.Metal;
@@ -33,6 +34,8 @@ public final class JSItems {
     public static final Map<Metal, DeferredItem<Item>> WIRE = new EnumMap<>(Metal.class);
 
     public static final DeferredItem<WrenchItem> WRENCH = register("wrench", () -> new WrenchItem(new Item.Properties().stacksTo(1)));
+    public static final Map<UpgradeCardItem.Type, DeferredItem<UpgradeCardItem>> UPGRADE = new EnumMap<>(UpgradeCardItem.Type.class);
+    public static final DeferredItem<Item> SAWDUST = ITEMS.registerSimpleItem("sawdust");
     public static final DeferredItem<FilterCardItem> FILTER_CARD = register("filter_card", () -> new FilterCardItem(new Item.Properties().stacksTo(16)));
 
     static {
@@ -41,6 +44,14 @@ public final class JSItems {
         blockItem(JSBlocks.ENERGY_CABLE);
         blockItem(JSBlocks.ELECTRIC_FURNACE);
         blockItem(JSBlocks.CRUSHER);
+        blockItem(JSBlocks.ALLOY_SMELTER);
+        blockItem(JSBlocks.COMPRESSOR);
+        blockItem(JSBlocks.WIRE_DRAWER);
+        blockItem(JSBlocks.SAWMILL);
+        for (UpgradeCardItem.Type type : UpgradeCardItem.Type.values()) {
+            UPGRADE.put(type, register(type.id() + "_upgrade", () -> new UpgradeCardItem(type, new Item.Properties().stacksTo(16))));
+        }
+        TAB_ORDER.add(SAWDUST);
         blockItem(JSBlocks.PUMP);
         blockItem(JSBlocks.ITEM_DUCT);
         blockItem(JSBlocks.REINFORCED_ITEM_DUCT);

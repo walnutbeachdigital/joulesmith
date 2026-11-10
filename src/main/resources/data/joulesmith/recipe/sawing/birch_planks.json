@@ -1,0 +1,17 @@
+{
+  "type": "joulesmith:sawing",
+  "inputs": [
+    {
+      "tag": "minecraft:birch_logs"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:birch_planks",
+      "count": 6
+    },
+    {
+      "id": "joulesmith:sawdust"
+    }
+  ]
+}

@@ -14,6 +14,7 @@ import com.walnutbeachdigital.joulesmith.machine.SlotRole;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -68,6 +69,7 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
     @Override
     protected void renderBg(GuiGraphics g, float partialTick, int mouseX, int mouseY) {
         int x = leftPos, y = topPos;
+        if (hasUpgrades()) drawUpgradePanel(g, x, y);
         g.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
         for (SlotDef def : menu.slotDefs()) {
             if (def.role() == SlotRole.OUTPUT && def.big()) {
@@ -104,6 +106,38 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
         if (menu.tankCapacity() > 0) drawTank(g, x + menu.tankX(), y + TANK_Y);
         drawTabs(g, x + imageWidth, y);
     }
+
+    private boolean hasUpgrades() {
+        return menu.slotDefs().stream().anyMatch(d -> d.role() == SlotRole.UPGRADE);
+    }
+
+    // the upgrade panel hangs off the left edge of the screen
+    private static final int UPG_X = -24, UPG_Y = 3, UPG_W = 26, UPG_H = 62;
+
+    private void drawUpgradePanel(GuiGraphics g, int x, int y) {
+        int px = x + UPG_X, py = y + UPG_Y;
+        g.fill(px, py, px + UPG_W, py + UPG_H, 0xFF000000);
+        g.fill(px + 1, py + 1, px + UPG_W, py + UPG_H - 1, 0xFFFFFFFF);
+        g.fill(px + 2, py + 2, px + UPG_W, py + UPG_H - 1, 0xFF555555);
+        g.fill(px + 2, py + 2, px + UPG_W, py + UPG_H - 2, 0xFFC6C6C6);
+    }
+
+    private boolean inUpgradePanel(double rx, double ry) {
+        return hasUpgrades() && rx >= UPG_X && rx < 0 && ry >= UPG_Y && ry < UPG_Y + UPG_H;
+    }
+
+    /** Screen areas outside the main panel (the upgrade panel and the tabs), for JEI to keep clear of. */
+    public List<Rect2i> extraAreas() {
+        List<Rect2i> areas = new ArrayList<>();
+        if (hasUpgrades()) areas.add(new Rect2i(leftPos + UPG_X, topPos + UPG_Y, -UPG_X, UPG_H));
+        areas.add(new Rect2i(leftPos + imageWidth, topPos + RED_TAB_Y, TAB, TAB));
+        int sideH = sidesOpen ? SIDE_PANEL + 20 : TAB, sideW = sidesOpen ? SIDE_PANEL : TAB;
+        areas.add(new Rect2i(leftPos + imageWidth, topPos + SIDE_TAB_Y, sideW, sideH));
+        return areas;
+    }
+
+    public static int arrowX() { return ARROW_X; }
+    public static int arrowY() { return ARROW_Y; }
 
     /** A fluid gauge: the same frame as the energy bar, filled from the bottom with the fluid's own texture. */
     private void drawTank(GuiGraphics g, int x, int y) {
@@ -213,7 +247,7 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
     protected boolean hasClickedOutside(double mouseX, double mouseY, int left, int top, int button) {
         double rx = mouseX - left, ry = mouseY - top;
         return super.hasClickedOutside(mouseX, mouseY, left, top, button)
-                && !inRedTab(rx, ry) && !inSideTab(rx, ry) && !inSidePanel(rx, ry);
+                && !inUpgradePanel(rx, ry) && !inRedTab(rx, ry) && !inSideTab(rx, ry) && !inSidePanel(rx, ry);
     }
 
     private void press(int id) {
@@ -239,6 +273,10 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
         } else if (menu.progressStyle() == MachineBlockEntity.ProgressStyle.FLAME
                 && rx >= FLAME_X && rx < FLAME_X + 14 && ry >= FLAME_Y && ry < FLAME_Y + 14) {
             tip.add(Component.translatable("gui.joulesmith.burn_time", (menu.value(2) + 19) / 20));
+        } else if (hoveredSlot != null && !hoveredSlot.hasItem() && hoveredSlot.index < menu.slotDefs().size()
+                && menu.slotDefs().get(hoveredSlot.index).role() == SlotRole.UPGRADE) {
+            tip.add(Component.translatable("gui.joulesmith.upgrade_slot"));
+            tip.add(Component.translatable("gui.joulesmith.upgrade_slot.hint").withStyle(ChatFormatting.GRAY));
         } else if (inRedTab(rx, ry)) {
             RedstoneMode mode = menu.redstoneMode();
             tip.add(Component.translatable("gui.joulesmith.redstone.title"));

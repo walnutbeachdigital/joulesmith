@@ -1,12 +1,15 @@
 {
   "type": "joulesmith:crushing",
-  "ingredient": {
-    "tag": "c:ingots/tin"
-  },
-  "result": {
-    "id": "joulesmith:tin_dust",
-    "count": 1
-  },
+  "inputs": [
+    {
+      "tag": "c:ingots/tin"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:tin_dust"
+    }
+  ],
   "energy": 1600,
   "time": 80
 }

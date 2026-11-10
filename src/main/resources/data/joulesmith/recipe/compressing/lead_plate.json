@@ -1,0 +1,13 @@
+{
+  "type": "joulesmith:compressing",
+  "inputs": [
+    {
+      "tag": "c:ingots/lead"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:lead_plate"
+    }
+  ]
+}

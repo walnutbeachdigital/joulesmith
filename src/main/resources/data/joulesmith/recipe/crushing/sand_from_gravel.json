@@ -1,12 +1,19 @@
 {
   "type": "joulesmith:crushing",
-  "ingredient": {
-    "tag": "c:gravels"
-  },
-  "result": {
-    "id": "minecraft:sand",
-    "count": 1
-  },
+  "inputs": [
+    {
+      "tag": "c:gravels"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:sand"
+    },
+    {
+      "id": "minecraft:flint",
+      "chance": 0.1
+    }
+  ],
   "energy": 1200,
   "time": 60
 }

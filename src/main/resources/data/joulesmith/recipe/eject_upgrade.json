@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "R R",
+    "HPH",
+    "R R"
+  ],
+  "key": {
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "P": {
+      "tag": "c:plates/tin"
+    }
+  },
+  "result": {
+    "id": "joulesmith:eject_upgrade",
+    "count": 1
+  }
+}

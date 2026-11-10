@@ -1,0 +1,16 @@
+{
+  "type": "joulesmith:crushing",
+  "inputs": [
+    {
+      "item": "minecraft:blaze_rod"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:blaze_powder",
+      "count": 4
+    }
+  ],
+  "energy": 1600,
+  "time": 80
+}

@@ -1,0 +1,17 @@
+{
+  "type": "joulesmith:sawing",
+  "inputs": [
+    {
+      "tag": "minecraft:dark_oak_logs"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:dark_oak_planks",
+      "count": 6
+    },
+    {
+      "id": "joulesmith:sawdust"
+    }
+  ]
+}

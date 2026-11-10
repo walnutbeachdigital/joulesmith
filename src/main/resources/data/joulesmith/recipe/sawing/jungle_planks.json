@@ -1,0 +1,17 @@
+{
+  "type": "joulesmith:sawing",
+  "inputs": [
+    {
+      "tag": "minecraft:jungle_logs"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:jungle_planks",
+      "count": 6
+    },
+    {
+      "id": "joulesmith:sawdust"
+    }
+  ]
+}

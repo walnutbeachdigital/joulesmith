@@ -1,12 +1,15 @@
 {
   "type": "joulesmith:crushing",
-  "ingredient": {
-    "tag": "c:cobblestones/normal"
-  },
-  "result": {
-    "id": "minecraft:gravel",
-    "count": 1
-  },
+  "inputs": [
+    {
+      "tag": "c:cobblestones/normal"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:gravel"
+    }
+  ],
   "energy": 1200,
   "time": 60
 }

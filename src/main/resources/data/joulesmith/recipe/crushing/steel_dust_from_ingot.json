@@ -1,12 +1,15 @@
 {
   "type": "joulesmith:crushing",
-  "ingredient": {
-    "tag": "c:ingots/steel"
-  },
-  "result": {
-    "id": "joulesmith:steel_dust",
-    "count": 1
-  },
+  "inputs": [
+    {
+      "tag": "c:ingots/steel"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:steel_dust"
+    }
+  ],
   "energy": 1600,
   "time": 80
 }

@@ -1,30 +1,52 @@
 package com.walnutbeachdigital.joulesmith.compat.jei;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import com.walnutbeachdigital.joulesmith.Joulesmith;
+import com.walnutbeachdigital.joulesmith.client.MachineScreen;
 import com.walnutbeachdigital.joulesmith.material.Metal;
+import com.walnutbeachdigital.joulesmith.recipe.MachineRecipeKind;
 import com.walnutbeachdigital.joulesmith.registry.JSBlocks;
 import com.walnutbeachdigital.joulesmith.registry.JSItems;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
+import mezz.jei.api.gui.handlers.IGuiClickableArea;
+import mezz.jei.api.gui.handlers.IGuiContainerHandler;
+import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
-import com.walnutbeachdigital.joulesmith.registry.JSRecipes;
+import net.minecraft.world.level.ItemLike;
 
 /**
- * JEI support. Crafting, smelting and blasting recipes show up in JEI on their own; this plugin adds
- * what JEI can't work out by itself. Machine recipe pages are added here as the machines are built.
- * JEI only loads this class when JEI is installed, so Joulesmith never requires it.
+ * JEI support: a page for every Joulesmith machine's recipes, the machines as catalysts, a clickable
+ * progress arrow on each machine screen, and where each ore generates. JEI only loads this class when JEI
+ * is installed, so Joulesmith never requires it.
  */
 @JeiPlugin
 public class JoulesmithJeiPlugin implements IModPlugin {
     private static final ResourceLocation UID = Joulesmith.id("jei_plugin");
+
+    /** Which block runs each kind of recipe. */
+    private static Map<MachineRecipeKind, ItemLike> machines() {
+        return Map.of(
+                MachineRecipeKind.CRUSHING, JSBlocks.CRUSHER.get(),
+                MachineRecipeKind.ALLOY_SMELTING, JSBlocks.ALLOY_SMELTER.get(),
+                MachineRecipeKind.COMPRESSING, JSBlocks.COMPRESSOR.get(),
+                MachineRecipeKind.WIRE_DRAWING, JSBlocks.WIRE_DRAWER.get(),
+                MachineRecipeKind.SAWING, JSBlocks.SAWMILL.get());
+    }
 
     @Override
     public ResourceLocation getPluginUid() {
@@ -33,14 +55,17 @@ public class JoulesmithJeiPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
-        registration.addRecipeCategories(new CrushingCategory(registration.getJeiHelpers().getGuiHelper()));
+        var gui = registration.getJeiHelpers().getGuiHelper();
+        machines().forEach((kind, block) -> registration.addRecipeCategories(new MachineRecipeCategory(gui, kind, block)));
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         if (Minecraft.getInstance().level != null) {
-            registration.addRecipes(CrushingCategory.TYPE,
-                    Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(JSRecipes.CRUSHING.get()));
+            var recipes = Minecraft.getInstance().level.getRecipeManager();
+            for (MachineRecipeKind kind : machines().keySet()) {
+                registration.addRecipes(MachineRecipeCategory.typeOf(kind), recipes.getAllRecipesFor(kind.type()));
+            }
         }
         // Where each ore generates, shown on the ore blocks and the raw ore.
         for (Metal metal : Metal.values()) {
@@ -54,9 +79,35 @@ public class JoulesmithJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        // the Electric Furnace runs every smelting recipe
         registration.addRecipeCatalyst(new ItemStack(JSBlocks.ELECTRIC_FURNACE.get()), RecipeTypes.SMELTING);
-        registration.addRecipeCatalyst(new ItemStack(JSBlocks.CRUSHER.get()), CrushingCategory.TYPE);
         registration.addRecipeCatalyst(new ItemStack(JSBlocks.COMBUSTION_GENERATOR.get()), RecipeTypes.FUELING);
+        machines().forEach((kind, block) -> registration.addRecipeCatalyst(new ItemStack(block), MachineRecipeCategory.typeOf(kind)));
+    }
+
+    @Override
+    public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        registration.addGuiContainerHandler(MachineScreen.class, new IGuiContainerHandler<MachineScreen>() {
+            @Override
+            public List<Rect2i> getGuiExtraAreas(MachineScreen screen) {
+                return screen.extraAreas();
+            }
+
+            @Override
+            public Collection<IGuiClickableArea> getGuiClickableAreas(MachineScreen screen, double mouseX, double mouseY) {
+                RecipeType<?> type = typeFor(screen.getMenu().recipeCategory());
+                List<IGuiClickableArea> areas = new ArrayList<>();
+                if (type != null) areas.add(IGuiClickableArea.createBasic(MachineScreen.arrowX(), MachineScreen.arrowY(), 24, 17, type));
+                return areas;
+            }
+        });
+    }
+
+    private static RecipeType<?> typeFor(ResourceLocation category) {
+        if (category == null) return null;
+        if (category.equals(RecipeTypes.SMELTING.getUid())) return RecipeTypes.SMELTING;
+        for (MachineRecipeKind kind : MachineRecipeKind.values()) {
+            if (category.equals(Joulesmith.id(kind.id()))) return MachineRecipeCategory.typeOf(kind);
+        }
+        return null;
     }
 }

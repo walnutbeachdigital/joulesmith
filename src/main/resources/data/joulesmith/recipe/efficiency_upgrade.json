@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RLR",
+    "LPL",
+    "RLR"
+  ],
+  "key": {
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "L": {
+      "tag": "c:gems/lapis"
+    },
+    "P": {
+      "tag": "c:plates/invar"
+    }
+  },
+  "result": {
+    "id": "joulesmith:efficiency_upgrade",
+    "count": 1
+  }
+}

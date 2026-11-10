@@ -1,0 +1,19 @@
+{
+  "type": "joulesmith:alloy_smelting",
+  "inputs": [
+    {
+      "tag": "c:dusts/iron",
+      "count": 2
+    },
+    {
+      "tag": "c:dusts/nickel"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:invar_ingot",
+      "count": 3
+    }
+  ],
+  "energy": 3200
+}

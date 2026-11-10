@@ -1,12 +1,20 @@
 {
   "type": "joulesmith:crushing",
-  "ingredient": {
-    "tag": "c:ores/nickel"
-  },
-  "result": {
-    "id": "joulesmith:nickel_dust",
-    "count": 2
-  },
+  "inputs": [
+    {
+      "tag": "c:ores/nickel"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:nickel_dust",
+      "count": 2
+    },
+    {
+      "id": "joulesmith:iron_dust",
+      "chance": 0.1
+    }
+  ],
   "energy": 3000,
   "time": 150
 }

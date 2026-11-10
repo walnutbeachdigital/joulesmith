@@ -1,0 +1,18 @@
+{
+  "type": "joulesmith:alloy_smelting",
+  "inputs": [
+    {
+      "tag": "c:ingots/iron",
+      "count": 2
+    },
+    {
+      "tag": "c:ingots/nickel"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:invar_ingot",
+      "count": 3
+    }
+  ]
+}

@@ -1,9 +1,12 @@
 package com.walnutbeachdigital.joulesmith.machine;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import com.walnutbeachdigital.joulesmith.energy.JSEnergyStorage;
+import com.walnutbeachdigital.joulesmith.item.UpgradeCardItem;
+import com.walnutbeachdigital.joulesmith.recipe.ChanceResult;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -11,6 +14,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -27,6 +32,7 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 /**
@@ -37,8 +43,23 @@ import net.neoforged.neoforge.items.ItemStackHandler;
  */
 public abstract class MachineBlockEntity extends BlockEntity implements MenuProvider {
 
-    /** One run of a machine: what it makes, how long it takes and the energy it uses each tick. */
-    public record Process(ItemStack result, int ticks, int energyPerTick, int inputCount) {}
+    /**
+     * One run of a machine: what it makes (some outputs only by chance), how long it takes, the energy it
+     * uses each tick before upgrades, and how many items it takes from each of the machine's slots.
+     */
+    public record Process(List<ChanceResult> outputs, int ticks, int energyPerTick, int[] consume) {
+        /** A run with one sure output that uses {@code count} items from slot {@code slot}. */
+        public static Process simple(ItemStack result, int ticks, int energyPerTick, int slotCount, int slot, int count) {
+            int[] consume = new int[slotCount];
+            consume[slot] = count;
+            return new Process(List.of(ChanceResult.always(result)), ticks, energyPerTick, consume);
+        }
+    }
+
+    /** The three upgrade slots, in a panel on the left of the screen. */
+    public static final List<SlotDef> UPGRADE_SLOTS = List.of(
+            SlotDef.upgrade(-19, 8), SlotDef.upgrade(-19, 26), SlotDef.upgrade(-19, 44));
+    private static final int EJECT_INTERVAL = 10, EJECT_AMOUNT = 16;
 
     /** How the screen shows progress: an arrow (processing), a flame (burning fuel), or nothing. */
     public enum ProgressStyle { ARROW, FLAME, NONE }
@@ -58,7 +79,18 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
     protected MachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state,
                                  List<SlotDef> slots, int capacity, int maxInput, int maxOutput) {
+        this(type, pos, state, slots, capacity, maxInput, maxOutput, false);
+    }
+
+    /** {@code upgrades}: whether the machine takes upgrade cards (three slots, added after its own). */
+    protected MachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state,
+                                 List<SlotDef> slots, int capacity, int maxInput, int maxOutput, boolean upgrades) {
         super(type, pos, state);
+        if (upgrades) {
+            List<SlotDef> all = new ArrayList<>(slots);
+            all.addAll(UPGRADE_SLOTS);
+            slots = List.copyOf(all);
+        }
         this.slots = slots;
         this.energy = new JSEnergyStorage(capacity, maxInput, maxOutput, this::setChanged);
         this.items = new ItemStackHandler(slots.size()) {
@@ -69,7 +101,16 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
             @Override
             public boolean isItemValid(int slot, ItemStack stack) {
-                return slots.get(slot).role() == SlotRole.OUTPUT || isValidInput(stack);
+                return switch (MachineBlockEntity.this.slots.get(slot).role()) {
+                    case OUTPUT -> true;
+                    case INPUT -> isValidInput(stack);
+                    case UPGRADE -> stack.getItem() instanceof UpgradeCardItem;
+                };
+            }
+
+            @Override
+            public int getSlotLimit(int slot) {
+                return MachineBlockEntity.this.slots.get(slot).role() == SlotRole.UPGRADE ? 1 : super.getSlotLimit(slot);
             }
         };
         Arrays.fill(sides, SideMode.BOTH);
@@ -104,7 +145,11 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     }
 
     private void tick(Level level, BlockPos pos, BlockState state) {
-        boolean running = work(level, pos, redstone.allows(level.hasNeighborSignal(pos)));
+        boolean allowed = redstone.allows(level.hasNeighborSignal(pos));
+        boolean running = work(level, pos, allowed);
+        if (allowed && level.getGameTime() % EJECT_INTERVAL == 0 && upgrades(UpgradeCardItem.Type.EJECT) > 0) {
+            eject(level, pos);
+        }
         if (state.getValue(MachineBlock.LIT) != running) {
             level.setBlock(pos, state.setValue(MachineBlock.LIT, running), 3);
         }
@@ -117,10 +162,14 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     protected boolean work(Level level, BlockPos pos, boolean allowed) {
         boolean running = false;
         Process process = allowed ? findProcess() : null;
-        if (process != null && outputFits(process.result())) {
-            maxProgress = process.ticks();
-            if (energy.getEnergyStored() >= process.energyPerTick()) {
-                energy.consume(process.energyPerTick());
+        if (process != null && outputFits(process)) {
+            int speed = upgrades(UpgradeCardItem.Type.SPEED), saving = upgrades(UpgradeCardItem.Type.EFFICIENCY);
+            int ticks = Math.max(1, (int) Math.ceil(process.ticks() / (1 + 0.5 * speed)));
+            double total = (double) process.energyPerTick() * process.ticks() * (1 + 0.25 * speed) * Math.max(0.4, 1 - 0.2 * saving);
+            int perTick = Math.max(1, (int) Math.ceil(total / ticks));
+            maxProgress = ticks;
+            if (energy.getEnergyStored() >= perTick) {
+                energy.consume(perTick);
                 progress++;
                 running = true;
                 if (progress >= maxProgress) {
@@ -152,31 +201,100 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         return sent;
     }
 
-    /** Uses the inputs and puts the result into the output slots. */
+    /** Uses the inputs, rolls the chance outputs and puts what came out into the output slots. */
     protected void finish(Process process) {
-        for (int i = 0; i < slots.size(); i++) {
-            if (slots.get(i).role() == SlotRole.INPUT && !items.getStackInSlot(i).isEmpty()) {
-                items.extractItem(i, process.inputCount(), false);
-                break;
-            }
+        int[] consume = process.consume();
+        for (int i = 0; i < Math.min(consume.length, slots.size()); i++) {
+            if (consume[i] > 0) items.extractItem(i, consume[i], false);
         }
-        ItemStack left = process.result().copy();
-        for (int i = 0; i < slots.size() && !left.isEmpty(); i++) {
-            if (slots.get(i).role() == SlotRole.OUTPUT) {
-                left = items.insertItem(i, left, false);
+        int bonus = upgrades(UpgradeCardItem.Type.BONUS);
+        RandomSource random = level != null ? level.random : RandomSource.create();
+        boolean first = true;
+        for (ChanceResult out : process.outputs()) {
+            ItemStack made = out.stack().copy();
+            if (out.certain()) {
+                if (first && bonus > 0 && random.nextFloat() < 0.1f * bonus) made.grow(1);
+            } else if (random.nextFloat() >= Math.min(1f, out.chance() + 0.1f * bonus)) {
+                made = ItemStack.EMPTY;
+            }
+            first = false;
+            for (int i = 0; i < slots.size() && !made.isEmpty(); i++) {
+                if (slots.get(i).role() == SlotRole.OUTPUT) made = items.insertItem(i, made, false);
             }
         }
         setChanged();
     }
 
-    private boolean outputFits(ItemStack result) {
-        ItemStack left = result.copy();
-        for (int i = 0; i < slots.size() && !left.isEmpty(); i++) {
+    /** Whether every output, at its most, would fit in the output slots together. */
+    private boolean outputFits(Process process) {
+        List<ItemStack> space = new ArrayList<>();
+        List<Integer> limits = new ArrayList<>();
+        for (int i = 0; i < slots.size(); i++) {
             if (slots.get(i).role() == SlotRole.OUTPUT) {
-                left = items.insertItem(i, left, true);
+                space.add(items.getStackInSlot(i).copy());
+                limits.add(items.getSlotLimit(i));
             }
         }
-        return left.isEmpty();
+        boolean first = true;
+        for (ChanceResult out : process.outputs()) {
+            ItemStack left = out.stack().copy();
+            if (first && upgrades(UpgradeCardItem.Type.BONUS) > 0) left.grow(1);
+            first = false;
+            for (int i = 0; i < space.size() && !left.isEmpty(); i++) {
+                ItemStack there = space.get(i);
+                int max = Math.min(limits.get(i), left.getMaxStackSize());
+                if (there.isEmpty()) {
+                    int moved = Math.min(max, left.getCount());
+                    space.set(i, left.copyWithCount(moved));
+                    left.shrink(moved);
+                } else if (ItemStack.isSameItemSameComponents(there, left)) {
+                    int moved = Math.min(max - there.getCount(), left.getCount());
+                    if (moved > 0) {
+                        there.grow(moved);
+                        left.shrink(moved);
+                    }
+                }
+            }
+            if (!left.isEmpty()) return false;
+        }
+        return true;
+    }
+
+    /** How many upgrade cards of a type are fitted. */
+    public int upgrades(UpgradeCardItem.Type type) {
+        int n = 0;
+        for (int i = 0; i < slots.size(); i++) {
+            if (slots.get(i).role() == SlotRole.UPGRADE && items.getStackInSlot(i).getItem() instanceof UpgradeCardItem card && card.type() == type) {
+                n++;
+            }
+        }
+        return n;
+    }
+
+    /** Auto-Eject card: pushes finished items into blocks touching faces set to give out. */
+    private void eject(Level level, BlockPos pos) {
+        int budget = EJECT_AMOUNT;
+        for (Direction dir : Direction.values()) {
+            if (!sideMode(MachineFace.of(facing(), dir)).gives()) continue;
+            IItemHandler target = level.getCapability(Capabilities.ItemHandler.BLOCK, pos.relative(dir), dir.getOpposite());
+            if (target == null) continue;
+            for (int i = 0; i < slots.size() && budget > 0; i++) {
+                if (slots.get(i).role() != SlotRole.OUTPUT) continue;
+                ItemStack offered = items.extractItem(i, budget, true);
+                if (offered.isEmpty()) continue;
+                ItemStack left = ItemHandlerHelper.insertItem(target, offered, false);
+                int moved = offered.getCount() - left.getCount();
+                if (moved > 0) {
+                    items.extractItem(i, moved, false);
+                    budget -= moved;
+                }
+            }
+        }
+    }
+
+    /** The JEI recipe category this machine runs, for the clickable progress arrow. Null if none. */
+    public ResourceLocation recipeCategory() {
+        return null;
     }
 
     /** The first input slot's contents (most machines have one input). */
@@ -367,7 +485,14 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         if (tag.contains("Energy")) energy.deserializeNBT(registries, tag.get("Energy"));
-        if (tag.contains("Items")) items.deserializeNBT(registries, tag.getCompound("Items"));
+        if (tag.contains("Items")) {
+            // read into a spare handler first: a save from before a machine gained slots must not shrink it
+            ItemStackHandler saved = new ItemStackHandler();
+            saved.deserializeNBT(registries, tag.getCompound("Items"));
+            for (int i = 0; i < items.getSlots(); i++) {
+                items.setStackInSlot(i, i < saved.getSlots() ? saved.getStackInSlot(i) : ItemStack.EMPTY);
+            }
+        }
         redstone = RedstoneMode.values()[Math.floorMod(tag.getInt("Redstone"), RedstoneMode.values().length)];
         int[] faces = tag.getIntArray("Sides");
         for (int f = 0; f < Math.min(faces.length, sides.length); f++) {
