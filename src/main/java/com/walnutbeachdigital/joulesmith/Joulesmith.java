@@ -37,6 +37,8 @@ public class Joulesmith {
         JSRecipes.TYPES.register(modEventBus);
         JSRecipes.SERIALIZERS.register(modEventBus);
         modEventBus.addListener(JSCapabilities::register);
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.server.ServerStoppedEvent e) ->
+                com.walnutbeachdigital.joulesmith.energy.wireless.WirelessEnergyBlockEntity.clear());
         com.walnutbeachdigital.joulesmith.registry.JSSounds.SOUNDS.register(modEventBus);
         com.walnutbeachdigital.joulesmith.gear.powered.PoweredGearEvents.register();
         modContainer.registerConfig(net.neoforged.fml.config.ModConfig.Type.COMMON, JSConfig.SPEC);

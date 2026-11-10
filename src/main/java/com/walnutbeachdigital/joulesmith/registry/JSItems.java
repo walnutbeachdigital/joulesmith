@@ -85,6 +85,8 @@ public final class JSItems {
         blockItem(JSBlocks.REACTOR_CASING);
         blockItem(JSBlocks.REACTOR_GLASS);
         blockItem(JSBlocks.REACTOR_PORT);
+        blockItem(JSBlocks.WIRELESS_TRANSMITTER);
+        blockItem(JSBlocks.WIRELESS_RECEIVER);
         blockItem(JSBlocks.WIND_TURBINE);
         JSBlocks.SENSORS.values().forEach(JSItems::blockItem);
         blockItem(JSBlocks.LOGIC_CONTROLLER);

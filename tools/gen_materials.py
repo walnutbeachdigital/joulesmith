@@ -1699,6 +1699,39 @@ lang.update({
 for (ns, reg, path), values in tags.items():
     write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
 
+# ---- wireless power: dye-coloured channels; the lamp overlay is tinted by the game (tintindex 0)
+for bid, name in (("wireless_transmitter", "Wireless Transmitter"), ("wireless_receiver", "Wireless Receiver")):
+    sides = ("north", "south", "east", "west")
+    model(bid, {"parent": "minecraft:block/block", "render_type": "minecraft:cutout", "textures": {
+        "particle": f"{MOD}:block/{bid}_side", "side": f"{MOD}:block/{bid}_side", "top": f"{MOD}:block/{bid}_top",
+        "bottom": f"{MOD}:block/machine_bottom", "lamp": f"{MOD}:block/wireless_lamp"},
+        "elements": [
+            {"from": [0, 0, 0], "to": [16, 16, 16], "faces": dict(
+                {f: {"texture": "#side", "cullface": f} for f in sides},
+                up={"texture": "#top", "cullface": "up"}, down={"texture": "#bottom", "cullface": "down"})},
+            {"from": [0, 0, 0], "to": [16, 16, 16], "faces": {f: {"texture": "#lamp", "cullface": f, "tintindex": 0} for f in sides}}]})
+    write(os.path.join(ASSETS, "blockstates", f"{bid}.json"), {"variants": {"": {"model": f"{MOD}:block/{bid}"}}})
+    write(os.path.join(ASSETS, "models", "item", f"{bid}.json"), {"parent": f"{MOD}:block/{bid}"})
+    simple_loot(bid)
+    tag("minecraft", "block", "mineable/pickaxe", f"{MOD}:{bid}")
+    lang[f"block.{MOD}.{bid}"] = name
+shaped("wireless_transmitter", ["PEP", "QXQ", "PCP"], {"P": "#c:plates/silver", "E": "minecraft:ender_eye", "Q": f"{MOD}:processor",
+                                                     "X": f"{MOD}:elite_casing", "C": f"{MOD}:elite_energy_cable"})
+shaped("wireless_receiver", ["PEP", "QXQ", "PCP"], {"P": "#c:plates/silver", "E": "minecraft:ender_pearl", "Q": f"{MOD}:processor",
+                                                  "X": f"{MOD}:elite_casing", "C": f"{MOD}:elite_energy_cable"})
+WIRELESS = ("Use a dye on a Transmitter or Receiver to set its channel; the lamp shows the colour. Each Receiver draws up to "
+            "10,000 FE/t from the Transmitters on its channel within 256 blocks in the same dimension (both must be loaded) "
+            "and gives it to whatever touches it.")
+W_DESC = {"wireless_transmitter": ("Sends power to Receivers on its channel", "Takes power from cables. " + WIRELESS),
+          "wireless_receiver": ("Draws power from Transmitters on its channel", WIRELESS)}
+DESC.update(W_DESC)
+for iid, (short, info) in W_DESC.items():
+    lang[f"desc.{MOD}.{iid}"] = short
+    lang[f"jei.{MOD}.info.{iid}"] = info
+lang["message.joulesmith.wireless.channel"] = "Channel set to %s"
+for (ns, reg, path), values in tags.items():
+    write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+
 # ---- advancements: a guided path through the tiers (data/joulesmith/advancement)
 ADV = [
     # id, parent, icon, items needed (all of them; a "#" tag or a list means any one), frame, title, description

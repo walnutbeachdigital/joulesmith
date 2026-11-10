@@ -2495,6 +2495,66 @@ def reactor_textures():
     }
 
 
+# ------------------------------------------------------------------ wireless power
+def wireless_side(transmitter):
+    """Signal-blue casing with a dark panel: rising arcs for a Transmitter, falling arcs for a Receiver.
+    The lamp strip at the top is a separate overlay, tinted to the channel colour."""
+    img = casing4()
+    px = img.load()
+    for y in range(6, 13):
+        for x in range(3, 13):
+            px[x, y] = rgba("#10141c")
+    for x in range(3, 13):
+        px[x, 5] = rgba(STEEL8[2]); px[x, 13] = rgba(STEEL8[6])
+    cx, cy = 7.5, (12.5 if transmitter else 6.0)
+    for y in range(6, 13):
+        for x in range(3, 13):
+            r = math.hypot(x - cx, (y - cy) * 1.2)
+            if any(abs(r - k) < 0.5 for k in (3.0, 5.5)) and ((y < cy - 1) if transmitter else (y > cy + 1)):
+                px[x, y] = rgba(SIGNAL_TRIM[4] if r < 4 else SIGNAL_TRIM[2])
+    sy = 11 if transmitter else 7                        # the emitter / pickup
+    for x in (7, 8):
+        px[x, sy] = rgba(SIGNAL_TRIM[5]); px[x, sy + (1 if transmitter else -1)] = rgba(STEEL8[5])
+    return img
+
+
+def wireless_lamp():
+    """The channel lamp: a light-grey strip (tinted by the game) along the top of each side."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    for x in range(4, 12):
+        px[x, 3] = (255, 255, 255, 255) if x < 9 else (215, 215, 215, 255)
+        px[x, 4] = (190, 190, 190, 255)
+    return img
+
+
+def wireless_top(transmitter):
+    """A dish (Transmitter) or a grid of pickup pads (Receiver) on top."""
+    img = casing4()
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            r = math.hypot(x - 7.5, y - 7.5)
+            if transmitter:
+                if r < 4.6:
+                    px[x, y] = rgba(STEEL8[6] if x + y < 14 else STEEL8[3])
+                if r < 1.2:
+                    px[x, y] = rgba(SIGNAL_TRIM[5])
+            elif 4 <= x <= 11 and 4 <= y <= 11:
+                px[x, y] = rgba(SIGNAL_TRIM[3] if (x // 2 + y // 2) % 2 else SIGNAL_TRIM[1])
+    return img
+
+
+def wireless_textures():
+    return {
+        "block/wireless_transmitter_side": wireless_side(True),
+        "block/wireless_receiver_side": wireless_side(False),
+        "block/wireless_transmitter_top": wireless_top(True),
+        "block/wireless_receiver_top": wireless_top(False),
+        "block/wireless_lamp": wireless_lamp(),
+    }
+
+
 def main():
     os.makedirs(os.path.join(TEX, "block"), exist_ok=True)
     os.makedirs(os.path.join(TEX, "gui"), exist_ok=True)
@@ -2644,6 +2704,7 @@ def main():
         "gui/modification_table": modification_table_gui(),
         **tier45_textures(),
         **reactor_textures(),
+        **wireless_textures(),
     }
     for name, img in out.items():
         img.save(os.path.join(TEX, name + ".png"))

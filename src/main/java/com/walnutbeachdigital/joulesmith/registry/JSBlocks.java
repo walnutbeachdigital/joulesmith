@@ -129,6 +129,12 @@ public final class JSBlocks {
     public static final DeferredBlock<com.walnutbeachdigital.joulesmith.machine.reactor.ReactorPortBlock> REACTOR_PORT = BLOCKS.register("reactor_port",
             () -> new com.walnutbeachdigital.joulesmith.machine.reactor.ReactorPortBlock(machine()));
 
+    // ---- wireless power: Receivers draw from Transmitters on the same (dye) channel
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.energy.wireless.WirelessEnergyBlock> WIRELESS_TRANSMITTER =
+            BLOCKS.register("wireless_transmitter", () -> new com.walnutbeachdigital.joulesmith.energy.wireless.WirelessEnergyBlock(true, machine()));
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.energy.wireless.WirelessEnergyBlock> WIRELESS_RECEIVER =
+            BLOCKS.register("wireless_receiver", () -> new com.walnutbeachdigital.joulesmith.energy.wireless.WirelessEnergyBlock(false, machine()));
+
     // ---- more generators
     public static final DeferredBlock<SimpleMachineBlock<com.walnutbeachdigital.joulesmith.machine.generator.GeothermalGeneratorBlockEntity>> GEOTHERMAL_GENERATOR =
             BLOCKS.register("geothermal_generator", () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 12 : 0),

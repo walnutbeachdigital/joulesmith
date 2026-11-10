@@ -1,0 +1,85 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "joulesmith:block/wireless_receiver_side",
+    "side": "joulesmith:block/wireless_receiver_side",
+    "top": "joulesmith:block/wireless_receiver_top",
+    "bottom": "joulesmith:block/machine_bottom",
+    "lamp": "joulesmith:block/wireless_lamp"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#side",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#side",
+          "cullface": "south"
+        },
+        "east": {
+          "texture": "#side",
+          "cullface": "east"
+        },
+        "west": {
+          "texture": "#side",
+          "cullface": "west"
+        },
+        "up": {
+          "texture": "#top",
+          "cullface": "up"
+        },
+        "down": {
+          "texture": "#bottom",
+          "cullface": "down"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#lamp",
+          "cullface": "north",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#lamp",
+          "cullface": "south",
+          "tintindex": 0
+        },
+        "east": {
+          "texture": "#lamp",
+          "cullface": "east",
+          "tintindex": 0
+        },
+        "west": {
+          "texture": "#lamp",
+          "cullface": "west",
+          "tintindex": 0
+        }
+      }
+    }
+  ]
+}

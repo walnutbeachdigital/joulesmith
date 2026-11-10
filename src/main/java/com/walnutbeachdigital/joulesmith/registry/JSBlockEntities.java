@@ -177,6 +177,11 @@ public final class JSBlockEntities {
             BLOCK_ENTITIES.register("reactor_port", () -> BlockEntityType.Builder
                     .of(com.walnutbeachdigital.joulesmith.machine.reactor.ReactorPortBlockEntity::new, JSBlocks.REACTOR_PORT.get()).build(null));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.energy.wireless.WirelessEnergyBlockEntity>> WIRELESS_ENERGY =
+            BLOCK_ENTITIES.register("wireless_energy", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.energy.wireless.WirelessEnergyBlockEntity::new,
+                            JSBlocks.WIRELESS_TRANSMITTER.get(), JSBlocks.WIRELESS_RECEIVER.get()).build(null));
+
     // more generators
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.machine.generator.GeothermalGeneratorBlockEntity>> GEOTHERMAL_GENERATOR =
             BLOCK_ENTITIES.register("geothermal_generator", () -> BlockEntityType.Builder

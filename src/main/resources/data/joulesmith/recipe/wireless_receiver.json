@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PEP",
+    "QXQ",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/silver"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "Q": {
+      "item": "joulesmith:processor"
+    },
+    "X": {
+      "item": "joulesmith:elite_casing"
+    },
+    "C": {
+      "item": "joulesmith:elite_energy_cable"
+    }
+  },
+  "result": {
+    "id": "joulesmith:wireless_receiver",
+    "count": 1
+  }
+}

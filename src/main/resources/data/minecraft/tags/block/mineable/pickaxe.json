@@ -106,6 +106,8 @@
     "joulesmith:modification_table",
     "joulesmith:reactor_casing",
     "joulesmith:reactor_glass",
-    "joulesmith:reactor_port"
+    "joulesmith:reactor_port",
+    "joulesmith:wireless_transmitter",
+    "joulesmith:wireless_receiver"
   ]
 }
