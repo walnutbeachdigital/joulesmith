@@ -1356,6 +1356,11 @@ lang.update({
     "gui.joulesmith.side_mode.output": "Output: results can be taken out",
     "gui.joulesmith.side_mode.both": "Input and output",
 })
+# ---- Curios (optional): a belt slot for players, and Energy Cells fit it. Ignored without Curios.
+write(os.path.join(DATA, MOD, "curios", "entities", "joulesmith.json"), {"entities": ["player"], "slots": ["belt"]})
+write(os.path.join(DATA, "curios", "tags", "item", "belt.json"), {"replace": False, "values": [
+    f"{MOD}:basic_energy_cell", f"{MOD}:reinforced_energy_cell", f"{MOD}:energy_cell"]})
+
 # ---- advancements: a guided path through the tiers (data/joulesmith/advancement)
 ADV = [
     # id, parent, icon, items needed (all of them; a "#" tag or a list means any one), frame, title, description

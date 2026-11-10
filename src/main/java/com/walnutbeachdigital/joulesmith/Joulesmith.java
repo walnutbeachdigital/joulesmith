@@ -40,6 +40,12 @@ public class Joulesmith {
         com.walnutbeachdigital.joulesmith.gear.powered.PoweredGearEvents.register();
         modContainer.registerConfig(net.neoforged.fml.config.ModConfig.Type.COMMON, JSConfig.SPEC);
         modEventBus.addListener(com.walnutbeachdigital.joulesmith.compat.top.TopCompat::enqueue);
+        // ComputerCraft: Lua methods for every machine (the compat class only loads when CC: Tweaked is present)
+        modEventBus.addListener((net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent event) -> {
+            if (net.neoforged.fml.ModList.get().isLoaded("computercraft")) {
+                event.enqueueWork(com.walnutbeachdigital.joulesmith.compat.cc.CCCompat::register);
+            }
+        });
     }
 
     public static ResourceLocation id(String path) {

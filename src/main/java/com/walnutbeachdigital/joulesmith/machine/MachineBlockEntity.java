@@ -347,6 +347,12 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         return sides[face.ordinal()];
     }
 
+    /** Sets the redstone mode (from a ComputerCraft computer, say). */
+    public void setRedstoneMode(RedstoneMode mode) {
+        redstone = mode;
+        setChanged();
+    }
+
     public Direction facing() {
         return getBlockState().getValue(MachineBlock.FACING);
     }

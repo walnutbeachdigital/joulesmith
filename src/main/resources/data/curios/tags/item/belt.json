@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "joulesmith:basic_energy_cell",
+    "joulesmith:reinforced_energy_cell",
+    "joulesmith:energy_cell"
+  ]
+}

@@ -34,6 +34,12 @@ repositories {
         url = "https://maven.blamejared.com/"
         content { includeGroup "mezz.jei" }
     }
+    // CC: Tweaked (ComputerCraft)
+    maven {
+        name = "SquidDev"
+        url = "https://maven.squiddev.cc"
+        content { includeGroup "cc.tweaked" }
+    }
     // Jade (and other mods published on Modrinth)
     exclusiveContent {
         forRepository {
@@ -141,6 +147,9 @@ dependencies {
     // reached by reflection (compat/top), so it needs no entry here.
     compileOnly "maven.modrinth:jade:${jade_version}"
     localRuntime "maven.modrinth:jade:${jade_version}"
+    // CC: Tweaked: compile against its API only; install it in the test game yourself to try the Lua methods.
+    // Curios is reached by reflection (compat/curios), so it needs no entry here.
+    compileOnly "cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cct_version}"
 
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime

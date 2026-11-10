@@ -88,8 +88,11 @@ public interface PoweredItem {
     static int chargeInventory(Player player, int budget, boolean cells, ItemStack except) {
         int given = 0;
         var inv = player.getInventory();
-        for (int i = 0; i < inv.getContainerSize() && given < budget; i++) {
-            ItemStack stack = inv.getItem(i);
+        java.util.List<ItemStack> stacks = new java.util.ArrayList<>();
+        for (int i = 0; i < inv.getContainerSize(); i++) stacks.add(inv.getItem(i));
+        stacks.addAll(com.walnutbeachdigital.joulesmith.compat.curios.CuriosCompat.equipped(player));   // gear worn in Curios slots
+        for (ItemStack stack : stacks) {
+            if (given >= budget) break;
             if (stack.isEmpty() || stack == except) continue;
             if (!cells && stack.getItem() instanceof EnergyCellItem) continue;
             IEnergyStorage storage = stack.getCapability(Capabilities.EnergyStorage.ITEM);

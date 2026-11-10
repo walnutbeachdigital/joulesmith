@@ -48,7 +48,14 @@ public class EnergyCellItem extends Item implements PoweredItem {
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
-        if (level.isClientSide || !(entity instanceof Player player) || off(stack) || level.getGameTime() % 4 != 0) return;
+        if (level.isClientSide || !(entity instanceof Player player) || level.getGameTime() % 4 != 0) return;
+        chargeGear(stack, player);
+    }
+
+    /** Every 4 ticks: shares this cell's charge with the player's other powered gear. Also run for a cell
+     * worn in a Curios belt slot. */
+    public void chargeGear(ItemStack stack, Player player) {
+        if (off(stack)) return;
         int budget = Math.min(rate * 4, PoweredItem.energy(stack));
         if (budget <= 0) return;
         int given = PoweredItem.chargeInventory(player, budget, false, stack);

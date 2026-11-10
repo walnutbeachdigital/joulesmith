@@ -154,6 +154,11 @@ public final class PoweredGearEvents {
     private static void playerTick(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
         boolean server = !player.level().isClientSide;
+        if (server && player.level().getGameTime() % 4 == 0) {
+            for (ItemStack worn : com.walnutbeachdigital.joulesmith.compat.curios.CuriosCompat.equipped(player)) {
+                if (worn.getItem() instanceof EnergyCellItem cell) cell.chargeGear(worn, player);
+            }
+        }
         ItemStack head = exo(player, EquipmentSlot.HEAD), chest = exo(player, EquipmentSlot.CHEST),
                 legs = exo(player, EquipmentSlot.LEGS), feet = exo(player, EquipmentSlot.FEET);
 
