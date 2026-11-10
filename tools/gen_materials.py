@@ -110,10 +110,10 @@ def layered(base):
 
 
 # Forms whose textures are made while the game loads, by MetalTexturePack: Minecraft's own iron
-# ingot (from copper, for its shiny top), iron nugget, raw iron, iron block and raw iron block, palette-swapped onto each
+# ingot (from copper, for its shiny top), iron nugget, raw iron and raw iron block, palette-swapped onto each
 # metal's gradient. They are referenced here but never stored in the repo.
 GENERATED_ITEM_FORMS = {"ingot", "nugget", "raw"}
-GENERATED_BLOCK_KINDS = {"storage", "raw_block"}
+GENERATED_BLOCK_KINDS = {"raw_block"}
 
 
 for bid, kind, m in blocks:
@@ -279,7 +279,8 @@ print(f"{len(blocks)} blocks, {len(items)} items, {len(recipes)} recipes, "
       f"{len(tags)} tags, {len(ORES)} ores")
 # Texture list for the art script and for checks.
 write(os.path.join(ROOT, "tools", "texture_manifest.json"), {
-    "block": [f"{b}_overlay" for b, k, m in blocks if k in ("ore", "deepslate_ore")],
+    "block": [f"{b}_overlay" for b, k, m in blocks if k in ("ore", "deepslate_ore")] +
+             [b for b, k, m in blocks if k == "storage"],
     "item": [i for i, f, m in items if f not in GENERATED_ITEM_FORMS],
     "generated": [f"block/{b}" for b, k, m in blocks if k in GENERATED_BLOCK_KINDS] +
                  [f"item/{i}" for i, f, m in items if f in GENERATED_ITEM_FORMS]})

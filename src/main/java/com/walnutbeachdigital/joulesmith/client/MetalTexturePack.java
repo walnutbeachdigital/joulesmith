@@ -30,9 +30,9 @@ import net.minecraft.server.packs.resources.IoSupplier;
 
 /**
  * A built-in resource pack that makes Joulesmith's vanilla-shaped textures while the game loads.
- * It reads Minecraft's own copper ingot, iron nugget, raw iron, iron block and raw iron block
+ * It reads Minecraft's own copper ingot, iron nugget, raw iron and raw iron block
  * textures from the player's copy of the game and swaps each of their shades for one step of a
- * metal's eight-step colour ramp, so ingots, nuggets, raw ore and blocks keep vanilla's shapes with
+ * metal's eight-step colour ramp, so ingots, nuggets, raw ore and raw blocks keep vanilla's shapes with
  * clean, hand-picked palettes. Ingots are made from the copper ingot, whose top face is shiny.
  * No Mojang texture is shipped inside the mod.
  */
@@ -53,7 +53,6 @@ public final class MetalTexturePack implements PackResources {
             if (m.hasIngot()) {
                 add(m, "item/" + id + "_ingot", "item/copper_ingot");   // copper's ingot has the shiny, streaked top face
                 add(m, "item/" + id + "_nugget", "item/iron_nugget");
-                add(m, "block/" + id + "_block", "block/iron_block");
             }
             if (m.hasOre()) {
                 add(m, "item/raw_" + id, "item/raw_iron");

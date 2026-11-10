@@ -298,36 +298,161 @@ def raw(seed):
 
 
 # --------------------------------------------------------------------- blocks
-def storage_block():
-    """Smooth polished metal: soft blotches and a gentle top-left light, tiles without seams."""
-    r = random.Random(42)
-    g = [[r.random() for _ in range(4)] for _ in range(4)]   # 4x4 tileable value noise
+# ---------------------------------------------------------------- metal blocks
+# Each metal's block has its own pattern; all use the metal's eight-step ramp (0 darkest .. 7 brightest)
+# and tile cleanly.
 
-    def smooth(x, y):
-        fx, fy = x / 4.0, y / 4.0
-        x0, y0 = int(fx) % 4, int(fy) % 4
-        x1, y1 = (x0 + 1) % 4, (y0 + 1) % 4
-        tx, ty = fx - int(fx), fy - int(fy)
-        tx, ty = tx * tx * (3 - 2 * tx), ty * ty * (3 - 2 * ty)
-        top = g[y0][x0] * (1 - tx) + g[y0][x1] * tx
-        bot = g[y1][x0] * (1 - tx) + g[y1][x1] * tx
-        return top * (1 - ty) + bot * ty
+def _edge(x, y):
+    """Distance to the nearest edge and which edge it is."""
+    d = min(x, y, 15 - x, 15 - y)
+    side = "top" if y == d else "left" if x == d else "bottom" if 15 - y == d else "right"
+    return d, side
 
-    bayer = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]
-    lv = [[2] * 16 for _ in range(16)]
+
+def block_inset():
+    """Wide bevelled frame around a sunken square."""
+    lv = blank()
     for y in range(16):
         for x in range(16):
-            # broad diagonal sheen plus soft blotches, dithered between three tones
-            sheen = 0.5 + 0.5 * math.cos((x - y) * math.pi / 8)
-            v = 0.45 * sheen + 0.35 * smooth(x, y) + 0.2 * (1 - (x + y) / 30)
-            t = v * 2.2 + (bayer[y % 4][x % 4] / 16 - 0.5) * 0.55
-            lv[y][x] = 2 + max(0, min(2, int(t)))
-    for i in range(16):
-        lv[0][i] = max(lv[0][i], 3)
-        lv[i][0] = max(lv[i][0], 3)
-        lv[15][i] = min(lv[15][i], 2)
-        lv[i][15] = min(lv[i][15], 2)
+            d, side = _edge(x, y)
+            lit = side in ("top", "left")
+            if d == 0:
+                v = 7 if lit else 0
+            elif d < 3:
+                v = (6 if side == "top" else 5) if lit else (2 if side == "bottom" else 3)
+            elif d == 3:
+                v = 2 if lit else 6                      # inner bevel faces the other way
+            else:
+                v = 4 if (x + y) < 15 else 3
+            lv[y][x] = v
     return lv
+
+
+def block_panels():
+    """Four raised panels with dark seams between them."""
+    lv = blank()
+    for y in range(16):
+        for x in range(16):
+            lx, ly = x % 8, y % 8
+            d = min(lx, ly, 7 - lx, 7 - ly)
+            if d == 0:
+                v = 1
+            elif d == 1:
+                v = 6 if (ly == 1 or lx == 1) and not (ly == 6 or lx == 6) else 2
+            else:
+                v = 5 if lx + ly < 7 else 4
+            lv[y][x] = v
+    return lv
+
+
+def block_ribs():
+    """Vertical ribs inside a frame."""
+    lv = blank()
+    for y in range(16):
+        for x in range(16):
+            d, side = _edge(x, y)
+            lit = side in ("top", "left")
+            if d == 0:
+                v = 6 if lit else 0
+            elif d == 1:
+                v = 5 if lit else 1
+            else:
+                col = (x - 2) % 3
+                v = (6, 4, 2)[col]
+                if y == 2:
+                    v = min(7, v + 1)
+                elif y == 13:
+                    v = max(1, v - 2)
+            lv[y][x] = v
+    return lv
+
+
+def block_brushed():
+    """Narrow frame around diagonally brushed metal."""
+    lv = blank()
+    n = noise(21)
+    for y in range(16):
+        for x in range(16):
+            d, side = _edge(x, y)
+            lit = side in ("top", "left")
+            if d == 0:
+                v = 6 if lit else 1
+            elif d == 1:
+                v = 5 if lit else 2
+            else:
+                streak = (x + y) % 6
+                v = 6 if streak == 0 else 5 if streak in (1, 5) else 4
+                if (x + y) > 18:
+                    v -= 1
+                if n[y][x] > 0.9:
+                    v = min(7, v + 1)
+            lv[y][x] = v
+    return lv
+
+
+def block_pyramid():
+    """Four sloped faces meeting at a small flat centre."""
+    lv = blank()
+    for y in range(16):
+        for x in range(16):
+            d, side = _edge(x, y)
+            if d == 0:
+                v = 6 if side in ("top", "left") else 1
+            elif 6 <= x <= 9 and 6 <= y <= 9:
+                v = 3                                    # flat top
+            else:
+                v = {"top": 6, "left": 5, "right": 3, "bottom": 2}[side]
+                if x == y or x == 15 - y:                # ridges where faces meet
+                    v = 7 if (x < 8 and y < 8) else 4 if y < 8 or x < 8 else 1
+            lv[y][x] = v
+    return lv
+
+
+def block_smooth():
+    """Thin frame around a soft diagonal gradient."""
+    bayer = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]
+    lv = blank()
+    for y in range(16):
+        for x in range(16):
+            d, side = _edge(x, y)
+            lit = side in ("top", "left")
+            if d == 0:
+                v = 7 if lit else 1
+            elif d == 1:
+                v = 5 if lit else 2
+            else:
+                t = 1 - (x + y - 4) / 22.0
+                v = 3 + int(t * 3 + bayer[y % 4][x % 4] / 16.0)
+            lv[y][x] = max(0, min(7, v))
+    return lv
+
+
+def block_studs():
+    """A grid of small square studs."""
+    lv = blank()
+    for y in range(16):
+        for x in range(16):
+            lx, ly = x % 4, y % 4
+            if lx == 3 or ly == 3:
+                v = 0
+            elif lx == 0 and ly == 0:
+                v = 7
+            elif lx == 0 or ly == 0:
+                v = 5
+            elif lx == 2 and ly == 2:
+                v = 2
+            else:
+                v = 4 if (lx, ly) == (1, 1) else 3
+            lv[y][x] = v
+    return lv
+
+
+BLOCK_DESIGN = {
+    "tin": block_brushed, "lead": block_studs, "silver": block_pyramid, "nickel": block_smooth,
+    "uranium": block_inset, "steel": block_panels, "bronze": block_ribs, "invar": block_inset,
+    "electrum": block_brushed,
+}
+
 
 def raw_block(seed):
     n = noise(seed)
@@ -429,7 +554,7 @@ def draw(kind, name):
         return paint8(ore_overlay(sum(map(ord, m)) * 7), m)
     if name.startswith("raw_"):
         return paint(raw_block(seed), m)
-    return paint(storage_block(), m)
+    return paint8(BLOCK_DESIGN[m](), m)
 
 
 def main():
