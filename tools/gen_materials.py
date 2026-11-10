@@ -294,6 +294,11 @@ MACHINES = {
     "fluid_mixer": {"name": "Fluid Mixer", "front": "fluid_mixer_front"},
     "centrifuge": {"name": "Centrifuge", "front": "centrifuge_front"},
     "circuit_assembler": {"name": "Circuit Assembler", "front": "circuit_assembler_front"},
+    "planter": {"name": "Planter", "front": "planter_front"},
+    "harvester": {"name": "Harvester", "front": "harvester_front"},
+    "tree_farm": {"name": "Tree Farm", "front": "tree_farm_front"},
+    "bio_reactor": {"name": "Bio Reactor", "front": "bio_reactor_front"},
+    "biofuel_generator": {"name": "Biofuel Generator", "front": "biofuel_generator_front"},
 }
 CREATIVE = {"creative_power_cell": "Creative Power Cell"}
 ROTATION = {"north": 0, "east": 90, "south": 180, "west": 270}
@@ -618,6 +623,132 @@ for fid, fname in FLUIDS.items():
     write(os.path.join(ASSETS, "models", "item", f"{fid}_bucket.json"), {
         "parent": "neoforge:item/bucket", "loader": "neoforge:fluid_container", "fluid": f"{MOD}:{fid}"})
 
+# ---- farming: Bio Reactor recipes, farm machines, rubber trees
+machine_fluid("bio_reacting", "seeds", None, [("#c:seeds", 2)], [], (BIOFUEL, 50))
+machine_fluid("bio_reacting", "crops", None, [("#c:crops", 1)], [], (BIOFUEL, 50))
+machine_fluid("bio_reacting", "saplings", None, [("#minecraft:saplings", 1)], [], (BIOFUEL, 50))
+machine_fluid("bio_reacting", "leaves", None, [("#minecraft:leaves", 2)], [], (BIOFUEL, 25))
+machine_fluid("bio_reacting", "sawdust", None, [(f"{MOD}:sawdust", 2)], [], (BIOFUEL, 25))
+machine_fluid("bio_reacting", "sugar_cane", None, [("minecraft:sugar_cane", 1)], [], (BIOFUEL, 50))
+machine_fluid("bio_reacting", "kelp", None, [("minecraft:kelp", 2)], [], (BIOFUEL, 25))
+machine_fluid("bio_reacting", "flowers", None, [("#minecraft:flowers", 1)], [], (BIOFUEL, 25))
+machine_fluid("bio_reacting", "melon", None, [("minecraft:melon_slice", 2)], [], (BIOFUEL, 50))
+machine_fluid("bio_reacting", "pumpkin", None, [("minecraft:pumpkin", 1)], [], (BIOFUEL, 100))
+
+shaped("planter", ["IHI", "GDG", "IRI"],
+       {"I": "#c:ingots/iron", "H": "minecraft:iron_hoe", "G": "#c:gears/copper", "D": "minecraft:dirt", "R": "#c:dusts/redstone"})
+shaped("harvester", ["IHI", "GSG", "IRI"],
+       {"I": "#c:ingots/iron", "H": "minecraft:iron_hoe", "G": "#c:gears/copper", "S": "minecraft:shears", "R": "#c:dusts/redstone"})
+shaped("tree_farm", ["PCP", "GAG", "PSP"],
+       {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit", "G": "#c:gears/bronze", "A": "minecraft:iron_axe", "S": "#minecraft:saplings"})
+shaped("bio_reactor", ["PCP", "GTG", "PRP"],
+       {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit", "G": "#c:gears/bronze", "T": "minecraft:composter", "R": "#c:dusts/redstone"})
+shaped("biofuel_generator", ["PCP", "GTG", "PRP"],
+       {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit", "G": "#c:gears/bronze", "T": f"{MOD}:combustion_generator", "R": "#c:dusts/redstone"})
+shaped("range_upgrade", ["RER", "EPE", "RER"], {"R": "#c:dusts/redstone", "E": "#c:ender_pearls", "P": "#c:plates/tin"})
+shaped("tree_tap", [" I ", "PPP", "P  "], {"I": "#c:ingots/iron", "P": "#minecraft:planks"})
+
+# rubber trees: a log with tap spots, leaves, a sapling and planks
+RUBBER = {"rubber_log": "Rubber Log", "rubber_leaves": "Rubber Leaves", "rubber_sapling": "Rubber Sapling",
+          "rubber_planks": "Rubber Planks"}
+log_variants = {}
+for axis, rot in (("y", {}), ("x", {"x": 90, "y": 90}), ("z", {"x": 90})):
+    for latex in ("none", "dry", "wet"):
+        log_model = f"{MOD}:block/rubber_log" + ("" if latex == "none" else f"_{latex}")
+        log_variants[f"axis={axis},latex={latex}"] = dict({"model": log_model}, **rot)
+write(os.path.join(ASSETS, "blockstates", "rubber_log.json"), {"variants": log_variants})
+for suffix, side in (("", "rubber_log"), ("_dry", "rubber_log_dry"), ("_wet", "rubber_log_wet")):
+    model(f"rubber_log{suffix}", {"parent": "minecraft:block/cube_column",
+          "textures": {"side": f"{MOD}:block/{side}", "end": f"{MOD}:block/rubber_log_top"}})
+write(os.path.join(ASSETS, "models", "item", "rubber_log.json"), {"parent": f"{MOD}:block/rubber_log"})
+for bid in ("rubber_leaves", "rubber_planks"):
+    write(os.path.join(ASSETS, "blockstates", f"{bid}.json"), {"variants": {"": {"model": f"{MOD}:block/{bid}"}}})
+    m = {"parent": "minecraft:block/cube_all", "textures": {"all": f"{MOD}:block/{bid}"}}
+    if bid == "rubber_leaves":
+        m["render_type"] = "minecraft:cutout_mipped"
+    model(bid, m)
+    write(os.path.join(ASSETS, "models", "item", f"{bid}.json"), {"parent": f"{MOD}:block/{bid}"})
+write(os.path.join(ASSETS, "blockstates", "rubber_sapling.json"), {"variants": {"stage=0": {"model": f"{MOD}:block/rubber_sapling"},
+                                                                              "stage=1": {"model": f"{MOD}:block/rubber_sapling"}}})
+model("rubber_sapling", {"parent": "minecraft:block/cross", "render_type": "minecraft:cutout",
+                         "textures": {"cross": f"{MOD}:block/rubber_sapling"}})
+write(os.path.join(ASSETS, "models", "item", "rubber_sapling.json"),
+      {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:block/rubber_sapling"}})
+for bid in ("rubber_log", "rubber_planks", "rubber_sapling"):
+    simple_loot(bid)
+SILK_OR_SHEARS = {"condition": "minecraft:any_of", "terms": [
+    {"condition": "minecraft:match_tool", "predicate": {"items": "minecraft:shears"}},
+    {"condition": "minecraft:match_tool", "predicate": {"predicates": {"minecraft:enchantments": [
+        {"enchantments": "minecraft:silk_touch", "levels": {"min": 1}}]}}}]}
+write(os.path.join(DATA, MOD, "loot_table", "blocks", "rubber_leaves.json"), {
+    "type": "minecraft:block", "random_sequence": f"{MOD}:blocks/rubber_leaves",
+    "pools": [
+        {"rolls": 1, "bonus_rolls": 0, "entries": [{"type": "minecraft:alternatives", "children": [
+            {"type": "minecraft:item", "name": f"{MOD}:rubber_leaves", "conditions": [SILK_OR_SHEARS]},
+            {"type": "minecraft:item", "name": f"{MOD}:rubber_sapling", "conditions": [
+                {"condition": "minecraft:survives_explosion"},
+                {"condition": "minecraft:table_bonus", "enchantment": "minecraft:fortune",
+                 "chances": [0.05, 0.0625, 0.083333336, 0.1]}]}]}]},
+        {"rolls": 1, "bonus_rolls": 0, "conditions": [{"condition": "minecraft:inverted", "term": SILK_OR_SHEARS}],
+         "entries": [{"type": "minecraft:item", "name": "minecraft:stick",
+                      "functions": [{"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 2}}],
+                      "conditions": [{"condition": "minecraft:table_bonus", "enchantment": "minecraft:fortune",
+                                      "chances": [0.02, 0.022222223, 0.025, 0.033333335, 0.1]}]}]}]})
+for reg in ("block", "item"):
+    tag("minecraft", reg, "logs", f"{MOD}:rubber_log")
+    tag("minecraft", reg, "logs_that_burn", f"{MOD}:rubber_log")
+    tag("minecraft", reg, "leaves", f"{MOD}:rubber_leaves")
+    tag("minecraft", reg, "saplings", f"{MOD}:rubber_sapling")
+    tag("minecraft", reg, "planks", f"{MOD}:rubber_planks")
+    tag(MOD, reg, "rubber_logs", f"{MOD}:rubber_log")
+tag("minecraft", "block", "mineable/axe", f"{MOD}:rubber_log")
+tag("minecraft", "block", "mineable/axe", f"{MOD}:rubber_planks")
+tag("minecraft", "block", "mineable/hoe", f"{MOD}:rubber_leaves")
+recipes["rubber_planks"] = {"type": "minecraft:crafting_shapeless", "category": "building",
+                            "ingredients": [{"tag": f"{MOD}:rubber_logs"}], "result": {"id": f"{MOD}:rubber_planks", "count": 4}}
+write(os.path.join(DATA, MOD, "recipe", "rubber_planks.json"), recipes["rubber_planks"])
+write(os.path.join(DATA, MOD, "recipe", "rubber_from_latex.json"), {
+    "type": "minecraft:smelting", "category": "misc", "cookingtime": 200, "experience": 0.2,
+    "ingredient": {"item": f"{MOD}:latex"}, "result": {"id": f"{MOD}:rubber"}})
+recipes["rubber_from_latex"] = True
+machine("sawing", "rubber_planks", [(f"#{MOD}:rubber_logs", 1)], [(f"{MOD}:rubber_planks", 6, 1), (f"{MOD}:sawdust", 1, 1)])
+
+# rubber tree worldgen: a tall trunk (one log in six with a full tap spot) under a spruce-like crown
+LOG = lambda latex: {"Name": f"{MOD}:rubber_log", "Properties": {"axis": "y", "latex": latex}}
+write(os.path.join(DATA, MOD, "worldgen", "configured_feature", "rubber_tree.json"), {
+    "type": "minecraft:tree", "config": {
+        "trunk_provider": {"type": "minecraft:weighted_state_provider", "entries": [
+            {"weight": 5, "data": LOG("none")}, {"weight": 1, "data": LOG("wet")}]},
+        "trunk_placer": {"type": "minecraft:straight_trunk_placer", "base_height": 5, "height_rand_a": 3, "height_rand_b": 1},
+        "foliage_provider": {"type": "minecraft:simple_state_provider",
+                             "state": {"Name": f"{MOD}:rubber_leaves", "Properties": {"distance": "7", "persistent": "false", "waterlogged": "false"}}},
+        "foliage_placer": {"type": "minecraft:spruce_foliage_placer", "radius": {"type": "minecraft:uniform", "min_inclusive": 2, "max_inclusive": 3},
+                           "offset": {"type": "minecraft:uniform", "min_inclusive": 0, "max_inclusive": 1},
+                           "trunk_height": {"type": "minecraft:uniform", "min_inclusive": 1, "max_inclusive": 2}},
+        "minimum_size": {"type": "minecraft:two_layers_feature_size", "limit": 1, "lower_size": 0, "upper_size": 1},
+        "dirt_provider": {"type": "minecraft:simple_state_provider", "state": {"Name": "minecraft:dirt"}},
+        "decorators": [], "ignore_vines": True, "force_dirt": False}})
+write(os.path.join(DATA, MOD, "worldgen", "placed_feature", "rubber_tree.json"), {
+    "feature": f"{MOD}:rubber_tree", "placement": [
+        {"type": "minecraft:rarity_filter", "chance": 3},
+        {"type": "minecraft:in_square"},
+        {"type": "minecraft:surface_water_depth_filter", "max_water_depth": 0},
+        {"type": "minecraft:heightmap", "heightmap": "OCEAN_FLOOR"},
+        {"type": "minecraft:biome"},
+        {"type": "minecraft:block_predicate_filter", "predicate": {"type": "minecraft:would_survive",
+                                                                   "state": {"Name": f"{MOD}:rubber_sapling", "Properties": {"stage": "0"}}}}]})
+for biomes in ("is_forest", "is_jungle"):
+    write(os.path.join(DATA, MOD, "neoforge", "biome_modifier", f"rubber_trees_{biomes}.json"), {
+        "type": "neoforge:add_features", "biomes": f"#minecraft:{biomes}", "features": f"{MOD}:rubber_tree",
+        "step": "vegetal_decoration"})
+
+for iid in ("latex", "rubber", "tree_tap", "range_upgrade"):
+    write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
+          {"parent": "minecraft:item/handheld" if iid == "tree_tap" else "minecraft:item/generated",
+           "textures": {"layer0": f"{MOD}:item/{iid}"}})
+for (ns, reg, path), values in tags.items():
+    write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+
 # ---- the new machines, upgrade cards and sawdust
 shaped("alloy_smelter", ["IGI", "BFB", "IRI"],
        {"I": "#c:ingots/iron", "G": "#c:gears/copper", "B": "minecraft:bricks", "F": "minecraft:furnace", "R": "#c:dusts/redstone"})
@@ -631,8 +762,9 @@ shaped("speed_upgrade", ["RGR", "GPG", "RGR"], {"R": "#c:dusts/redstone", "G": "
 shaped("efficiency_upgrade", ["RLR", "LPL", "RLR"], {"R": "#c:dusts/redstone", "L": "#c:gems/lapis", "P": "#c:plates/invar"})
 shaped("bonus_upgrade", ["RQR", "QPQ", "RQR"], {"R": "#c:dusts/redstone", "Q": "#c:gems/quartz", "P": "#c:plates/electrum"})
 shaped("eject_upgrade", ["R R", "HPH", "R R"], {"R": "#c:dusts/redstone", "H": "minecraft:hopper", "P": "#c:plates/tin"})
-UPGRADES = {"speed": "Speed Upgrade", "efficiency": "Efficiency Upgrade", "bonus": "Output Bonus Upgrade", "eject": "Auto-Eject Upgrade"}
-for iid in [f"{u}_upgrade" for u in UPGRADES] + ["sawdust", "basic_circuit"]:
+UPGRADES = {"speed": "Speed Upgrade", "efficiency": "Efficiency Upgrade", "bonus": "Output Bonus Upgrade", "eject": "Auto-Eject Upgrade",
+            "range": "Range Upgrade"}
+for iid in [f"{u}_upgrade" for u in UPGRADES if u != "range"] + ["sawdust", "basic_circuit"]:
     write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
           {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{iid}"}})
 lang.update({f"block.{MOD}.{k}": v["name"] for k, v in MACHINES.items()})
@@ -642,6 +774,13 @@ lang.update({f"item.{MOD}.{u}_upgrade": name for u, name in UPGRADES.items()})
 lang.update({
     f"item.{MOD}.sawdust": "Sawdust",
     f"item.{MOD}.basic_circuit": "Basic Circuit",
+    f"item.{MOD}.latex": "Latex",
+    f"item.{MOD}.rubber": "Rubber",
+    f"item.{MOD}.tree_tap": "Tree Tap",
+    **{f"block.{MOD}.{b}": n for b, n in RUBBER.items()},
+    "jei.joulesmith.bio_reacting": "Bio Reacting",
+    "tooltip.joulesmith.tree_tap": "Use on a rubber log's latex spot",
+    "tooltip.joulesmith.upgrade.range": "Farm machines: each card widens the area (5x5, 9x9, 13x13)",
     **{f"block.{MOD}.{f}": n for f, n in FLUIDS.items()},
     **{f"fluid_type.{MOD}.{f}": n for f, n in FLUIDS.items()},
     **{f"item.{MOD}.{f}_bucket": f"{n} Bucket" for f, n in FLUIDS.items()},

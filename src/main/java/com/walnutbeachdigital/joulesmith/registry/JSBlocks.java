@@ -10,7 +10,12 @@ import com.walnutbeachdigital.joulesmith.energy.cable.EnergyCableBlock;
 import com.walnutbeachdigital.joulesmith.machine.MachineBlock;
 import com.walnutbeachdigital.joulesmith.machine.SimpleMachineBlock;
 import com.walnutbeachdigital.joulesmith.machine.battery.BatteryBlockEntity;
+import com.walnutbeachdigital.joulesmith.farming.HarvesterBlockEntity;
+import com.walnutbeachdigital.joulesmith.farming.PlanterBlockEntity;
+import com.walnutbeachdigital.joulesmith.farming.TreeFarmBlockEntity;
+import com.walnutbeachdigital.joulesmith.farming.rubber.RubberLogBlock;
 import com.walnutbeachdigital.joulesmith.machine.ProcessingMachineBlockEntity;
+import com.walnutbeachdigital.joulesmith.machine.generator.BiofuelGeneratorBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.generator.CombustionGeneratorBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.creative.CreativePowerCellBlock;
 import com.walnutbeachdigital.joulesmith.machine.furnace.ElectricFurnaceBlock;
@@ -19,7 +24,14 @@ import com.walnutbeachdigital.joulesmith.storage.tank.FluidTankBlock;
 import com.walnutbeachdigital.joulesmith.transport.fluid.FluidPipeBlock;
 import com.walnutbeachdigital.joulesmith.transport.item.ItemDuctBlock;
 
+import java.util.Optional;
 import java.util.function.Supplier;
+
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.SaplingBlock;
+import net.minecraft.world.level.block.grower.TreeGrower;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -74,6 +86,31 @@ public final class JSBlocks {
     public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> FLUID_MIXER = processing("fluid_mixer", () -> JSBlockEntities.FLUID_MIXER.get());
     public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> CENTRIFUGE = processing("centrifuge", () -> JSBlockEntities.CENTRIFUGE.get());
     public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> CIRCUIT_ASSEMBLER = processing("circuit_assembler", () -> JSBlockEntities.CIRCUIT_ASSEMBLER.get());
+
+    public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> BIO_REACTOR = processing("bio_reactor", () -> JSBlockEntities.BIO_REACTOR.get());
+
+    // ---- farming
+    public static final DeferredBlock<SimpleMachineBlock<PlanterBlockEntity>> PLANTER = BLOCKS.register("planter",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.PLANTER::get, (p, s) -> new PlanterBlockEntity(JSBlockEntities.PLANTER.get(), p, s)));
+    public static final DeferredBlock<SimpleMachineBlock<HarvesterBlockEntity>> HARVESTER = BLOCKS.register("harvester",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.HARVESTER::get, (p, s) -> new HarvesterBlockEntity(JSBlockEntities.HARVESTER.get(), p, s)));
+    public static final DeferredBlock<SimpleMachineBlock<TreeFarmBlockEntity>> TREE_FARM = BLOCKS.register("tree_farm",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.TREE_FARM::get, (p, s) -> new TreeFarmBlockEntity(JSBlockEntities.TREE_FARM.get(), p, s)));
+    public static final DeferredBlock<SimpleMachineBlock<BiofuelGeneratorBlockEntity>> BIOFUEL_GENERATOR = BLOCKS.register("biofuel_generator",
+            () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 11 : 0),
+                    JSBlockEntities.BIOFUEL_GENERATOR::get, BiofuelGeneratorBlockEntity::new));
+
+    // ---- rubber trees
+    public static final TreeGrower RUBBER_TREE = new TreeGrower(Joulesmith.MODID + ":rubber", Optional.empty(),
+            Optional.of(ResourceKey.create(Registries.CONFIGURED_FEATURE, Joulesmith.id("rubber_tree"))), Optional.empty());
+    public static final DeferredBlock<RubberLogBlock> RUBBER_LOG = BLOCKS.register("rubber_log",
+            () -> new RubberLogBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LOG).mapColor(MapColor.TERRACOTTA_BROWN)));
+    public static final DeferredBlock<LeavesBlock> RUBBER_LEAVES = BLOCKS.register("rubber_leaves",
+            () -> new LeavesBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LEAVES)));
+    public static final DeferredBlock<SaplingBlock> RUBBER_SAPLING = BLOCKS.register("rubber_sapling",
+            () -> new SaplingBlock(RUBBER_TREE, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SAPLING)));
+    public static final DeferredBlock<Block> RUBBER_PLANKS = BLOCKS.registerSimpleBlock("rubber_planks",
+            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS));
 
     /** A recipe machine block; its block entity type knows the slots and recipes. */
     private static DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> processing(

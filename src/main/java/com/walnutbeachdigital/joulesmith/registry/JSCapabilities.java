@@ -19,6 +19,11 @@ public final class JSCapabilities {
         machine(event, JSBlockEntities.COMBUSTION_GENERATOR.get());
         machine(event, JSBlockEntities.BASIC_BATTERY.get());
         machine(event, JSBlockEntities.PUMP.get());
+        machine(event, JSBlockEntities.PLANTER.get());
+        machine(event, JSBlockEntities.HARVESTER.get());
+        machine(event, JSBlockEntities.TREE_FARM.get());
+        machine(event, JSBlockEntities.BIOFUEL_GENERATOR.get());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.BIOFUEL_GENERATOR.get(), (g, side) -> g.fluidHandler(side));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.PUMP.get(), (pump, side) -> pump.fluidHandler(side));
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, JSBlockEntities.ITEM_DUCT.get(), (duct, side) -> duct.itemHandler(side));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.FLUID_PIPE.get(), (pipe, side) -> pipe.fluidHandler(side));

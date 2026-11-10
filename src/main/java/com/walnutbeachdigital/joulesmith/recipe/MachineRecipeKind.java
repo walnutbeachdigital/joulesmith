@@ -19,7 +19,8 @@ public enum MachineRecipeKind {
     WASHING("washing", 2400, 120),
     MIXING("mixing", 2000, 80),
     CENTRIFUGING("centrifuging", 3200, 120),
-    CIRCUIT_ASSEMBLING("circuit_assembling", 3000, 100);
+    CIRCUIT_ASSEMBLING("circuit_assembling", 3000, 100),
+    BIO_REACTING("bio_reacting", 800, 40);
 
     private final String id;
     private final int defaultEnergy;

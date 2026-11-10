@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "tag": "joulesmith:rubber_logs"
+    }
+  ],
+  "result": {
+    "id": "joulesmith:rubber_planks",
+    "count": 4
+  }
+}

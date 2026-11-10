@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "IHI",
+    "GSG",
+    "IRI"
+  ],
+  "key": {
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "H": {
+      "item": "minecraft:iron_hoe"
+    },
+    "G": {
+      "tag": "c:gears/copper"
+    },
+    "S": {
+      "item": "minecraft:shears"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:harvester",
+    "count": 1
+  }
+}

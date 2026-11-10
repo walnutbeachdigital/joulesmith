@@ -623,6 +623,8 @@ UPGRADE_ART = {
               ["...#...", "...#...", "#######", "...#...", "...#..."], "#ffffff"),
     "eject": (["#1a1a3a", "#2a2a6b", "#3f3fa8", "#5a5ad0"],
               ["...#...", "....#..", "#######", "....#..", "...#..."], "#ffffff"),
+    "range": (["#0f2a12", "#1d4d22", "#2e7a33", "#43a547"],
+              ["#.#.#.#", ".......", "#.###.#", ".......", "#.#.#.#"], "#e8ffd8"),
 }
 
 
@@ -756,6 +758,264 @@ def basic_circuit_item():
     for y in (5, 7, 9):
         px[5, y] = rgba(STEEL[6])
         px[10, y] = rgba(STEEL[6])
+    return img
+
+
+# ------------------------------------------------------------------ farming
+BARK = ["#2a2018", "#3d3024", "#524233", "#6a5844", "#82705a", "#9c8a72"]
+RUBBER_WOOD = ["#5c4630", "#7a6044", "#967a58", "#b0946c", "#c8ae84", "#dcc59c"]
+LEAF = ["#16351a", "#1f4a24", "#2c6430", "#3b7f3c", "#4f9a48", "#6cb85a", "#8fd070"]
+AMBER = ["#5a3608", "#8a5410", "#c27d1a", "#e8a838", "#f8d070"]
+
+
+def rubber_log_side(spot=None):
+    """Pale grey-brown bark in long vertical strips; with a tap spot cut in the middle, full of amber
+    latex ("wet") or empty ("dry")."""
+    import random
+    r = random.Random(41)
+    img = Image.new("RGBA", (16, 16))
+    px = img.load()
+    cols = [r.choice([2, 3, 3, 4]) for _ in range(16)]
+    for x in range(16):
+        for y in range(16):
+            v = cols[x]
+            if (x * 7 + y * 3) % 11 == 0:
+                v -= 1
+            if x % 4 == 0:
+                v = 1
+            if r.random() < 0.08:
+                v += 1
+            px[x, y] = rgba(BARK[max(0, min(5, v))])
+    if spot:
+        for y in range(6, 11):
+            for x in range(6, 10):
+                edge = x in (6, 9) or y in (6, 10)
+                if edge:
+                    px[x, y] = rgba(BARK[0] if (x == 6 or y == 6) else BARK[4])
+                elif spot == "wet":
+                    px[x, y] = rgba(AMBER[4] if (x, y) == (7, 7) else AMBER[3] if y < 9 else AMBER[2])
+                else:
+                    px[x, y] = rgba("#1a130c")
+        if spot == "wet":
+            px[8, 11] = rgba(AMBER[3])                  # a drip running down
+            px[8, 12] = rgba(AMBER[2])
+    return img
+
+
+def rubber_log_top():
+    img = Image.new("RGBA", (16, 16))
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            d = max(abs(x - 7.5), abs(y - 7.5))
+            if d > 6.5:
+                c = BARK[2]
+            elif d > 5.5:
+                c = BARK[4]
+            else:
+                ring = int(d) % 2
+                c = RUBBER_WOOD[3] if ring else RUBBER_WOOD[2]
+                if d < 1:
+                    c = AMBER[2]                        # a little latex in the heart
+            px[x, y] = rgba(c)
+    return img
+
+
+def rubber_leaves():
+    import random
+    r = random.Random(7)
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            n = r.random()
+            if n < 0.12:
+                continue                                  # gaps, like vanilla leaves
+            v = 2 + int(n * 4) - (1 if (x + y) % 5 == 0 else 0)
+            px[x, y] = rgba(LEAF[max(0, min(6, v))])
+    return img
+
+
+def rubber_sapling():
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    for y in range(9, 16):                                # stem
+        px[7, y] = rgba(BARK[3])
+        px[8, y] = rgba(BARK[2])
+    leaves = ["....##....", "...####...", "..######..", ".########.", "..######..", "...####...", "..##..##.."]
+    for j, row in enumerate(leaves):
+        for i, ch in enumerate(row):
+            if ch == "#":
+                px[3 + i, 3 + j] = rgba(LEAF[5] if i + j < 7 else LEAF[3])
+    return img
+
+
+def rubber_planks():
+    img = Image.new("RGBA", (16, 16))
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            board = y // 4
+            seam = y % 4 == 3 or (x == (5 + board * 7) % 16)
+            c = RUBBER_WOOD[1] if seam else RUBBER_WOOD[3] if (x + board) % 6 else RUBBER_WOOD[2]
+            if y % 4 == 0 and not seam:
+                c = RUBBER_WOOD[4]
+            px[x, y] = rgba(c)
+    return img
+
+
+def latex_item():
+    """A sticky amber blob."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    import math
+    for y in range(16):
+        for x in range(16):
+            d = math.hypot((x - 7.5) / 5.0, (y - 8.5) / 4.2)
+            if d <= 1:
+                lit = -(x - 7.5) - (y - 8.5)
+                c = AMBER[4] if lit > 4 else AMBER[3] if lit > -1 else AMBER[2] if d < 0.85 else AMBER[1]
+                px[x, y] = rgba(c)
+    px[5, 6] = rgba("#fff4d0")
+    return img
+
+
+def rubber_item():
+    """A dark rubber bar."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    dark = ["#141414", "#1f1f21", "#2c2c30", "#3c3c42", "#55555c"]
+    for y in range(5, 12):
+        for x in range(2, 14):
+            edge_b = y == 11 or x == 13
+            edge_t = y == 5 or x == 2
+            px[x, y] = rgba(dark[0] if edge_b else dark[4] if edge_t else dark[2] if (x + y) % 5 else dark[3])
+    return img
+
+
+def tree_tap_item():
+    """A wooden spout with an iron tip."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    shape = ["............###.",
+             "...........#ii#.",
+             "..........#ii#..",
+             ".........#ww#...",
+             "........#ww#....",
+             ".......#ww#.....",
+             "..####.#w#......",
+             ".#wwww#ww#......",
+             ".#wwwwwww#......",
+             ".#wwwwww#.......",
+             "..#wwww#........",
+             "...####.........",
+             ".....#a#........",
+             "......a.........", "", ""]
+    for y, row in enumerate(shape):
+        for x, ch in enumerate(row):
+            if ch == "#":
+                px[x, y] = rgba("#2a1c10")
+            elif ch == "w":
+                px[x, y] = rgba(RUBBER_WOOD[3] if (x + y) % 3 else RUBBER_WOOD[2])
+            elif ch == "i":
+                px[x, y] = rgba(STEEL[5])
+            elif ch == "a":
+                px[x, y] = rgba(AMBER[3])
+    return img
+
+
+def planter_front(on):
+    """Seed rows over soil, with a sprout; the seed chute glows when planting."""
+    img = casing()
+    px = img.load()
+    window(img, 3, 4, 12, 11)
+    for y in range(4, 12):
+        for x in range(3, 13):
+            px[x, y] = rgba("#4a3020" if y >= 9 else "#16181c")
+    for x in range(3, 13):
+        px[x, 9] = rgba("#6a4630")
+    for x in (5, 8, 11):
+        px[x, 8] = rgba(LEAF[5])
+        px[x, 7] = rgba(LEAF[4] if on else LEAF[2])
+    for x in range(4, 12):
+        px[x, 4] = rgba(STEEL[4])
+    px[8, 5] = rgba(COPPER[4] if on else STEEL[2])
+    return img
+
+
+def harvester_front(on):
+    """A cutter bar with blades over ripe wheat."""
+    img = casing()
+    px = img.load()
+    window(img, 3, 4, 12, 11)
+    for y in range(4, 12):
+        for x in range(3, 13):
+            px[x, y] = rgba("#16181c")
+    for x in range(3, 13):
+        top = 7 if x % 2 else 8
+        for y in range(top, 12):
+            px[x, y] = rgba("#d8b04a" if y == top else "#b08a30")
+    for x in range(3, 13):                                  # cutter bar
+        px[x, 5] = rgba(STEEL[5])
+        if (x + (1 if on else 0)) % 2:
+            px[x, 6] = rgba(STEEL[6])
+    return img
+
+
+def tree_farm_front(on):
+    """A small tree in a window beside a saw arm."""
+    img = casing2()
+    px = img.load()
+    window(img, 3, 3, 12, 12)
+    for y in range(3, 13):
+        for x in range(3, 13):
+            px[x, y] = rgba("#16181c")
+    for y in range(8, 13):
+        px[7, y] = rgba(BARK[3])
+    for y in range(3, 9):
+        for x in range(4, 11):
+            if abs(x - 7) + abs(y - 5.5) < 4:
+                px[x, y] = rgba(LEAF[4] if (x + y) % 3 else LEAF[2])
+    for y in range(9, 12):                                   # saw arm
+        px[11, y] = rgba(STEEL[5] if on else STEEL[3])
+    px[10, 10] = rgba(STEEL[6] if on else STEEL[4])
+    return img
+
+
+def bio_reactor_front(on):
+    """A glass digester full of green mash that bubbles while running."""
+    img = casing2()
+    px = img.load()
+    window(img, 4, 3, 11, 12)
+    for y in range(3, 13):
+        for x in range(4, 12):
+            px[x, y] = rgba("#16181c" if y < 5 else (GREEN[3] if on and (x * 3 + y) % 5 == 0 else GREEN[2] if on else "#1e2c1a"))
+    if on:
+        for x, y in ((6, 7), (9, 9), (7, 11)):
+            px[x, y] = rgba(GREEN[5])
+    for x in range(4, 12):
+        px[x, 5] = rgba(GREEN[4] if on else "#2a3a24")
+    return img
+
+
+def biofuel_generator_front(on):
+    """A green-flamed burner behind a round window."""
+    import math
+    img = casing2()
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            r = math.hypot(x - 7.5, y - 7.0)
+            if 3.6 < r <= 4.6:
+                px[x, y] = rgba(STEEL[1] if (x + y) < 15 else STEEL[6])
+            elif r <= 3.6:
+                if on:
+                    heat = 1 - r / 3.6 * 0.6 + (y - 7) / 12
+                    px[x, y] = rgba(GREEN[min(6, max(2, int(heat * 6.5)))])
+                else:
+                    px[x, y] = rgba(GREEN[1] if (x * 3 + y) % 5 == 0 else GREEN[0])
+    for x in range(5, 11):
+        px[x, 13] = rgba(STEEL[0])
     return img
 
 
@@ -894,6 +1154,20 @@ def main():
         "block/sawmill_front_on": sawmill_front(True),
         "item/sawdust": sawdust_item(),
         "item/basic_circuit": basic_circuit_item(),
+        "block/rubber_log": rubber_log_side(),
+        "block/rubber_log_dry": rubber_log_side("dry"),
+        "block/rubber_log_wet": rubber_log_side("wet"),
+        "block/rubber_log_top": rubber_log_top(),
+        "block/rubber_leaves": rubber_leaves(),
+        "block/rubber_sapling": rubber_sapling(),
+        "block/rubber_planks": rubber_planks(),
+        "item/latex": latex_item(),
+        "item/rubber": rubber_item(),
+        "item/tree_tap": tree_tap_item(),
+        **{f"block/{name}_front{'_on' if on else ''}": fn(on)
+           for name, fn in (("planter", planter_front), ("harvester", harvester_front), ("tree_farm", tree_farm_front),
+                            ("bio_reactor", bio_reactor_front), ("biofuel_generator", biofuel_generator_front))
+           for on in (False, True)},
         "block/ore_washer_front": ore_washer_front(False),
         "block/ore_washer_front_on": ore_washer_front(True),
         "block/fluid_mixer_front": fluid_mixer_front(False),

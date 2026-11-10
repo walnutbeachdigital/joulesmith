@@ -1,0 +1,12 @@
+{
+  "type": "joulesmith:bio_reacting",
+  "inputs": [
+    {
+      "item": "minecraft:sugar_cane"
+    }
+  ],
+  "fluid_result": {
+    "id": "joulesmith:biofuel",
+    "amount": 50
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "joulesmith:block/rubber_sapling"
+  }
+}

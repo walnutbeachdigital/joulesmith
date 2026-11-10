@@ -1,0 +1,17 @@
+{
+  "type": "joulesmith:sawing",
+  "inputs": [
+    {
+      "tag": "joulesmith:rubber_logs"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:rubber_planks",
+      "count": 6
+    },
+    {
+      "id": "joulesmith:sawdust"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RER",
+    "EPE",
+    "RER"
+  ],
+  "key": {
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "E": {
+      "tag": "c:ender_pearls"
+    },
+    "P": {
+      "tag": "c:plates/tin"
+    }
+  },
+  "result": {
+    "id": "joulesmith:range_upgrade",
+    "count": 1
+  }
+}

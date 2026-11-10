@@ -1,0 +1,12 @@
+{
+  "type": "joulesmith:bio_reacting",
+  "inputs": [
+    {
+      "item": "minecraft:pumpkin"
+    }
+  ],
+  "fluid_result": {
+    "id": "joulesmith:biofuel",
+    "amount": 100
+  }
+}

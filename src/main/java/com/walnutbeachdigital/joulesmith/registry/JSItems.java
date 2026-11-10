@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.walnutbeachdigital.joulesmith.Joulesmith;
+import com.walnutbeachdigital.joulesmith.farming.rubber.TreeTapItem;
 import com.walnutbeachdigital.joulesmith.item.UpgradeCardItem;
 import com.walnutbeachdigital.joulesmith.item.WrenchItem;
 import com.walnutbeachdigital.joulesmith.item.filter.FilterCardItem;
@@ -37,6 +38,9 @@ public final class JSItems {
     public static final Map<UpgradeCardItem.Type, DeferredItem<UpgradeCardItem>> UPGRADE = new EnumMap<>(UpgradeCardItem.Type.class);
     public static final DeferredItem<Item> SAWDUST = ITEMS.registerSimpleItem("sawdust");
     public static final DeferredItem<Item> BASIC_CIRCUIT = ITEMS.registerSimpleItem("basic_circuit");
+    public static final DeferredItem<Item> LATEX = ITEMS.registerSimpleItem("latex");
+    public static final DeferredItem<Item> RUBBER = ITEMS.registerSimpleItem("rubber");
+    public static final DeferredItem<TreeTapItem> TREE_TAP = ITEMS.register("tree_tap", () -> new TreeTapItem(new Item.Properties().durability(128)));
     public static final Map<Metal, DeferredItem<Item>> CRUSHED = new EnumMap<>(Metal.class);
     public static final DeferredItem<FilterCardItem> FILTER_CARD = register("filter_card", () -> new FilterCardItem(new Item.Properties().stacksTo(16)));
 
@@ -54,6 +58,18 @@ public final class JSItems {
         blockItem(JSBlocks.FLUID_MIXER);
         blockItem(JSBlocks.CENTRIFUGE);
         blockItem(JSBlocks.CIRCUIT_ASSEMBLER);
+        blockItem(JSBlocks.PLANTER);
+        blockItem(JSBlocks.HARVESTER);
+        blockItem(JSBlocks.TREE_FARM);
+        blockItem(JSBlocks.BIO_REACTOR);
+        blockItem(JSBlocks.BIOFUEL_GENERATOR);
+        blockItem(JSBlocks.RUBBER_LOG);
+        blockItem(JSBlocks.RUBBER_LEAVES);
+        blockItem(JSBlocks.RUBBER_SAPLING);
+        blockItem(JSBlocks.RUBBER_PLANKS);
+        TAB_ORDER.add(TREE_TAP);
+        TAB_ORDER.add(LATEX);
+        TAB_ORDER.add(RUBBER);
         for (UpgradeCardItem.Type type : UpgradeCardItem.Type.values()) {
             UPGRADE.put(type, register(type.id() + "_upgrade", () -> new UpgradeCardItem(type, new Item.Properties().stacksTo(16))));
         }

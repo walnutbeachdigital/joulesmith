@@ -40,16 +40,17 @@ public class JoulesmithJeiPlugin implements IModPlugin {
 
     /** Which block runs each kind of recipe. */
     private static Map<MachineRecipeKind, ItemLike> machines() {
-        return Map.of(
-                MachineRecipeKind.CRUSHING, JSBlocks.CRUSHER.get(),
-                MachineRecipeKind.ALLOY_SMELTING, JSBlocks.ALLOY_SMELTER.get(),
-                MachineRecipeKind.COMPRESSING, JSBlocks.COMPRESSOR.get(),
-                MachineRecipeKind.WIRE_DRAWING, JSBlocks.WIRE_DRAWER.get(),
-                MachineRecipeKind.SAWING, JSBlocks.SAWMILL.get(),
-                MachineRecipeKind.WASHING, JSBlocks.ORE_WASHER.get(),
-                MachineRecipeKind.MIXING, JSBlocks.FLUID_MIXER.get(),
-                MachineRecipeKind.CENTRIFUGING, JSBlocks.CENTRIFUGE.get(),
-                MachineRecipeKind.CIRCUIT_ASSEMBLING, JSBlocks.CIRCUIT_ASSEMBLER.get());
+        return Map.ofEntries(Map.entry(MachineRecipeKind.BIO_REACTING, JSBlocks.BIO_REACTOR.get()),
+
+                Map.entry(MachineRecipeKind.CRUSHING, JSBlocks.CRUSHER.get()),
+                Map.entry(MachineRecipeKind.ALLOY_SMELTING, JSBlocks.ALLOY_SMELTER.get()),
+                Map.entry(MachineRecipeKind.COMPRESSING, JSBlocks.COMPRESSOR.get()),
+                Map.entry(MachineRecipeKind.WIRE_DRAWING, JSBlocks.WIRE_DRAWER.get()),
+                Map.entry(MachineRecipeKind.SAWING, JSBlocks.SAWMILL.get()),
+                Map.entry(MachineRecipeKind.WASHING, JSBlocks.ORE_WASHER.get()),
+                Map.entry(MachineRecipeKind.MIXING, JSBlocks.FLUID_MIXER.get()),
+                Map.entry(MachineRecipeKind.CENTRIFUGING, JSBlocks.CENTRIFUGE.get()),
+                Map.entry(MachineRecipeKind.CIRCUIT_ASSEMBLING, JSBlocks.CIRCUIT_ASSEMBLER.get()));
     }
 
     @Override

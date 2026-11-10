@@ -1,0 +1,40 @@
+{
+  "variants": {
+    "axis=y,latex=none": {
+      "model": "joulesmith:block/rubber_log"
+    },
+    "axis=y,latex=dry": {
+      "model": "joulesmith:block/rubber_log_dry"
+    },
+    "axis=y,latex=wet": {
+      "model": "joulesmith:block/rubber_log_wet"
+    },
+    "axis=x,latex=none": {
+      "model": "joulesmith:block/rubber_log",
+      "x": 90,
+      "y": 90
+    },
+    "axis=x,latex=dry": {
+      "model": "joulesmith:block/rubber_log_dry",
+      "x": 90,
+      "y": 90
+    },
+    "axis=x,latex=wet": {
+      "model": "joulesmith:block/rubber_log_wet",
+      "x": 90,
+      "y": 90
+    },
+    "axis=z,latex=none": {
+      "model": "joulesmith:block/rubber_log",
+      "x": 90
+    },
+    "axis=z,latex=dry": {
+      "model": "joulesmith:block/rubber_log_dry",
+      "x": 90
+    },
+    "axis=z,latex=wet": {
+      "model": "joulesmith:block/rubber_log_wet",
+      "x": 90
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "joulesmith:bio_reacting",
+  "inputs": [
+    {
+      "tag": "c:crops"
+    }
+  ],
+  "fluid_result": {
+    "id": "joulesmith:biofuel",
+    "amount": 50
+  }
+}

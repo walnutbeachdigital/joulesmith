@@ -4,7 +4,11 @@ import com.walnutbeachdigital.joulesmith.Joulesmith;
 import com.walnutbeachdigital.joulesmith.energy.cable.EnergyCableBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.battery.BatteryBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.creative.CreativePowerCellBlockEntity;
+import com.walnutbeachdigital.joulesmith.farming.HarvesterBlockEntity;
+import com.walnutbeachdigital.joulesmith.farming.PlanterBlockEntity;
+import com.walnutbeachdigital.joulesmith.farming.TreeFarmBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.ProcessingMachineBlockEntity;
+import com.walnutbeachdigital.joulesmith.machine.generator.BiofuelGeneratorBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.SlotDef;
 import com.walnutbeachdigital.joulesmith.recipe.MachineRecipeKind;
 import com.walnutbeachdigital.joulesmith.machine.generator.CombustionGeneratorBlockEntity;
@@ -84,9 +88,27 @@ public final class JSBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> CIRCUIT_ASSEMBLER =
             processing("circuit_assembler", JSBlocks.CIRCUIT_ASSEMBLER, ProcessingMachineBlockEntity.ASSEMBLER, MachineRecipeKind.CIRCUIT_ASSEMBLING);
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> BIO_REACTOR =
+            processing("bio_reactor", JSBlocks.BIO_REACTOR, ProcessingMachineBlockEntity.MIXER, MachineRecipeKind.BIO_REACTING, -1, 116);
+
+    // farming
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PlanterBlockEntity>> PLANTER =
+            BLOCK_ENTITIES.register("planter", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new PlanterBlockEntity(JSBlockEntities.PLANTER.get(), pos, state), JSBlocks.PLANTER.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HarvesterBlockEntity>> HARVESTER =
+            BLOCK_ENTITIES.register("harvester", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new HarvesterBlockEntity(JSBlockEntities.HARVESTER.get(), pos, state), JSBlocks.HARVESTER.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TreeFarmBlockEntity>> TREE_FARM =
+            BLOCK_ENTITIES.register("tree_farm", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new TreeFarmBlockEntity(JSBlockEntities.TREE_FARM.get(), pos, state), JSBlocks.TREE_FARM.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BiofuelGeneratorBlockEntity>> BIOFUEL_GENERATOR =
+            BLOCK_ENTITIES.register("biofuel_generator", () -> BlockEntityType.Builder
+                    .of(BiofuelGeneratorBlockEntity::new, JSBlocks.BIOFUEL_GENERATOR.get()).build(null));
+
     /** Every recipe machine's type, for registering their capabilities together. */
     public static List<DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>>> processingMachines() {
-        return List.of(CRUSHER, ALLOY_SMELTER, COMPRESSOR, WIRE_DRAWER, SAWMILL, ORE_WASHER, FLUID_MIXER, CENTRIFUGE, CIRCUIT_ASSEMBLER);
+        return List.of(CRUSHER, ALLOY_SMELTER, COMPRESSOR, WIRE_DRAWER, SAWMILL, ORE_WASHER, FLUID_MIXER, CENTRIFUGE,
+                CIRCUIT_ASSEMBLER, BIO_REACTOR);
     }
 
     /** A recipe machine's block entity type: its block, its slot layout and the recipes it runs. */

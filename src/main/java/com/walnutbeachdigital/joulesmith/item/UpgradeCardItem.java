@@ -19,7 +19,9 @@ public class UpgradeCardItem extends Item {
         /** Each card: +10% chance on byproducts and a 10% chance of one extra main output. */
         BONUS,
         /** Pushes finished items into blocks touching the machine's output faces. */
-        EJECT;
+        EJECT,
+        /** Farm machines: each card widens the area by two blocks each way (5x5, 9x9, 13x13). */
+        RANGE;
 
         public String id() {
             return name().toLowerCase(Locale.ROOT);

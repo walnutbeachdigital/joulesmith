@@ -1,0 +1,12 @@
+{
+  "type": "joulesmith:bio_reacting",
+  "inputs": [
+    {
+      "tag": "minecraft:saplings"
+    }
+  ],
+  "fluid_result": {
+    "id": "joulesmith:biofuel",
+    "amount": 50
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "stage=0": {
+      "model": "joulesmith:block/rubber_sapling"
+    },
+    "stage=1": {
+      "model": "joulesmith:block/rubber_sapling"
+    }
+  }
+}

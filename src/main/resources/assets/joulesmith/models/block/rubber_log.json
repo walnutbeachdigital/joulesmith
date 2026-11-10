@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "side": "joulesmith:block/rubber_log",
+    "end": "joulesmith:block/rubber_log_top"
+  }
+}

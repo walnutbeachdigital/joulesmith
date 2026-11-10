@@ -1,0 +1,13 @@
+{
+  "type": "joulesmith:bio_reacting",
+  "inputs": [
+    {
+      "item": "minecraft:melon_slice",
+      "count": 2
+    }
+  ],
+  "fluid_result": {
+    "id": "joulesmith:biofuel",
+    "amount": 50
+  }
+}
