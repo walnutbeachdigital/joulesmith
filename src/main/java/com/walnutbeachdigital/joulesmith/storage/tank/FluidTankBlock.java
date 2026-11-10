@@ -23,10 +23,20 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 
 /** The Fluid Tank block. Use a bucket on it to fill or empty it; use an empty hand to see what it holds. */
 public class FluidTankBlock extends BaseEntityBlock {
-    public static final MapCodec<FluidTankBlock> CODEC = simpleCodec(FluidTankBlock::new);
+    public static final MapCodec<FluidTankBlock> CODEC = com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec(i -> i.group(
+            com.mojang.serialization.Codec.INT.fieldOf("capacity").forGetter(FluidTankBlock::capacity),
+            propertiesCodec()).apply(i, FluidTankBlock::new));
 
-    public FluidTankBlock(Properties properties) {
+    private final int capacity;
+
+    public FluidTankBlock(int capacity, Properties properties) {
         super(properties);
+        this.capacity = capacity;
+    }
+
+    /** mB this tank holds: 16,000, 64,000 or 256,000 by tier. */
+    public int capacity() {
+        return capacity;
     }
 
     @Override

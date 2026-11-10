@@ -126,7 +126,8 @@ public final class JSBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidTankBlockEntity>> FLUID_TANK =
             BLOCK_ENTITIES.register("fluid_tank", () -> BlockEntityType.Builder
-                    .of(FluidTankBlockEntity::new, JSBlocks.FLUID_TANK.get()).build(null));
+                    .of(FluidTankBlockEntity::new, JSBlocks.FLUID_TANK.get(), JSBlocks.REINFORCED_FLUID_TANK.get(),
+                            JSBlocks.ADVANCED_FLUID_TANK.get()).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PumpBlockEntity>> PUMP =
             BLOCK_ENTITIES.register("pump", () -> BlockEntityType.Builder
@@ -168,10 +169,10 @@ public final class JSBlockEntities {
     // storage
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrateBlockEntity>> CRATE =
             BLOCK_ENTITIES.register("crate", () -> BlockEntityType.Builder
-                    .of(CrateBlockEntity::new, JSBlocks.BASIC_CRATE.get(), JSBlocks.REINFORCED_CRATE.get()).build(null));
+                    .of(CrateBlockEntity::new, JSBlocks.BASIC_CRATE.get(), JSBlocks.REINFORCED_CRATE.get(), JSBlocks.ADVANCED_CRATE.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BinBlockEntity>> BULK_BIN =
             BLOCK_ENTITIES.register("bulk_bin", () -> BlockEntityType.Builder
-                    .of(BinBlockEntity::new, JSBlocks.BASIC_BULK_BIN.get(), JSBlocks.REINFORCED_BULK_BIN.get()).build(null));
+                    .of(BinBlockEntity::new, JSBlocks.BASIC_BULK_BIN.get(), JSBlocks.REINFORCED_BULK_BIN.get(), JSBlocks.ADVANCED_BULK_BIN.get()).build(null));
 
     /** Every recipe machine's type, for registering their capabilities together. */
     public static List<DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>>> processingMachines() {

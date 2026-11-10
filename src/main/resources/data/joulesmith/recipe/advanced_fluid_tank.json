@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PGP",
+    "GTG",
+    "PGP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/electrum"
+    },
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "T": {
+      "item": "joulesmith:reinforced_fluid_tank"
+    }
+  },
+  "result": {
+    "id": "joulesmith:advanced_fluid_tank",
+    "count": 1
+  }
+}

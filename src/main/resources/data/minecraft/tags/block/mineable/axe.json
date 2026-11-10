@@ -5,7 +5,9 @@
     "joulesmith:rubber_planks",
     "joulesmith:basic_crate",
     "joulesmith:reinforced_crate",
+    "joulesmith:advanced_crate",
     "joulesmith:basic_bulk_bin",
-    "joulesmith:reinforced_bulk_bin"
+    "joulesmith:reinforced_bulk_bin",
+    "joulesmith:advanced_bulk_bin"
   ]
 }

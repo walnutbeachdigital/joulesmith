@@ -73,7 +73,13 @@ public final class JSGear {
     /** Every item that holds power, for the energy capability. */
     public static final List<DeferredItem<? extends Item>> POWERED = new ArrayList<>();
 
-    public static final DeferredItem<EnergyCellItem> ENERGY_CELL = powered("energy_cell", () -> new EnergyCellItem(new Item.Properties()));
+    public static final DeferredItem<EnergyCellItem> BASIC_ENERGY_CELL = powered("basic_energy_cell",
+            () -> new EnergyCellItem(100_000, 100, new Item.Properties()));
+    public static final DeferredItem<EnergyCellItem> REINFORCED_ENERGY_CELL = powered("reinforced_energy_cell",
+            () -> new EnergyCellItem(400_000, 250, new Item.Properties()));
+    /** The Advanced Energy Cell (kept as "energy_cell" so existing worlds keep theirs). */
+    public static final DeferredItem<EnergyCellItem> ENERGY_CELL = powered("energy_cell",
+            () -> new EnergyCellItem(1_000_000, 500, new Item.Properties()));
     public static final DeferredItem<PowerDrillItem> POWER_DRILL = powered("power_drill", () -> new PowerDrillItem(new Item.Properties()
             .attributes(DiggerItem.createAttributes(Tiers.DIAMOND, 1.0f, -2.8f))));
     public static final DeferredItem<ChainsawItem> CHAINSAW = powered("chainsaw", () -> new ChainsawItem(new Item.Properties()

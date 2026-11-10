@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P P",
+    " C ",
+    "P P"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "joulesmith:basic_circuit"
+    }
+  },
+  "result": {
+    "id": "joulesmith:reinforced_upgrade_kit",
+    "count": 4
+  }
+}

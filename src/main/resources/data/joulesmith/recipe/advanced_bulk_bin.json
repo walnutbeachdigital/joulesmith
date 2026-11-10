@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "EPE",
+    "PBP",
+    "EPE"
+  ],
+  "key": {
+    "E": {
+      "tag": "c:ingots/electrum"
+    },
+    "P": {
+      "tag": "c:plates/electrum"
+    },
+    "B": {
+      "item": "joulesmith:reinforced_bulk_bin"
+    }
+  },
+  "result": {
+    "id": "joulesmith:advanced_bulk_bin",
+    "count": 1
+  }
+}

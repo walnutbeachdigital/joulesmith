@@ -15,13 +15,15 @@ import net.minecraft.world.entity.player.Inventory;
  */
 public class CrateScreen extends AbstractContainerScreen<CrateMenu> {
     private static final ResourceLocation TEXTURE = Joulesmith.id("textures/gui/crate.png");
+    private static final ResourceLocation WIDE = Joulesmith.id("textures/gui/crate_wide.png");
     private static final int TEX_W = 256, TEX_H = 512, INVENTORY_V = 180, INVENTORY_H = 96;
 
     public CrateScreen(CrateMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
-        imageWidth = 176;
-        imageHeight = 17 + menu.rows() * 18 + INVENTORY_H + 1;
+        imageWidth = 16 + CrateMenu.columns(menu.rows()) * 18;
+        imageHeight = 17 + CrateMenu.shownRows(menu.rows()) * 18 + INVENTORY_H + 1;
         inventoryLabelY = CrateMenu.inventoryY(menu.rows()) - 11;
+        inventoryLabelX = CrateMenu.inventoryX(menu.rows());
     }
 
     @Override
@@ -32,8 +34,9 @@ public class CrateScreen extends AbstractContainerScreen<CrateMenu> {
 
     @Override
     protected void renderBg(GuiGraphics g, float partialTick, int mouseX, int mouseY) {
-        int top = 17 + menu.rows() * 18;
-        g.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, top, TEX_W, TEX_H);
-        g.blit(TEXTURE, leftPos, topPos + top, 0, INVENTORY_V, imageWidth, INVENTORY_H + 1, TEX_W, TEX_H);
+        int top = 17 + CrateMenu.shownRows(menu.rows()) * 18;
+        ResourceLocation texture = CrateMenu.columns(menu.rows()) > 9 ? WIDE : TEXTURE;
+        g.blit(texture, leftPos, topPos, 0, 0, imageWidth, top, TEX_W, TEX_H);
+        g.blit(texture, leftPos, topPos + top, 0, INVENTORY_V, imageWidth, INVENTORY_H + 1, TEX_W, TEX_H);
     }
 }

@@ -22,7 +22,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 /**
- * A tier 1 Fluid Tank holding 16,000 mB. Tanks stacked on top of each other act as one: fluid fills the
+ * A Fluid Tank: 16,000 mB, or 64,000 / 256,000 for the Reinforced and Advanced tanks. Tanks stacked on top of each other act as one: fluid fills the
  * bottom tank first and drains from the top. Keeps its fluid when broken.
  */
 public class FluidTankBlockEntity extends BlockEntity {
@@ -40,6 +40,11 @@ public class FluidTankBlockEntity extends BlockEntity {
 
     public FluidTankBlockEntity(BlockPos pos, BlockState state) {
         super(JSBlockEntities.FLUID_TANK.get(), pos, state);
+        tank.setCapacity(capacity(state));
+    }
+
+    public static int capacity(BlockState state) {
+        return state.getBlock() instanceof FluidTankBlock block ? block.capacity() : CAPACITY;
     }
 
     public FluidTank tank() {
@@ -76,7 +81,9 @@ public class FluidTankBlockEntity extends BlockEntity {
     }
 
     public int columnCapacity() {
-        return column().size() * CAPACITY;
+        int total = 0;
+        for (FluidTankBlockEntity t : column()) total += t.tank.getCapacity();
+        return total;
     }
 
     /** What pipes, pumps and buckets see: the whole column as one tank. */

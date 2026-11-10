@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P P",
+    " C ",
+    "P P"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/electrum"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "joulesmith:advanced_upgrade_kit",
+    "count": 4
+  }
+}

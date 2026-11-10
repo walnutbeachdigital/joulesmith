@@ -15,16 +15,18 @@ import net.minecraft.world.level.Level;
 
 /**
  * A portable battery. Carried anywhere in your inventory it tops up your other powered gear, up to
- * {@link #RATE} FE per tick; use it to switch that off and on. Also part of every powered tool's recipe.
+ * 100, 250 or 500 FE per tick by tier; use it to switch that off and on. Also part of every powered tool's recipe.
  */
 public class EnergyCellItem extends Item implements PoweredItem {
-    public static final int RATE = 500;
+    private final int capacity, rate;
 
-    public EnergyCellItem(Properties properties) {
+    public EnergyCellItem(int capacity, int rate, Properties properties) {
         super(properties.stacksTo(1));
+        this.capacity = capacity;
+        this.rate = rate;
     }
 
-    @Override public int capacity() { return 1_000_000; }
+    @Override public int capacity() { return capacity; }
     @Override public int transferRate() { return 2000; }
 
     private static boolean off(ItemStack stack) {
@@ -47,7 +49,7 @@ public class EnergyCellItem extends Item implements PoweredItem {
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
         if (level.isClientSide || !(entity instanceof Player player) || off(stack) || level.getGameTime() % 4 != 0) return;
-        int budget = Math.min(RATE * 4, PoweredItem.energy(stack));
+        int budget = Math.min(rate * 4, PoweredItem.energy(stack));
         if (budget <= 0) return;
         int given = PoweredItem.chargeInventory(player, budget, false, stack);
         if (given > 0) PoweredItem.setEnergy(stack, PoweredItem.energy(stack) - given);

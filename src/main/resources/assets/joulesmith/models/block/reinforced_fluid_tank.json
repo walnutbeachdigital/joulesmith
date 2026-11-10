@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "side": "joulesmith:block/reinforced_fluid_tank_side",
+    "end": "joulesmith:block/reinforced_fluid_tank_top"
+  }
+}

@@ -28,18 +28,33 @@ public class CrateMenu extends AbstractContainerMenu {
         this.pos = pos;
         this.rows = rows;
         IItemHandler handler = items != null ? items : new ItemStackHandler(rows * 9);
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < 9; c++) addSlot(new SlotItemHandler(handler, c + r * 9, 8 + c * 18, 18 + r * 18));
+        int cols = columns(rows), shown = rows * 9 / cols, inv = inventoryX(rows);
+        for (int r = 0; r < shown; r++) {
+            for (int c = 0; c < cols; c++) addSlot(new SlotItemHandler(handler, c + r * cols, 8 + c * 18, 18 + r * 18));
         }
         int invY = inventoryY(rows);
         for (int r = 0; r < 3; r++) {
-            for (int c = 0; c < 9; c++) addSlot(new Slot(inventory, c + r * 9 + 9, 8 + c * 18, invY + r * 18));
+            for (int c = 0; c < 9; c++) addSlot(new Slot(inventory, c + r * 9 + 9, inv + c * 18, invY + r * 18));
         }
-        for (int c = 0; c < 9; c++) addSlot(new Slot(inventory, c, 8 + c * 18, invY + 58));
+        for (int c = 0; c < 9; c++) addSlot(new Slot(inventory, c, inv + c * 18, invY + 58));
+    }
+
+    /** Crates bigger than nine rows are shown twelve slots wide, so the screen stays short. */
+    public static int columns(int rows) {
+        return rows > 9 ? 12 : 9;
+    }
+
+    /** How many rows of slots the screen shows. */
+    public static int shownRows(int rows) {
+        return rows * 9 / columns(rows);
+    }
+
+    public static int inventoryX(int rows) {
+        return 8 + (columns(rows) - 9) * 9;
     }
 
     public static int inventoryY(int rows) {
-        return 18 + rows * 18 + 14;
+        return 18 + shownRows(rows) * 18 + 14;
     }
 
     public int rows() {

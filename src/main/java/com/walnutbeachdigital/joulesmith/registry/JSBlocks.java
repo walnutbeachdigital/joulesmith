@@ -137,6 +137,10 @@ public final class JSBlocks {
             () -> new BinBlock(4_096, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).strength(2.5f)));
     public static final DeferredBlock<BinBlock> REINFORCED_BULK_BIN = BLOCKS.register("reinforced_bulk_bin",
             () -> new BinBlock(16_384, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).strength(3.5f).sound(SoundType.METAL)));
+    public static final DeferredBlock<CrateBlock> ADVANCED_CRATE = BLOCKS.register("advanced_crate",
+            () -> new CrateBlock(12, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).strength(4.0f).sound(SoundType.METAL)));
+    public static final DeferredBlock<BinBlock> ADVANCED_BULK_BIN = BLOCKS.register("advanced_bulk_bin",
+            () -> new BinBlock(65_536, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).strength(4.0f).sound(SoundType.METAL)));
 
     /** A recipe machine block; its block entity type knows the slots and recipes. */
     private static DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> processing(
@@ -226,10 +230,17 @@ public final class JSBlocks {
     public static final DeferredBlock<FluidPipeBlock> ADVANCED_FLUID_PIPE = BLOCKS.register("advanced_fluid_pipe",
             () -> new FluidPipeBlock(3, pipe(MapColor.METAL)));
 
-    public static final DeferredBlock<FluidTankBlock> FLUID_TANK = BLOCKS.register("fluid_tank",
-            () -> new FluidTankBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(2.0f, 6.0f)
-                    .requiresCorrectToolForDrops().sound(SoundType.GLASS).noOcclusion()
-                    .isViewBlocking((s, l, p) -> false).isSuffocating((s, l, p) -> false)));
+    private static BlockBehaviour.Properties tank() {
+        return BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(2.0f, 6.0f)
+                .requiresCorrectToolForDrops().sound(SoundType.GLASS).noOcclusion()
+                .isViewBlocking((s, l, p) -> false).isSuffocating((s, l, p) -> false);
+    }
+
+    public static final DeferredBlock<FluidTankBlock> FLUID_TANK = BLOCKS.register("fluid_tank", () -> new FluidTankBlock(16_000, tank()));
+    public static final DeferredBlock<FluidTankBlock> REINFORCED_FLUID_TANK = BLOCKS.register("reinforced_fluid_tank",
+            () -> new FluidTankBlock(64_000, tank()));
+    public static final DeferredBlock<FluidTankBlock> ADVANCED_FLUID_TANK = BLOCKS.register("advanced_fluid_tank",
+            () -> new FluidTankBlock(256_000, tank()));
 
     public static final DeferredBlock<SimpleMachineBlock<PumpBlockEntity>> PUMP = BLOCKS.register("pump",
             () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.PUMP::get, PumpBlockEntity::new));

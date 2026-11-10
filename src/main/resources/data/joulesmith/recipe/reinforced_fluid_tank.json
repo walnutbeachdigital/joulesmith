@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PGP",
+    "GTG",
+    "PGP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/invar"
+    },
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "T": {
+      "item": "joulesmith:fluid_tank"
+    }
+  },
+  "result": {
+    "id": "joulesmith:reinforced_fluid_tank",
+    "count": 1
+  }
+}

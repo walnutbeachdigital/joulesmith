@@ -2,22 +2,22 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "LWL",
-    "RBR",
-    "LWL"
+    "PCP",
+    "WBW",
+    "PCP"
   ],
   "key": {
-    "L": {
-      "tag": "c:plates/lead"
+    "P": {
+      "tag": "c:plates/electrum"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
     },
     "W": {
       "tag": "c:wires/gold"
     },
-    "R": {
-      "tag": "c:dusts/redstone"
-    },
     "B": {
-      "item": "joulesmith:basic_battery"
+      "item": "joulesmith:reinforced_energy_cell"
     }
   },
   "result": {

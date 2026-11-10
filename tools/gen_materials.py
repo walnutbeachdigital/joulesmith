@@ -446,13 +446,14 @@ for pid in PIPES:
     tags[("minecraft", "block", "mineable/pickaxe")].append(f"{MOD}:{pid}")
 
 # ---- fluid tank: frame and glass (cut out so the fluid drawn inside shows); keeps its fluid when broken
-write(os.path.join(ASSETS, "blockstates", "fluid_tank.json"), {"variants": {"": {"model": f"{MOD}:block/fluid_tank"}}})
-model("fluid_tank", {"parent": "minecraft:block/cube_column", "render_type": "minecraft:cutout",
-      "textures": {"side": f"{MOD}:block/fluid_tank_side", "end": f"{MOD}:block/fluid_tank_top"}})
-write(os.path.join(ASSETS, "models", "item", "fluid_tank.json"), {"parent": f"{MOD}:block/fluid_tank"})
-simple_loot("fluid_tank", [{"function": "minecraft:copy_components", "source": "block_entity",
-                            "include": [f"{MOD}:fluid"]}])
-tags[("minecraft", "block", "mineable/pickaxe")].append(f"{MOD}:fluid_tank")
+for tid in ("fluid_tank", "reinforced_fluid_tank", "advanced_fluid_tank"):
+    write(os.path.join(ASSETS, "blockstates", f"{tid}.json"), {"variants": {"": {"model": f"{MOD}:block/{tid}"}}})
+    model(tid, {"parent": "minecraft:block/cube_column", "render_type": "minecraft:cutout",
+          "textures": {"side": f"{MOD}:block/{tid}_side", "end": f"{MOD}:block/{tid}_top"}})
+    write(os.path.join(ASSETS, "models", "item", f"{tid}.json"), {"parent": f"{MOD}:block/{tid}"})
+    simple_loot(tid, [{"function": "minecraft:copy_components", "source": "block_entity",
+                       "include": [f"{MOD}:fluid"]}])
+    tags[("minecraft", "block", "mineable/pickaxe")].append(f"{MOD}:{tid}")
 
 # ---- plain items
 for iid in ("wrench", "filter_card"):
@@ -816,14 +817,14 @@ for iid, name, item_tag, pattern, key in (
     lang[f"item.{MOD}.{iid}"] = name
 
 # ---- storage: Crates and Bulk Bins keep what they hold when broken
-STORAGE = {"basic_crate": "Crate", "reinforced_crate": "Reinforced Crate",
-           "basic_bulk_bin": "Bulk Bin", "reinforced_bulk_bin": "Reinforced Bulk Bin"}
-for bid in ("basic_crate", "reinforced_crate"):
+STORAGE = {"basic_crate": "Crate", "reinforced_crate": "Reinforced Crate", "advanced_crate": "Advanced Crate",
+           "basic_bulk_bin": "Bulk Bin", "reinforced_bulk_bin": "Reinforced Bulk Bin", "advanced_bulk_bin": "Advanced Bulk Bin"}
+for bid in ("basic_crate", "reinforced_crate", "advanced_crate"):
     write(os.path.join(ASSETS, "blockstates", f"{bid}.json"), {"variants": {"": {"model": f"{MOD}:block/{bid}"}}})
     model(bid, {"parent": "minecraft:block/cube_bottom_top", "textures": {
         "side": f"{MOD}:block/{bid}_side", "top": f"{MOD}:block/{bid}_top", "bottom": f"{MOD}:block/{bid}_top"}})
     simple_loot(bid, [{"function": "minecraft:copy_components", "source": "block_entity", "include": ["minecraft:container"]}])
-for bid in ("basic_bulk_bin", "reinforced_bulk_bin"):
+for bid in ("basic_bulk_bin", "reinforced_bulk_bin", "advanced_bulk_bin"):
     write(os.path.join(ASSETS, "blockstates", f"{bid}.json"), {"variants": {
         f"facing={f}": dict({"model": f"{MOD}:block/{bid}"}, **({"y": r} if r else {})) for f, r in ROTATION.items()}})
     model(bid, {"parent": "minecraft:block/orientable", "textures": {
@@ -837,6 +838,8 @@ shaped("basic_crate", ["TPT", "PCP", "TPT"], {"T": "#c:ingots/tin", "P": "#minec
 shaped("reinforced_crate", ["SPS", "PCP", "SPS"], {"S": "#c:ingots/steel", "P": "#c:plates/steel", "C": "#c:chests/wooden"})
 shaped("basic_bulk_bin", ["TPT", "PBP", "TPT"], {"T": "#c:ingots/tin", "P": "#minecraft:planks", "B": "#c:barrels/wooden"})
 shaped("reinforced_bulk_bin", ["SPS", "PBP", "SPS"], {"S": "#c:ingots/steel", "P": "#c:plates/steel", "B": "#c:barrels/wooden"})
+shaped("advanced_crate", ["EPE", "PCP", "EPE"], {"E": "#c:ingots/electrum", "P": "#c:plates/electrum", "C": f"{MOD}:reinforced_crate"})
+shaped("advanced_bulk_bin", ["EPE", "PBP", "EPE"], {"E": "#c:ingots/electrum", "P": "#c:plates/electrum", "B": f"{MOD}:reinforced_bulk_bin"})
 for (ns, reg, path), values in tags.items():
     write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
 
@@ -930,6 +933,25 @@ lang.update({
 for (ns, reg, path), values in tags.items():
     write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
 
+# ---- tiers of tanks and energy cells, and upgrade kits
+shaped("reinforced_fluid_tank", ["PGP", "GTG", "PGP"], {"P": "#c:plates/invar", "G": "#c:glass_blocks", "T": f"{MOD}:fluid_tank"})
+shaped("advanced_fluid_tank", ["PGP", "GTG", "PGP"], {"P": "#c:plates/electrum", "G": "#c:glass_blocks", "T": f"{MOD}:reinforced_fluid_tank"})
+lang.update({f"block.{MOD}.reinforced_fluid_tank": "Reinforced Fluid Tank", f"block.{MOD}.advanced_fluid_tank": "Advanced Fluid Tank"})
+for iid, name in (("basic_energy_cell", "Basic Energy Cell"), ("reinforced_energy_cell", "Reinforced Energy Cell"),
+                  ("reinforced_upgrade_kit", "Reinforced Upgrade Kit"), ("advanced_upgrade_kit", "Advanced Upgrade Kit")):
+    write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
+          {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{iid}"}})
+    lang[f"item.{MOD}.{iid}"] = name
+shaped("basic_energy_cell", ["LWL", "WRW", "LWL"], {"L": "#c:plates/lead", "W": "#c:wires/copper", "R": "#c:storage_blocks/redstone"})
+shaped("reinforced_energy_cell", ["PCP", "WBW", "PCP"], {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit",
+                                                        "W": "#c:wires/gold", "B": f"{MOD}:basic_energy_cell"})
+shaped("reinforced_upgrade_kit", ["P P", " C ", "P P"], {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit"}, count=4)
+shaped("advanced_upgrade_kit", ["P P", " C ", "P P"], {"P": "#c:plates/electrum", "C": f"{MOD}:advanced_circuit"}, count=4)
+lang.update({
+    "tooltip.joulesmith.upgrade_kit.2": "Use on a tier 1 cable, duct, pipe, battery, crate, bin or tank to make it Reinforced, keeping what's in it",
+    "tooltip.joulesmith.upgrade_kit.3": "Use on a Reinforced cable, duct, pipe, battery, crate, bin or tank (or a Pump) to make it Advanced",
+})
+
 # ---- tier 3 ore processing: Chemical Dissolver (ore + acid -> 1000 mB slurry) and Crystallizer
 # (250 mB slurry -> one crystal); the Crusher turns each crystal into a dust: four per raw ore.
 for m, (src, dust, plate, gear, wire) in METALS.items():
@@ -969,7 +991,7 @@ lang.update({
 
 # ---- powered gear (tier 3): tools, weapon and Exo-Suit that run on FE, the Energy Cell, modules,
 # the Charging Pad and the Modification Table
-POWERED = {"energy_cell": "Energy Cell", "power_drill": "Power Drill", "chainsaw": "Chainsaw", "energy_sword": "Energy Sword"}
+POWERED = {"energy_cell": "Advanced Energy Cell", "power_drill": "Power Drill", "chainsaw": "Chainsaw", "energy_sword": "Energy Sword"}
 for iid, name in POWERED.items():
     write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
           {"parent": "minecraft:item/generated" if iid == "energy_cell" else "minecraft:item/handheld",
@@ -987,8 +1009,8 @@ for piece, (name, item_tag, pattern) in EXO.items():
     lang[f"item.{MOD}.{iid}"] = name
     gear_generated.append(f"item/{iid}")
 gear_generated += ["models/armor/exo_layer_1", "models/armor/exo_layer_2"]
-shaped("energy_cell", ["LWL", "RBR", "LWL"], {"L": "#c:plates/lead", "W": "#c:wires/gold",
-                                              "R": "#c:dusts/redstone", "B": f"{MOD}:basic_battery"})
+shaped("energy_cell", ["PCP", "WBW", "PCP"], {"P": "#c:plates/electrum", "C": f"{MOD}:advanced_circuit",
+                                              "W": "#c:wires/gold", "B": f"{MOD}:reinforced_energy_cell"})
 shaped("power_drill", [" D ", "SCS", "PEP"], {"D": "#c:gems/diamond", "S": "#c:plates/steel", "C": f"{MOD}:advanced_circuit",
                                               "P": "#c:plates/invar", "E": f"{MOD}:energy_cell"})
 shaped("chainsaw", ["SAS", "SCS", "PEP"], {"A": "minecraft:iron_axe", "S": "#c:plates/steel", "C": f"{MOD}:advanced_circuit",

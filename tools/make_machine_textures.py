@@ -310,8 +310,9 @@ def pipe_attachment():
     return img
 
 
-def tank_side():
+def tank_side(trim=None):
     """A glass panel in a frame: tier-coloured corners, clear glass with streaks (cut out so the fluid shows)."""
+    trim = trim or COPPER
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     px = img.load()
     for y in range(16):
@@ -330,15 +331,15 @@ def tank_side():
             if c:
                 px[x, y] = rgba(c)
     for cx, cy in ((1, 1), (14, 1), (1, 14), (14, 14)):
-        px[cx, cy] = rgba(COPPER[4])
+        px[cx, cy] = rgba(trim[4])
     for x in range(5, 11):
-        px[x, 0] = rgba(COPPER[3])
-        px[x, 15] = rgba(COPPER[1])
+        px[x, 0] = rgba(trim[3])
+        px[x, 15] = rgba(trim[1])
     return img
 
 
-def tank_top():
-    img = tank_side()
+def tank_top(trim=None):
+    img = tank_side(trim)
     px = img.load()
     for x in range(4, 12):                 # a filler cap across the top
         for y in (7, 8):
@@ -1186,12 +1187,12 @@ def bin_front(trim):
     return img
 
 
-def crate_gui():
+def crate_gui(cols=9):
     """The Crate screen sheet (256x512): a panel top with nine rows of slots at the top, and the
     player-inventory part of the panel starting at v=180, to draw under however many rows a crate has."""
     img = Image.new("RGBA", (256, 512), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    W = 176
+    W = 16 + cols * 18
     BG, EDGE, DARK = (198, 198, 198, 255), (0, 0, 0, 255), (85, 85, 85, 255)
 
     def panel(y0, y1, top, bottom):
@@ -1219,14 +1220,14 @@ def crate_gui():
 
     panel(0, 179, True, False)
     for r in range(9):
-        for c in range(9):
+        for c in range(cols):
             gui_slot(d, 7 + c * 18, 17 + r * 18)
     panel(180, 276, False, True)
     for r in range(3):
         for c in range(9):
-            gui_slot(d, 7 + c * 18, 180 + 14 + r * 18)
+            gui_slot(d, 7 + (cols - 9) * 9 + c * 18, 180 + 14 + r * 18)
     for c in range(9):
-        gui_slot(d, 7 + c * 18, 180 + 72)
+        gui_slot(d, 7 + (cols - 9) * 9 + c * 18, 180 + 72)
     return img
 
 
@@ -1802,19 +1803,20 @@ def energy_sword_item():
     return img
 
 
-def energy_cell_item():
+def energy_cell_item(caps=None):
     """An upright power cell: gold caps, a dark body and a glowing charge window."""
+    caps = caps or ELECTRUM8
     body = _mask({y: (5, 10) for y in range(3, 14)})
     cap = _mask({1: (7, 8), 2: (6, 9)})
     base = _mask({14: (5, 10)})
-    img = _parts((body, EXO8, 2, 7), (cap, ELECTRUM8, 3, 7), (base, ELECTRUM8, 1, 4))
+    img = _parts((body, EXO8, 2, 7), (cap, caps, 3, 7), (base, caps, 1, 4))
     px = img.load()
     for y in range(5, 12):
         for x in (7, 8):
             px[x, y] = rgba(ENERGY8[7 if y < 7 else 5 if y < 10 else 3] if x == 7 else ENERGY8[5 if y < 7 else 4 if y < 10 else 2])
     for x in range(5, 11):                             # gold bands
-        px[x, 3] = rgba(ELECTRUM8[6] if x < 9 else ELECTRUM8[3])
-        px[x, 13] = rgba(ELECTRUM8[4] if x < 9 else ELECTRUM8[1])
+        px[x, 3] = rgba(caps[6] if x < 9 else caps[3])
+        px[x, 13] = rgba(caps[4] if x < 9 else caps[1])
     return img
 
 
@@ -1917,6 +1919,23 @@ def modification_table_gui():
             img.putpixel((x, y), rgba(ELECTRUM8[4 if y == 42 else 1]))
     for x, y in ((90, 40), (91, 41), (90, 45), (91, 44)):
         img.putpixel((x, y), rgba(ELECTRUM8[3]))
+    return img
+
+
+COPPER8 = ["#5a2412", "#772c15", "#8a3a1c", "#b8622a", "#ce6e26", "#da7e2a", "#f0a030", "#fcbe2d"]
+
+
+def upgrade_kit_item(trim):
+    """A tier upgrade kit: a small case in the tier's trim colour with a steel handle and a glowing arrow."""
+    case = _mask({y: (2, 13) for y in range(5, 14)})
+    handle = _mask({2: (5, 10), 3: (5, 5), 4: (5, 5)})
+    handle[3][10] = handle[4][10] = True
+    img = _parts((handle, STEEL8, 3, 7), (case, trim, 2, 7))
+    px = img.load()
+    for x in range(2, 14):                             # the lid seam
+        px[x, 7] = rgba(trim[1])
+    for (x, y) in ((7, 9), (8, 9), (6, 10), (7, 10), (8, 10), (9, 10), (7, 11), (8, 11), (7, 12), (8, 12)):
+        px[x, y] = rgba(ENERGY8[6] if y < 11 else ENERGY8[4])
     return img
 
 
@@ -2045,6 +2064,15 @@ def main():
         "block/reinforced_bulk_bin_side": bin_side(STEEL_TRIM),
         "block/reinforced_bulk_bin_front": bin_front(STEEL_TRIM),
         "gui/crate": crate_gui(),
+        "gui/crate_wide": crate_gui(12),
+        "block/advanced_crate_side": crate_side(ELECTRUM_TRIM),
+        "block/advanced_crate_top": crate_top(ELECTRUM_TRIM),
+        "block/advanced_bulk_bin_side": bin_side(ELECTRUM_TRIM),
+        "block/advanced_bulk_bin_front": bin_front(ELECTRUM_TRIM),
+        "block/reinforced_fluid_tank_side": tank_side(STEEL_TRIM),
+        "block/reinforced_fluid_tank_top": tank_top(STEEL_TRIM),
+        "block/advanced_fluid_tank_side": tank_side(ELECTRUM_TRIM),
+        "block/advanced_fluid_tank_top": tank_top(ELECTRUM_TRIM),
         **{f"block/{name}_front{'_on' if on else ''}": fn(on)
            for name, fn in (("planter", planter_front), ("harvester", harvester_front), ("tree_farm", tree_farm_front),
                             ("bio_reactor", bio_reactor_front), ("biofuel_generator", biofuel_generator_front))
@@ -2065,6 +2093,10 @@ def main():
         "item/chainsaw": chainsaw_item(),
         "item/energy_sword": energy_sword_item(),
         "item/energy_cell": energy_cell_item(),
+        "item/basic_energy_cell": energy_cell_item(COPPER8),
+        "item/reinforced_energy_cell": energy_cell_item(STEEL8),
+        "item/reinforced_upgrade_kit": upgrade_kit_item(STEEL8),
+        "item/advanced_upgrade_kit": upgrade_kit_item(ELECTRUM8),
         "item/blank_module": module_item(),
         **{f"item/{m}_module": module_item(art) for m, art in MODULE_ART.items()},
         "block/charging_pad_top": charging_pad_top(False),

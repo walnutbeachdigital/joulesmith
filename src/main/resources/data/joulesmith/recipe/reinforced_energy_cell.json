@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "WBW",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "joulesmith:basic_circuit"
+    },
+    "W": {
+      "tag": "c:wires/gold"
+    },
+    "B": {
+      "item": "joulesmith:basic_energy_cell"
+    }
+  },
+  "result": {
+    "id": "joulesmith:reinforced_energy_cell",
+    "count": 1
+  }
+}

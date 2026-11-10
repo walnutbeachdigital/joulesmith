@@ -21,6 +21,6 @@ public class FluidTankItem extends BlockItem {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         SimpleFluidContent fluid = stack.getOrDefault(JSDataComponents.FLUID.get(), SimpleFluidContent.EMPTY);
-        tooltip.add(FluidTankBlock.describe(fluid.copy(), FluidTankBlockEntity.CAPACITY).copy().withStyle(ChatFormatting.GRAY));
+        tooltip.add(FluidTankBlock.describe(fluid.copy(), getBlock() instanceof FluidTankBlock b ? b.capacity() : FluidTankBlockEntity.CAPACITY).copy().withStyle(ChatFormatting.GRAY));
     }
 }
