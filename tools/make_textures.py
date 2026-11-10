@@ -20,19 +20,19 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 TEX = os.path.join(ROOT, "src", "main", "resources", "assets", "joulesmith", "textures")
 
 # outline, dark, mid, light, highlight
-PALETTES = {
-    "iron":     ["#3b3b3f", "#77777e", "#a6a6ad", "#cfcfd5", "#f4f4f8"],
-    "copper":   ["#5a2814", "#9c4a26", "#c96c3b", "#e9925a", "#fbc39a"],
-    "gold":     ["#6b4805", "#ad7a0c", "#dfad20", "#f5d548", "#fff4a6"],
-    "tin":      ["#34445a", "#6c8199", "#9cb2c9", "#c6d7e9", "#eef6ff"],
-    "lead":     ["#1f2240", "#3d4372", "#5b6398", "#7d86bb", "#a9b1df"],
-    "silver":   ["#3b5263", "#7c9bb0", "#b0cadb", "#d6e8f4", "#ffffff"],
-    "nickel":   ["#545137", "#979165", "#c7c192", "#e2deb2", "#fbf8de"],
-    "uranium":  ["#203a17", "#3d6c28", "#5ea13a", "#8ad656", "#c8f991"],
-    "steel":    ["#25292e", "#4b525a", "#717a83", "#99a2ac", "#c7cfd8"],
-    "bronze":   ["#58320f", "#93571d", "#c8812c", "#e8a84e", "#fcd48c"],
-    "invar":    ["#3c4843", "#6b7a74", "#96a59e", "#bbc8c1", "#e4eee9"],
-    "electrum": ["#5c4a0d", "#a5871c", "#d8b836", "#f1d965", "#fff6b4"],
+PALETTES = {  # same ramps as Metal.java
+    "iron":     ["#3a3d4a", "#6e7280", "#a7abb5", "#d6d9de", "#fbfbf7"],
+    "copper":   ["#5c1f12", "#a3401f", "#dd7034", "#f6a45b", "#ffd79a"],
+    "gold":     ["#6e3d05", "#b8780b", "#eab21e", "#fbdc4f", "#fffbb5"],
+    "tin":      ["#2f3c5a", "#5b7393", "#93acc6", "#c7d9ea", "#f3fbff"],
+    "lead":     ["#1b1838", "#363a6e", "#535d96", "#7682b8", "#a9b5dd"],
+    "silver":   ["#34526a", "#6f97b2", "#a8cde0", "#d5ecf6", "#ffffff"],
+    "nickel":   ["#4f4628", "#8d8458", "#c3bb8a", "#e3dcb0", "#fdf9e0"],
+    "uranium":  ["#173416", "#2f6a22", "#4fa338", "#84d656", "#cafb92"],
+    "steel":    ["#22252e", "#474e5a", "#6e7783", "#9aa3ae", "#ccd4dc"],
+    "bronze":   ["#5a2a0c", "#9a5419", "#d18a2d", "#efb352", "#ffe39a"],
+    "invar":    ["#333f3c", "#5f6f69", "#8fa098", "#bccbc3", "#e9f3ee"],
+    "electrum": ["#5b450a", "#a88518", "#dcbd34", "#f4dd66", "#fff9be"],
 }
 
 
@@ -77,21 +77,33 @@ def noise(seed):
 
 # ---------------------------------------------------------------------- items
 def ingot():
-    """A bar seen from the front and slightly above: light top face over a shaded front face."""
+    """A chunky bar seen at three-quarters: the top face leans back to the right, a bright edge where
+    it meets the front, a mid-tone front, a darker right end and a dark outline all round."""
+    # Shape row by row (outline included): y -> (first x, last x)
+    rows = {3: (7, 12), 4: (4, 14), 5: (2, 14), 6: (1, 14), 7: (1, 14),
+            8: (1, 14), 9: (1, 14), 10: (1, 14), 11: (2, 13)}
+    top = {4: (5, 13), 5: (3, 13), 6: (2, 12)}
     lv, mask = blank(), [[False] * 16 for _ in range(16)]
-    rows = {4: (4, 11), 5: (3, 12), 6: (2, 13), 7: (1, 14), 8: (1, 14), 9: (1, 14), 10: (1, 14), 11: (2, 13)}
     for y, (x0, x1) in rows.items():
         for x in range(x0, x1 + 1):
             mask[y][x] = True
-            if y <= 6:                                   # top face
-                lv[y][x] = 4 if (y == 5 and 4 <= x <= 9) else 3
-            elif y == 7:                                 # front edge catches the light
-                lv[y][x] = 4 if x <= 6 else 3
-            else:                                        # front face
-                lv[y][x] = 2 if y <= 9 else 1
-                if y == 8 and 2 <= x <= 4:
-                    lv[y][x] = 3
+            if y in top and top[y][0] <= x <= top[y][1]:
+                lv[y][x] = 3
+            elif x >= 13:
+                lv[y][x] = 1                       # right end in shade
+            elif y == 7:
+                lv[y][x] = 3 if x <= 9 else 2      # bevel under the top edge
+            elif y == 10:
+                lv[y][x] = 1
+            else:
+                lv[y][x] = 2
+    for x in range(2, 9):
+        lv[6][x] = 4                               # bright front edge of the top face
+    for x in range(5, 9):
+        lv[4][x] = 4                               # glint near the back
+    lv[5][13] = 2
     return outline(lv, mask, all_dark=True)
+
 
 def nugget():
     """A small rounded drop."""
