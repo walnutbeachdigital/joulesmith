@@ -182,6 +182,10 @@ public final class JSBlockEntities {
                     .of(com.walnutbeachdigital.joulesmith.energy.wireless.WirelessEnergyBlockEntity::new,
                             JSBlocks.WIRELESS_TRANSMITTER.get(), JSBlocks.WIRELESS_RECEIVER.get()).build(null));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.automation.MobDuplicatorBlockEntity>> MOB_DUPLICATOR =
+            BLOCK_ENTITIES.register("mob_duplicator", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.automation.MobDuplicatorBlockEntity::new, JSBlocks.MOB_DUPLICATOR.get()).build(null));
+
     // more generators
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.machine.generator.GeothermalGeneratorBlockEntity>> GEOTHERMAL_GENERATOR =
             BLOCK_ENTITIES.register("geothermal_generator", () -> BlockEntityType.Builder

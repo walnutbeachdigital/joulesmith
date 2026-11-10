@@ -135,6 +135,10 @@ public final class JSBlocks {
     public static final DeferredBlock<com.walnutbeachdigital.joulesmith.energy.wireless.WirelessEnergyBlock> WIRELESS_RECEIVER =
             BLOCKS.register("wireless_receiver", () -> new com.walnutbeachdigital.joulesmith.energy.wireless.WirelessEnergyBlock(false, machine()));
 
+    public static final DeferredBlock<SimpleMachineBlock<com.walnutbeachdigital.joulesmith.automation.MobDuplicatorBlockEntity>> MOB_DUPLICATOR =
+            BLOCKS.register("mob_duplicator", () -> new SimpleMachineBlock<>(machine(),
+                    JSBlockEntities.MOB_DUPLICATOR::get, com.walnutbeachdigital.joulesmith.automation.MobDuplicatorBlockEntity::new));
+
     // ---- more generators
     public static final DeferredBlock<SimpleMachineBlock<com.walnutbeachdigital.joulesmith.machine.generator.GeothermalGeneratorBlockEntity>> GEOTHERMAL_GENERATOR =
             BLOCKS.register("geothermal_generator", () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 12 : 0),

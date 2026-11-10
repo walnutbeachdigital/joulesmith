@@ -2599,6 +2599,43 @@ def tier4_gear_textures():
     return {"item/omni_tool": omni_tool_item(), "item/railgun": railgun_item()}
 
 
+# ------------------------------------------------------------------ the Mob Duplicator
+PASTE = ["#3a1820", "#5e2a36", "#8a4252", "#b45e70", "#d4808e", "#ecaab4"]
+
+
+def mob_duplicator_front(on):
+    """A glass growth vat half full of pink nutrient paste; a small mob silhouette forms in it while running."""
+    img = casing4()
+    px = img.load()
+    window(img, 3, 2, 12, 13)
+    for y in range(2, 14):
+        for x in range(3, 13):
+            px[x, y] = rgba("#10141a")
+    level = 8 if on else 9
+    for y in range(level, 13):
+        for x in range(4, 12):
+            px[x, y] = rgba(PASTE[4] if y == level else PASTE[3] if x < 7 else PASTE[2])
+    if on:
+        for (x, y) in ((7, 5), (8, 5), (6, 6), (7, 6), (8, 6), (9, 6), (7, 7), (8, 7), (6, 8), (9, 8)):
+            px[x, y] = rgba("#9be6f8" if y < 7 else "#5fd0ef")
+        for (x, y) in ((5, 4), (10, 3), (4, 7)):
+            px[x, y] = rgba("#dff8ff")
+    for x in range(3, 13):
+        px[x, 13] = rgba(SIGNAL_TRIM[2])
+    return img
+
+
+def mob_imprint_item():
+    """A card with a glass window and a little mob face on it."""
+    return card_item("#3a86e8", ["........", ".######.", ".#.##.#.", ".######.", "..#..#..", "........"], SIGNAL8)
+
+
+def duplicator_textures():
+    return {"block/mob_duplicator_front": mob_duplicator_front(False),
+            "block/mob_duplicator_front_on": mob_duplicator_front(True),
+            "item/mob_imprint": mob_imprint_item()}
+
+
 def main():
     os.makedirs(os.path.join(TEX, "block"), exist_ok=True)
     os.makedirs(os.path.join(TEX, "gui"), exist_ok=True)
@@ -2750,6 +2787,7 @@ def main():
         **reactor_textures(),
         **wireless_textures(),
         **tier4_gear_textures(),
+        **duplicator_textures(),
     }
     for name, img in out.items():
         img.save(os.path.join(TEX, name + ".png"))

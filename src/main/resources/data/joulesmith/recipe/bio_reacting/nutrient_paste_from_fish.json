@@ -1,0 +1,12 @@
+{
+  "type": "joulesmith:bio_reacting",
+  "inputs": [
+    {
+      "tag": "c:foods/raw_fish"
+    }
+  ],
+  "fluid_result": {
+    "id": "joulesmith:nutrient_paste",
+    "amount": 100
+  }
+}

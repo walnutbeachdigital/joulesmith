@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PQP",
+    "EXE",
+    "PTP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/silver"
+    },
+    "Q": {
+      "item": "joulesmith:processor"
+    },
+    "E": {
+      "tag": "c:gems/emerald"
+    },
+    "X": {
+      "item": "joulesmith:elite_casing"
+    },
+    "T": {
+      "item": "joulesmith:fluid_tank"
+    }
+  },
+  "result": {
+    "id": "joulesmith:mob_duplicator",
+    "count": 1
+  }
+}

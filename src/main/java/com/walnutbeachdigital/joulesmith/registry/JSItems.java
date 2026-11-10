@@ -37,6 +37,8 @@ public final class JSItems {
     public static final Map<Metal, DeferredItem<Item>> WIRE = new EnumMap<>(Metal.class);
 
     public static final DeferredItem<WrenchItem> WRENCH = register("wrench", () -> new WrenchItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<com.walnutbeachdigital.joulesmith.automation.MobImprintItem> MOB_IMPRINT = register("mob_imprint",
+            () -> new com.walnutbeachdigital.joulesmith.automation.MobImprintItem(new Item.Properties()));
     public static final Map<UpgradeCardItem.Type, DeferredItem<UpgradeCardItem>> UPGRADE = new EnumMap<>(UpgradeCardItem.Type.class);
     public static final DeferredItem<Item> SAWDUST = ITEMS.registerSimpleItem("sawdust");
     public static final DeferredItem<Item> BASIC_CIRCUIT = ITEMS.registerSimpleItem("basic_circuit");
@@ -87,6 +89,7 @@ public final class JSItems {
         blockItem(JSBlocks.REACTOR_PORT);
         blockItem(JSBlocks.WIRELESS_TRANSMITTER);
         blockItem(JSBlocks.WIRELESS_RECEIVER);
+        blockItem(JSBlocks.MOB_DUPLICATOR);
         blockItem(JSBlocks.WIND_TURBINE);
         JSBlocks.SENSORS.values().forEach(JSItems::blockItem);
         blockItem(JSBlocks.LOGIC_CONTROLLER);

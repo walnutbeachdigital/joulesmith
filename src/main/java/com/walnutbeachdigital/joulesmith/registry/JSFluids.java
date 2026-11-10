@@ -72,6 +72,8 @@ public final class JSFluids {
     public static final Entry STEAM = register("steam", 0xC0E6ECF0, -1000, 200, 400, false);
     /** Experience from the Mob Grinder, 20 mB a point, for the Auto Enchanter or bottling. Tanks and pipes only. */
     public static final Entry LIQUID_XP = register("liquid_xp", 0xE09CE84A, 800, 800, 300, false);
+    /** Food for the Mob Duplicator, from meat and fish in the Bio Reactor. Pipes only. */
+    public static final Entry NUTRIENT_PASTE = register("nutrient_paste", 0xF0C77A86, 1300, 4000, 310, false);
 
     /** Ore slurry from the Chemical Dissolver, one per ore metal, for the Crystallizer. Tanks and pipes only. */
     public static final java.util.Map<com.walnutbeachdigital.joulesmith.material.Metal, Entry> SLURRY =

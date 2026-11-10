@@ -291,6 +291,7 @@ MACHINES = {
     "ultimate_battery": {"name": "Ultimate Battery", "front": "ultimate_battery_front"},
     "laser_engraver": {"name": "Laser Engraver", "front": "laser_engraver_front"},
     "fission_reactor": {"name": "Fission Reactor", "front": "fission_reactor_front"},
+    "mob_duplicator": {"name": "Mob Duplicator", "front": "mob_duplicator_front"},
     "boiler": {"name": "Boiler", "front": "boiler_front"},
     "block_placer": {"name": "Block Placer", "front": "block_placer_front"},
     "block_breaker": {"name": "Block Breaker", "front": "block_breaker_front"},
@@ -1758,6 +1759,36 @@ lang.update({"tooltip.joulesmith.omni_tool": "Every tool in one; sneak-right-cli
              "tooltip.joulesmith.railgun": "Hold to charge, release to fire (5,000 FE)"})
 for (ns, reg, path), values in tags.items():
     write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+
+# ---- the Mob Duplicator, the Mob Imprint and Nutrient Paste (from meat and fish in the Bio Reactor)
+PASTE = f"{MOD}:nutrient_paste"
+machine_fluid("bio_reacting", "nutrient_paste_from_meat", None, [("#c:foods/raw_meat", 1)], [], (PASTE, 100))
+machine_fluid("bio_reacting", "nutrient_paste_from_fish", None, [("#c:foods/raw_fish", 1)], [], (PASTE, 100))
+machine_fluid("bio_reacting", "nutrient_paste_from_rotten_flesh", None, [("minecraft:rotten_flesh", 2)], [], (PASTE, 50))
+lang[f"fluid_type.{MOD}.nutrient_paste"] = "Nutrient Paste"
+write(os.path.join(ASSETS, "models", "item", "mob_imprint.json"),
+      {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/mob_imprint"}})
+lang[f"item.{MOD}.mob_imprint"] = "Mob Imprint"
+shaped("mob_imprint", [" G ", "PEP", " G "], {"G": "#c:glass_panes", "P": "#c:plates/silver", "E": "minecraft:ender_pearl"}, count=2)
+shaped("mob_duplicator", ["PQP", "EXE", "PTP"], {"P": "#c:plates/silver", "Q": f"{MOD}:processor", "E": "#c:gems/emerald",
+                                               "X": f"{MOD}:elite_casing", "T": f"{MOD}:fluid_tank"})
+D_DESC = {
+    "mob_duplicator": ("Grows copies of the mob on its Imprint", "Put a Mob Imprint in its slot and pipe in Nutrient Paste: every "
+                       "10 seconds it grows a copy of that mob two blocks in front of it, for 40,000 FE and 20 mB of paste per point of "
+                       "the mob's health (at least 200 mB). It waits while 12 or more of that mob are close by. Speed Upgrades work."),
+    "mob_imprint": ("Right-click a mob to record it", "Right-click a mob with a blank Imprint to record what kind it is; the mob "
+                    "isn't hurt. Bosses can't be imprinted. Sneak and use a recorded Imprint in the air to wipe it."),
+}
+DESC.update(D_DESC)
+for iid, (short, info) in D_DESC.items():
+    lang[f"desc.{MOD}.{iid}"] = short
+    lang[f"jei.{MOD}.info.{iid}"] = info
+lang.update({
+    "message.joulesmith.imprint.taken": "Imprinted: %s",
+    "message.joulesmith.imprint.refused": "That can't be imprinted",
+    "tooltip.joulesmith.imprint.mob": "Holds: %s",
+    "tooltip.joulesmith.imprint.blank": "Blank: right-click a mob to record it",
+})
 
 # ---- advancements: a guided path through the tiers (data/joulesmith/advancement)
 ADV = [
