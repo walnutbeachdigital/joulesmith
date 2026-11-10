@@ -45,7 +45,17 @@ public class TerminalMenu extends AbstractContainerMenu {
 
     public TerminalMenu(int id, Inventory inventory, RegistryFriendlyByteBuf buf) {
         this(id, inventory, buf.readBlockPos());
+        wireless = buf.readBoolean();
     }
+
+    /** Opened from a Wireless Terminal: stays open while the player holds it within range of the network. */
+    public static TerminalMenu wireless(int id, Inventory inventory, BlockPos pos) {
+        TerminalMenu menu = new TerminalMenu(id, inventory, pos);
+        menu.wireless = true;
+        return menu;
+    }
+
+    private boolean wireless;
 
     public TerminalMenu(int id, Inventory inventory, BlockPos pos) {
         this(JSMenus.TERMINAL.get(), id, inventory, pos, ROWS, INVENTORY_Y);
@@ -173,6 +183,7 @@ public class TerminalMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player p) {
+        if (wireless) return WirelessTerminalItem.reaches(p, pos);
         return stillValid(access, p, block());
     }
 

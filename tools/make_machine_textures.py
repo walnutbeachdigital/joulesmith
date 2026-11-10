@@ -2993,11 +2993,30 @@ def pattern_item(blank):
     return img
 
 
+def wireless_terminal_item():
+    """A handheld terminal: a signal-blue tablet with a green screen of item icons and a small antenna."""
+    body = _mask({y: (3, 12) for y in range(3, 15)})
+    ant = _mask({1: (11, 11), 2: (11, 11)})
+    img = _parts((body, SIGNAL8, 2, 7), (ant, STEEL8, 3, 7))
+    px = img.load()
+    for y in range(5, 11):
+        for x in range(5, 11):
+            px[x, y] = rgba("#0b1a14")
+    colours = ["#d0a040", "#7fc0ff", "#e05050", "#a0e070"]
+    for i in range(4):
+        px[6 + (i % 2) * 3, 6 + (i // 2) * 2] = rgba(colours[i])
+    for x in range(5, 11):
+        px[x, 12] = rgba(SIGNAL8[2] if x % 2 else SIGNAL8[5])
+    px[11, 0] = rgba(NET_GREEN[5])
+    return img
+
+
 def bus_textures():
     return {"block/import_bus_front": bus_front(False), "block/export_bus_front": bus_front(True),
             "block/crafting_terminal_front": crafting_terminal_front(), "gui/crafting_terminal": crafting_terminal_gui(),
             "block/crafting_cpu_front": crafting_cpu_front(),
-            "item/blank_pattern": pattern_item(True), "item/pattern": pattern_item(False)}
+            "item/blank_pattern": pattern_item(True), "item/pattern": pattern_item(False),
+            "item/wireless_terminal": wireless_terminal_item()}
 
 
 def main():

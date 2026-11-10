@@ -2014,6 +2014,23 @@ lang.update({
     "message.joulesmith.cpu.busy": "Crafting %s: %s batches left",
     "message.joulesmith.cpu.idle": "Idle, %s patterns",
 })
+write(os.path.join(ASSETS, "models", "item", "wireless_terminal.json"), {"parent": "minecraft:item/handheld", "textures": {"layer0": f"{MOD}:item/wireless_terminal"}})
+lang[f"item.{MOD}.wireless_terminal"] = "Wireless Terminal"
+shaped("wireless_terminal", [" E ", "PTP", "PCP"], {"E": "minecraft:ender_eye", "P": "#c:plates/silver", "T": f"{MOD}:network_terminal",
+                                                  "C": f"{MOD}:energy_cell"})
+DESC["wireless_terminal"] = ("A Network Terminal you carry", "Sneak and use it on any block of a storage network to link it; then use it "
+                             "within 64 blocks of that block, in the same dimension, to open the network's terminal. 100 FE each time; "
+                             "charge it like powered gear.")
+lang[f"desc.{MOD}.wireless_terminal"], lang[f"jei.{MOD}.info.wireless_terminal"] = DESC["wireless_terminal"]
+lang.update({
+    "message.joulesmith.wireless_terminal.linked": "Linked to this network",
+    "message.joulesmith.wireless_terminal.unlinked": "Not linked: sneak and use it on a network block",
+    "message.joulesmith.wireless_terminal.range": "Out of range of its network",
+    "message.joulesmith.wireless_terminal.gone": "Its network block isn't there (or isn't loaded)",
+    "message.joulesmith.wireless_terminal.power": "Out of power",
+    "tooltip.joulesmith.wireless_terminal.unlinked": "Not linked",
+    "tooltip.joulesmith.wireless_terminal.linked": "Linked to %s, %s, %s",
+})
 shaped("import_bus", [" N ", "PHP"], {"N": f"{MOD}:network_cable", "P": "#c:plates/steel", "H": "minecraft:hopper"})
 shaped("export_bus", [" N ", "PDP"], {"N": f"{MOD}:network_cable", "P": "#c:plates/steel", "D": "minecraft:dropper"})
 BUS = " Use a Filter Card on it to fit one; sneak and use an empty hand to take it back. Moves up to 16 items twice a second."

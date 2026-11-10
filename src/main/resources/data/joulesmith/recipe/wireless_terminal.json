@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " E ",
+    "PTP",
+    "PCP"
+  ],
+  "key": {
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "P": {
+      "tag": "c:plates/silver"
+    },
+    "T": {
+      "item": "joulesmith:network_terminal"
+    },
+    "C": {
+      "item": "joulesmith:energy_cell"
+    }
+  },
+  "result": {
+    "id": "joulesmith:wireless_terminal",
+    "count": 1
+  }
+}

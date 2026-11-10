@@ -88,7 +88,7 @@ public class NetworkBlock extends BaseEntityBlock implements NetworkPart {
                 }
             }
             case TERMINAL -> player.openMenu(new SimpleMenuProvider((id, inv, p) -> new TerminalMenu(id, inv, pos),
-                    Component.translatable("block.joulesmith.network_terminal")), buf -> buf.writeBlockPos(pos));
+                    Component.translatable("block.joulesmith.network_terminal")), buf -> buf.writeBlockPos(pos).writeBoolean(false));
             case CPU -> {
                 if (level.getBlockEntity(pos) instanceof CraftingCpuBlockEntity cpu) {
                     if (player.isShiftKeyDown()) {

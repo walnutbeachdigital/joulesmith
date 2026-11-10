@@ -94,6 +94,8 @@ public final class JSGear {
                     .attributes(DiggerItem.createAttributes(Tiers.NETHERITE, 4.0f, -2.6f))));
     public static final DeferredItem<com.walnutbeachdigital.joulesmith.gear.powered.RailgunItem> RAILGUN = powered("railgun",
             () -> new com.walnutbeachdigital.joulesmith.gear.powered.RailgunItem(new Item.Properties().fireResistant()));
+    public static final DeferredItem<com.walnutbeachdigital.joulesmith.network.WirelessTerminalItem> WIRELESS_TERMINAL = powered("wireless_terminal",
+            () -> new com.walnutbeachdigital.joulesmith.network.WirelessTerminalItem(new Item.Properties()));
     public static final DeferredItem<com.walnutbeachdigital.joulesmith.gear.powered.PlasmaCannonItem> PLASMA_CANNON = powered("plasma_cannon",
             () -> new com.walnutbeachdigital.joulesmith.gear.powered.PlasmaCannonItem(new Item.Properties().fireResistant()));
 

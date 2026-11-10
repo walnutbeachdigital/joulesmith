@@ -47,5 +47,10 @@ public final class JSDataComponents {
             COMPONENTS.registerComponentType("pattern", b -> b.persistent(com.walnutbeachdigital.joulesmith.network.PatternContents.CODEC)
                     .networkSynchronized(com.walnutbeachdigital.joulesmith.network.PatternContents.STREAM_CODEC));
 
+    /** The network block a Wireless Terminal is linked to. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<net.minecraft.core.GlobalPos>> LINK =
+            COMPONENTS.registerComponentType("link", b -> b.persistent(net.minecraft.core.GlobalPos.CODEC)
+                    .networkSynchronized(net.minecraft.core.GlobalPos.STREAM_CODEC));
+
     private JSDataComponents() {}
 }
