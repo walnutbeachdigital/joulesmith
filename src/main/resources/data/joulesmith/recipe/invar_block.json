@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "c:ingots/invar"
+    }
+  },
+  "result": {
+    "id": "joulesmith:invar_block",
+    "count": 1
+  }
+}

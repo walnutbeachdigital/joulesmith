@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "c:raw_materials/nickel"
+    }
+  },
+  "result": {
+    "id": "joulesmith:raw_nickel_block",
+    "count": 1
+  }
+}

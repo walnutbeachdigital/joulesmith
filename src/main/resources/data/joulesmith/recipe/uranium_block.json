@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "c:ingots/uranium"
+    }
+  },
+  "result": {
+    "id": "joulesmith:uranium_block",
+    "count": 1
+  }
+}

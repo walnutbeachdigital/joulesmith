@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "c:ingots/lead"
+    }
+  },
+  "result": {
+    "id": "joulesmith:lead_block",
+    "count": 1
+  }
+}

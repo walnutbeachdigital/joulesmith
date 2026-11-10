@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " # ",
+    "#n#",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "tag": "c:ingots/bronze"
+    },
+    "n": {
+      "tag": "c:nuggets/iron"
+    }
+  },
+  "result": {
+    "id": "joulesmith:bronze_gear",
+    "count": 1
+  }
+}

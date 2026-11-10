@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": {
+    "tag": "c:raw_materials/silver"
+  },
+  "result": {
+    "id": "joulesmith:silver_ingot"
+  }
+}

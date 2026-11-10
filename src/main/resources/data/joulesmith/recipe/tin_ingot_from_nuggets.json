@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "c:nuggets/tin"
+    }
+  },
+  "result": {
+    "id": "joulesmith:tin_ingot",
+    "count": 1
+  }
+}

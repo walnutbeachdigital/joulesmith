@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "joulesmith:tin_ore",
+    "joulesmith:deepslate_tin_ore",
+    "joulesmith:raw_tin_block",
+    "joulesmith:tin_block",
+    "joulesmith:raw_lead_block",
+    "joulesmith:lead_block",
+    "joulesmith:raw_silver_block",
+    "joulesmith:silver_block",
+    "joulesmith:raw_nickel_block",
+    "joulesmith:nickel_block",
+    "joulesmith:raw_uranium_block",
+    "joulesmith:uranium_block",
+    "joulesmith:steel_block",
+    "joulesmith:bronze_block",
+    "joulesmith:invar_block",
+    "joulesmith:electrum_block"
+  ]
+}

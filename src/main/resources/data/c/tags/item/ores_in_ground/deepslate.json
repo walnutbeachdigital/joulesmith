@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "joulesmith:deepslate_tin_ore",
+    "joulesmith:deepslate_lead_ore",
+    "joulesmith:deepslate_silver_ore",
+    "joulesmith:deepslate_nickel_ore",
+    "joulesmith:deepslate_uranium_ore"
+  ]
+}

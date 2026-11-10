@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " # ",
+    "#n#",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "tag": "c:ingots/lead"
+    },
+    "n": {
+      "tag": "c:nuggets/iron"
+    }
+  },
+  "result": {
+    "id": "joulesmith:lead_gear",
+    "count": 1
+  }
+}

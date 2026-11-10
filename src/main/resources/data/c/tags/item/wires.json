@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#c:wires/copper",
+    "#c:wires/gold",
+    "#c:wires/silver",
+    "#c:wires/steel",
+    "#c:wires/electrum"
+  ]
+}
