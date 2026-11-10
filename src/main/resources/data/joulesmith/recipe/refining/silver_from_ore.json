@@ -1,0 +1,22 @@
+{
+  "type": "joulesmith:refining",
+  "fluid": {
+    "id": "joulesmith:plasma",
+    "amount": 100
+  },
+  "inputs": [
+    {
+      "tag": "c:ores/silver"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:silver_ingot",
+      "count": 5
+    },
+    {
+      "id": "joulesmith:lead_ingot",
+      "chance": 0.25
+    }
+  ]
+}

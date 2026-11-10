@@ -1,0 +1,22 @@
+{
+  "type": "joulesmith:refining",
+  "fluid": {
+    "id": "joulesmith:plasma",
+    "amount": 100
+  },
+  "inputs": [
+    {
+      "tag": "c:ores/copper"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:copper_ingot",
+      "count": 5
+    },
+    {
+      "id": "minecraft:gold_ingot",
+      "chance": 0.25
+    }
+  ]
+}

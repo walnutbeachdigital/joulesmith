@@ -1,0 +1,22 @@
+{
+  "type": "joulesmith:refining",
+  "fluid": {
+    "id": "joulesmith:plasma",
+    "amount": 100
+  },
+  "inputs": [
+    {
+      "tag": "c:raw_materials/tin"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:tin_ingot",
+      "count": 5
+    },
+    {
+      "id": "minecraft:iron_ingot",
+      "chance": 0.25
+    }
+  ]
+}

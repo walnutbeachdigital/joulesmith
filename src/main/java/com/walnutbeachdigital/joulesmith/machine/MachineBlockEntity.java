@@ -484,7 +484,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
      * 5 face settings, then for each of up to two tanks: fluid (registry id), amount, capacity.
      */
     /** 0-5 energy, progress, redstone, sides; then 3 per tank; then FE/t made and used (averaged over a second). */
-    public static final int MAX_TANKS = 2, VALUES = 6 + 3 * MAX_TANKS + 4, MADE = 6 + 3 * MAX_TANKS, USED = MADE + 1,
+    public static final int MAX_TANKS = 3, VALUES = 6 + 3 * MAX_TANKS + 4, MADE = 6 + 3 * MAX_TANKS, USED = MADE + 1,
             HEAT = USED + 1, STATUS = USED + 2;
     private int madePerTick, usedPerTick;
     /** The running sound, looked up once; empty for machines that run quietly. */

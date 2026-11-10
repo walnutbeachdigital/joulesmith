@@ -139,6 +139,12 @@ public final class JSBlocks {
             BLOCKS.register("mob_duplicator", () -> new SimpleMachineBlock<>(machine(),
                     JSBlockEntities.MOB_DUPLICATOR::get, com.walnutbeachdigital.joulesmith.automation.MobDuplicatorBlockEntity::new));
 
+    // ---- tier 5: the Fusion Core and the Plasma Refinery
+    public static final DeferredBlock<SimpleMachineBlock<com.walnutbeachdigital.joulesmith.machine.fusion.FusionCoreBlockEntity>> FUSION_CORE =
+            BLOCKS.register("fusion_core", () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 15 : 0),
+                    JSBlockEntities.FUSION_CORE::get, com.walnutbeachdigital.joulesmith.machine.fusion.FusionCoreBlockEntity::new));
+    public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> PLASMA_REFINERY = processing("plasma_refinery", () -> JSBlockEntities.PLASMA_REFINERY.get());
+
     // ---- more generators
     public static final DeferredBlock<SimpleMachineBlock<com.walnutbeachdigital.joulesmith.machine.generator.GeothermalGeneratorBlockEntity>> GEOTHERMAL_GENERATOR =
             BLOCKS.register("geothermal_generator", () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 12 : 0),

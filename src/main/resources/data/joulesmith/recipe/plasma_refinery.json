@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NQN",
+    "FXF",
+    "NTN"
+  ],
+  "key": {
+    "N": {
+      "tag": "c:ingots/netherite"
+    },
+    "Q": {
+      "item": "joulesmith:quantum_processor"
+    },
+    "F": {
+      "item": "minecraft:blast_furnace"
+    },
+    "X": {
+      "item": "joulesmith:ultimate_casing"
+    },
+    "T": {
+      "item": "joulesmith:elite_fluid_tank"
+    }
+  },
+  "result": {
+    "id": "joulesmith:plasma_refinery",
+    "count": 1
+  }
+}

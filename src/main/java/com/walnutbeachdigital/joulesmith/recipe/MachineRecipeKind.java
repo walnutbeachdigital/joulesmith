@@ -24,7 +24,8 @@ public enum MachineRecipeKind {
     DISSOLVING("dissolving", 4000, 160),
     CRYSTALLIZING("crystallizing", 2400, 120),
     FERTILIZER_MIXING("fertilizer_mixing", 1600, 80),
-    ENGRAVING("engraving", 20000, 200);
+    ENGRAVING("engraving", 20000, 200),
+    REFINING("refining", 40000, 200);
 
     private final String id;
     private final int defaultEnergy;

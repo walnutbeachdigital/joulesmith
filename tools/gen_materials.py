@@ -292,6 +292,8 @@ MACHINES = {
     "laser_engraver": {"name": "Laser Engraver", "front": "laser_engraver_front"},
     "fission_reactor": {"name": "Fission Reactor", "front": "fission_reactor_front"},
     "mob_duplicator": {"name": "Mob Duplicator", "front": "mob_duplicator_front"},
+    "fusion_core": {"name": "Fusion Core", "front": "fusion_core_front"},
+    "plasma_refinery": {"name": "Plasma Refinery", "front": "plasma_refinery_front"},
     "boiler": {"name": "Boiler", "front": "boiler_front"},
     "block_placer": {"name": "Block Placer", "front": "block_placer_front"},
     "block_breaker": {"name": "Block Breaker", "front": "block_breaker_front"},
@@ -1826,6 +1828,36 @@ for iid, (short, info) in X_DESC.items():
 for (ns, reg, path), values in tags.items():
     write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
 
+# ---- tier 5: deuterium and tritium (Fluid Mixer), the Fusion Core, plasma and the Plasma Refinery (5 ingots an ore)
+DEUT, TRIT, PLASMA = f"{MOD}:deuterium", f"{MOD}:tritium", f"{MOD}:plasma"
+machine_fluid("mixing", "deuterium", ("minecraft:water", 1000), [], [], (DEUT, 100), time=200)
+machine_fluid("mixing", "tritium", (DEUT, 500), [("#c:dusts/uranium", 1)], [], (TRIT, 500), time=160)
+lang.update({f"fluid_type.{MOD}.deuterium": "Deuterium", f"fluid_type.{MOD}.tritium": "Tritium", f"fluid_type.{MOD}.plasma": "Plasma",
+             "jei.joulesmith.refining": "Plasma Refining"})
+for m, (src, dust, plate, gear, wire) in METALS.items():
+    if not (src == "ore" or m in ("iron", "copper", "gold")):
+        continue
+    bonus = [(INGOT(ORE_BONUS[m]), 1, 0.25)] if m in ORE_BONUS else []
+    for what, tagname in (("raw", f"#c:raw_materials/{m}"), ("ore", f"#c:ores/{m}")):
+        machine_fluid("refining", f"{m}_from_{what}", (PLASMA, 100), [(tagname, 1)], [(INGOT(m), 5, 1)] + bonus)
+shaped("fusion_core", ["NQN", "EXE", "NQN"], {"N": "#c:ingots/netherite", "Q": f"{MOD}:quantum_processor",
+                                            "E": "minecraft:end_crystal", "X": f"{MOD}:ultimate_casing"})
+shaped("plasma_refinery", ["NQN", "FXF", "NTN"], {"N": "#c:ingots/netherite", "Q": f"{MOD}:quantum_processor",
+                                                "F": "minecraft:blast_furnace", "X": f"{MOD}:ultimate_casing", "T": f"{MOD}:elite_fluid_tank"})
+F_DESC = {
+    "fusion_core": ("Fuses deuterium and tritium for 20,000 FE/t", "Lighting it takes 500,000 FE of stored power; once lit it burns "
+                    "5 mB each of deuterium and tritium a tick for 20,000 FE/t and makes 2 mB of plasma a tick. It goes out when either "
+                    "fuel runs dry. Make deuterium from water and tritium from deuterium and uranium dust in the Fluid Mixer."),
+    "plasma_refinery": ("Five ingots from every ore", "Melts raw ore or ore blocks in 100 mB of plasma into five ingots, with a chance "
+                        "of a related metal. Plasma comes from the Fusion Core."),
+}
+DESC.update(F_DESC)
+for iid, (short, info) in F_DESC.items():
+    lang[f"desc.{MOD}.{iid}"] = short
+    lang[f"jei.{MOD}.info.{iid}"] = info
+lang.update({"gui.joulesmith.status.6": "Lit", "gui.joulesmith.status.7": "Needs 500,000 FE to light",
+             "gui.joulesmith.status.8": "Needs deuterium and tritium"})
+
 # ---- advancements: a guided path through the tiers (data/joulesmith/advancement)
 ADV = [
     # id, parent, icon, items needed (all of them; a "#" tag or a list means any one), frame, title, description
@@ -1857,6 +1889,7 @@ ADV = [
     ("railgun", "elite", "railgun", [f"{MOD}:railgun"], "task", "Rail Against the Machine", "Make a Railgun"),
     ("fission", "elite", "fission_reactor", [f"{MOD}:fission_reactor"], "goal", "Splitting Hairs", "Build a Fission Reactor"),
     ("elite_exo", "exo_suit", "elite_exo_chestplate", [f"{MOD}:elite_exo_chestplate"], "goal", "Suit Upgrade", "Upgrade an Exo-Suit piece to Elite"),
+    ("fusion", "quantum", "fusion_core", [f"{MOD}:fusion_core"], "challenge", "Star Power", "Build a Fusion Core"),
     ("flight", "quantum", "flight_module", [f"{MOD}:flight_module"], "challenge", "Lift Off", "Make a Flight Module"),
 ]
 for aid, parent, icon, needs, frame, title, desc in ADV:

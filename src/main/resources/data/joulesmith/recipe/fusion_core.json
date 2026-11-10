@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NQN",
+    "EXE",
+    "NQN"
+  ],
+  "key": {
+    "N": {
+      "tag": "c:ingots/netherite"
+    },
+    "Q": {
+      "item": "joulesmith:quantum_processor"
+    },
+    "E": {
+      "item": "minecraft:end_crystal"
+    },
+    "X": {
+      "item": "joulesmith:ultimate_casing"
+    }
+  },
+  "result": {
+    "id": "joulesmith:fusion_core",
+    "count": 1
+  }
+}

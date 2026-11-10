@@ -1,0 +1,12 @@
+{
+  "type": "joulesmith:mixing",
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 1000
+  },
+  "fluid_result": {
+    "id": "joulesmith:deuterium",
+    "amount": 100
+  },
+  "time": 200
+}

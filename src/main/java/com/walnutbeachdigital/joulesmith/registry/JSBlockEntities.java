@@ -186,6 +186,12 @@ public final class JSBlockEntities {
             BLOCK_ENTITIES.register("mob_duplicator", () -> BlockEntityType.Builder
                     .of(com.walnutbeachdigital.joulesmith.automation.MobDuplicatorBlockEntity::new, JSBlocks.MOB_DUPLICATOR.get()).build(null));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.machine.fusion.FusionCoreBlockEntity>> FUSION_CORE =
+            BLOCK_ENTITIES.register("fusion_core", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.machine.fusion.FusionCoreBlockEntity::new, JSBlocks.FUSION_CORE.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> PLASMA_REFINERY =
+            processing("plasma_refinery", JSBlocks.PLASMA_REFINERY, ProcessingMachineBlockEntity.WASHER, MachineRecipeKind.REFINING, 30, -1);
+
     // more generators
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.machine.generator.GeothermalGeneratorBlockEntity>> GEOTHERMAL_GENERATOR =
             BLOCK_ENTITIES.register("geothermal_generator", () -> BlockEntityType.Builder
@@ -229,7 +235,7 @@ public final class JSBlockEntities {
     /** Every recipe machine's type, for registering their capabilities together. */
     public static List<DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>>> processingMachines() {
         return List.of(CRUSHER, ALLOY_SMELTER, COMPRESSOR, WIRE_DRAWER, SAWMILL, ORE_WASHER, FLUID_MIXER, CENTRIFUGE,
-                CIRCUIT_ASSEMBLER, BIO_REACTOR, CHEMICAL_DISSOLVER, CRYSTALLIZER, FERTILIZER_MIXER, LASER_ENGRAVER);
+                CIRCUIT_ASSEMBLER, BIO_REACTOR, CHEMICAL_DISSOLVER, CRYSTALLIZER, FERTILIZER_MIXER, LASER_ENGRAVER, PLASMA_REFINERY);
     }
 
     /** A recipe machine's block entity type: its block, its slot layout and the recipes it runs. */

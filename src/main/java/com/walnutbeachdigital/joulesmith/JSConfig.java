@@ -10,7 +10,7 @@ public final class JSConfig {
     public static final ModConfigSpec SPEC;
 
     public static final ModConfigSpec.DoubleValue MACHINE_SPEED, MACHINE_ENERGY, SOLAR;
-    public static final ModConfigSpec.IntValue COMBUSTION, BIOFUEL, GEOTHERMAL, STEAM_FE_PER_MB, WIND_MIN, WIND_MAX, FISSION;
+    public static final ModConfigSpec.IntValue COMBUSTION, BIOFUEL, GEOTHERMAL, STEAM_FE_PER_MB, WIND_MIN, WIND_MAX, FISSION, FUSION;
     public static final ModConfigSpec.IntValue TOOL_COST, SWORD_COST, JETPACK_COST, GRINDER_DAMAGE, RANCHER_CAP;
     public static final ModConfigSpec.DoubleValue EXO_ABSORB;
     public static final ModConfigSpec.BooleanValue SOUNDS;
@@ -32,6 +32,7 @@ public final class JSConfig {
         STEAM_FE_PER_MB = b.comment("FE the Steam Turbine makes per mB of steam").defineInRange("steamFePerMb", 2, 1, 1_000);
         WIND_MIN = b.comment("Wind Turbine output at y 64").defineInRange("windMin", 50, 0, 100_000);
         WIND_MAX = b.comment("Wind Turbine output at y 192 and above").defineInRange("windMax", 300, 0, 100_000);
+        FUSION = b.comment("Fusion Core output while lit").defineInRange("fusion", 20_000, 1, 10_000_000);
         FISSION = b.comment("Fission Reactor output while burning uranium").defineInRange("fission", 1_000, 1, 1_000_000);
         SOLAR = b.comment("Multiplies every Solar Panel's output").defineInRange("solarMultiplier", 1.0, 0.0, 100.0);
         b.pop();

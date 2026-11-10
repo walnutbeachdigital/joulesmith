@@ -1,0 +1,22 @@
+{
+  "type": "joulesmith:refining",
+  "fluid": {
+    "id": "joulesmith:plasma",
+    "amount": 100
+  },
+  "inputs": [
+    {
+      "tag": "c:raw_materials/nickel"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:nickel_ingot",
+      "count": 5
+    },
+    {
+      "id": "minecraft:iron_ingot",
+      "chance": 0.25
+    }
+  ]
+}

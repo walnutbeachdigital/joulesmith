@@ -54,7 +54,8 @@ public class JoulesmithJeiPlugin implements IModPlugin {
                 Map.entry(MachineRecipeKind.DISSOLVING, JSBlocks.CHEMICAL_DISSOLVER.get()),
                 Map.entry(MachineRecipeKind.CRYSTALLIZING, JSBlocks.CRYSTALLIZER.get()),
                 Map.entry(MachineRecipeKind.FERTILIZER_MIXING, JSBlocks.FERTILIZER_MIXER.get()),
-                Map.entry(MachineRecipeKind.ENGRAVING, JSBlocks.LASER_ENGRAVER.get()));
+                Map.entry(MachineRecipeKind.ENGRAVING, JSBlocks.LASER_ENGRAVER.get()),
+                Map.entry(MachineRecipeKind.REFINING, JSBlocks.PLASMA_REFINERY.get()));
     }
 
     @Override

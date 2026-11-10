@@ -2639,6 +2639,58 @@ def duplicator_textures():
             "item/mob_imprint": mob_imprint_item()}
 
 
+# ------------------------------------------------------------------ tier 5: Fusion Core and Plasma Refinery
+PLASMA_GLOW = ["#2a0a3a", "#4a1268", "#7a22a8", "#b048e0", "#e090ff", "#fbe0ff"]
+
+
+def fusion_core_front(on):
+    """A ring of magnets round a dark chamber; a violet plasma ring and a white-hot core while lit."""
+    img = casing5()
+    px = img.load()
+    window(img, 2, 2, 13, 13)
+    for y in range(2, 14):
+        for x in range(2, 14):
+            r = math.hypot(x - 7.5, y - 7.5)
+            if r > 5.6:
+                px[x, y] = rgba("#0c0a12")
+            elif r > 4.4:
+                px[x, y] = rgba(STEEL8[5] if (x + y) % 3 else COPPER8[5])          # magnet ring
+            elif on and r > 2.6:
+                px[x, y] = rgba(PLASMA_GLOW[4] if (x * 3 + y) % 5 else PLASMA_GLOW[5])
+            elif on:
+                px[x, y] = rgba(PLASMA_GLOW[5] if r < 1.4 else PLASMA_GLOW[3])
+            else:
+                px[x, y] = rgba("#14101c" if r > 2.6 else "#1c1428")
+    return img
+
+
+def plasma_refinery_front(on):
+    """A crucible under a plasma torch; molten ore glows while it refines."""
+    img = casing5()
+    px = img.load()
+    window(img, 3, 3, 12, 12)
+    for y in range(3, 13):
+        for x in range(3, 13):
+            px[x, y] = rgba("#0e0c14")
+    for y in range(3, 7):                                  # the torch
+        for x in (7, 8):
+            px[x, y] = rgba(STEEL8[6] if x == 7 else STEEL8[3])
+    if on:
+        for y in range(7, 10):
+            px[7, y] = rgba(PLASMA_GLOW[5] if y < 9 else PLASMA_GLOW[4])
+            px[8, y] = rgba(PLASMA_GLOW[3])
+    for x in range(4, 12):                                 # the crucible
+        px[x, 12] = rgba(STEEL8[2])
+        px[x, 11] = rgba(STEEL8[4] if x in (4, 11) else ("#ffb43a" if on else "#5a2412") if x % 2 else ("#ffe08a" if on else "#3a1608"))
+    px[4, 10] = rgba(STEEL8[5]); px[11, 10] = rgba(STEEL8[3])
+    return img
+
+
+def tier5_textures():
+    return {f"block/{n}_front{'_on' if on else ''}": fn(on)
+            for n, fn in (("fusion_core", fusion_core_front), ("plasma_refinery", plasma_refinery_front)) for on in (False, True)}
+
+
 def main():
     os.makedirs(os.path.join(TEX, "block"), exist_ok=True)
     os.makedirs(os.path.join(TEX, "gui"), exist_ok=True)
@@ -2791,6 +2843,7 @@ def main():
         **wireless_textures(),
         **tier4_gear_textures(),
         **duplicator_textures(),
+        **tier5_textures(),
     }
     for name, img in out.items():
         img.save(os.path.join(TEX, name + ".png"))

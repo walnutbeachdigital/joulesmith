@@ -1,0 +1,22 @@
+{
+  "type": "joulesmith:refining",
+  "fluid": {
+    "id": "joulesmith:plasma",
+    "amount": 100
+  },
+  "inputs": [
+    {
+      "tag": "c:raw_materials/gold"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:gold_ingot",
+      "count": 5
+    },
+    {
+      "id": "joulesmith:silver_ingot",
+      "chance": 0.25
+    }
+  ]
+}

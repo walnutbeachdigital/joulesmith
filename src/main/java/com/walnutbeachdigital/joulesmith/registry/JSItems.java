@@ -90,6 +90,8 @@ public final class JSItems {
         blockItem(JSBlocks.WIRELESS_TRANSMITTER);
         blockItem(JSBlocks.WIRELESS_RECEIVER);
         blockItem(JSBlocks.MOB_DUPLICATOR);
+        blockItem(JSBlocks.FUSION_CORE);
+        blockItem(JSBlocks.PLASMA_REFINERY);
         blockItem(JSBlocks.WIND_TURBINE);
         JSBlocks.SENSORS.values().forEach(JSItems::blockItem);
         blockItem(JSBlocks.LOGIC_CONTROLLER);

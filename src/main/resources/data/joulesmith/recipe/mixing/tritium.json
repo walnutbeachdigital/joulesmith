@@ -1,0 +1,17 @@
+{
+  "type": "joulesmith:mixing",
+  "fluid": {
+    "id": "joulesmith:deuterium",
+    "amount": 500
+  },
+  "inputs": [
+    {
+      "tag": "c:dusts/uranium"
+    }
+  ],
+  "fluid_result": {
+    "id": "joulesmith:tritium",
+    "amount": 500
+  },
+  "time": 160
+}

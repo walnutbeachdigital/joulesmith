@@ -73,6 +73,10 @@ public final class JSFluids {
     /** Experience from the Mob Grinder, 20 mB a point, for the Auto Enchanter or bottling. Tanks and pipes only. */
     public static final Entry LIQUID_XP = register("liquid_xp", 0xE09CE84A, 800, 800, 300, false);
     /** Food for the Mob Duplicator, from meat and fish in the Bio Reactor. Pipes only. */
+    /** Fusion fuel and its plasma. Pipes only. */
+    public static final Entry DEUTERIUM = register("deuterium", 0xD05AA0F0, 1000, 900, 290, false);
+    public static final Entry TRITIUM = register("tritium", 0xD07AF0B0, 1000, 900, 290, false);
+    public static final Entry PLASMA = register("plasma", 0xF0D060F0, -500, 300, 20000, false);
     public static final Entry NUTRIENT_PASTE = register("nutrient_paste", 0xF0C77A86, 1300, 4000, 310, false);
 
     /** Ore slurry from the Chemical Dissolver, one per ore metal, for the Crystallizer. Tanks and pipes only. */
