@@ -447,6 +447,32 @@ def block_studs():
     return lv
 
 
+# How much of the ramp an ingot uses, darkest step first (percent). Blocks are rebalanced to match it so
+# they read as the same material as the ingot beside them.
+INGOT_TONE_MIX = [10, 6, 15, 19, 22, 17, 10, 1]
+
+
+def match_ingot_tones(lv):
+    """Remap a block's shades so its mix of dark, mid and bright matches an ingot's. Each shade keeps its
+    place in the order (darker stays darker), so the pattern is untouched; only the tones shift."""
+    counts = {}
+    for row in lv:
+        for v in row:
+            if v is not None:
+                counts[v] = counts.get(v, 0) + 1
+    total = sum(counts.values())
+    target_edges, acc = [], 0
+    for pct in INGOT_TONE_MIX:
+        acc += pct
+        target_edges.append(acc / sum(INGOT_TONE_MIX))
+    mapping, seen = {}, 0
+    for v in sorted(counts):
+        mid = (seen + counts[v] / 2) / total          # where this shade sits in the block's own tone range
+        seen += counts[v]
+        mapping[v] = next(i for i, edge in enumerate(target_edges) if mid <= edge + 1e-9)
+    return [[None if v is None else mapping[v] for v in row] for row in lv]
+
+
 BLOCK_DESIGN = {
     "tin": block_brushed, "lead": block_studs, "silver": block_pyramid, "nickel": block_smooth,
     "uranium": block_inset, "steel": block_panels, "bronze": block_ribs, "invar": block_inset,
@@ -554,7 +580,7 @@ def draw(kind, name):
         return paint8(ore_overlay(sum(map(ord, m)) * 7), m)
     if name.startswith("raw_"):
         return paint(raw_block(seed), m)
-    return paint8(BLOCK_DESIGN[m](), m)
+    return paint8(match_ingot_tones(BLOCK_DESIGN[m]()), m)
 
 
 def main():
