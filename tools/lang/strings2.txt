@@ -212,3 +212,4 @@ Joulesmith: Materials || Joulesmith：材料 || Joulesmith: материалы |
 Joulesmith: Machines || Joulesmith：机器 || Joulesmith: машины || Joulesmith: máquinas || Joulesmith: Maschinen || Joulesmith: máquinas
 Joulesmith: Logistics || Joulesmith：物流 || Joulesmith: логистика || Joulesmith: logística || Joulesmith: Logistik || Joulesmith: logística
 Joulesmith: Gear || Joulesmith：装备 || Joulesmith: снаряжение || Joulesmith: equipo || Joulesmith: Ausrüstung || Joulesmith: equipamento
+Joulesmith network and wireless info || Joulesmith 网络与无线信息 || Сеть и беспроводная связь Joulesmith || Información de red e inalámbrica de Joulesmith || Joulesmith-Netzwerk- und Funkinfo || Informações de rede e sem fio do Joulesmith

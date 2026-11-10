@@ -1063,6 +1063,7 @@ lang.update({
     "gui.joulesmith.energy.using": "Using %s FE/t",
     "config.jade.plugin_joulesmith.machine": "Joulesmith machine progress",
     "config.jade.plugin_joulesmith.solar_panel": "Joulesmith solar output",
+    "config.jade.plugin_joulesmith.network": "Joulesmith network and wireless info",
 })
 
 # ---- crafting parts: coils and motors, now in the machines that heat, generate or turn

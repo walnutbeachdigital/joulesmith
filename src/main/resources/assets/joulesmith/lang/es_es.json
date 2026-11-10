@@ -205,6 +205,7 @@
   "gui.joulesmith.energy.using": "Consume %s FE/t",
   "config.jade.plugin_joulesmith.machine": "Progreso de m\u00e1quinas de Joulesmith",
   "config.jade.plugin_joulesmith.solar_panel": "Producci\u00f3n solar de Joulesmith",
+  "config.jade.plugin_joulesmith.network": "Informaci\u00f3n de red e inal\u00e1mbrica de Joulesmith",
   "item.joulesmith.copper_coil": "Bobina de cobre",
   "item.joulesmith.electrum_coil": "Bobina de electro",
   "item.joulesmith.motor": "Motor",

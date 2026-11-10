@@ -205,6 +205,7 @@
   "gui.joulesmith.energy.using": "Verbraucht %s FE/t",
   "config.jade.plugin_joulesmith.machine": "Joulesmith-Maschinenfortschritt",
   "config.jade.plugin_joulesmith.solar_panel": "Joulesmith-Solarleistung",
+  "config.jade.plugin_joulesmith.network": "Joulesmith-Netzwerk- und Funkinfo",
   "item.joulesmith.copper_coil": "Kupferspule",
   "item.joulesmith.electrum_coil": "Elektrumspule",
   "item.joulesmith.motor": "Motor",

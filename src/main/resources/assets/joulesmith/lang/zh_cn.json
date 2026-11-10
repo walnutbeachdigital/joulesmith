@@ -205,6 +205,7 @@
   "gui.joulesmith.energy.using": "\u6d88\u8017 %s FE/t",
   "config.jade.plugin_joulesmith.machine": "Joulesmith \u673a\u5668\u8fdb\u5ea6",
   "config.jade.plugin_joulesmith.solar_panel": "Joulesmith \u592a\u9633\u80fd\u8f93\u51fa",
+  "config.jade.plugin_joulesmith.network": "Joulesmith \u7f51\u7edc\u4e0e\u65e0\u7ebf\u4fe1\u606f",
   "item.joulesmith.copper_coil": "\u94dc\u7ebf\u5708",
   "item.joulesmith.electrum_coil": "\u7425\u73c0\u91d1\u7ebf\u5708",
   "item.joulesmith.motor": "\u7535\u673a",

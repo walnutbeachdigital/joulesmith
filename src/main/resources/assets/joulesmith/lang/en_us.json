@@ -211,6 +211,7 @@
   "gui.joulesmith.energy.using": "Using %s FE/t",
   "config.jade.plugin_joulesmith.machine": "Joulesmith machine progress",
   "config.jade.plugin_joulesmith.solar_panel": "Joulesmith solar output",
+  "config.jade.plugin_joulesmith.network": "Joulesmith network and wireless info",
   "item.joulesmith.copper_coil": "Copper Coil",
   "item.joulesmith.electrum_coil": "Electrum Coil",
   "item.joulesmith.motor": "Motor",
