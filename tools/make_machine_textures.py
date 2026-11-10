@@ -3102,37 +3102,44 @@ def handbook_cover():
 
 
 def handbook_item():
-    """The Engineer's Handbook: a steel-bound book with copper corners and a gear on the cover."""
-    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    """The Engineer's Handbook, in the metal items' style: a steel-bound book lit from the top-left, a dark
+    rubber spine, cream page edges, copper corner caps and a copper gear on the cover."""
+    paper8 = ["#5e5545", "#7a705c", "#968a72", "#ada189", "#c2b79e", "#d4cab2", "#e3dbc6", "#f0ead9"]
+    cover = _mask({y: (5, 13) for y in range(2, 14)})
+    spine = _mask({y: (3, 4) for y in range(2, 15)})
+    pages = _mask({y: (14, 14) for y in range(3, 15)} | {14: (5, 13)})
+    caps = _mask({2: (12, 13), 3: (13, 13), 13: (12, 13), 12: (13, 13)})
+    img = _parts((spine, RUBBER8, 3, 7), (cover, STEEL8, 3, 7), (pages, paper8, 3, 7), (caps, COPPER8, 3, 7))
     px = img.load()
-    for y in range(2, 15):
-        for x in range(3, 14):
-            px[x, y] = rgba(STEEL8[3] if x > 4 else STEEL8[1])
-        px[13, y] = rgba(STEEL8[1])
-        px[3, y] = rgba(STEEL8[0])
-    for y in range(3, 14):
-        px[14, y] = rgba("#e8e2d0" if y % 2 else "#cfc8b2")      # page edges
-    for x in range(3, 15):
-        px[x, 14] = rgba(STEEL8[0])
-    for x in range(4, 14):
-        px[x, 2] = rgba(STEEL8[5])
-    for (x, y) in ((12, 2), (13, 2), (13, 3), (12, 13), (13, 13), (13, 12)):
-        px[x, y] = rgba(COPPER8[6])
-    gear = [(8, 5), (9, 5), (7, 6), (10, 6), (6, 7), (11, 7), (6, 8), (11, 8), (7, 9), (10, 9), (8, 10), (9, 10),
-            (8, 4), (9, 4), (5, 7), (5, 8), (12, 7), (12, 8), (8, 11), (9, 11)]
-    for (x, y) in gear:
-        px[x, y] = rgba(COPPER8[5])
-    for (x, y) in ((8, 7), (9, 7), (8, 8), (9, 8)):
-        px[x, y] = rgba(COPPER8[2])
+    for y in range(4, 14, 2):                  # page lines
+        px[14, y] = rgba(paper8[2])
+    for y in range(2, 15):                     # where the spine meets the cover
+        px[4, y] = rgba(RUBBER8[1])
+    gear = ["..#.#..",
+            ".#####.",
+            "##...##",
+            ".#...#.",
+            "##...##",
+            ".#####.",
+            "..#.#.."]
+    gx, gy = 6, 5
+    for y, row in enumerate(gear):
+        for x, c in enumerate(row):
+            if c != "#":
+                continue
+            t = x + y                          # lit from the top-left, like the metal gears
+            shade = 7 if t <= 3 else 6 if t <= 5 else 5 if t <= 7 else 3
+            px[gx + x, gy + y] = rgba(COPPER8[shade])
+    for y in range(3):                         # the gear's hole, sunk into the cover
+        for x in range(3):
+            px[gx + 2 + x, gy + 2 + y] = rgba(STEEL8[1] if x + y < 2 else STEEL8[2])
     return img
 
 
 def handbook_textures():
     os.makedirs(os.path.join(TEX, "gui", "handbook"), exist_ok=True)
     return {"item/engineers_handbook": handbook_item(), "gui/handbook/cover": handbook_cover(),
-            "gui/handbook/basic": handbook_page("#b8622a", 1), "gui/handbook/reinforced": handbook_page("#8a94a2", 2),
-            "gui/handbook/advanced": handbook_page("#c9a838", 3), "gui/handbook/elite": handbook_page("#2f74d6", 4),
-            "gui/handbook/ultimate": handbook_page("#8a34d0", 5), "gui/handbook/network": handbook_page("#2aa851", 6)}
+            "gui/handbook/page": handbook_page("#4d7fae", 1)}
 
 
 def main():

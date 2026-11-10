@@ -72,6 +72,7 @@ public final class HandbookProgress {
         modBus.addListener(HandbookProgress::payloads);
         NeoForge.EVENT_BUS.addListener(HandbookProgress::tick);
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedInEvent e) -> { if (e.getEntity() instanceof ServerPlayer p) { give(p); sync(p); } });
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.RegisterCommandsEvent e) -> HandbookCommand.register(e.getDispatcher()));
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerRespawnEvent e) -> { if (e.getEntity() instanceof ServerPlayer p) sync(p); });
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerChangedDimensionEvent e) -> { if (e.getEntity() instanceof ServerPlayer p) sync(p); });
     }
@@ -129,6 +130,12 @@ public final class HandbookProgress {
         player.setData(GIVEN, true);
         ItemStack book = new ItemStack(com.walnutbeachdigital.joulesmith.registry.JSItems.ENGINEERS_HANDBOOK.get());
         if (!player.getInventory().add(book)) player.drop(book, false);
+    }
+
+    /** Replaces a player's done quests (the commands use this) and tells their game. */
+    public static void set(ServerPlayer player, Set<String> done) {
+        player.setData(DONE, new ArrayList<>(done));
+        sync(player);
     }
 
     public static void sync(ServerPlayer player) {
