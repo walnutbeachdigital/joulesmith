@@ -1,0 +1,24 @@
+{
+  "type": "joulesmith:washing",
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 500
+  },
+  "inputs": [
+    {
+      "tag": "c:ores/silver"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:crushed_silver",
+      "count": 3
+    },
+    {
+      "id": "joulesmith:crushed_lead",
+      "chance": 0.15
+    }
+  ],
+  "energy": 3600,
+  "time": 160
+}

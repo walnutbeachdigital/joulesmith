@@ -20,7 +20,23 @@ public class ProcessingMachineBlockEntity extends RecipeMachineBlockEntity {
     /** Two inputs side by side, one main output. */
     public static final List<SlotDef> TWO_TO_ONE = List.of(SlotDef.input(35, 35), SlotDef.input(56, 35), SlotDef.output(116, 35));
 
+    /** Ore Washer: water tank on the left, one input, a main output and a byproduct. */
+    public static final List<SlotDef> WASHER = List.of(SlotDef.input(56, 35), SlotDef.output(116, 35), SlotDef.byproduct(142, 35));
+    /** Fluid Mixer: one item input between the two tanks. */
+    public static final List<SlotDef> MIXER = List.of(SlotDef.input(56, 35));
+    /** Centrifuge: one input, four outputs in a square. */
+    public static final List<SlotDef> CENTRIFUGE = List.of(SlotDef.input(56, 35),
+            SlotDef.byproduct(112, 26), SlotDef.byproduct(130, 26), SlotDef.byproduct(112, 44), SlotDef.byproduct(130, 44));
+    /** Circuit Assembler: three inputs in a triangle, one output. */
+    public static final List<SlotDef> ASSEMBLER = List.of(SlotDef.input(35, 26), SlotDef.input(53, 26), SlotDef.input(44, 44),
+            SlotDef.output(116, 35));
+
     public ProcessingMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, List<SlotDef> slots, MachineRecipeKind kind) {
         super(type, pos, state, slots, kind);
+    }
+
+    public ProcessingMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, List<SlotDef> slots,
+                                        MachineRecipeKind kind, int inputTankX, int outputTankX) {
+        super(type, pos, state, slots, kind, inputTankX, outputTankX);
     }
 }

@@ -1,0 +1,15 @@
+{
+  "type": "joulesmith:crushing",
+  "inputs": [
+    {
+      "item": "joulesmith:crushed_uranium"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:uranium_dust"
+    }
+  ],
+  "energy": 1200,
+  "time": 60
+}

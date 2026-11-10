@@ -1,0 +1,16 @@
+{
+  "type": "joulesmith:mixing",
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 1000
+  },
+  "inputs": [
+    {
+      "item": "minecraft:ice"
+    }
+  ],
+  "fluid_result": {
+    "id": "joulesmith:coolant",
+    "amount": 1000
+  }
+}

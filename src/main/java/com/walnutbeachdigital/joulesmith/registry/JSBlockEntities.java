@@ -74,12 +74,33 @@ public final class JSBlockEntities {
             BLOCK_ENTITIES.register("pump", () -> BlockEntityType.Builder
                     .of(PumpBlockEntity::new, JSBlocks.PUMP.get()).build(null));
 
+    // tier 2
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> ORE_WASHER =
+            processing("ore_washer", JSBlocks.ORE_WASHER, ProcessingMachineBlockEntity.WASHER, MachineRecipeKind.WASHING, 30, -1);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> FLUID_MIXER =
+            processing("fluid_mixer", JSBlocks.FLUID_MIXER, ProcessingMachineBlockEntity.MIXER, MachineRecipeKind.MIXING, 30, 116);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> CENTRIFUGE =
+            processing("centrifuge", JSBlocks.CENTRIFUGE, ProcessingMachineBlockEntity.CENTRIFUGE, MachineRecipeKind.CENTRIFUGING);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> CIRCUIT_ASSEMBLER =
+            processing("circuit_assembler", JSBlocks.CIRCUIT_ASSEMBLER, ProcessingMachineBlockEntity.ASSEMBLER, MachineRecipeKind.CIRCUIT_ASSEMBLING);
+
+    /** Every recipe machine's type, for registering their capabilities together. */
+    public static List<DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>>> processingMachines() {
+        return List.of(CRUSHER, ALLOY_SMELTER, COMPRESSOR, WIRE_DRAWER, SAWMILL, ORE_WASHER, FLUID_MIXER, CENTRIFUGE, CIRCUIT_ASSEMBLER);
+    }
+
     /** A recipe machine's block entity type: its block, its slot layout and the recipes it runs. */
     private static DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> processing(
             String name, Supplier<? extends Block> block, List<SlotDef> slots, MachineRecipeKind kind) {
+        return processing(name, block, slots, kind, -1, -1);
+    }
+
+    /** The same with tanks: where the input and output tank gauges go (-1 for none). */
+    private static DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> processing(
+            String name, Supplier<? extends Block> block, List<SlotDef> slots, MachineRecipeKind kind, int inputTankX, int outputTankX) {
         Holder<BlockEntityType<ProcessingMachineBlockEntity>> self = new Holder<>();
         self.value = BLOCK_ENTITIES.register(name, () -> BlockEntityType.Builder
-                .of((pos, state) -> new ProcessingMachineBlockEntity(self.value.get(), pos, state, slots, kind), block.get())
+                .of((pos, state) -> new ProcessingMachineBlockEntity(self.value.get(), pos, state, slots, kind, inputTankX, outputTankX), block.get())
                 .build(null));
         return self.value;
     }

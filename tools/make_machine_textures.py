@@ -635,6 +635,130 @@ def sawdust_item():
     return mt.paint_ramp(mt.dust(), WOOD)
 
 
+# ------------------------------------------------------------------ tier 2 machines (steel trim)
+def casing2():
+    return casing(STEEL, STEEL_TRIM)
+
+
+def ore_washer_front(on):
+    """Spray nozzles over a grate; water falls in streaks while running."""
+    img = casing2()
+    px = img.load()
+    window(img, 3, 4, 12, 11)
+    for y in range(4, 12):
+        for x in range(3, 13):
+            px[x, y] = rgba("#16181c")
+    for x in range(4, 12):                               # spray bar
+        px[x, 4] = rgba(STEEL[5])
+    for x in (5, 8, 11):
+        px[x, 5] = rgba(STEEL[3])
+        if on:
+            for y in range(6, 10):
+                if (y + x) % 2:
+                    px[x, y] = rgba(WATER[3] if y < 8 else WATER[2])
+    for x in range(3, 13):                               # grate
+        px[x, 10] = rgba(STEEL[4] if x % 2 else STEEL[2])
+        px[x, 11] = rgba(WATER[1] if on else STEEL[1])
+    for x in range(5, 11):
+        px[x, 13] = rgba(WATER[3] if on else WATER[0])
+    return img
+
+
+def fluid_mixer_front(on):
+    """A glass vat with a paddle; the liquid swirls green while running."""
+    img = casing2()
+    px = img.load()
+    window(img, 4, 3, 11, 12)
+    for y in range(3, 13):
+        for x in range(4, 12):
+            if y < 6:
+                px[x, y] = rgba("#16181c")
+            else:
+                px[x, y] = rgba(GREEN[3] if on and (x + y) % 3 == 0 else GREEN[2] if on else "#1d2a20")
+    for y in range(3, 11):                               # shaft
+        px[7, y] = rgba(STEEL[5])
+    for x in range(5, 10) if on else range(6, 9):       # paddle (wider when turning)
+        px[x, 10] = rgba(STEEL[4])
+    for x in range(4, 12):
+        px[x, 6] = rgba(GREEN[4] if on else "#2c3a30")    # surface
+    return img
+
+
+def centrifuge_front(on):
+    """A drum with four sample tubes; it blurs while spinning."""
+    import math
+    img = casing2()
+    px = img.load()
+    cx, cy = 7.5, 7.5
+    for y in range(16):
+        for x in range(16):
+            r = math.hypot(x - cx, y - cy)
+            if 4.4 < r <= 5.4:
+                px[x, y] = rgba(STEEL[1] if (x + y) < 15 else STEEL[6])
+            elif r <= 4.4:
+                px[x, y] = rgba("#16181c")
+    tubes = [(7.5, 4.5), (10.5, 7.5), (7.5, 10.5), (4.5, 7.5)] if not on else [(9.6, 5.4), (9.6, 9.6), (5.4, 9.6), (5.4, 5.4)]
+    colors = [PURPLE[5], WATER[3], GREEN[4], FIRE[4]]
+    for (tx, ty), c in zip(tubes, colors):
+        px[int(tx), int(ty)] = rgba(c)
+        px[int(tx) + (1 if tx > cx else -1 if tx < cx else 0), int(ty) + (1 if ty > cy else -1 if ty < cy else 0)] = rgba(STEEL[4])
+    px[7, 7] = rgba(STEEL[5])
+    px[8, 8] = rgba(STEEL[3])
+    if on:
+        for a in range(0, 360, 30):
+            x = int(round(cx + 3.6 * math.cos(math.radians(a))))
+            y = int(round(cy + 3.6 * math.sin(math.radians(a))))
+            if px[x, y][:3] == rgba("#16181c")[:3]:
+                px[x, y] = rgba(STEEL[2])
+    return img
+
+
+def circuit_assembler_front(on):
+    """A green board under a soldering arm; the tip glows while running."""
+    img = casing2()
+    px = img.load()
+    window(img, 3, 4, 12, 11)
+    board = ["#0f2a12", "#1d4d22", "#2e7a33", "#43a547"]
+    for y in range(4, 12):
+        for x in range(3, 13):
+            px[x, y] = rgba(board[2] if y >= 8 else "#16181c")
+    for x in range(4, 12, 2):                              # traces on the board
+        px[x, 9] = rgba(COPPER[3])
+    px[6, 10] = rgba("#121212")
+    px[7, 10] = rgba("#121212")
+    for x in range(4, 10):                                 # arm
+        px[x, 5] = rgba(STEEL[5])
+    px[9, 6] = rgba(STEEL[4])
+    px[9, 7] = rgba(FIRE[5] if on else STEEL[2])
+    if on:
+        px[10, 8] = rgba(FIRE[6])
+    return img
+
+
+def basic_circuit_item():
+    """A small green board with copper traces and one black chip."""
+    board = ["#0f2a12", "#1d4d22", "#2e7a33", "#43a547", "#6bd06a"]
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    for y in range(3, 13):
+        for x in range(2, 14):
+            edge = x in (2, 13) or y in (3, 12)
+            px[x, y] = rgba(board[0] if edge else board[3] if (x + y) < 13 else board[2])
+    for x in range(3, 13):
+        if x not in (6, 7, 8, 9):
+            px[x, 7] = rgba(COPPER[3])
+    for y in (4, 5, 9, 10, 11):
+        px[4, y] = rgba(COPPER[3])
+        px[11, y] = rgba(COPPER[2])
+    for y in range(5, 10):                                 # chip
+        for x in range(6, 10):
+            px[x, y] = rgba("#222226" if (x, y) != (6, 5) else "#55555c")
+    for y in (5, 7, 9):
+        px[5, y] = rgba(STEEL[6])
+        px[10, y] = rgba(STEEL[6])
+    return img
+
+
 # ------------------------------------------------------------------ screen
 LIGHT = (255, 255, 255, 255)
 
@@ -769,6 +893,15 @@ def main():
         "block/sawmill_front": sawmill_front(False),
         "block/sawmill_front_on": sawmill_front(True),
         "item/sawdust": sawdust_item(),
+        "item/basic_circuit": basic_circuit_item(),
+        "block/ore_washer_front": ore_washer_front(False),
+        "block/ore_washer_front_on": ore_washer_front(True),
+        "block/fluid_mixer_front": fluid_mixer_front(False),
+        "block/fluid_mixer_front_on": fluid_mixer_front(True),
+        "block/centrifuge_front": centrifuge_front(False),
+        "block/centrifuge_front_on": centrifuge_front(True),
+        "block/circuit_assembler_front": circuit_assembler_front(False),
+        "block/circuit_assembler_front_on": circuit_assembler_front(True),
         **{f"item/{u}_upgrade": upgrade_card(*art) for u, art in UPGRADE_ART.items()},
         "gui/machine": gui(),
     }

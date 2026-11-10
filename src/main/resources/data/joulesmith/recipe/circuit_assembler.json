@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PWP",
+    "GMG",
+    "PRP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/bronze"
+    },
+    "W": {
+      "tag": "c:wires/copper"
+    },
+    "G": {
+      "tag": "c:gears/copper"
+    },
+    "M": {
+      "item": "minecraft:crafter"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:circuit_assembler",
+    "count": 1
+  }
+}

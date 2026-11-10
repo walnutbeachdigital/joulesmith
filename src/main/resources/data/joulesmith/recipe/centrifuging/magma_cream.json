@@ -1,0 +1,16 @@
+{
+  "type": "joulesmith:centrifuging",
+  "inputs": [
+    {
+      "item": "minecraft:magma_cream"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:slime_ball"
+    },
+    {
+      "id": "minecraft:blaze_powder"
+    }
+  ]
+}

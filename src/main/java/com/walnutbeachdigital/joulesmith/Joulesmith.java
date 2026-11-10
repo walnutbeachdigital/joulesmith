@@ -8,6 +8,7 @@ import com.walnutbeachdigital.joulesmith.registry.JSBlocks;
 import com.walnutbeachdigital.joulesmith.registry.JSCapabilities;
 import com.walnutbeachdigital.joulesmith.registry.JSCreativeTabs;
 import com.walnutbeachdigital.joulesmith.registry.JSDataComponents;
+import com.walnutbeachdigital.joulesmith.registry.JSFluids;
 import com.walnutbeachdigital.joulesmith.registry.JSItems;
 import com.walnutbeachdigital.joulesmith.registry.JSMenus;
 import com.walnutbeachdigital.joulesmith.registry.JSRecipes;
@@ -23,6 +24,8 @@ public class Joulesmith {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public Joulesmith(IEventBus modEventBus, ModContainer modContainer) {
+        JSFluids.TYPES.register(modEventBus);          // also adds the fluid blocks and buckets
+        JSFluids.FLUIDS.register(modEventBus);
         JSBlocks.BLOCKS.register(modEventBus);
         JSItems.ITEMS.register(modEventBus);
         JSCreativeTabs.TABS.register(modEventBus);

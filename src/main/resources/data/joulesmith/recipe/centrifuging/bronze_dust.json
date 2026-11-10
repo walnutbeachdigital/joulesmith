@@ -1,0 +1,18 @@
+{
+  "type": "joulesmith:centrifuging",
+  "inputs": [
+    {
+      "tag": "c:dusts/bronze",
+      "count": 4
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:copper_dust",
+      "count": 3
+    },
+    {
+      "id": "joulesmith:tin_dust"
+    }
+  ]
+}

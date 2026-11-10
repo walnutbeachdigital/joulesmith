@@ -1,0 +1,19 @@
+{
+  "type": "joulesmith:centrifuging",
+  "inputs": [
+    {
+      "tag": "c:dusts/glowstone",
+      "count": 2
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:redstone"
+    },
+    {
+      "id": "minecraft:gold_nugget",
+      "count": 2,
+      "chance": 0.5
+    }
+  ]
+}

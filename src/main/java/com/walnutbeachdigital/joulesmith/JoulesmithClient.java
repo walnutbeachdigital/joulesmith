@@ -5,13 +5,20 @@ import com.walnutbeachdigital.joulesmith.client.FluidTankRenderer;
 import com.walnutbeachdigital.joulesmith.client.MachineScreen;
 import com.walnutbeachdigital.joulesmith.client.MetalTexturePack;
 import com.walnutbeachdigital.joulesmith.registry.JSBlockEntities;
+import com.walnutbeachdigital.joulesmith.registry.JSFluids;
 import com.walnutbeachdigital.joulesmith.registry.JSMenus;
 
 import net.minecraft.server.packs.PackType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 
@@ -22,6 +29,30 @@ public class JoulesmithClient {
         modEventBus.addListener(JoulesmithClient::addPacks);
         modEventBus.addListener(JoulesmithClient::screens);
         modEventBus.addListener(JoulesmithClient::renderers);
+        modEventBus.addListener(JoulesmithClient::fluids);
+        modEventBus.addListener(JoulesmithClient::setup);
+    }
+
+    /** Joulesmith fluids reuse vanilla's water textures, tinted to each fluid's colour. */
+    private static void fluids(RegisterClientExtensionsEvent event) {
+        for (JSFluids.Entry fluid : JSFluids.ALL) {
+            event.registerFluidType(new IClientFluidTypeExtensions() {
+                @Override public ResourceLocation getStillTexture() { return ResourceLocation.withDefaultNamespace("block/water_still"); }
+                @Override public ResourceLocation getFlowingTexture() { return ResourceLocation.withDefaultNamespace("block/water_flow"); }
+                @Override public ResourceLocation getOverlayTexture() { return ResourceLocation.withDefaultNamespace("block/water_overlay"); }
+                @Override public int getTintColor() { return fluid.color; }
+            }, fluid.type.get());
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private static void setup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            for (JSFluids.Entry fluid : JSFluids.ALL) {        // see-through, like water
+                ItemBlockRenderTypes.setRenderLayer(fluid.source.get(), RenderType.translucent());
+                ItemBlockRenderTypes.setRenderLayer(fluid.flowing.get(), RenderType.translucent());
+            }
+        });
     }
 
     private static void renderers(EntityRenderersEvent.RegisterRenderers event) {

@@ -1,0 +1,17 @@
+{
+  "type": "joulesmith:mixing",
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 500
+  },
+  "inputs": [
+    {
+      "item": "joulesmith:sawdust",
+      "count": 4
+    }
+  ],
+  "fluid_result": {
+    "id": "joulesmith:biofuel",
+    "amount": 500
+  }
+}

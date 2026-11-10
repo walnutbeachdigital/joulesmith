@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "GMG",
+    "PRP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "joulesmith:basic_circuit"
+    },
+    "G": {
+      "tag": "c:gears/bronze"
+    },
+    "M": {
+      "item": "minecraft:cauldron"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:ore_washer",
+    "count": 1
+  }
+}

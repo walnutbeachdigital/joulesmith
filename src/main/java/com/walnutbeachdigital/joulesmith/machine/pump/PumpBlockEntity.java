@@ -53,13 +53,8 @@ public class PumpBlockEntity extends MachineBlockEntity {
     }
 
     @Override
-    public FluidTank fluidTank() {
-        return tank;
-    }
-
-    @Override
-    public int tankX() {
-        return 80;
+    public List<TankDef> tanks() {
+        return List.of(new TankDef(tank, 80));
     }
 
     @Override
@@ -157,15 +152,4 @@ public class PumpBlockEntity extends MachineBlockEntity {
         };
     }
 
-    @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        tag.put("Tank", tank.writeToNBT(registries, new CompoundTag()));
-    }
-
-    @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        tank.readFromNBT(registries, tag.getCompound("Tank"));
-    }
 }

@@ -1,0 +1,15 @@
+{
+  "type": "joulesmith:crushing",
+  "inputs": [
+    {
+      "item": "joulesmith:crushed_copper"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:copper_dust"
+    }
+  ],
+  "energy": 1200,
+  "time": 60
+}

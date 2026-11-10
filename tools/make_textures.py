@@ -297,6 +297,44 @@ def raw(seed):
     return outline(lv, mask)
 
 
+def crushed(seed):
+    """Crushed ore: a low heap of angular metal pieces. Each piece is lit on its top-left; the cracks
+    between pieces and the heap's lower-right edge fall into shadow."""
+    r = random.Random(seed)
+    rows = {4: (6, 9), 5: (4, 11), 6: (3, 12), 7: (2, 13), 8: (2, 13), 9: (1, 14), 10: (1, 14),
+            11: (1, 14), 12: (2, 13), 13: (3, 12)}
+    mask = [[False] * 16 for _ in range(16)]
+    for y, (x0, x1) in rows.items():
+        for x in range(x0, x1 + 1):
+            mask[y][x] = True
+    seeds = [(r.uniform(1, 14), r.uniform(4, 13)) for _ in range(9)]
+    owner = [[None] * 16 for _ in range(16)]
+    for y in range(16):
+        for x in range(16):
+            if mask[y][x]:
+                # squared distance with a slant, so the pieces come out angular rather than round
+                owner[y][x] = min(range(len(seeds)), key=lambda i: abs(x - seeds[i][0]) * 1.3 + abs(y - seeds[i][1]))
+    lv = blank()
+    for y in range(16):
+        for x in range(16):
+            if not mask[y][x]:
+                continue
+            o = owner[y][x]
+            same = lambda dx, dy: 0 <= x + dx < 16 and 0 <= y + dy < 16 and owner[y + dy][x + dx] == o
+            if not same(1, 0) or not same(0, 1):
+                v = 1                                   # crack or shadowed edge
+            elif not same(-1, 0) or not same(0, -1):
+                v = 6 if (x + y + o) % 3 else 7         # lit edge of a piece
+            else:
+                v = 4 if (x * 3 + y + o) % 4 else 5
+            lv[y][x] = v
+    for y in range(16):                                # the heap's own lower-right rim is darkest
+        for x in range(16):
+            if mask[y][x] and ((x + 1 > 15 or not mask[y][x + 1]) or (y + 1 > 15 or not mask[y + 1][x])):
+                lv[y][x] = 0
+    return lv
+
+
 # --------------------------------------------------------------------- blocks
 # ---------------------------------------------------------------- metal blocks
 # Each metal's block has its own pattern; all use the metal's eight-step ramp (0 darkest .. 7 brightest)
@@ -629,6 +667,8 @@ def draw(kind, name):
     if kind == "item":
         if name.startswith("raw_"):
             return paint(raw(seed), m)
+        if name.startswith("crushed_"):
+            return paint8(crushed(seed), m)
         form = name.rsplit("_", 1)[1]
         if form == "wire":
             spool, wound = wire()

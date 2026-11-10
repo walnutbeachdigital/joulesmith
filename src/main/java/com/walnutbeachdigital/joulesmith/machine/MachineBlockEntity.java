@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -47,7 +48,12 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
      * One run of a machine: what it makes (some outputs only by chance), how long it takes, the energy it
      * uses each tick before upgrades, and how many items it takes from each of the machine's slots.
      */
-    public record Process(List<ChanceResult> outputs, int ticks, int energyPerTick, int[] consume) {
+    public record Process(List<ChanceResult> outputs, int ticks, int energyPerTick, int[] consume,
+                          FluidStack fluidIn, FluidStack fluidOut) {
+        public Process(List<ChanceResult> outputs, int ticks, int energyPerTick, int[] consume) {
+            this(outputs, ticks, energyPerTick, consume, FluidStack.EMPTY, FluidStack.EMPTY);
+        }
+
         /** A run with one sure output that uses {@code count} items from slot {@code slot}. */
         public static Process simple(ItemStack result, int ticks, int energyPerTick, int slotCount, int slot, int count) {
             int[] consume = new int[slotCount];
@@ -207,6 +213,8 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         for (int i = 0; i < Math.min(consume.length, slots.size()); i++) {
             if (consume[i] > 0) items.extractItem(i, consume[i], false);
         }
+        if (!process.fluidIn().isEmpty() && inputTank() != null) inputTank().drain(process.fluidIn(), IFluidHandler.FluidAction.EXECUTE);
+        if (!process.fluidOut().isEmpty() && outputTank() != null) outputTank().fill(process.fluidOut(), IFluidHandler.FluidAction.EXECUTE);
         int bonus = upgrades(UpgradeCardItem.Type.BONUS);
         RandomSource random = level != null ? level.random : RandomSource.create();
         boolean first = true;
@@ -256,6 +264,10 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
                 }
             }
             if (!left.isEmpty()) return false;
+        }
+        if (!process.fluidOut().isEmpty()) {
+            FluidTank out = outputTank();
+            if (out == null || out.fill(process.fluidOut(), IFluidHandler.FluidAction.SIMULATE) < process.fluidOut().getAmount()) return false;
         }
         return true;
     }
@@ -326,19 +338,43 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         return energy;
     }
 
-    /** The machine's fluid tank, shown as a gauge on its screen, or null if it has none. */
-    public FluidTank fluidTank() {
+    /** One fluid tank and where its gauge sits on the screen. */
+    public record TankDef(FluidTank tank, int x) {}
+
+    /** The machine's tanks, shown as gauges on its screen (at most two). Saved and synced by the base. */
+    public List<TankDef> tanks() {
+        return List.of();
+    }
+
+    /** The tank recipes drain from and pipes fill, or null. */
+    protected FluidTank inputTank() {
         return null;
     }
 
-    /** Where the fluid gauge sits on the screen. */
-    public int tankX() {
-        return 152;
+    /** The tank recipes fill and pipes drain, or null. */
+    protected FluidTank outputTank() {
+        return null;
     }
 
-    /** What pipes see on a face for fluids. None by default. */
+    /**
+     * What pipes and buckets see for fluids: on faces that take input, filling goes into the input tank;
+     * on faces that give output, draining comes from the output tank. {@code side} null: both.
+     */
     public IFluidHandler fluidHandler(Direction side) {
-        return null;
+        FluidTank in = inputTank(), out = outputTank();
+        if (in == null && out == null) return null;
+        SideMode mode = side == null ? SideMode.BOTH : sideMode(MachineFace.of(facing(), side));
+        if (mode == SideMode.NONE) return null;
+        boolean fill = mode.accepts() && in != null, drain = mode.gives() && out != null;
+        return new IFluidHandler() {
+            @Override public int getTanks() { return 2; }
+            @Override public FluidStack getFluidInTank(int i) { FluidTank t = i == 0 ? in : out; return t == null ? FluidStack.EMPTY : t.getFluid(); }
+            @Override public int getTankCapacity(int i) { FluidTank t = i == 0 ? in : out; return t == null ? 0 : t.getCapacity(); }
+            @Override public boolean isFluidValid(int i, FluidStack stack) { return i == 0 && fill && in.isFluidValid(stack); }
+            @Override public int fill(FluidStack resource, FluidAction action) { return fill ? in.fill(resource, action) : 0; }
+            @Override public FluidStack drain(FluidStack resource, FluidAction action) { return drain ? out.drain(resource, action) : FluidStack.EMPTY; }
+            @Override public FluidStack drain(int maxDrain, FluidAction action) { return drain ? out.drain(maxDrain, action) : FluidStack.EMPTY; }
+        };
     }
 
     /** What cables see on a face. By default the whole store, on every face. */
@@ -407,9 +443,9 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
     /**
      * Values the screen shows: 0 energy, 1 capacity, 2 progress, 3 max progress, 4 redstone mode,
-     * 5 face settings, 6 fluid (registry id), 7 fluid amount, 8 tank capacity.
+     * 5 face settings, then for each of up to two tanks: fluid (registry id), amount, capacity.
      */
-    public static final int VALUES = 9;
+    public static final int MAX_TANKS = 2, VALUES = 6 + 3 * MAX_TANKS;
 
     public int value(int index) {
         return switch (index) {
@@ -423,10 +459,17 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
                 for (int f = 0; f < sides.length; f++) packed |= sides[f].ordinal() << (f * 2);
                 yield packed;
             }
-            case 6 -> fluidTank() == null || fluidTank().isEmpty() ? 0 : BuiltInRegistries.FLUID.getId(fluidTank().getFluid().getFluid());
-            case 7 -> fluidTank() == null ? 0 : fluidTank().getFluidAmount();
-            case 8 -> fluidTank() == null ? 0 : fluidTank().getCapacity();
-            default -> 0;
+            default -> {
+                int t = (index - 6) / 3;
+                List<TankDef> tanks = tanks();
+                if (index < 6 || t >= tanks.size()) yield 0;
+                FluidTank tank = tanks.get(t).tank();
+                yield switch ((index - 6) % 3) {
+                    case 0 -> tank.isEmpty() ? 0 : BuiltInRegistries.FLUID.getId(tank.getFluid().getFluid());
+                    case 1 -> tank.getFluidAmount();
+                    default -> tank.getCapacity();
+                };
+            }
         };
     }
 
@@ -479,6 +522,10 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         for (int f = 0; f < sides.length; f++) faces[f] = sides[f].ordinal();
         tag.putIntArray("Sides", faces);
         tag.putInt("Progress", progress);
+        List<TankDef> tanks = tanks();
+        for (int t = 0; t < tanks.size(); t++) {
+            tag.put(t == 0 ? "Tank" : "Tank" + t, tanks.get(t).tank().writeToNBT(registries, new CompoundTag()));
+        }
     }
 
     @Override
@@ -499,5 +546,9 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
             sides[f] = SideMode.values()[Math.floorMod(faces[f], SideMode.values().length)];
         }
         progress = tag.getInt("Progress");
+        List<TankDef> tanks = tanks();
+        for (int t = 0; t < tanks.size(); t++) {
+            tanks.get(t).tank().readFromNBT(registries, tag.getCompound(t == 0 ? "Tank" : "Tank" + t));
+        }
     }
 }

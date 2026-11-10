@@ -33,7 +33,7 @@ public class MachineMenu extends AbstractContainerMenu {
     private final ContainerData data;
     private final List<SlotDef> slotDefs;
     private final MachineBlockEntity.ProgressStyle progressStyle;
-    private final int tankX;
+    private final int[] tankXs;
     private final ResourceLocation recipeCategory;
 
     /** Server side: wraps the real machine. */
@@ -55,7 +55,7 @@ public class MachineMenu extends AbstractContainerMenu {
         }
         this.slotDefs = be.slotDefs();
         this.progressStyle = be.progressStyle();
-        this.tankX = be.tankX();
+        this.tankXs = be.tanks().stream().mapToInt(MachineBlockEntity.TankDef::x).toArray();
         this.recipeCategory = be.recipeCategory();
         IItemHandler handler = items != null ? items : be.items();     // the client copy follows the same slot rules
         this.data = data != null ? data : new SimpleContainerData(MachineBlockEntity.VALUES * 2);
@@ -101,20 +101,24 @@ public class MachineMenu extends AbstractContainerMenu {
         return recipeCategory;
     }
 
-    public int tankX() {
-        return tankX;
+    public int tankCount() {
+        return tankXs.length;
     }
 
-    /** The fluid in the machine's tank (amount included), or empty. */
-    public FluidStack fluid() {
-        int amount = value(7);
+    public int tankX(int tank) {
+        return tankXs[tank];
+    }
+
+    /** The fluid in one of the machine's tanks (amount included), or empty. */
+    public FluidStack fluid(int tank) {
+        int amount = value(7 + tank * 3);
         if (amount <= 0) return FluidStack.EMPTY;
-        Fluid fluid = BuiltInRegistries.FLUID.byId(value(6));
+        Fluid fluid = BuiltInRegistries.FLUID.byId(value(6 + tank * 3));
         return fluid == Fluids.EMPTY ? FluidStack.EMPTY : new FluidStack(fluid, amount);
     }
 
-    public int tankCapacity() {
-        return value(8);
+    public int tankCapacity(int tank) {
+        return value(8 + tank * 3);
     }
 
     public RedstoneMode redstoneMode() {

@@ -1,0 +1,22 @@
+{
+  "type": "joulesmith:washing",
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 500
+  },
+  "inputs": [
+    {
+      "tag": "c:raw_materials/iron"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:crushed_iron",
+      "count": 3
+    },
+    {
+      "id": "minecraft:gravel",
+      "chance": 0.1
+    }
+  ]
+}

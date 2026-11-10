@@ -1,0 +1,15 @@
+{
+  "type": "joulesmith:crushing",
+  "inputs": [
+    {
+      "item": "joulesmith:crushed_nickel"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:nickel_dust"
+    }
+  ],
+  "energy": 1200,
+  "time": 60
+}

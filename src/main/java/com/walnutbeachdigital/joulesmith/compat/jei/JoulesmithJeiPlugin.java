@@ -45,7 +45,11 @@ public class JoulesmithJeiPlugin implements IModPlugin {
                 MachineRecipeKind.ALLOY_SMELTING, JSBlocks.ALLOY_SMELTER.get(),
                 MachineRecipeKind.COMPRESSING, JSBlocks.COMPRESSOR.get(),
                 MachineRecipeKind.WIRE_DRAWING, JSBlocks.WIRE_DRAWER.get(),
-                MachineRecipeKind.SAWING, JSBlocks.SAWMILL.get());
+                MachineRecipeKind.SAWING, JSBlocks.SAWMILL.get(),
+                MachineRecipeKind.WASHING, JSBlocks.ORE_WASHER.get(),
+                MachineRecipeKind.MIXING, JSBlocks.FLUID_MIXER.get(),
+                MachineRecipeKind.CENTRIFUGING, JSBlocks.CENTRIFUGE.get(),
+                MachineRecipeKind.CIRCUIT_ASSEMBLING, JSBlocks.CIRCUIT_ASSEMBLER.get());
     }
 
     @Override

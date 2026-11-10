@@ -1,0 +1,25 @@
+{
+  "type": "joulesmith:centrifuging",
+  "inputs": [
+    {
+      "tag": "c:gravels"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:sand"
+    },
+    {
+      "id": "minecraft:flint",
+      "chance": 0.25
+    },
+    {
+      "id": "minecraft:iron_nugget",
+      "chance": 0.05
+    },
+    {
+      "id": "minecraft:gold_nugget",
+      "chance": 0.02
+    }
+  ]
+}

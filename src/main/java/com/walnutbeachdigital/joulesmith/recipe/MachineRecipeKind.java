@@ -15,7 +15,11 @@ public enum MachineRecipeKind {
     ALLOY_SMELTING("alloy_smelting", 4000, 160),
     COMPRESSING("compressing", 2400, 80),
     WIRE_DRAWING("wire_drawing", 1600, 80),
-    SAWING("sawing", 1200, 60);
+    SAWING("sawing", 1200, 60),
+    WASHING("washing", 2400, 120),
+    MIXING("mixing", 2000, 80),
+    CENTRIFUGING("centrifuging", 3200, 120),
+    CIRCUIT_ASSEMBLING("circuit_assembling", 3000, 100);
 
     private final String id;
     private final int defaultEnergy;

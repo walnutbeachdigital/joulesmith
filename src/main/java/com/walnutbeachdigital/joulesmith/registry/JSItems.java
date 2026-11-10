@@ -36,6 +36,8 @@ public final class JSItems {
     public static final DeferredItem<WrenchItem> WRENCH = register("wrench", () -> new WrenchItem(new Item.Properties().stacksTo(1)));
     public static final Map<UpgradeCardItem.Type, DeferredItem<UpgradeCardItem>> UPGRADE = new EnumMap<>(UpgradeCardItem.Type.class);
     public static final DeferredItem<Item> SAWDUST = ITEMS.registerSimpleItem("sawdust");
+    public static final DeferredItem<Item> BASIC_CIRCUIT = ITEMS.registerSimpleItem("basic_circuit");
+    public static final Map<Metal, DeferredItem<Item>> CRUSHED = new EnumMap<>(Metal.class);
     public static final DeferredItem<FilterCardItem> FILTER_CARD = register("filter_card", () -> new FilterCardItem(new Item.Properties().stacksTo(16)));
 
     static {
@@ -48,10 +50,15 @@ public final class JSItems {
         blockItem(JSBlocks.COMPRESSOR);
         blockItem(JSBlocks.WIRE_DRAWER);
         blockItem(JSBlocks.SAWMILL);
+        blockItem(JSBlocks.ORE_WASHER);
+        blockItem(JSBlocks.FLUID_MIXER);
+        blockItem(JSBlocks.CENTRIFUGE);
+        blockItem(JSBlocks.CIRCUIT_ASSEMBLER);
         for (UpgradeCardItem.Type type : UpgradeCardItem.Type.values()) {
             UPGRADE.put(type, register(type.id() + "_upgrade", () -> new UpgradeCardItem(type, new Item.Properties().stacksTo(16))));
         }
         TAB_ORDER.add(SAWDUST);
+        TAB_ORDER.add(BASIC_CIRCUIT);
         blockItem(JSBlocks.PUMP);
         blockItem(JSBlocks.ITEM_DUCT);
         blockItem(JSBlocks.REINFORCED_ITEM_DUCT);
@@ -66,6 +73,9 @@ public final class JSItems {
                 blockItem(JSBlocks.DEEPSLATE_ORE.get(metal));
                 blockItem(JSBlocks.RAW_BLOCK.get(metal));
                 RAW.put(metal, item("raw_" + id));
+            }
+            if (metal.hasOre() || !metal.hasIngot()) {         // ore metals and vanilla's iron, copper, gold
+                CRUSHED.put(metal, item("crushed_" + id));
             }
             if (metal.hasIngot()) {
                 blockItem(JSBlocks.STORAGE_BLOCK.get(metal));

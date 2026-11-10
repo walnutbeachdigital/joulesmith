@@ -1,0 +1,15 @@
+{
+  "type": "joulesmith:crushing",
+  "inputs": [
+    {
+      "item": "joulesmith:crushed_lead"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:lead_dust"
+    }
+  ],
+  "energy": 1200,
+  "time": 60
+}

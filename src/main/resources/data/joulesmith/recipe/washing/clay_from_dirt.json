@@ -1,0 +1,24 @@
+{
+  "type": "joulesmith:washing",
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 250
+  },
+  "inputs": [
+    {
+      "item": "minecraft:dirt"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:clay_ball",
+      "count": 2
+    },
+    {
+      "id": "minecraft:flint",
+      "chance": 0.05
+    }
+  ],
+  "energy": 1200,
+  "time": 60
+}

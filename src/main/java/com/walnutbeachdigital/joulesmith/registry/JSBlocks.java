@@ -70,6 +70,10 @@ public final class JSBlocks {
     public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> COMPRESSOR = processing("compressor", () -> JSBlockEntities.COMPRESSOR.get());
     public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> WIRE_DRAWER = processing("wire_drawer", () -> JSBlockEntities.WIRE_DRAWER.get());
     public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> SAWMILL = processing("sawmill", () -> JSBlockEntities.SAWMILL.get());
+    public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> ORE_WASHER = processing("ore_washer", () -> JSBlockEntities.ORE_WASHER.get());
+    public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> FLUID_MIXER = processing("fluid_mixer", () -> JSBlockEntities.FLUID_MIXER.get());
+    public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> CENTRIFUGE = processing("centrifuge", () -> JSBlockEntities.CENTRIFUGE.get());
+    public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> CIRCUIT_ASSEMBLER = processing("circuit_assembler", () -> JSBlockEntities.CIRCUIT_ASSEMBLER.get());
 
     /** A recipe machine block; its block entity type knows the slots and recipes. */
     private static DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> processing(

@@ -12,7 +12,10 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 public final class JSCapabilities {
     public static void register(RegisterCapabilitiesEvent event) {
         machine(event, JSBlockEntities.ELECTRIC_FURNACE.get());
-        machine(event, JSBlockEntities.CRUSHER.get());
+        for (var type : JSBlockEntities.processingMachines()) {
+            machine(event, type.get());
+            event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, type.get(), (m, side) -> m.fluidHandler(side));
+        }
         machine(event, JSBlockEntities.COMBUSTION_GENERATOR.get());
         machine(event, JSBlockEntities.BASIC_BATTERY.get());
         machine(event, JSBlockEntities.PUMP.get());

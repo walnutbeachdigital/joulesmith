@@ -1,0 +1,15 @@
+{
+  "type": "joulesmith:crushing",
+  "inputs": [
+    {
+      "item": "joulesmith:crushed_gold"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:gold_dust"
+    }
+  ],
+  "energy": 1200,
+  "time": 60
+}

@@ -1,0 +1,21 @@
+{
+  "type": "joulesmith:circuit_assembling",
+  "inputs": [
+    {
+      "tag": "c:wires/copper",
+      "count": 2
+    },
+    {
+      "tag": "c:dusts/redstone",
+      "count": 2
+    },
+    {
+      "tag": "c:plates/tin"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:basic_circuit"
+    }
+  ]
+}

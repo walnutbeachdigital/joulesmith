@@ -103,8 +103,16 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
             }
             case NONE -> { }
         }
-        if (menu.tankCapacity() > 0) drawTank(g, x + menu.tankX(), y + TANK_Y);
+        for (int t = 0; t < menu.tankCount(); t++) drawTank(g, t, x + menu.tankX(t), y + TANK_Y);
         drawTabs(g, x + imageWidth, y);
+    }
+
+    private int tankAt(double rx, double ry) {
+        for (int t = 0; t < menu.tankCount(); t++) {
+            int tx = menu.tankX(t);
+            if (rx >= tx && rx < tx + 16 && ry >= TANK_Y && ry < TANK_Y + 50) return t;
+        }
+        return -1;
     }
 
     private boolean hasUpgrades() {
@@ -140,10 +148,10 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
     public static int arrowY() { return ARROW_Y; }
 
     /** A fluid gauge: the same frame as the energy bar, filled from the bottom with the fluid's own texture. */
-    private void drawTank(GuiGraphics g, int x, int y) {
+    private void drawTank(GuiGraphics g, int t, int x, int y) {
         g.blit(TEXTURE, x, y, BAR_U, BAR_V, 16, 50);
-        FluidStack fluid = menu.fluid();
-        int capacity = Math.max(1, menu.tankCapacity());
+        FluidStack fluid = menu.fluid(t);
+        int capacity = Math.max(1, menu.tankCapacity(t));
         if (!fluid.isEmpty()) {
             int h = Math.max(1, (int) Math.round(48.0 * Math.min(fluid.getAmount(), capacity) / capacity));
             IClientFluidTypeExtensions ext = IClientFluidTypeExtensions.of(fluid.getFluid());
@@ -262,9 +270,10 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
         List<Component> tip = new ArrayList<>();
         if (rx >= BAR_X && rx < BAR_X + 16 && ry >= BAR_Y && ry < BAR_Y + 50) {
             tip.add(Component.translatable("gui.joulesmith.energy", String.format("%,d", menu.value(0)), String.format("%,d", menu.value(1))));
-        } else if (menu.tankCapacity() > 0 && rx >= menu.tankX() && rx < menu.tankX() + 16 && ry >= TANK_Y && ry < TANK_Y + 50) {
-            FluidStack fluid = menu.fluid();
-            String cap = String.format("%,d", menu.tankCapacity());
+        } else if (tankAt(rx, ry) >= 0) {
+            int t = tankAt(rx, ry);
+            FluidStack fluid = menu.fluid(t);
+            String cap = String.format("%,d", menu.tankCapacity(t));
             tip.add(fluid.isEmpty() ? Component.translatable("message.joulesmith.fluid.empty", cap)
                     : Component.translatable("message.joulesmith.fluid", fluid.getHoverName(), String.format("%,d", fluid.getAmount()), cap));
         } else if (menu.progressStyle() == MachineBlockEntity.ProgressStyle.ARROW

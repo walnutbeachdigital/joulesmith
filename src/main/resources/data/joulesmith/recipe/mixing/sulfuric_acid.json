@@ -1,0 +1,16 @@
+{
+  "type": "joulesmith:mixing",
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 1000
+  },
+  "inputs": [
+    {
+      "tag": "c:gunpowders"
+    }
+  ],
+  "fluid_result": {
+    "id": "joulesmith:sulfuric_acid",
+    "amount": 1000
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "joulesmith:centrifuging",
+  "inputs": [
+    {
+      "tag": "c:dusts/electrum",
+      "count": 2
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:gold_dust"
+    },
+    {
+      "id": "joulesmith:silver_dust"
+    }
+  ]
+}

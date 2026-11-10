@@ -23,6 +23,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 /**
  * Shared block for Joulesmith machines: faces the player when placed, lights its front while running,
@@ -62,12 +64,21 @@ public abstract class MachineBlock extends BaseEntityBlock {
         return RenderShape.MODEL;
     }
 
-    /** Holding a wrench: let the wrench turn the machine instead of opening its screen. */
+    /**
+     * Holding a wrench: let the wrench turn the machine instead of opening its screen. Holding a bucket
+     * (or any fluid container): fill the machine's input tank or empty its output tank.
+     */
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
                                               InteractionHand hand, BlockHitResult hit) {
-        return stack.getItem() instanceof WrenchItem ? ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION
-                : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (stack.getItem() instanceof WrenchItem) return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        if (FluidUtil.getFluidHandler(stack).isPresent() && level.getBlockEntity(pos) instanceof MachineBlockEntity machine) {
+            IFluidHandler tanks = machine.fluidHandler(null);
+            if (tanks != null && FluidUtil.interactWithFluidHandler(player, hand, tanks)) {
+                return ItemInteractionResult.sidedSuccess(level.isClientSide);
+            }
+        }
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

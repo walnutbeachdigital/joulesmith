@@ -1,0 +1,17 @@
+{
+  "type": "joulesmith:centrifuging",
+  "inputs": [
+    {
+      "tag": "c:dusts/steel"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:iron_dust"
+    },
+    {
+      "id": "minecraft:coal",
+      "chance": 0.5
+    }
+  ]
+}

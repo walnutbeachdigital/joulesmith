@@ -50,13 +50,18 @@ public class MachineRecipeCategory implements IRecipeCategory<RecipeHolder<Machi
     @Override public RecipeType<RecipeHolder<MachineRecipe>> getRecipeType() { return type; }
     @Override public Component getTitle() { return Component.translatable(kind.titleKey()); }
     @Override public IDrawable getIcon() { return icon; }
-    @Override public int getWidth() { return 140; }
+    @Override public int getWidth() { return 168; }
     @Override public int getHeight() { return 44; }
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<MachineRecipe> holder, IFocusGroup focuses) {
         MachineRecipe recipe = holder.value();
         int x = 2;
+        if (!recipe.fluid().isEmpty()) {
+            builder.addSlot(RecipeIngredientRole.INPUT, x, 6).setStandardSlotBackground()
+                    .addFluidStack(recipe.fluid().getFluid(), recipe.fluid().getAmount());
+            x += 19;
+        }
         for (CountedIngredient input : recipe.inputs()) {
             builder.addSlot(RecipeIngredientRole.INPUT, x, 6).setStandardSlotBackground().addItemStacks(input.displayStacks());
             x += 19;
@@ -79,12 +84,16 @@ public class MachineRecipeCategory implements IRecipeCategory<RecipeHolder<Machi
             }
             first = false;
         }
+        if (!recipe.fluidResult().isEmpty()) {
+            builder.addSlot(RecipeIngredientRole.OUTPUT, first ? OUT_X + 5 : bx, 6).setStandardSlotBackground()
+                    .addFluidStack(recipe.fluidResult().getFluid(), recipe.fluidResult().getAmount());
+        }
     }
 
     @Override
     public void draw(RecipeHolder<MachineRecipe> holder, IRecipeSlotsView slots, GuiGraphics g, double mouseX, double mouseY) {
         MachineRecipe recipe = holder.value();
-        int inputsEnd = 2 + recipe.inputs().size() * 19;
+        int inputsEnd = 2 + (recipe.inputs().size() + (recipe.fluid().isEmpty() ? 0 : 1)) * 19;
         arrow.draw(g, Math.max(inputsEnd + 4, 50), 6);
         var font = Minecraft.getInstance().font;
         int bx = BYPRODUCT_X;
@@ -95,6 +104,6 @@ public class MachineRecipeCategory implements IRecipeCategory<RecipeHolder<Machi
         }
         g.drawString(font, Component.translatable("jei.joulesmith.energy", String.format("%,d", recipe.energy())), 2, 34, 0xFF606060, false);
         Component time = Component.translatable("jei.joulesmith.time", String.format("%.1f", recipe.time() / 20.0));
-        g.drawString(font, time, 140 - font.width(time) - 2, 34, 0xFF606060, false);
+        g.drawString(font, time, getWidth() - font.width(time) - 2, 34, 0xFF606060, false);
     }
 }

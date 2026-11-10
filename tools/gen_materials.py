@@ -88,6 +88,8 @@ for m, (src, dust, plate, gear, wire) in METALS.items():
         items.append((f"{m}_gear", "gear", m))
     if wire:
         items.append((f"{m}_wire", "wire", m))
+    if src in ("ore", "vanilla"):
+        items.append((f"crushed_{m}", "crushed", m))
 
 for d in OWNED_DIRS:
     shutil.rmtree(d, ignore_errors=True)
@@ -179,7 +181,7 @@ for bid, kind, m in blocks:
         both("storage_blocks", f"#c:storage_blocks/{sub}")
 
 FORM_TAG = {"raw": "raw_materials", "ingot": "ingots", "nugget": "nuggets", "dust": "dusts",
-            "plate": "plates", "gear": "gears", "wire": "wires"}
+            "plate": "plates", "gear": "gears", "wire": "wires", "crushed": "crushed_ores"}
 for iid, form, m in items:
     group = FORM_TAG[form]
     tag("c", "item", f"{group}/{m}", f"{MOD}:{iid}")
@@ -267,7 +269,8 @@ for bid, kind, m in blocks:
         "ore": f"{title(m)} Ore", "deepslate_ore": f"Deepslate {title(m)} Ore",
         "raw_block": f"Block of Raw {title(m)}", "storage": f"Block of {title(m)}"}[kind]
 for iid, form, m in items:
-    lang[f"item.{MOD}.{iid}"] = f"Raw {title(m)}" if form == "raw" else title(iid)
+    lang[f"item.{MOD}.{iid}"] = (f"Raw {title(m)}" if form == "raw" else
+                                 f"Crushed {title(m)} Ore" if form == "crushed" else title(iid))
 TOOL_NAME = {"stone": "a stone", "iron": "an iron"}
 for m, o in ORES.items():
     lang[f"jei.{MOD}.info.ore.{m}"] = (
@@ -287,6 +290,10 @@ MACHINES = {
     "compressor": {"name": "Compressor", "front": "compressor_front"},
     "wire_drawer": {"name": "Wire Drawer", "front": "wire_drawer_front"},
     "sawmill": {"name": "Sawmill", "front": "sawmill_front"},
+    "ore_washer": {"name": "Ore Washer", "front": "ore_washer_front"},
+    "fluid_mixer": {"name": "Fluid Mixer", "front": "fluid_mixer_front"},
+    "centrifuge": {"name": "Centrifuge", "front": "centrifuge_front"},
+    "circuit_assembler": {"name": "Circuit Assembler", "front": "circuit_assembler_front"},
 }
 CREATIVE = {"creative_power_cell": "Creative Power Cell"}
 ROTATION = {"north": 0, "east": 90, "south": 180, "west": 270}
@@ -539,6 +546,78 @@ for wood, log_tag in WOODS.items():
 machine("sawing", "bamboo_planks", [("#minecraft:bamboo_blocks", 1)], [("minecraft:bamboo_planks", 3, 1), (f"{MOD}:sawdust", 1, 0.5)])
 machine("sawing", "sticks", [("#minecraft:planks", 1)], [("minecraft:stick", 4, 1), (f"{MOD}:sawdust", 1, 0.25)], 600, 30)
 
+# Ore Washer: raw ore or ore and water into three crushed ores (then the Crusher makes each a dust).
+def machine_fluid(kind, name, fluid, inputs, results, fluid_result=None, energy=None, time=None):
+    r = {"type": f"{MOD}:{kind}"}
+    if fluid:
+        r["fluid"] = {"id": fluid[0], "amount": fluid[1]}
+    if inputs:
+        r["inputs"] = [dict(ing(i), **({"count": c} if c != 1 else {})) for i, c in inputs]
+    if results:
+        r["results"] = [dict({"id": rid}, **({"count": c} if c != 1 else {}), **({"chance": ch} if ch < 1 else {}))
+                        for rid, c, ch in results]
+    if fluid_result:
+        r["fluid_result"] = {"id": fluid_result[0], "amount": fluid_result[1]}
+    if energy is not None:
+        r["energy"] = energy
+    if time is not None:
+        r["time"] = time
+    write(os.path.join(DATA, MOD, "recipe", kind, f"{name}.json"), r)
+    recipes[f"{kind}/{name}"] = True
+
+CRUSHED = lambda m: f"{MOD}:crushed_{m}"
+for m, (src, dust, plate, gear, wire) in METALS.items():
+    if src not in ("ore", "vanilla"):
+        continue
+    machine_fluid("washing", f"crushed_{m}_from_raw", ("minecraft:water", 500), [(f"#c:raw_materials/{m}", 1)],
+                  [(CRUSHED(m), 3, 1), ("minecraft:gravel", 1, 0.1)])
+    machine_fluid("washing", f"crushed_{m}_from_ore", ("minecraft:water", 500), [(f"#c:ores/{m}", 1)],
+                  [(CRUSHED(m), 3, 1), (CRUSHED(ORE_BONUS[m]), 1, 0.15)], energy=3600, time=160)
+    machine("crushing", f"{m}_dust_from_crushed", [(CRUSHED(m), 1)], [(DUST(m), 1, 1)], 1200, 60)
+machine_fluid("washing", "clay_from_dirt", ("minecraft:water", 250), [("minecraft:dirt", 1)],
+              [("minecraft:clay_ball", 2, 1), ("minecraft:flint", 1, 0.05)], energy=1200, time=60)
+
+# Fluid Mixer: water and an item into Joulesmith's fluids.
+ACID, COOLANT, BIOFUEL = f"{MOD}:sulfuric_acid", f"{MOD}:coolant", f"{MOD}:biofuel"
+machine_fluid("mixing", "sulfuric_acid", ("minecraft:water", 1000), [("#c:gunpowders", 1)], [], (ACID, 1000))
+machine_fluid("mixing", "coolant", ("minecraft:water", 1000), [("minecraft:ice", 1)], [], (COOLANT, 1000))
+machine_fluid("mixing", "coolant_from_packed_ice", ("minecraft:water", 1000), [("minecraft:packed_ice", 1)], [], (COOLANT, 4000), time=200)
+machine_fluid("mixing", "biofuel_from_sawdust", ("minecraft:water", 500), [(f"{MOD}:sawdust", 4)], [], (BIOFUEL, 500))
+machine_fluid("mixing", "biofuel_from_sugar", ("minecraft:water", 500), [("minecraft:sugar", 2)], [], (BIOFUEL, 500))
+
+# Centrifuge: alloys back apart, and a few useful splits.
+machine("centrifuging", "electrum_dust", [("#c:dusts/electrum", 2)], [(DUST("gold"), 1, 1), (DUST("silver"), 1, 1)])
+machine("centrifuging", "bronze_dust", [("#c:dusts/bronze", 4)], [(DUST("copper"), 3, 1), (DUST("tin"), 1, 1)])
+machine("centrifuging", "invar_dust", [("#c:dusts/invar", 3)], [(DUST("iron"), 2, 1), (DUST("nickel"), 1, 1)])
+machine("centrifuging", "steel_dust", [("#c:dusts/steel", 1)], [(DUST("iron"), 1, 1), ("minecraft:coal", 1, 0.5)])
+machine("centrifuging", "magma_cream", [("minecraft:magma_cream", 1)], [("minecraft:slime_ball", 1, 1), ("minecraft:blaze_powder", 1, 1)])
+machine("centrifuging", "glowstone_dust", [("#c:dusts/glowstone", 2)], [("minecraft:redstone", 1, 1), ("minecraft:gold_nugget", 2, 0.5)])
+machine("centrifuging", "gravel", [("#c:gravels", 1)],
+        [("minecraft:sand", 1, 1), ("minecraft:flint", 1, 0.25), ("minecraft:iron_nugget", 1, 0.05), ("minecraft:gold_nugget", 1, 0.02)])
+machine("centrifuging", "rotten_flesh", [("minecraft:rotten_flesh", 2)], [("minecraft:leather", 1, 0.5), ("minecraft:bone_meal", 1, 0.5)])
+
+# Circuit Assembler: the Basic Circuit, the part every tier 2 machine needs.
+machine("circuit_assembling", "basic_circuit", [("#c:wires/copper", 2), ("#c:dusts/redstone", 2), ("#c:plates/tin", 1)],
+        [(f"{MOD}:basic_circuit", 1, 1)])
+
+# ---- tier 2 machines: steel plates and a Basic Circuit; the Circuit Assembler itself is made without one
+shaped("circuit_assembler", ["PWP", "GMG", "PRP"],
+       {"P": "#c:plates/bronze", "W": "#c:wires/copper", "G": "#c:gears/copper", "M": "minecraft:crafter", "R": "#c:dusts/redstone"})
+shaped("ore_washer", ["PCP", "GMG", "PRP"],
+       {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit", "G": "#c:gears/bronze", "M": "minecraft:cauldron", "R": "#c:dusts/redstone"})
+shaped("fluid_mixer", ["PCP", "GMG", "PRP"],
+       {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit", "G": "#c:gears/bronze", "M": f"{MOD}:fluid_tank", "R": "#c:dusts/redstone"})
+shaped("centrifuge", ["PCP", "GMG", "PRP"],
+       {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit", "G": "#c:gears/invar", "M": "#c:ingots/electrum", "R": "#c:dusts/redstone"})
+
+# ---- fluids: a block to place, a bucket (NeoForge's tinted bucket model) and names
+FLUIDS = {"sulfuric_acid": "Sulfuric Acid", "coolant": "Coolant", "biofuel": "Biofuel"}
+for fid, fname in FLUIDS.items():
+    write(os.path.join(ASSETS, "blockstates", f"{fid}.json"), {"variants": {"": {"model": f"{MOD}:block/{fid}"}}})
+    write(os.path.join(ASSETS, "models", "block", f"{fid}.json"), {"textures": {"particle": "minecraft:block/water_still"}})
+    write(os.path.join(ASSETS, "models", "item", f"{fid}_bucket.json"), {
+        "parent": "neoforge:item/bucket", "loader": "neoforge:fluid_container", "fluid": f"{MOD}:{fid}"})
+
 # ---- the new machines, upgrade cards and sawdust
 shaped("alloy_smelter", ["IGI", "BFB", "IRI"],
        {"I": "#c:ingots/iron", "G": "#c:gears/copper", "B": "minecraft:bricks", "F": "minecraft:furnace", "R": "#c:dusts/redstone"})
@@ -553,7 +632,7 @@ shaped("efficiency_upgrade", ["RLR", "LPL", "RLR"], {"R": "#c:dusts/redstone", "
 shaped("bonus_upgrade", ["RQR", "QPQ", "RQR"], {"R": "#c:dusts/redstone", "Q": "#c:gems/quartz", "P": "#c:plates/electrum"})
 shaped("eject_upgrade", ["R R", "HPH", "R R"], {"R": "#c:dusts/redstone", "H": "minecraft:hopper", "P": "#c:plates/tin"})
 UPGRADES = {"speed": "Speed Upgrade", "efficiency": "Efficiency Upgrade", "bonus": "Output Bonus Upgrade", "eject": "Auto-Eject Upgrade"}
-for iid in [f"{u}_upgrade" for u in UPGRADES] + ["sawdust"]:
+for iid in [f"{u}_upgrade" for u in UPGRADES] + ["sawdust", "basic_circuit"]:
     write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
           {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{iid}"}})
 lang.update({f"block.{MOD}.{k}": v["name"] for k, v in MACHINES.items()})
@@ -562,6 +641,14 @@ lang[f"block.{MOD}.energy_cable"] = "Energy Cable"
 lang.update({f"item.{MOD}.{u}_upgrade": name for u, name in UPGRADES.items()})
 lang.update({
     f"item.{MOD}.sawdust": "Sawdust",
+    f"item.{MOD}.basic_circuit": "Basic Circuit",
+    **{f"block.{MOD}.{f}": n for f, n in FLUIDS.items()},
+    **{f"fluid_type.{MOD}.{f}": n for f, n in FLUIDS.items()},
+    **{f"item.{MOD}.{f}_bucket": f"{n} Bucket" for f, n in FLUIDS.items()},
+    "jei.joulesmith.washing": "Ore Washing",
+    "jei.joulesmith.mixing": "Fluid Mixing",
+    "jei.joulesmith.centrifuging": "Centrifuging",
+    "jei.joulesmith.circuit_assembling": "Circuit Assembling",
     "jei.joulesmith.alloy_smelting": "Alloy Smelting",
     "jei.joulesmith.compressing": "Compressing",
     "jei.joulesmith.wire_drawing": "Wire Drawing",
