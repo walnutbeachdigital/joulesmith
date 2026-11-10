@@ -1,0 +1,17 @@
+{
+  "type": "joulesmith:fertilizer_mixing",
+  "inputs": [
+    {
+      "item": "minecraft:bone_meal"
+    },
+    {
+      "tag": "c:gunpowders"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:fertilizer",
+      "count": 3
+    }
+  ]
+}

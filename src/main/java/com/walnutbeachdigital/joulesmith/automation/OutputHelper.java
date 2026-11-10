@@ -10,8 +10,8 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 /** Fitting several stacks into a machine's output slots, all or nothing. */
-final class OutputHelper {
-    static boolean fits(ItemStackHandler items, List<SlotDef> slots, List<ItemStack> drops) {
+public final class OutputHelper {
+    public static boolean fits(ItemStackHandler items, List<SlotDef> slots, List<ItemStack> drops) {
         List<ItemStack> space = new ArrayList<>();
         for (int i = 0; i < slots.size(); i++) {
             if (slots.get(i).role() == SlotRole.OUTPUT) space.add(items.getStackInSlot(i).copy());
@@ -35,7 +35,7 @@ final class OutputHelper {
     }
 
     /** Stores what fits; returns what didn't. */
-    static List<ItemStack> store(ItemStackHandler items, List<SlotDef> slots, List<ItemStack> drops) {
+    public static List<ItemStack> store(ItemStackHandler items, List<SlotDef> slots, List<ItemStack> drops) {
         List<ItemStack> rest = new ArrayList<>();
         for (ItemStack drop : drops) {
             ItemStack left = drop.copy();

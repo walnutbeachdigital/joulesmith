@@ -59,6 +59,11 @@
     "joulesmith:advanced_pump",
     "joulesmith:geothermal_generator",
     "joulesmith:wind_turbine",
+    "joulesmith:fertilizer_mixer",
+    "joulesmith:animal_rancher",
+    "joulesmith:hydroponic_bed",
+    "joulesmith:mob_grinder",
+    "joulesmith:auto_enchanter",
     "joulesmith:crystallizer",
     "joulesmith:energy_cable",
     "joulesmith:reinforced_energy_cable",
@@ -81,6 +86,7 @@
     "joulesmith:solar_panel",
     "joulesmith:reinforced_solar_panel",
     "joulesmith:advanced_solar_panel",
+    "joulesmith:sprinkler",
     "joulesmith:charging_pad",
     "joulesmith:modification_table"
   ]

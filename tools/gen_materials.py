@@ -317,6 +317,11 @@ MACHINES = {
     "advanced_pump": {"name": "Advanced Pump", "front": "advanced_pump_front"},
     "geothermal_generator": {"name": "Geothermal Generator", "front": "geothermal_generator_front"},
     "wind_turbine": {"name": "Wind Turbine", "front": "wind_turbine_front"},
+    "fertilizer_mixer": {"name": "Fertilizer Mixer", "front": "fertilizer_mixer_front"},
+    "animal_rancher": {"name": "Animal Rancher", "front": "animal_rancher_front"},
+    "hydroponic_bed": {"name": "Hydroponic Bed", "front": "hydroponic_bed_front"},
+    "mob_grinder": {"name": "Mob Grinder", "front": "mob_grinder_front"},
+    "auto_enchanter": {"name": "Auto Enchanter", "front": "auto_enchanter_front"},
     "crystallizer": {"name": "Crystallizer", "front": "crystallizer_front"},
 }
 CREATIVE = {"creative_power_cell": "Creative Power Cell"}
@@ -979,6 +984,44 @@ shaped("wind_turbine", ["SBS", "BCB", "SGS"], {"S": "#c:plates/steel", "B": "#c:
                                               "G": "#c:gears/electrum"})
 for (ns, reg, path), values in tags.items():
     write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+
+# ---- more farming: Sprinkler, fertilizer, Animal Rancher, Hydroponic Bed, Mob Grinder, Liquid XP, Auto Enchanter
+SPR = f"{MOD}:block/sprinkler"
+model("sprinkler", {"parent": "minecraft:block/block", "textures": {"particle": SPR, "s": SPR},
+    "elements": [{"from": [3, 0, 3], "to": [13, 3, 13], "faces": {f: {"texture": "#s"} for f in SIDES}},
+                 {"from": [6, 3, 6], "to": [10, 8, 10], "faces": {f: {"texture": "#s"} for f in SIDES if f != "down"}},
+                 {"from": [5, 8, 5], "to": [11, 9, 11], "faces": {f: {"texture": "#s"} for f in SIDES}}]})
+write(os.path.join(ASSETS, "blockstates", "sprinkler.json"), {"variants": {"": {"model": f"{MOD}:block/sprinkler"}}})
+write(os.path.join(ASSETS, "models", "item", "sprinkler.json"), {"parent": f"{MOD}:block/sprinkler"})
+simple_loot("sprinkler")
+tags[("minecraft", "block", "mineable/pickaxe")].append(f"{MOD}:sprinkler")
+for (ns, reg, path), values in tags.items():
+    write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+write(os.path.join(ASSETS, "models", "item", "fertilizer.json"),
+      {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/fertilizer"}})
+FERT = f"{MOD}:fertilizer"
+machine("fertilizer_mixing", "fertilizer_from_bone_meal", [("minecraft:bone_meal", 2), (f"{MOD}:sawdust", 2)], [(FERT, 4, 1)])
+machine("fertilizer_mixing", "fertilizer_from_rotten_flesh", [("minecraft:rotten_flesh", 3), (f"{MOD}:sawdust", 1)], [(FERT, 2, 1)])
+machine("fertilizer_mixing", "fertilizer_from_gunpowder", [("minecraft:bone_meal", 1), ("#c:gunpowders", 1)], [(FERT, 3, 1)])
+machine_fluid("mixing", "experience_bottle", (f"{MOD}:liquid_xp", 250), [("minecraft:glass_bottle", 1)], [("minecraft:experience_bottle", 1, 1)])
+shaped("sprinkler", ["CPC", " B "], {"C": "#c:ingots/copper", "P": f"{MOD}:fluid_pipe", "B": "minecraft:bucket"})
+shaped("fertilizer_mixer", ["PCP", "GMG", "PRP"], {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit", "G": "#c:gears/bronze",
+                                                  "M": "minecraft:composter", "R": "#c:dusts/redstone"})
+shaped("animal_rancher", ["PCP", "SLW", "PRP"], {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit", "S": "minecraft:shears",
+                                                "L": "minecraft:lead", "W": "minecraft:wheat", "R": "#c:dusts/redstone"})
+shaped("hydroponic_bed", ["GLG", "PTP", "PCP"], {"G": "#c:glass_blocks", "L": "minecraft:glowstone", "P": "#c:plates/steel",
+                                                "T": f"{MOD}:fluid_tank", "C": f"{MOD}:advanced_circuit"})
+shaped("mob_grinder", ["PCP", "STS", "PRP"], {"P": "#c:plates/electrum", "C": f"{MOD}:advanced_circuit", "S": "minecraft:iron_sword",
+                                             "T": f"{MOD}:fluid_tank", "R": "#c:dusts/redstone"})
+shaped("auto_enchanter", ["PCP", "BEB", "PRP"], {"P": "#c:plates/electrum", "C": f"{MOD}:advanced_circuit", "B": "minecraft:book",
+                                                "E": "minecraft:enchanting_table", "R": "#c:dusts/redstone"})
+lang.update({
+    f"block.{MOD}.sprinkler": "Sprinkler",
+    f"item.{MOD}.fertilizer": "Fertilizer",
+    f"fluid_type.{MOD}.liquid_xp": "Liquid XP",
+    "jei.joulesmith.fertilizer_mixing": "Fertilizer Mixing",
+    "tooltip.joulesmith.fertilizer": "Works like three bone meal; Hydroponic Beds grow twice as fast with it",
+})
 
 # ---- tier 3 ore processing: Chemical Dissolver (ore + acid -> 1000 mB slurry) and Crystallizer
 # (250 mB slurry -> one crystal); the Crusher turns each crystal into a dust: four per raw ore.

@@ -1,0 +1,19 @@
+{
+  "type": "joulesmith:fertilizer_mixing",
+  "inputs": [
+    {
+      "item": "minecraft:bone_meal",
+      "count": 2
+    },
+    {
+      "item": "joulesmith:sawdust",
+      "count": 2
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:fertilizer",
+      "count": 4
+    }
+  ]
+}

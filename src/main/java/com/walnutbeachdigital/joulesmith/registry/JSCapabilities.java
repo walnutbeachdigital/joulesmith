@@ -23,6 +23,14 @@ public final class JSCapabilities {
         machine(event, JSBlockEntities.GEOTHERMAL_GENERATOR.get());
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.GEOTHERMAL_GENERATOR.get(), (g, side) -> g.fluidHandler(side));
         machine(event, JSBlockEntities.WIND_TURBINE.get());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.SPRINKLER.get(), (s, side) -> s.fluidHandler());
+        for (var type : java.util.List.of(JSBlockEntities.ANIMAL_RANCHER, JSBlockEntities.HYDROPONIC_BED, JSBlockEntities.MOB_GRINDER,
+                JSBlockEntities.AUTO_ENCHANTER)) {
+            machine(event, type.get());
+        }
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.HYDROPONIC_BED.get(), (m, side) -> m.fluidHandler(side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.MOB_GRINDER.get(), (m, side) -> m.fluidHandler(side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.AUTO_ENCHANTER.get(), (m, side) -> m.fluidHandler(side));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, JSBlockEntities.SOLAR_PANEL.get(), (panel, side) -> panel.energyHandler());
         machine(event, JSBlockEntities.BLOCK_PLACER.get());
         machine(event, JSBlockEntities.BLOCK_BREAKER.get());

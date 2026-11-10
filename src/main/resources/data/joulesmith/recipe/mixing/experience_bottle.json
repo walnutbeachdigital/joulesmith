@@ -1,0 +1,17 @@
+{
+  "type": "joulesmith:mixing",
+  "fluid": {
+    "id": "joulesmith:liquid_xp",
+    "amount": 250
+  },
+  "inputs": [
+    {
+      "item": "minecraft:glass_bottle"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:experience_bottle"
+    }
+  ]
+}

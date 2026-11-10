@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "STS",
+    "PRP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/electrum"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    },
+    "S": {
+      "item": "minecraft:iron_sword"
+    },
+    "T": {
+      "item": "joulesmith:fluid_tank"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:mob_grinder",
+    "count": 1
+  }
+}

@@ -135,6 +135,22 @@ public final class JSBlocks {
     public static final DeferredBlock<com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlock> ADVANCED_SOLAR_PANEL = BLOCKS.register("advanced_solar_panel",
             () -> new com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlock(160, solar()));
 
+    // ---- more farming
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.farming.sprinkler.SprinklerBlock> SPRINKLER = BLOCKS.register("sprinkler",
+            () -> new com.walnutbeachdigital.joulesmith.farming.sprinkler.SprinklerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL)
+                    .strength(1.5f, 6.0f).sound(SoundType.METAL).noOcclusion()));
+    public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> FERTILIZER_MIXER = processing("fertilizer_mixer", () -> JSBlockEntities.FERTILIZER_MIXER.get());
+    public static final DeferredBlock<SimpleMachineBlock<com.walnutbeachdigital.joulesmith.farming.AnimalRancherBlockEntity>> ANIMAL_RANCHER = BLOCKS.register("animal_rancher",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.ANIMAL_RANCHER::get, com.walnutbeachdigital.joulesmith.farming.AnimalRancherBlockEntity::new));
+    public static final DeferredBlock<SimpleMachineBlock<com.walnutbeachdigital.joulesmith.farming.HydroponicBedBlockEntity>> HYDROPONIC_BED = BLOCKS.register("hydroponic_bed",
+            () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 10 : 0),
+                    JSBlockEntities.HYDROPONIC_BED::get, com.walnutbeachdigital.joulesmith.farming.HydroponicBedBlockEntity::new));
+    public static final DeferredBlock<SimpleMachineBlock<com.walnutbeachdigital.joulesmith.automation.MobGrinderBlockEntity>> MOB_GRINDER = BLOCKS.register("mob_grinder",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.MOB_GRINDER::get, com.walnutbeachdigital.joulesmith.automation.MobGrinderBlockEntity::new));
+    public static final DeferredBlock<SimpleMachineBlock<com.walnutbeachdigital.joulesmith.machine.enchanter.AutoEnchanterBlockEntity>> AUTO_ENCHANTER = BLOCKS.register("auto_enchanter",
+            () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 9 : 0),
+                    JSBlockEntities.AUTO_ENCHANTER::get, com.walnutbeachdigital.joulesmith.machine.enchanter.AutoEnchanterBlockEntity::new));
+
     // ---- rubber trees
     public static final TreeGrower RUBBER_TREE = new TreeGrower(Joulesmith.MODID + ":rubber", Optional.empty(),
             Optional.of(ResourceKey.create(Registries.CONFIGURED_FEATURE, Joulesmith.id("rubber_tree"))), Optional.empty());

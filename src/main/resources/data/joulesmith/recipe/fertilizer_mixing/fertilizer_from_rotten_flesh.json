@@ -1,0 +1,18 @@
+{
+  "type": "joulesmith:fertilizer_mixing",
+  "inputs": [
+    {
+      "item": "minecraft:rotten_flesh",
+      "count": 3
+    },
+    {
+      "item": "joulesmith:sawdust"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:fertilizer",
+      "count": 2
+    }
+  ]
+}

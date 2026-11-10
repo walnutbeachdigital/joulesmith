@@ -42,6 +42,8 @@ public final class JSItems {
     public static final DeferredItem<Item> BASIC_CIRCUIT = ITEMS.registerSimpleItem("basic_circuit");
     public static final DeferredItem<Item> ADVANCED_CIRCUIT = ITEMS.registerSimpleItem("advanced_circuit");
     public static final DeferredItem<Item> PLASTIC_SHEET = ITEMS.registerSimpleItem("plastic_sheet");
+    public static final DeferredItem<com.walnutbeachdigital.joulesmith.farming.FertilizerItem> FERTILIZER = ITEMS.register("fertilizer",
+            () -> new com.walnutbeachdigital.joulesmith.farming.FertilizerItem(new Item.Properties()));
     public static final DeferredItem<Item> LATEX = ITEMS.registerSimpleItem("latex");
     public static final DeferredItem<Item> RUBBER = ITEMS.registerSimpleItem("rubber");
     public static final DeferredItem<TreeTapItem> TREE_TAP = ITEMS.register("tree_tap", () -> new TreeTapItem(new Item.Properties().durability(128)));
@@ -93,6 +95,13 @@ public final class JSItems {
         blockItem(JSBlocks.TREE_FARM);
         blockItem(JSBlocks.BIO_REACTOR);
         blockItem(JSBlocks.BIOFUEL_GENERATOR);
+        blockItem(JSBlocks.SPRINKLER);
+        blockItem(JSBlocks.FERTILIZER_MIXER);
+        TAB_ORDER.add(FERTILIZER);
+        blockItem(JSBlocks.ANIMAL_RANCHER);
+        blockItem(JSBlocks.HYDROPONIC_BED);
+        blockItem(JSBlocks.MOB_GRINDER);
+        blockItem(JSBlocks.AUTO_ENCHANTER);
         blockItem(JSBlocks.RUBBER_LOG);
         blockItem(JSBlocks.RUBBER_LEAVES);
         blockItem(JSBlocks.RUBBER_SAPLING);

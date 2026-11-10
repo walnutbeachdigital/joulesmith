@@ -178,6 +178,25 @@ public final class JSBlockEntities {
                     .of(com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlockEntity::new, JSBlocks.SOLAR_PANEL.get(),
                             JSBlocks.REINFORCED_SOLAR_PANEL.get(), JSBlocks.ADVANCED_SOLAR_PANEL.get()).build(null));
 
+    // more farming
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.farming.sprinkler.SprinklerBlockEntity>> SPRINKLER =
+            BLOCK_ENTITIES.register("sprinkler", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.farming.sprinkler.SprinklerBlockEntity::new, JSBlocks.SPRINKLER.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> FERTILIZER_MIXER =
+            processing("fertilizer_mixer", JSBlocks.FERTILIZER_MIXER, ProcessingMachineBlockEntity.TWO_TO_ONE, MachineRecipeKind.FERTILIZER_MIXING);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.farming.AnimalRancherBlockEntity>> ANIMAL_RANCHER =
+            BLOCK_ENTITIES.register("animal_rancher", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.farming.AnimalRancherBlockEntity::new, JSBlocks.ANIMAL_RANCHER.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.farming.HydroponicBedBlockEntity>> HYDROPONIC_BED =
+            BLOCK_ENTITIES.register("hydroponic_bed", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.farming.HydroponicBedBlockEntity::new, JSBlocks.HYDROPONIC_BED.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.automation.MobGrinderBlockEntity>> MOB_GRINDER =
+            BLOCK_ENTITIES.register("mob_grinder", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.automation.MobGrinderBlockEntity::new, JSBlocks.MOB_GRINDER.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.machine.enchanter.AutoEnchanterBlockEntity>> AUTO_ENCHANTER =
+            BLOCK_ENTITIES.register("auto_enchanter", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.machine.enchanter.AutoEnchanterBlockEntity::new, JSBlocks.AUTO_ENCHANTER.get()).build(null));
+
     // storage
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrateBlockEntity>> CRATE =
             BLOCK_ENTITIES.register("crate", () -> BlockEntityType.Builder
@@ -189,7 +208,7 @@ public final class JSBlockEntities {
     /** Every recipe machine's type, for registering their capabilities together. */
     public static List<DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>>> processingMachines() {
         return List.of(CRUSHER, ALLOY_SMELTER, COMPRESSOR, WIRE_DRAWER, SAWMILL, ORE_WASHER, FLUID_MIXER, CENTRIFUGE,
-                CIRCUIT_ASSEMBLER, BIO_REACTOR, CHEMICAL_DISSOLVER, CRYSTALLIZER);
+                CIRCUIT_ASSEMBLER, BIO_REACTOR, CHEMICAL_DISSOLVER, CRYSTALLIZER, FERTILIZER_MIXER);
     }
 
     /** A recipe machine's block entity type: its block, its slot layout and the recipes it runs. */

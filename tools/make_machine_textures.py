@@ -2003,6 +2003,124 @@ def solar_top(trim):
     return img
 
 
+def fertilizer_mixer_front(on):
+    """A hopper-fed drum of dark, earthy granules that tumbles while mixing."""
+    img = casing2()
+    px = img.load()
+    window(img, 3, 3, 12, 12)
+    SOIL = ["#2a1c10", "#3e2a16", "#5a3e20", "#6e5a24", "#7c7a2c", "#93a03a"]
+    for y in range(3, 13):
+        for x in range(3, 13):
+            k = (x * 5 + y * 3 + (2 if on else 0)) % 7
+            px[x, y] = rgba(SOIL[min(5, k)] if on else SOIL[k % 3])
+    for x in range(3, 13):
+        px[x, 7] = rgba(STEEL[3] if not on else STEEL[5] if x % 2 else STEEL[3])
+    return img
+
+
+def animal_rancher_front(on):
+    """A little window on a grassy pen with a fence rail; a lamp glows while it works."""
+    img = casing2()
+    px = img.load()
+    window(img, 3, 3, 12, 12)
+    for y in range(3, 13):
+        for x in range(3, 13):
+            px[x, y] = rgba("#8ec5ff" if y < 8 else "#4f9a48" if (x + y) % 3 else "#3d8a42")
+    for x in range(3, 13):
+        px[x, 9] = rgba(WOOD[5])
+    for x in (4, 8, 12):
+        for y in range(8, 13):
+            px[x, y] = rgba(WOOD[3])
+    for x, y in ((6, 7), (7, 7), (6, 6), (7, 6), (8, 6), (9, 7)):      # a sheep's back over the rail
+        px[x, y] = rgba("#f2f2f2" if y == 6 else "#d8d8d8")
+    px[13, 2] = rgba("#4fd14a" if on else "#2c3a30")
+    return img
+
+
+def hydroponic_bed_front(on):
+    """Rows of green shoots in a glass tray under a grow light that glows magenta while running."""
+    img = casing3()
+    px = img.load()
+    window(img, 2, 3, 13, 12)
+    for y in range(3, 13):
+        for x in range(2, 14):
+            px[x, y] = rgba("#14161c")
+    for x in range(3, 13):
+        px[x, 3] = rgba("#ff7af0" if on else "#4a2a48")                 # the grow light
+        px[x, 4] = rgba("#c050c0" if on else "#2a1a2c")
+    for x in range(3, 13, 3):
+        for y in range(7, 11):
+            px[x, y] = rgba("#6cbd60" if y < 9 else "#3d8a42")
+        px[x - 1, 8] = rgba("#52a450")
+        px[x + 1, 7] = rgba("#8fd47a")
+    for x in range(2, 14):
+        px[x, 11] = rgba(WATER[2])
+        px[x, 12] = rgba(WATER[1])
+    return img
+
+
+def mob_grinder_front(on):
+    """Two rows of serrated steel blades; they turn and the gap glows red while it runs."""
+    img = casing3()
+    px = img.load()
+    window(img, 2, 3, 13, 12)
+    for y in range(3, 13):
+        for x in range(2, 14):
+            px[x, y] = rgba("#5a0c0c" if on and y in (7, 8) else "#14161c")
+    for x in range(2, 14):
+        tooth = (x + (1 if on else 0)) % 2
+        px[x, 4] = rgba(STEEL[5]); px[x, 5] = rgba(STEEL[4] if tooth else STEEL[2])
+        px[x, 6] = rgba(STEEL[3] if tooth else "#14161c")
+        px[x, 9] = rgba(STEEL[3] if not tooth else "#14161c")
+        px[x, 10] = rgba(STEEL[4] if not tooth else STEEL[2]); px[x, 11] = rgba(STEEL[5])
+    return img
+
+
+def auto_enchanter_front(on):
+    """An open book on a dark lectern; its pages glow violet and runes drift up while enchanting."""
+    img = casing3()
+    px = img.load()
+    window(img, 3, 3, 12, 12)
+    for y in range(3, 13):
+        for x in range(3, 13):
+            px[x, y] = rgba("#120c1c")
+    for x in range(4, 12):
+        for y in range(8, 11):
+            px[x, y] = rgba((PURPLE[6] if on else "#c8c0b0") if x not in (7, 8) else (PURPLE[4] if on else "#8a8070"))
+    for x in range(4, 12):
+        px[x, 11] = rgba("#6a2a1a")
+    if on:
+        for x, y in ((5, 6), (9, 5), (7, 4), (10, 7)):
+            px[x, y] = rgba(PURPLE[7])
+    return img
+
+
+def sprinkler_texture():
+    """The sprinkler: a copper body with steel nozzle holes."""
+    img = Image.new("RGBA", (16, 16))
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            px[x, y] = rgba(COPPER[3] if (x + y) % 5 else COPPER[2])
+    for y in range(16):
+        px[0, y] = rgba(COPPER[5]); px[15, y] = rgba(COPPER[1])
+    for x in range(16):
+        px[x, 0] = rgba(COPPER[5]); px[x, 15] = rgba(COPPER[1])
+    for x, y in ((4, 4), (11, 4), (4, 11), (11, 11), (7, 7), (8, 8)):
+        px[x, y] = rgba(STEEL[1])
+    return img
+
+
+FERT8 = ["#24180c", "#3a2814", "#523a1c", "#6a4e22", "#7a6a2a", "#8c8434", "#a0a040", "#bcc058"]
+
+
+def fertilizer_item():
+    """A heap of fertilizer granules in dark earthy greens and browns."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    _paint(img, _mt().dust(), FERT8)
+    return img
+
+
 def chemical_dissolver_front(on):
     """A glass vat of yellow acid with a stirrer; it bubbles while dissolving."""
     img = casing3()
@@ -2128,6 +2246,12 @@ def main():
         "block/reinforced_bulk_bin_side": bin_side(STEEL_TRIM),
         "block/reinforced_bulk_bin_front": bin_front(STEEL_TRIM),
         "gui/crate": crate_gui(),
+        **{f"block/{n}_front{'_on' if on else ''}": fn(on)
+           for n, fn in (("fertilizer_mixer", fertilizer_mixer_front), ("animal_rancher", animal_rancher_front),
+                         ("hydroponic_bed", hydroponic_bed_front), ("mob_grinder", mob_grinder_front),
+                         ("auto_enchanter", auto_enchanter_front)) for on in (False, True)},
+        "block/sprinkler": sprinkler_texture(),
+        "item/fertilizer": fertilizer_item(),
         **{f"block/{n}_front{'_on' if on else ''}": fn(on)
            for n, fn in (("geothermal_generator", geothermal_front), ("wind_turbine", wind_turbine_front)) for on in (False, True)},
         "block/solar_panel_top": solar_top(COPPER),

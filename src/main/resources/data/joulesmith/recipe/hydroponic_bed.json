@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GLG",
+    "PTP",
+    "PCP"
+  ],
+  "key": {
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "L": {
+      "item": "minecraft:glowstone"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "T": {
+      "item": "joulesmith:fluid_tank"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "joulesmith:hydroponic_bed",
+    "count": 1
+  }
+}

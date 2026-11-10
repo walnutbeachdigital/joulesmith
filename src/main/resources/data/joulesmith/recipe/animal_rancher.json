@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "SLW",
+    "PRP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "joulesmith:basic_circuit"
+    },
+    "S": {
+      "item": "minecraft:shears"
+    },
+    "L": {
+      "item": "minecraft:lead"
+    },
+    "W": {
+      "item": "minecraft:wheat"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:animal_rancher",
+    "count": 1
+  }
+}

@@ -22,7 +22,7 @@ public class BlockPlacerBlockEntity extends MachineBlockEntity {
 
     private int cooldown;
 
-    static List<SlotDef> grid(int x0, SlotRole role) {
+    public static List<SlotDef> grid(int x0, SlotRole role) {
         List<SlotDef> slots = new ArrayList<>();
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
