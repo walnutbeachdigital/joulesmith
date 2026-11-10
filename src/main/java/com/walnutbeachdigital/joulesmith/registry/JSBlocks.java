@@ -145,6 +145,10 @@ public final class JSBlocks {
                     JSBlockEntities.FUSION_CORE::get, com.walnutbeachdigital.joulesmith.machine.fusion.FusionCoreBlockEntity::new));
     public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> PLASMA_REFINERY = processing("plasma_refinery", () -> JSBlockEntities.PLASMA_REFINERY.get());
 
+    public static final DeferredBlock<SimpleMachineBlock<com.walnutbeachdigital.joulesmith.automation.DroneHubBlockEntity>> DRONE_HUB =
+            BLOCKS.register("drone_hub", () -> new SimpleMachineBlock<>(machine(),
+                    JSBlockEntities.DRONE_HUB::get, com.walnutbeachdigital.joulesmith.automation.DroneHubBlockEntity::new));
+
     // ---- more generators
     public static final DeferredBlock<SimpleMachineBlock<com.walnutbeachdigital.joulesmith.machine.generator.GeothermalGeneratorBlockEntity>> GEOTHERMAL_GENERATOR =
             BLOCKS.register("geothermal_generator", () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 12 : 0),

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NQN",
+    "DXD",
+    "NCN"
+  ],
+  "key": {
+    "N": {
+      "tag": "c:ingots/netherite"
+    },
+    "Q": {
+      "item": "joulesmith:quantum_processor"
+    },
+    "D": {
+      "item": "joulesmith:drone"
+    },
+    "X": {
+      "item": "joulesmith:ultimate_casing"
+    },
+    "C": {
+      "tag": "c:chests/wooden"
+    }
+  },
+  "result": {
+    "id": "joulesmith:drone_hub",
+    "count": 1
+  }
+}

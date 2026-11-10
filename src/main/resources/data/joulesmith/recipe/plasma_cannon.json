@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NQN",
+    "CRC",
+    "NEN"
+  ],
+  "key": {
+    "N": {
+      "tag": "c:ingots/netherite"
+    },
+    "Q": {
+      "item": "joulesmith:quantum_processor"
+    },
+    "C": {
+      "item": "minecraft:end_crystal"
+    },
+    "R": {
+      "item": "joulesmith:railgun"
+    },
+    "E": {
+      "item": "joulesmith:ultimate_energy_cell"
+    }
+  },
+  "result": {
+    "id": "joulesmith:plasma_cannon",
+    "count": 1
+  }
+}

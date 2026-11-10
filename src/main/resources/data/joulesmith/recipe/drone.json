@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " P ",
+    "MQM",
+    "E E"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:phantom_membrane"
+    },
+    "M": {
+      "item": "joulesmith:motor"
+    },
+    "Q": {
+      "item": "joulesmith:processor"
+    },
+    "E": {
+      "tag": "c:plates/electrum"
+    }
+  },
+  "result": {
+    "id": "joulesmith:drone",
+    "count": 1
+  }
+}

@@ -192,6 +192,10 @@ public final class JSBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> PLASMA_REFINERY =
             processing("plasma_refinery", JSBlocks.PLASMA_REFINERY, ProcessingMachineBlockEntity.WASHER, MachineRecipeKind.REFINING, 30, -1);
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.automation.DroneHubBlockEntity>> DRONE_HUB =
+            BLOCK_ENTITIES.register("drone_hub", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.automation.DroneHubBlockEntity::new, JSBlocks.DRONE_HUB.get()).build(null));
+
     // more generators
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.machine.generator.GeothermalGeneratorBlockEntity>> GEOTHERMAL_GENERATOR =
             BLOCK_ENTITIES.register("geothermal_generator", () -> BlockEntityType.Builder

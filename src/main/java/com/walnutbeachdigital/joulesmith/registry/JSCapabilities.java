@@ -26,6 +26,7 @@ public final class JSCapabilities {
         machine(event, JSBlockEntities.FISSION_REACTOR.get());
         machine(event, JSBlockEntities.MOB_DUPLICATOR.get());
         machine(event, JSBlockEntities.FUSION_CORE.get());
+        machine(event, JSBlockEntities.DRONE_HUB.get());
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.FUSION_CORE.get(), (f, side) -> f.fluidHandler(side));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.MOB_DUPLICATOR.get(), (m, side) -> m.fluidHandler(side));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, JSBlockEntities.WIRELESS_ENERGY.get(), (w, side) -> w.energyHandler());

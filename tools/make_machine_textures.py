@@ -2686,9 +2686,69 @@ def plasma_refinery_front(on):
     return img
 
 
+def drone_hub_front(on):
+    """A landing pad seen side-on: a dark bay with a small quad-rotor drone; its lights blink while out."""
+    img = casing5()
+    px = img.load()
+    window(img, 2, 3, 13, 12)
+    for y in range(3, 13):
+        for x in range(2, 14):
+            px[x, y] = rgba("#0e0c14")
+    for x in range(3, 13):                                  # the pad
+        px[x, 11] = rgba(PLASMA_TRIM[3] if x % 3 == 0 else STEEL8[4])
+    dy = 5 if on else 7
+    for x in range(5, 11):                                   # body
+        px[x, dy + 1] = rgba(STEEL8[6] if x < 8 else STEEL8[3])
+    for x in (3, 4, 11, 12):                                 # rotors
+        px[x, dy] = rgba(STEEL8[5])
+    px[5, dy] = px[10, dy] = rgba(STEEL8[2])
+    px[7, dy + 2] = rgba(PLASMA_GLOW[5] if on else PLASMA_GLOW[2])
+    px[8, dy + 2] = rgba("#ff5a4a" if on else "#5a1c18")
+    return img
+
+
+def drone_item():
+    """A small quad-rotor drone seen from above at an angle: four rotors on arms round a violet core."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    for (cx, cy) in ((3, 3), (12, 3), (3, 12), (12, 12)):
+        for y in range(16):
+            for x in range(16):
+                r = math.hypot(x - cx, y - cy)
+                if r < 2.6:
+                    px[x, y] = rgba(STEEL8[7] if r < 0.8 else STEEL8[5] if (x + y) % 2 else STEEL8[3])
+    for i in range(4, 12):                                   # arms
+        for (x, y) in ((i, i), (i, 15 - i)):
+            if px[x, y][3] == 0:
+                px[x, y] = rgba(STEEL8[2])
+    for y in range(6, 10):
+        for x in range(6, 10):
+            px[x, y] = rgba(PLASMA8[6] if x + y < 15 else PLASMA8[3])
+    px[7, 7] = rgba(PLASMA8[7])
+    return img
+
+
+def plasma_cannon_item():
+    """A heavy cannon: a violet barrel with glowing vents, a steel muzzle ring and a grip."""
+    barrel = _diag(lambda a, c: -2.0 <= a <= 6.0 and abs(c + 0.4) <= 2.0)
+    muzzle = _diag(lambda a, c: 6.0 < a <= 7.6 and abs(c + 0.4) <= 2.4)
+    body = _diag(lambda a, c: -6.4 <= a < -2.0 and abs(c + 0.4) <= 2.6)
+    grip = _diag(lambda a, c: -5.2 <= a <= -3.2 and 2.6 < c + 0.4 <= 6.0)
+    img = _parts((grip, RUBBER8, 2, 6), (body, EXO8, 2, 7), (barrel, PLASMA8, 2, 7), (muzzle, STEEL8, 3, 7))
+    px = img.load()
+    vents = _diag(lambda a, c: -1.0 <= a <= 5.4 and abs(c + 0.4) < 0.6 and int(a + 10) % 2 == 0)
+    for y in range(16):
+        for x in range(16):
+            if vents[y][x]:
+                px[x, y] = rgba(PLASMA_GLOW[5] if (x + y) % 2 else PLASMA_GLOW[4])
+    return img
+
+
 def tier5_textures():
-    return {f"block/{n}_front{'_on' if on else ''}": fn(on)
-            for n, fn in (("fusion_core", fusion_core_front), ("plasma_refinery", plasma_refinery_front)) for on in (False, True)}
+    return {**{f"block/{n}_front{'_on' if on else ''}": fn(on)
+               for n, fn in (("fusion_core", fusion_core_front), ("plasma_refinery", plasma_refinery_front),
+                             ("drone_hub", drone_hub_front)) for on in (False, True)},
+            "item/drone": drone_item(), "item/plasma_cannon": plasma_cannon_item()}
 
 
 def main():

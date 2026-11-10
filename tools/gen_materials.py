@@ -294,6 +294,7 @@ MACHINES = {
     "mob_duplicator": {"name": "Mob Duplicator", "front": "mob_duplicator_front"},
     "fusion_core": {"name": "Fusion Core", "front": "fusion_core_front"},
     "plasma_refinery": {"name": "Plasma Refinery", "front": "plasma_refinery_front"},
+    "drone_hub": {"name": "Drone Hub", "front": "drone_hub_front"},
     "boiler": {"name": "Boiler", "front": "boiler_front"},
     "block_placer": {"name": "Block Placer", "front": "block_placer_front"},
     "block_breaker": {"name": "Block Breaker", "front": "block_breaker_front"},
@@ -1130,7 +1131,7 @@ lang.update({
 # ---- powered gear (tier 3): tools, weapon and Exo-Suit that run on FE, the Energy Cell, modules,
 # the Charging Pad and the Modification Table
 POWERED = {"energy_cell": "Advanced Energy Cell", "power_drill": "Power Drill", "chainsaw": "Chainsaw", "energy_sword": "Energy Sword",
-           "omni_tool": "Omni-Tool", "railgun": "Railgun"}
+           "omni_tool": "Omni-Tool", "railgun": "Railgun", "plasma_cannon": "Plasma Cannon"}
 for iid, name in POWERED.items():
     write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
           {"parent": "minecraft:item/generated" if iid == "energy_cell" else "minecraft:item/handheld",
@@ -1858,6 +1859,30 @@ for iid, (short, info) in F_DESC.items():
 lang.update({"gui.joulesmith.status.6": "Lit", "gui.joulesmith.status.7": "Needs 500,000 FE to light",
              "gui.joulesmith.status.8": "Needs deuterium and tritium"})
 
+# ---- tier 5: the Drone Hub and its Drones, and the Plasma Cannon
+write(os.path.join(ASSETS, "models", "item", "drone.json"), {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/drone"}})
+lang[f"item.{MOD}.drone"] = "Drone"
+shaped("drone", [" P ", "MQM", "E E"], {"P": "minecraft:phantom_membrane", "M": f"{MOD}:motor", "Q": f"{MOD}:processor",
+                                      "E": "#c:plates/electrum"})
+shaped("drone_hub", ["NQN", "DXD", "NCN"], {"N": "#c:ingots/netherite", "Q": f"{MOD}:quantum_processor", "D": f"{MOD}:drone",
+                                          "X": f"{MOD}:ultimate_casing", "C": "#c:chests/wooden"})
+shaped("plasma_cannon", ["NQN", "CRC", "NEN"], {"N": "#c:ingots/netherite", "Q": f"{MOD}:quantum_processor", "C": "minecraft:end_crystal",
+                                              "R": f"{MOD}:railgun", "E": f"{MOD}:ultimate_energy_cell"})
+H_DESC = {
+    "drone_hub": ("Drones fetch drops and harvest crops", "Put up to four Drones in it. Once a second each drone fetches the nearest "
+                  "dropped item within 24 blocks (8 up and down), or else harvests and replants one ripe crop or nether wart there. "
+                  "What they bring back goes in its outputs. 2,000 FE a trip."),
+    "drone": ("Goes in a Drone Hub", "Each Drone in a Drone Hub makes one trip a second."),
+    "plasma_cannon": ("Hold to charge, release to fire a plasma bolt", "Charges in half a second; the bolt flies up to 96 blocks, passes "
+                      "through up to six creatures for 40 damage each and bursts where it stops, burning and hurting everything within "
+                      "4 blocks. It never breaks blocks. 25,000 FE a shot; holds 10,000,000 FE."),
+}
+DESC.update(H_DESC)
+for iid, (short, info) in H_DESC.items():
+    lang[f"desc.{MOD}.{iid}"] = short
+    lang[f"jei.{MOD}.info.{iid}"] = info
+lang["tooltip.joulesmith.plasma_cannon"] = "Hold to charge, release to fire (25,000 FE)"
+
 # ---- advancements: a guided path through the tiers (data/joulesmith/advancement)
 ADV = [
     # id, parent, icon, items needed (all of them; a "#" tag or a list means any one), frame, title, description
@@ -1890,6 +1915,7 @@ ADV = [
     ("fission", "elite", "fission_reactor", [f"{MOD}:fission_reactor"], "goal", "Splitting Hairs", "Build a Fission Reactor"),
     ("elite_exo", "exo_suit", "elite_exo_chestplate", [f"{MOD}:elite_exo_chestplate"], "goal", "Suit Upgrade", "Upgrade an Exo-Suit piece to Elite"),
     ("fusion", "quantum", "fusion_core", [f"{MOD}:fusion_core"], "challenge", "Star Power", "Build a Fusion Core"),
+    ("drones", "quantum", "drone_hub", [f"{MOD}:drone_hub"], "task", "Eyes in the Sky", "Build a Drone Hub"),
     ("flight", "quantum", "flight_module", [f"{MOD}:flight_module"], "challenge", "Lift Off", "Make a Flight Module"),
 ]
 for aid, parent, icon, needs, frame, title, desc in ADV:
