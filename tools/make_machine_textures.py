@@ -2240,40 +2240,68 @@ def module_item(art=None):
 
 
 
-def coil_item(wire):
-    """A coil: tight windings of wire (light and dark turns) round a steel core whose ends show at each side."""
-    core = _mask({y: (1, 14) for y in (7, 8)})
-    winding = _mask({y: (4, 11) for y in range(3, 13)})
-    img = _parts((core, STEEL8, 3, 7), (winding, wire, 2, 7))
-    px = img.load()
-    for y in range(4, 12):
-        for x in range(5, 11):
-            if x % 2 == 0:
-                px[x, y] = rgba(wire[2] if y > 8 else wire[4])     # the gaps between turns
-    for x in range(4, 12):
-        px[x, 3] = rgba(wire[7] if x < 9 else wire[5])
-    for y in (7, 8):                                       # core ends: bright face on the left
-        px[1, y] = rgba(STEEL8[7]); px[14, y] = rgba(STEEL8[2])
-    return img
+def _cylinder_rows(lv, x0, x1, y0, y1, rows=True):
+    """The wire item's shading for an upright cylinder: brightest a little left of centre, darker to the
+    right, edges darker; with {@code rows}, alternate lit and shaded rows like turns of wire."""
+    import math
+    for y in range(y0, y1 + 1):
+        for x in range(x0, x1 + 1):
+            u = (x - x0) / max(1, x1 - x0)
+            light = math.cos((u - 0.3) * math.pi * 0.9)
+            bump = ((0.8 if (y - y0) % 2 == 0 else -0.6) if rows else 0)
+            lv[y][x] = max(1, min(7, int(round(2 + light * 4.2 + bump))))
+        lv[y][x0] = max(1, lv[y][x0] - 2)
+        lv[y][x1] = 1
+
+
+def _ellipse(lv, cx, cy, rx, ry, top, rim):
+    """An upright cylinder's flat top: an ellipse lit on its upper left, with a darker rim."""
+    for y in range(16):
+        for x in range(16):
+            d = ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2
+            if d <= 1:
+                edge = d > 0.55
+                lv[y][x] = (rim if edge and (y > cy or x > cx) else top - (1 if x > cx + rx * 0.4 else 0))
+
+
+def coil_item(metal):
+    """A coil, drawn like the wire spools: the metal's wire wound in rounded rows round a steel core, the
+    core's end showing on top, and two leads trailing off the bottom."""
+    mt = _mt()
+    core, wound = mt.blank(), mt.blank()
+    _cylinder_rows(wound, 3, 12, 4, 12)
+    _ellipse(wound, 7.5, 3.6, 4.9, 1.5, 6, 3)               # the top turn, seen from above
+    _ellipse(core, 7.5, 3.5, 1.7, 0.8, 7, 2)                # the steel core's end
+    for y in (2, 3):
+        core[y][7] = 6; core[y][8] = 4
+    for x, y, v in ((12, 13, 4), (13, 14, 3), (5, 13, 5), (4, 14, 4)):   # leads
+        wound[y][x] = v
+    out = mt.paint8(wound, metal)
+    out.alpha_composite(mt.paint8(core, "steel"))
+    return out
 
 
 def motor_item():
-    """An electric motor: a steel can with cooling fins, a copper end cap with bolts, a shaft out the right
-    and a mounting foot."""
-    can = _mask({y: (2, 10) for y in range(3, 12)})
-    cap = _mask({y: (1, 1) for y in range(4, 11)})
-    endcap = _mask({y: (11, 12) for y in range(4, 11)})
-    shaft = _mask({y: (13, 15) for y in (7, 8)})
-    foot = _mask({12: (3, 9), 13: (2, 10)})
-    img = _parts((foot, STEEL8, 1, 5), (can, STEEL8, 2, 7), (cap, COPPER8, 3, 7), (endcap, COPPER8, 2, 6), (shaft, STEEL8, 3, 7))
-    px = img.load()
-    for x in range(3, 10, 2):                              # fins
-        for y in range(4, 11):
-            px[x, y] = rgba(STEEL8[3] if y > 5 else STEEL8[4])
-    for (x, y) in ((11, 5), (11, 9)):                      # bolts
-        px[x, y] = rgba(COPPER8[7])
+    """An electric motor, drawn like the wire spools: an upright steel can shaded as a cylinder with
+    cooling ribs, a band of copper windings showing through its middle, a flat top with the shaft
+    sticking up, and a steel foot."""
+    mt = _mt()
+    can, band, shaft = mt.blank(), mt.blank(), mt.blank()
+    _cylinder_rows(can, 2, 13, 5, 13, rows=False)
+    for y in (6, 12):                                       # cooling ribs
+        for x in range(3, 13):
+            can[y][x] = max(1, can[y][x] - 2)
+    _cylinder_rows(band, 2, 13, 8, 10)                      # copper windings in a slot round the middle
+    _ellipse(can, 7.5, 4.6, 5.9, 1.6, 6, 3)                 # the top face
+    for y in range(1, 5):                                   # the shaft
+        shaft[y][7] = 7 if y < 4 else 6
+        shaft[y][8] = 4 if y < 4 else 3
+    for x in range(1, 15):                                  # the foot
+        can[14][x] = 2 if x > 3 else 3
+    img = mt.paint8(can, "steel")
+    img.alpha_composite(mt.paint8(band, "copper"))
+    img.alpha_composite(mt.paint8(shaft, "steel"))
     return img
-
 
 def main():
     os.makedirs(os.path.join(TEX, "block"), exist_ok=True)
@@ -2343,8 +2371,8 @@ def main():
         "block/sawmill_front_on": sawmill_front(True),
         "item/sawdust": sawdust_item(),
         "item/basic_circuit": basic_circuit_item(),
-        "item/copper_coil": coil_item(COPPER8),
-        "item/electrum_coil": coil_item(ELECTRUM8),
+        "item/copper_coil": coil_item("copper"),
+        "item/electrum_coil": coil_item("electrum"),
         "item/motor": motor_item(),
         "block/rubber_log_spot_dry": rubber_spot("dry"),
         "block/rubber_log_spot_wet": rubber_spot("wet"),
