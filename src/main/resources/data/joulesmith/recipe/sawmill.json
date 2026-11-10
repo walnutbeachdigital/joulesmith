@@ -20,7 +20,7 @@
       "item": "minecraft:iron_axe"
     },
     "R": {
-      "tag": "c:dusts/redstone"
+      "item": "joulesmith:basic_casing"
     }
   },
   "result": {

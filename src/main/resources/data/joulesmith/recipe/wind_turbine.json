@@ -2,13 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "SBS",
+    "SGS",
     "BCB",
-    "SGS"
+    "SXS"
   ],
   "key": {
     "S": {
       "tag": "c:plates/steel"
+    },
+    "G": {
+      "item": "joulesmith:electrum_coil"
     },
     "B": {
       "tag": "c:plates/invar"
@@ -16,8 +19,8 @@
     "C": {
       "item": "joulesmith:advanced_circuit"
     },
-    "G": {
-      "item": "joulesmith:electrum_coil"
+    "X": {
+      "item": "joulesmith:advanced_casing"
     }
   },
   "result": {

@@ -3,8 +3,8 @@
   "category": "misc",
   "pattern": [
     "GLG",
-    "PTP",
-    "PCP"
+    "CTC",
+    "PXP"
   ],
   "key": {
     "G": {
@@ -13,14 +13,17 @@
     "L": {
       "item": "minecraft:glowstone"
     },
-    "P": {
-      "tag": "c:plates/steel"
+    "C": {
+      "item": "joulesmith:advanced_circuit"
     },
     "T": {
       "item": "joulesmith:fluid_tank"
     },
-    "C": {
-      "item": "joulesmith:advanced_circuit"
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "X": {
+      "item": "joulesmith:advanced_casing"
     }
   },
   "result": {

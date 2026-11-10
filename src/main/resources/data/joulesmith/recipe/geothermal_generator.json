@@ -3,8 +3,8 @@
   "category": "misc",
   "pattern": [
     "PCP",
-    "GMG",
-    "PLP"
+    "LML",
+    "PXP"
   ],
   "key": {
     "P": {
@@ -13,14 +13,14 @@
     "C": {
       "item": "joulesmith:basic_circuit"
     },
-    "G": {
-      "tag": "c:gears/bronze"
+    "L": {
+      "item": "minecraft:magma_block"
     },
     "M": {
       "item": "joulesmith:combustion_generator"
     },
-    "L": {
-      "item": "minecraft:magma_block"
+    "X": {
+      "item": "joulesmith:reinforced_casing"
     }
   },
   "result": {

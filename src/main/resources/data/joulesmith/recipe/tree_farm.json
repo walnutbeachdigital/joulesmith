@@ -4,7 +4,7 @@
   "pattern": [
     "PCP",
     "GAG",
-    "PSP"
+    "PXP"
   ],
   "key": {
     "P": {
@@ -19,8 +19,8 @@
     "A": {
       "item": "minecraft:iron_axe"
     },
-    "S": {
-      "tag": "minecraft:saplings"
+    "X": {
+      "item": "joulesmith:reinforced_casing"
     }
   },
   "result": {

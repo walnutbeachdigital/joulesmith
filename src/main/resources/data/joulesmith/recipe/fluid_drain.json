@@ -4,7 +4,7 @@
   "pattern": [
     "PCP",
     "GMG",
-    "PBP"
+    "PXP"
   ],
   "key": {
     "P": {
@@ -16,14 +16,11 @@
     "G": {
       "tag": "c:gears/bronze"
     },
-    "R": {
-      "tag": "c:dusts/redstone"
-    },
     "M": {
       "item": "joulesmith:pump"
     },
-    "B": {
-      "item": "minecraft:bucket"
+    "X": {
+      "item": "joulesmith:reinforced_casing"
     }
   },
   "result": {

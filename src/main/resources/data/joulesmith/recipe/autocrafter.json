@@ -17,7 +17,7 @@
       "tag": "c:gears/bronze"
     },
     "R": {
-      "tag": "c:dusts/redstone"
+      "item": "joulesmith:reinforced_casing"
     },
     "T": {
       "item": "minecraft:crafter"

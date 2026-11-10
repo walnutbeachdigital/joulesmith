@@ -475,7 +475,8 @@ write(os.path.join(DATA, "minecraft", "tags", "block", "mineable/pickaxe.json"),
 def shaped(name, pattern, key, count=1):
     write(os.path.join(DATA, MOD, "recipe", f"{name}.json"), {
         "type": "minecraft:crafting_shaped", "category": "misc", "pattern": pattern,
-        "key": {k: ({"item": v} if ":" in v and not v.startswith("#") else {"tag": v[1:]}) for k, v in key.items()},
+        "key": {k: ({"item": v} if ":" in v and not v.startswith("#") else {"tag": v[1:]}) for k, v in key.items()
+                if k in "".join(pattern)},
         "result": {"id": f"{MOD}:{name}", "count": count}})
     recipes[name] = True
 
@@ -1497,6 +1498,61 @@ write(os.path.join(DATA, MOD, "recipe", "manual.json"), {
     "result": {"id": "minecraft:written_book", "components": {"minecraft:written_book_content": {
         "title": "Joulesmith Manual", "author": "Joulesmith", "resolved": True, "pages": PAGES}}}})
 recipes["manual"] = True
+
+# ---- machine casings: one per tier; every machine's recipe takes its tier's casing where it took redstone
+for iid, name in (("basic_casing", "Basic Machine Casing"), ("reinforced_casing", "Reinforced Machine Casing"),
+                  ("advanced_casing", "Advanced Machine Casing")):
+    write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
+          {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{iid}"}})
+    lang[f"item.{MOD}.{iid}"] = name
+shaped("basic_casing", ["ICI", "C C", "ICI"], {"I": "#c:ingots/iron", "C": "#c:ingots/copper"})
+shaped("reinforced_casing", ["PSP", "SBS", "PSP"], {"P": "#c:plates/steel", "S": "#c:ingots/steel", "B": f"{MOD}:basic_casing"})
+shaped("advanced_casing", ["PEP", "EBE", "PEP"], {"P": "#c:plates/electrum", "E": "#c:ingots/electrum", "B": f"{MOD}:reinforced_casing"})
+DESC.update({"basic_casing": ("The frame of every tier 1 machine", "Every tier 1 machine is built on one."),
+             "reinforced_casing": ("The frame of every tier 2 machine", "Every tier 2 machine is built on one."),
+             "advanced_casing": ("The frame of every tier 3 machine", "Every tier 3 machine is built on one.")})
+for iid, (short, info) in list(DESC.items())[-3:]:
+    lang[f"desc.{MOD}.{iid}"] = short
+    lang[f"jei.{MOD}.info.{iid}"] = info
+casing_count = 0
+for mid in list(MACHINES) + ["charging_pad", "modification_table", "sprinkler"]:
+    path = os.path.join(DATA, MOD, "recipe", f"{mid}.json")
+    if not os.path.exists(path):
+        continue
+    r = json.load(open(path))
+    if r.get("type") != "minecraft:crafting_shaped" or len(r["pattern"]) < 2:
+        continue
+    key = r["key"]
+    red = [k for k, v in key.items() if v.get("tag") == "c:dusts/redstone" and "".join(r["pattern"]).count(k) == 1]
+    if not red:
+        continue
+    values = json.dumps(key)
+    tier = "advanced_casing" if "advanced_circuit" in values else "reinforced_casing" if "basic_circuit" in values else "basic_casing"
+    key[red[0]] = {"item": f"{MOD}:{tier}"}
+    write(path, r)
+    casing_count += 1
+# machines whose recipes have no single redstone to swap: their casing goes in by hand
+CAS = {1: f"{MOD}:basic_casing", 2: f"{MOD}:reinforced_casing", 3: f"{MOD}:advanced_casing"}
+shaped("fluid_placer", ["PCP", "GDG", "PXP"], {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit", "G": "#c:gears/bronze",
+                                              "D": "minecraft:dispenser", "X": CAS[2]})
+shaped("fluid_drain", ["PCP", "GMG", "PXP"], {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit", "G": "#c:gears/bronze",
+                                             "M": f"{MOD}:pump", "X": CAS[2]})
+shaped("tree_farm", ["PCP", "GAG", "PXP"], {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit", "G": "#c:gears/bronze",
+                                           "A": "minecraft:iron_axe", "X": CAS[2]})
+shaped("geothermal_generator", ["PCP", "LML", "PXP"], {"P": "#c:plates/invar", "C": f"{MOD}:basic_circuit", "L": "minecraft:magma_block",
+                                                      "M": f"{MOD}:combustion_generator", "X": CAS[2]})
+shaped("quarry", ["PCP", "GAG", "PXP"], {"P": "#c:plates/steel", "C": f"{MOD}:advanced_circuit", "G": "#c:gears/steel",
+                                        "A": "minecraft:diamond_pickaxe", "X": CAS[3]})
+shaped("boiler", ["PCP", "TFT", "PXP"], {"P": "#c:plates/invar", "C": f"{MOD}:advanced_circuit", "T": f"{MOD}:fluid_tank",
+                                        "F": "minecraft:blast_furnace", "X": CAS[3]})
+shaped("steam_turbine", ["PCP", "GBG", "PXP"], {"P": "#c:plates/steel", "C": f"{MOD}:advanced_circuit", "G": f"{MOD}:electrum_coil",
+                                               "B": "#c:storage_blocks/copper", "X": CAS[3]})
+shaped("wind_turbine", ["SGS", "BCB", "SXS"], {"S": "#c:plates/steel", "G": f"{MOD}:electrum_coil", "B": "#c:plates/invar",
+                                              "C": f"{MOD}:advanced_circuit", "X": CAS[3]})
+shaped("hydroponic_bed", ["GLG", "CTC", "PXP"], {"G": "#c:glass_blocks", "L": "minecraft:glowstone", "C": f"{MOD}:advanced_circuit",
+                                                "T": f"{MOD}:fluid_tank", "P": "#c:plates/steel", "X": CAS[3]})
+casing_count += 9
+print(f"{casing_count} machine recipes take a casing")
 
 # ---- advancements: a guided path through the tiers (data/joulesmith/advancement)
 ADV = [

@@ -62,6 +62,9 @@ public final class TopCompat {
             if (max > 0 && progress > 0) {
                 infoType.getMethod("progress", int.class, int.class).invoke(info, progress * 100 / max, 100);
             }
+            int made = machine.value(MachineBlockEntity.MADE), used = machine.value(MachineBlockEntity.USED);
+            if (made > 0) text.invoke(info, Component.translatable("gui.joulesmith.energy.making", String.format("%,d", made)));
+            if (used > 0) text.invoke(info, Component.translatable("gui.joulesmith.energy.using", String.format("%,d", used)));
             int mode = machine.value(4);
             if (mode != 0) text.invoke(info, Component.translatable(RedstoneMode.values()[Math.floorMod(mode, RedstoneMode.values().length)].key()));
         } else if (level.getBlockState(pos).getBlock() instanceof SolarPanelBlock panel) {

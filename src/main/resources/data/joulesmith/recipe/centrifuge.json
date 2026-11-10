@@ -20,7 +20,7 @@
       "tag": "c:ingots/electrum"
     },
     "R": {
-      "tag": "c:dusts/redstone"
+      "item": "joulesmith:reinforced_casing"
     }
   },
   "result": {

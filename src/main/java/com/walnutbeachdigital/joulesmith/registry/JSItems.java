@@ -44,6 +44,10 @@ public final class JSItems {
     public static final DeferredItem<Item> COPPER_COIL = ITEMS.registerSimpleItem("copper_coil");
     public static final DeferredItem<Item> ELECTRUM_COIL = ITEMS.registerSimpleItem("electrum_coil");
     public static final DeferredItem<Item> MOTOR = ITEMS.registerSimpleItem("motor");
+    /** Machine casings: the frame every machine of a tier is built on. */
+    public static final DeferredItem<Item> BASIC_CASING = ITEMS.registerSimpleItem("basic_casing");
+    public static final DeferredItem<Item> REINFORCED_CASING = ITEMS.registerSimpleItem("reinforced_casing");
+    public static final DeferredItem<Item> ADVANCED_CASING = ITEMS.registerSimpleItem("advanced_casing");
     public static final DeferredItem<Item> ADVANCED_CIRCUIT = ITEMS.registerSimpleItem("advanced_circuit");
     public static final DeferredItem<Item> PLASTIC_SHEET = ITEMS.registerSimpleItem("plastic_sheet");
     public static final DeferredItem<com.walnutbeachdigital.joulesmith.farming.FertilizerItem> FERTILIZER = ITEMS.register("fertilizer",
@@ -120,6 +124,9 @@ public final class JSItems {
         TAB_ORDER.add(COPPER_COIL);
         TAB_ORDER.add(ELECTRUM_COIL);
         TAB_ORDER.add(MOTOR);
+        TAB_ORDER.add(BASIC_CASING);
+        TAB_ORDER.add(REINFORCED_CASING);
+        TAB_ORDER.add(ADVANCED_CASING);
         TAB_ORDER.add(BASIC_CIRCUIT);
         TAB_ORDER.add(ADVANCED_CIRCUIT);
         TAB_ORDER.add(PLASTIC_SHEET);

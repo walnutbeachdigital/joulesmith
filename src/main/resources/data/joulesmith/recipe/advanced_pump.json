@@ -20,7 +20,7 @@
       "item": "joulesmith:pump"
     },
     "R": {
-      "tag": "c:dusts/redstone"
+      "item": "joulesmith:advanced_casing"
     }
   },
   "result": {

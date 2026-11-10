@@ -20,7 +20,7 @@
       "item": "minecraft:dirt"
     },
     "R": {
-      "tag": "c:dusts/redstone"
+      "item": "joulesmith:basic_casing"
     }
   },
   "result": {

@@ -4,7 +4,7 @@
   "pattern": [
     "PCP",
     "GAG",
-    "PBP"
+    "PXP"
   ],
   "key": {
     "P": {
@@ -16,14 +16,11 @@
     "G": {
       "tag": "c:gears/steel"
     },
-    "R": {
-      "tag": "c:dusts/redstone"
-    },
     "A": {
       "item": "minecraft:diamond_pickaxe"
     },
-    "B": {
-      "tag": "c:storage_blocks/steel"
+    "X": {
+      "item": "joulesmith:advanced_casing"
     }
   },
   "result": {

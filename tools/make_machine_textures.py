@@ -2303,6 +2303,21 @@ def motor_item():
     img.alpha_composite(mt.paint8(shaft, "steel"))
     return img
 
+
+def casing_item(face):
+    """A machine casing: the tier's machine frame with its middle open, showing the dark inside."""
+    img = face()
+    px = img.load()
+    for y in range(4, 12):
+        for x in range(4, 12):
+            px[x, y] = rgba(EXO8[0] if (x == 4 or y == 4) else EXO8[2] if (x + y) % 3 else EXO8[1])
+    for x in range(4, 12):
+        px[x, 12] = rgba(STEEL8[6])
+    for y in range(4, 13):
+        px[12, y] = rgba(STEEL8[6])
+    return img
+
+
 def main():
     os.makedirs(os.path.join(TEX, "block"), exist_ok=True)
     os.makedirs(os.path.join(TEX, "gui"), exist_ok=True)
@@ -2374,6 +2389,9 @@ def main():
         "item/copper_coil": coil_item("copper"),
         "item/electrum_coil": coil_item("electrum"),
         "item/motor": motor_item(),
+        "item/basic_casing": casing_item(casing),
+        "item/reinforced_casing": casing_item(casing2),
+        "item/advanced_casing": casing_item(casing3),
         "block/rubber_log_spot_dry": rubber_spot("dry"),
         "block/rubber_log_spot_wet": rubber_spot("wet"),
         "item/latex": latex_item(),

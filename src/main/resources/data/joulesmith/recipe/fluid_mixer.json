@@ -20,7 +20,7 @@
       "item": "joulesmith:fluid_tank"
     },
     "R": {
-      "tag": "c:dusts/redstone"
+      "item": "joulesmith:reinforced_casing"
     }
   },
   "result": {

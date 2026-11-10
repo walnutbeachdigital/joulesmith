@@ -3,8 +3,8 @@
   "category": "misc",
   "pattern": [
     "PCP",
-    "GFG",
-    "PTP"
+    "TFT",
+    "PXP"
   ],
   "key": {
     "P": {
@@ -13,14 +13,14 @@
     "C": {
       "item": "joulesmith:advanced_circuit"
     },
-    "G": {
-      "tag": "c:gears/steel"
+    "T": {
+      "item": "joulesmith:fluid_tank"
     },
     "F": {
       "item": "minecraft:blast_furnace"
     },
-    "T": {
-      "item": "joulesmith:fluid_tank"
+    "X": {
+      "item": "joulesmith:advanced_casing"
     }
   },
   "result": {

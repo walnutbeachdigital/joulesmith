@@ -50,6 +50,8 @@ public class JoulesmithJadePlugin implements IWailaPlugin {
                 data.putInt("Progress", machine.value(2));
                 data.putInt("MaxProgress", machine.value(3));
                 data.putInt("Redstone", machine.value(4));
+                data.putInt("Made", machine.value(MachineBlockEntity.MADE));
+                data.putInt("Used", machine.value(MachineBlockEntity.USED));
             }
         }
 
@@ -60,6 +62,8 @@ public class JoulesmithJadePlugin implements IWailaPlugin {
             if (max > 0 && progress > 0) {
                 tooltip.add(Component.translatable("gui.joulesmith.progress", progress * 100 / max));
             }
+            if (data.getInt("Made") > 0) tooltip.add(Component.translatable("gui.joulesmith.energy.making", String.format("%,d", data.getInt("Made"))));
+            if (data.getInt("Used") > 0) tooltip.add(Component.translatable("gui.joulesmith.energy.using", String.format("%,d", data.getInt("Used"))));
             if (data.contains("Redstone") && data.getInt("Redstone") != 0) {
                 var modes = com.walnutbeachdigital.joulesmith.machine.RedstoneMode.values();
                 tooltip.add(Component.translatable(modes[Math.floorMod(data.getInt("Redstone"), modes.length)].key()));

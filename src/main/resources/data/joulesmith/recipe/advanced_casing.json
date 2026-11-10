@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PEP",
+    "EBE",
+    "PEP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/electrum"
+    },
+    "E": {
+      "tag": "c:ingots/electrum"
+    },
+    "B": {
+      "item": "joulesmith:reinforced_casing"
+    }
+  },
+  "result": {
+    "id": "joulesmith:advanced_casing",
+    "count": 1
+  }
+}

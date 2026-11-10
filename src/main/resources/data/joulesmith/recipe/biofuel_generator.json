@@ -20,7 +20,7 @@
       "item": "joulesmith:combustion_generator"
     },
     "R": {
-      "tag": "c:dusts/redstone"
+      "item": "joulesmith:reinforced_casing"
     }
   },
   "result": {

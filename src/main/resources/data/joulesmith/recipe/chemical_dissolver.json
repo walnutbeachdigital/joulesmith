@@ -20,7 +20,7 @@
       "item": "joulesmith:fluid_mixer"
     },
     "R": {
-      "tag": "c:dusts/redstone"
+      "item": "joulesmith:advanced_casing"
     }
   },
   "result": {

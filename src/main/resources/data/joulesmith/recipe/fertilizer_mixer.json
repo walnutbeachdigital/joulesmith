@@ -20,7 +20,7 @@
       "item": "minecraft:composter"
     },
     "R": {
-      "tag": "c:dusts/redstone"
+      "item": "joulesmith:reinforced_casing"
     }
   },
   "result": {

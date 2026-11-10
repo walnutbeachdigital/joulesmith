@@ -4,7 +4,7 @@
   "pattern": [
     "PCP",
     "GBG",
-    "PRP"
+    "PXP"
   ],
   "key": {
     "P": {
@@ -19,8 +19,8 @@
     "B": {
       "tag": "c:storage_blocks/copper"
     },
-    "R": {
-      "tag": "c:storage_blocks/redstone"
+    "X": {
+      "item": "joulesmith:advanced_casing"
     }
   },
   "result": {

@@ -9,9 +9,6 @@
     "S": {
       "tag": "c:plates/steel"
     },
-    "C": {
-      "item": "joulesmith:advanced_circuit"
-    },
     "E": {
       "item": "joulesmith:energy_cell"
     }
