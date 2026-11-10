@@ -309,26 +309,41 @@ def raw_block(seed):
     return lv
 
 
+ORE_CLUSTERS = [  # shade steps 0..7 on the eight-step ramp; None = empty
+    [[None, 6, 6, None], [6, 7, 6, 4], [5, 6, 4, 2], [None, 3, 2, None]],                 # 0 big
+    [[None, None, 6, 5, None], [None, 6, 7, 6, 4], [6, 7, 5, 3, 1], [4, 3, 2, 1, None]],  # 1 big
+    [[None, 6, 5], [6, 7, 4], [4, 3, 1]],                                                # 2 mid
+    [[6, 7, 4], [4, 3, 1]],                                                              # 3 mid
+    [[6, 5, None], [5, 7, 4], [None, 3, 1]],                                             # 4 mid
+    [[6, 4], [4, 1]],                                                                    # 5 small
+    [[7]],                                                                               # 6 speck
+]
+
+
 def ore_overlay(seed):
-    """Small metal clusters on a transparent background, laid over vanilla stone in the model."""
-    lv, mask = blank(), [[False] * 16 for _ in range(16)]
+    """Chunky ore clusters on a transparent background (the model lays them over vanilla stone or
+    deepslate): each lit top-left, shaded bottom-right, plus a few single-pixel specks."""
     r = random.Random(seed)
-    spots = []
-    tries = 0
-    while len(spots) < 6 and tries < 500:
+    lv = blank()
+    taken = set()
+    placed = tries = 0
+    target = r.randint(7, 9)
+    while placed < target and tries < 400:
         tries += 1
-        c = (r.randint(1, 13), r.randint(1, 13))
-        if all(abs(c[0] - s[0]) + abs(c[1] - s[1]) > 5 for s in spots):
-            spots.append(c)
-    shape = [(0, 0), (1, 0), (0, 1), (1, 1), (-1, 0), (0, -1), (2, 1), (1, 2), (-1, 1), (2, 0)]
-    for sx, sy in spots:
-        k = r.randint(6, len(shape))
-        for dx, dy in shape[:k]:
-            x, y = sx + dx, sy + dy
-            if 0 <= x < 16 and 0 <= y < 16:
-                mask[y][x] = True
-                lv[y][x] = 4 if (dx, dy) == (0, 0) else (3 if dx + dy <= 1 else 2)
-    return outline(lv, mask)
+        shape = ORE_CLUSTERS[r.choice([0, 1, 0, 1, 2, 3, 4, 2, 5, 6])]
+        h, w = len(shape), len(shape[0])
+        ox, oy = r.randint(0, 16 - w), r.randint(0, 16 - h)
+        cells = [(ox + x, oy + y) for y in range(h) for x in range(w) if shape[y][x] is not None]
+        # clusters may touch corner to corner, never side by side
+        if any((cx + dx, cy + dy) in taken for cx, cy in cells for dx, dy in ((0, 0), (1, 0), (-1, 0), (0, 1), (0, -1))):
+            continue
+        for y in range(h):
+            for x in range(w):
+                if shape[y][x] is not None:
+                    lv[oy + y][ox + x] = shape[y][x]
+                    taken.add((ox + x, oy + y))
+        placed += 1
+    return lv
 
 
 # ----------------------------------------------------------------------- main
@@ -350,7 +365,7 @@ def draw(kind, name):
             return paint8({"plate": plate, "gear": gear, "dust": dust}[form](), m)
         return paint({"ingot": ingot, "nugget": nugget, "dust": dust, "wire": wire}[form](), m)
     if name.endswith("_overlay"):
-        return paint(ore_overlay(seed), m)
+        return paint8(ore_overlay(seed), m)
     if name.startswith("raw_"):
         return paint(raw_block(seed), m)
     return paint(storage_block(), m)
