@@ -43,10 +43,11 @@ displayName="${mod_name}" #mandatory
 
 # The authors of the mod, displayed in the mod UI (optional)
 authors="Matthew Porter"
+logoFile="logo.png"
 
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-From a coal generator to a fusion core: power, pipes, machines, farms, storage and powered gear in one tech mod.
+From a coal generator to steam turbines, quarries and a powered Exo-Suit: power, pipes, machines, farms, storage and gear in one tech mod where everything plugs together.
 '''
 
 # The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.
@@ -97,5 +98,33 @@ From a coal generator to a fusion core: power, pipes, machines, farms, storage a
     modId="jei"
     type="optional"
     versionRange="[19,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="jade"
+    type="optional"
+    versionRange="*"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="theoneprobe"
+    type="optional"
+    versionRange="*"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="computercraft"
+    type="optional"
+    versionRange="*"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="curios"
+    type="optional"
+    versionRange="*"
     ordering="NONE"
     side="BOTH"
