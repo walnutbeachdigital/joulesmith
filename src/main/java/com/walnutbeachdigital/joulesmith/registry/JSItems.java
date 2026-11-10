@@ -101,6 +101,8 @@ public final class JSItems {
         blockItem(JSBlocks.DRIVE_BAY);
         blockItem(JSBlocks.NETWORK_TERMINAL);
         blockItem(JSBlocks.NETWORK_CABLE);
+        blockItem(JSBlocks.IMPORT_BUS);
+        blockItem(JSBlocks.EXPORT_BUS);
         blockItem(JSBlocks.WIND_TURBINE);
         JSBlocks.SENSORS.values().forEach(JSItems::blockItem);
         blockItem(JSBlocks.LOGIC_CONTROLLER);

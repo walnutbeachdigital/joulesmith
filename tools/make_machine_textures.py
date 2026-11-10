@@ -2894,6 +2894,27 @@ def network_textures():
     }
 
 
+def bus_front(export):
+    """The bus's face: a dark port with arrows, blue pointing in (Import) or orange pointing out (Export)."""
+    img = casing4()
+    px = img.load()
+    for y in range(3, 13):
+        for x in range(3, 13):
+            px[x, y] = rgba("#10141a")
+    colour = ["#ffb347", "#c07010"] if export else ["#7fc8ff", "#2f74d6"]
+    arrow = ["...##...", "..####..", ".######.", "...##...", "...##..."]
+    rows = arrow if export else arrow[::-1]
+    for j, row in enumerate(rows):
+        for i, ch in enumerate(row):
+            if ch == "#":
+                px[4 + i, 5 + j] = rgba(colour[0] if i < 4 else colour[1])
+    return img
+
+
+def bus_textures():
+    return {"block/import_bus_front": bus_front(False), "block/export_bus_front": bus_front(True)}
+
+
 def main():
     os.makedirs(os.path.join(TEX, "block"), exist_ok=True)
     os.makedirs(os.path.join(TEX, "gui"), exist_ok=True)
@@ -3048,6 +3069,7 @@ def main():
         **duplicator_textures(),
         **tier5_textures(),
         **network_textures(),
+        **bus_textures(),
     }
     for name, img in out.items():
         img.save(os.path.join(TEX, name + ".png"))

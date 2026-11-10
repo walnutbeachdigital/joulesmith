@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " N ",
+    "PHP"
+  ],
+  "key": {
+    "N": {
+      "item": "joulesmith:network_cable"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    }
+  },
+  "result": {
+    "id": "joulesmith:import_bus",
+    "count": 1
+  }
+}

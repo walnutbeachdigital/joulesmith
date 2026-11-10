@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " N ",
+    "PDP"
+  ],
+  "key": {
+    "N": {
+      "item": "joulesmith:network_cable"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "D": {
+      "item": "minecraft:dropper"
+    }
+  },
+  "result": {
+    "id": "joulesmith:export_bus",
+    "count": 1
+  }
+}

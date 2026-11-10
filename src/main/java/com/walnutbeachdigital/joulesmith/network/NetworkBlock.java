@@ -81,7 +81,7 @@ public class NetworkBlock extends BaseEntityBlock implements NetworkPart {
         switch (kind) {
             case BAY -> {
                 if (level.getBlockEntity(pos) instanceof DriveBayBlockEntity bay) {
-                    player.openMenu(new SimpleMenuProvider((id, inv, p) -> new ChestMenu(net.minecraft.world.inventory.MenuType.GENERIC_9x1, id, inv, bay.container(), 1),
+                    player.openMenu(new SimpleMenuProvider((id, inv, p) -> new DriveBayMenu(id, inv, bay.container()),
                             Component.translatable("block.joulesmith.drive_bay")));
                 }
             }

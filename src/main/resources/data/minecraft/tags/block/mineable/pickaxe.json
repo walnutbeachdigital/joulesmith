@@ -116,6 +116,8 @@
     "joulesmith:network_core",
     "joulesmith:drive_bay",
     "joulesmith:network_terminal",
-    "joulesmith:network_cable"
+    "joulesmith:network_cable",
+    "joulesmith:import_bus",
+    "joulesmith:export_bus"
   ]
 }

@@ -1955,6 +1955,40 @@ lang.update({
 for (ns, reg, path), values in tags.items():
     write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
 
+# ---- Import and Export Buses: a plate on the block they face, a neck back to the cable
+model("network_bus", {"parent": "minecraft:block/block", "textures": {"particle": "#side"},
+      "elements": [{"from": [3, 3, 0], "to": [13, 13, 3], "faces": dict(
+                        {f: {"texture": "#side", "uv": [3, 0, 13, 3]} for f in ("east", "west", "up", "down")},
+                        north={"texture": "#front", "cullface": "north"}, south={"texture": "#side"})},
+                   {"from": [5, 5, 3], "to": [11, 11, 8], "faces": {f: {"texture": "#side", "uv": [5, 5, 11, 10]}
+                                                                    for f in ("east", "west", "up", "down", "south")}}]})
+for bid, name in (("import_bus", "Import Bus"), ("export_bus", "Export Bus")):
+    model(bid, {"parent": f"{MOD}:block/network_bus", "textures": {"front": f"{MOD}:block/{bid}_front", "side": f"{MOD}:block/network_side"}})
+    write(os.path.join(ASSETS, "blockstates", f"{bid}.json"), {"variants": {
+        f"facing={side}": dict({"model": f"{MOD}:block/{bid}"}, **rot) for side, rot in SIDE_ROT.items()}})
+    write(os.path.join(ASSETS, "models", "item", f"{bid}.json"), {"parent": f"{MOD}:block/{bid}"})
+    simple_loot(bid)
+    tag("minecraft", "block", "mineable/pickaxe", f"{MOD}:{bid}")
+    lang[f"block.{MOD}.{bid}"] = name
+shaped("import_bus", [" N ", "PHP"], {"N": f"{MOD}:network_cable", "P": "#c:plates/steel", "H": "minecraft:hopper"})
+shaped("export_bus", [" N ", "PDP"], {"N": f"{MOD}:network_cable", "P": "#c:plates/steel", "D": "minecraft:dropper"})
+BUS = " Use a Filter Card on it to fit one; sneak and use an empty hand to take it back. Moves up to 16 items twice a second."
+B_DESC = {"import_bus": ("Pulls items into the network", "Place it against an inventory and cable it to a network: it pulls items "
+                         "out of the inventory into the network (only those its filter lets through, if it has one)." + BUS),
+          "export_bus": ("Sends items out of the network", "Place it against an inventory and cable it to a network: it sends the "
+                         "items its filter names from the network into the inventory. Without a filter it sends nothing." + BUS)}
+DESC.update(B_DESC)
+for iid, (short, info) in B_DESC.items():
+    lang[f"desc.{MOD}.{iid}"] = short
+    lang[f"jei.{MOD}.info.{iid}"] = info
+lang.update({"message.joulesmith.bus.filter": "Filter fitted",
+             "message.joulesmith.bus.filter_removed": "Filter taken out",
+             "message.joulesmith.bus.export_empty": "No filter: fit a Filter Card to choose what to export",
+             "message.joulesmith.bus.import_all": "No filter: importing everything",
+             "message.joulesmith.bus.filtered": "Filtered (sneak with an empty hand to take the filter out)"})
+for (ns, reg, path), values in tags.items():
+    write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+
 # ---- advancements: a guided path through the tiers (data/joulesmith/advancement)
 ADV = [
     # id, parent, icon, items needed (all of them; a "#" tag or a list means any one), frame, title, description

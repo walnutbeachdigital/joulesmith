@@ -199,6 +199,9 @@ public final class JSBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.network.NetworkCoreBlockEntity>> NETWORK_CORE =
             BLOCK_ENTITIES.register("network_core", () -> BlockEntityType.Builder
                     .of(com.walnutbeachdigital.joulesmith.network.NetworkCoreBlockEntity::new, JSBlocks.NETWORK_CORE.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.network.BusBlockEntity>> BUS =
+            BLOCK_ENTITIES.register("bus", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.network.BusBlockEntity::new, JSBlocks.IMPORT_BUS.get(), JSBlocks.EXPORT_BUS.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.network.DriveBayBlockEntity>> DRIVE_BAY =
             BLOCK_ENTITIES.register("drive_bay", () -> BlockEntityType.Builder
                     .of(com.walnutbeachdigital.joulesmith.network.DriveBayBlockEntity::new, JSBlocks.DRIVE_BAY.get()).build(null));
