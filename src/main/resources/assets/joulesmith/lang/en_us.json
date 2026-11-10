@@ -1,0 +1,13 @@
+{
+  "itemGroup.joulesmith": "Joulesmith",
+  "block.joulesmith.example_block": "Example Block",
+  "item.joulesmith.example_item": "Example Item",
+
+  "joulesmith.configuration.title": "Joulesmith Configs",
+  "joulesmith.configuration.section.joulesmith.common.toml": "Joulesmith Configs",
+  "joulesmith.configuration.section.joulesmith.common.toml.title": "Joulesmith Configs",
+  "joulesmith.configuration.items": "Item List",
+  "joulesmith.configuration.logDirtBlock": "Log Dirt Block",
+  "joulesmith.configuration.magicNumberIntroduction": "Magic Number Text",
+  "joulesmith.configuration.magicNumber": "Magic Number"
+}
