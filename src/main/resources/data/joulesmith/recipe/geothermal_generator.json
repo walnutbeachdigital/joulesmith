@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "GMG",
+    "PLP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/invar"
+    },
+    "C": {
+      "item": "joulesmith:basic_circuit"
+    },
+    "G": {
+      "tag": "c:gears/bronze"
+    },
+    "M": {
+      "item": "joulesmith:combustion_generator"
+    },
+    "L": {
+      "item": "minecraft:magma_block"
+    }
+  },
+  "result": {
+    "id": "joulesmith:geothermal_generator",
+    "count": 1
+  }
+}

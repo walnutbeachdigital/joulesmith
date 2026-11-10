@@ -48,7 +48,8 @@ public class UpgradeKitItem extends Item {
                     List.of(JSBlocks.BASIC_BATTERY, JSBlocks.REINFORCED_BATTERY, JSBlocks.ADVANCED_BATTERY),
                     List.of(JSBlocks.BASIC_CRATE, JSBlocks.REINFORCED_CRATE, JSBlocks.ADVANCED_CRATE),
                     List.of(JSBlocks.BASIC_BULK_BIN, JSBlocks.REINFORCED_BULK_BIN, JSBlocks.ADVANCED_BULK_BIN),
-                    List.of(JSBlocks.FLUID_TANK, JSBlocks.REINFORCED_FLUID_TANK, JSBlocks.ADVANCED_FLUID_TANK));
+                    List.of(JSBlocks.FLUID_TANK, JSBlocks.REINFORCED_FLUID_TANK, JSBlocks.ADVANCED_FLUID_TANK),
+                    List.of(JSBlocks.SOLAR_PANEL, JSBlocks.REINFORCED_SOLAR_PANEL, JSBlocks.ADVANCED_SOLAR_PANEL));
             Map<Block, Block> map = new java.util.HashMap<>();
             for (var chain : chains) map.put(chain.get(tier - 2).get(), chain.get(tier - 1).get());
             if (tier == 3) map.put(JSBlocks.PUMP.get(), JSBlocks.ADVANCED_PUMP.get());

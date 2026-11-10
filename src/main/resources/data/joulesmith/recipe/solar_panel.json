@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GGG",
+    "LDL",
+    "CRC"
+  ],
+  "key": {
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "L": {
+      "tag": "c:gems/lapis"
+    },
+    "D": {
+      "item": "minecraft:daylight_detector"
+    },
+    "C": {
+      "tag": "c:ingots/copper"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:solar_panel",
+    "count": 1
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PSP",
+    "SCS",
+    "PSP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "S": {
+      "item": "joulesmith:solar_panel"
+    },
+    "C": {
+      "item": "joulesmith:basic_circuit"
+    }
+  },
+  "result": {
+    "id": "joulesmith:reinforced_solar_panel",
+    "count": 1
+  }
+}

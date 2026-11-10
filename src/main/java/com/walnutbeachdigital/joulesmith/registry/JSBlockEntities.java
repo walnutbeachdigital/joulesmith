@@ -166,6 +166,18 @@ public final class JSBlockEntities {
             BLOCK_ENTITIES.register("biofuel_generator", () -> BlockEntityType.Builder
                     .of(BiofuelGeneratorBlockEntity::new, JSBlocks.BIOFUEL_GENERATOR.get()).build(null));
 
+    // more generators
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.machine.generator.GeothermalGeneratorBlockEntity>> GEOTHERMAL_GENERATOR =
+            BLOCK_ENTITIES.register("geothermal_generator", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.machine.generator.GeothermalGeneratorBlockEntity::new, JSBlocks.GEOTHERMAL_GENERATOR.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.machine.generator.WindTurbineBlockEntity>> WIND_TURBINE =
+            BLOCK_ENTITIES.register("wind_turbine", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.machine.generator.WindTurbineBlockEntity::new, JSBlocks.WIND_TURBINE.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlockEntity>> SOLAR_PANEL =
+            BLOCK_ENTITIES.register("solar_panel", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlockEntity::new, JSBlocks.SOLAR_PANEL.get(),
+                            JSBlocks.REINFORCED_SOLAR_PANEL.get(), JSBlocks.ADVANCED_SOLAR_PANEL.get()).build(null));
+
     // storage
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrateBlockEntity>> CRATE =
             BLOCK_ENTITIES.register("crate", () -> BlockEntityType.Builder

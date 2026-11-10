@@ -20,6 +20,10 @@ public final class JSCapabilities {
         machine(event, JSBlockEntities.BASIC_BATTERY.get());
         machine(event, JSBlockEntities.PUMP.get());
         machine(event, JSBlockEntities.STEAM_TURBINE.get());
+        machine(event, JSBlockEntities.GEOTHERMAL_GENERATOR.get());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.GEOTHERMAL_GENERATOR.get(), (g, side) -> g.fluidHandler(side));
+        machine(event, JSBlockEntities.WIND_TURBINE.get());
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, JSBlockEntities.SOLAR_PANEL.get(), (panel, side) -> panel.energyHandler());
         machine(event, JSBlockEntities.BLOCK_PLACER.get());
         machine(event, JSBlockEntities.BLOCK_BREAKER.get());
         machine(event, JSBlockEntities.AUTOCRAFTER.get());

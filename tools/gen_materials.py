@@ -315,6 +315,8 @@ MACHINES = {
     "biofuel_generator": {"name": "Biofuel Generator", "front": "biofuel_generator_front"},
     "chemical_dissolver": {"name": "Chemical Dissolver", "front": "chemical_dissolver_front"},
     "advanced_pump": {"name": "Advanced Pump", "front": "advanced_pump_front"},
+    "geothermal_generator": {"name": "Geothermal Generator", "front": "geothermal_generator_front"},
+    "wind_turbine": {"name": "Wind Turbine", "front": "wind_turbine_front"},
     "crystallizer": {"name": "Crystallizer", "front": "crystallizer_front"},
 }
 CREATIVE = {"creative_power_cell": "Creative Power Cell"}
@@ -951,6 +953,32 @@ lang.update({
     "tooltip.joulesmith.upgrade_kit.2": "Use on a tier 1 cable, duct, pipe, battery, crate, bin or tank to make it Reinforced, keeping what's in it",
     "tooltip.joulesmith.upgrade_kit.3": "Use on a Reinforced cable, duct, pipe, battery, crate, bin or tank (or a Pump) to make it Advanced",
 })
+
+# ---- solar panels (a 6-pixel-high slab) and the other generators' recipes
+SOLAR = {"solar_panel": "Solar Panel", "reinforced_solar_panel": "Reinforced Solar Panel", "advanced_solar_panel": "Advanced Solar Panel"}
+for sid, name in SOLAR.items():
+    model(sid, {"parent": "minecraft:block/block", "textures": {
+        "particle": f"{MOD}:block/{sid}_top", "top": f"{MOD}:block/{sid}_top", "side": f"{MOD}:block/{sid}_side",
+        "bottom": f"{MOD}:block/machine_bottom"},
+        "elements": [{"from": [0, 0, 0], "to": [16, 6, 16], "faces": {
+            "up": {"texture": "#top"}, "down": {"texture": "#bottom", "cullface": "down"},
+            **{f: {"uv": [0, 10, 16, 16], "texture": "#side", "cullface": f} for f in ("north", "south", "east", "west")}}}]})
+    write(os.path.join(ASSETS, "blockstates", f"{sid}.json"), {"variants": {"": {"model": f"{MOD}:block/{sid}"}}})
+    write(os.path.join(ASSETS, "models", "item", f"{sid}.json"), {"parent": f"{MOD}:block/{sid}"})
+    simple_loot(sid)
+    tags[("minecraft", "block", "mineable/pickaxe")].append(f"{MOD}:{sid}")
+    lang[f"block.{MOD}.{sid}"] = name
+shaped("solar_panel", ["GGG", "LDL", "CRC"], {"G": "#c:glass_panes", "L": "#c:gems/lapis", "D": "minecraft:daylight_detector",
+                                             "C": "#c:ingots/copper", "R": "#c:dusts/redstone"})
+shaped("reinforced_solar_panel", ["PSP", "SCS", "PSP"], {"P": "#c:plates/steel", "S": f"{MOD}:solar_panel", "C": f"{MOD}:basic_circuit"})
+shaped("advanced_solar_panel", ["PSP", "SCS", "PSP"], {"P": "#c:plates/electrum", "S": f"{MOD}:reinforced_solar_panel",
+                                                      "C": f"{MOD}:advanced_circuit"})
+shaped("geothermal_generator", ["PCP", "GMG", "PLP"], {"P": "#c:plates/invar", "C": f"{MOD}:basic_circuit", "G": "#c:gears/bronze",
+                                                      "M": f"{MOD}:combustion_generator", "L": "minecraft:magma_block"})
+shaped("wind_turbine", ["SBS", "BCB", "SGS"], {"S": "#c:plates/steel", "B": "#c:plates/invar", "C": f"{MOD}:advanced_circuit",
+                                              "G": "#c:gears/electrum"})
+for (ns, reg, path), values in tags.items():
+    write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
 
 # ---- tier 3 ore processing: Chemical Dissolver (ore + acid -> 1000 mB slurry) and Crystallizer
 # (250 mB slurry -> one crystal); the Crusher turns each crystal into a dust: four per raw ore.

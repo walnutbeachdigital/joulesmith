@@ -57,6 +57,8 @@
     "joulesmith:biofuel_generator",
     "joulesmith:chemical_dissolver",
     "joulesmith:advanced_pump",
+    "joulesmith:geothermal_generator",
+    "joulesmith:wind_turbine",
     "joulesmith:crystallizer",
     "joulesmith:energy_cable",
     "joulesmith:reinforced_energy_cable",
@@ -76,6 +78,9 @@
     "joulesmith:time_sensor",
     "joulesmith:proximity_sensor",
     "joulesmith:logic_controller",
+    "joulesmith:solar_panel",
+    "joulesmith:reinforced_solar_panel",
+    "joulesmith:advanced_solar_panel",
     "joulesmith:charging_pad",
     "joulesmith:modification_table"
   ]

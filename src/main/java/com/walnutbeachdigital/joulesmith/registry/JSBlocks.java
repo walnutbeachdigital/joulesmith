@@ -116,6 +116,25 @@ public final class JSBlocks {
             () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 11 : 0),
                     JSBlockEntities.BIOFUEL_GENERATOR::get, BiofuelGeneratorBlockEntity::new));
 
+    // ---- more generators
+    public static final DeferredBlock<SimpleMachineBlock<com.walnutbeachdigital.joulesmith.machine.generator.GeothermalGeneratorBlockEntity>> GEOTHERMAL_GENERATOR =
+            BLOCKS.register("geothermal_generator", () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 12 : 0),
+                    JSBlockEntities.GEOTHERMAL_GENERATOR::get, com.walnutbeachdigital.joulesmith.machine.generator.GeothermalGeneratorBlockEntity::new));
+    public static final DeferredBlock<SimpleMachineBlock<com.walnutbeachdigital.joulesmith.machine.generator.WindTurbineBlockEntity>> WIND_TURBINE =
+            BLOCKS.register("wind_turbine", () -> new SimpleMachineBlock<>(machine(),
+                    JSBlockEntities.WIND_TURBINE::get, com.walnutbeachdigital.joulesmith.machine.generator.WindTurbineBlockEntity::new));
+
+    private static BlockBehaviour.Properties solar() {
+        return BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLUE).strength(2.0f, 6.0f).requiresCorrectToolForDrops().sound(SoundType.METAL);
+    }
+
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlock> SOLAR_PANEL = BLOCKS.register("solar_panel",
+            () -> new com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlock(10, solar()));
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlock> REINFORCED_SOLAR_PANEL = BLOCKS.register("reinforced_solar_panel",
+            () -> new com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlock(40, solar()));
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlock> ADVANCED_SOLAR_PANEL = BLOCKS.register("advanced_solar_panel",
+            () -> new com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlock(160, solar()));
+
     // ---- rubber trees
     public static final TreeGrower RUBBER_TREE = new TreeGrower(Joulesmith.MODID + ":rubber", Optional.empty(),
             Optional.of(ResourceKey.create(Registries.CONFIGURED_FEATURE, Joulesmith.id("rubber_tree"))), Optional.empty());

@@ -1939,6 +1939,70 @@ def upgrade_kit_item(trim):
     return img
 
 
+def geothermal_front(on):
+    """A grated firebox showing lava: it glows and shimmers while making power."""
+    img = casing2()
+    px = img.load()
+    window(img, 3, 3, 12, 12)
+    LAVA = ["#3a0c04", "#7a1c06", "#c8420c", "#f07a18", "#ffb43a", "#ffe08a"]
+    for y in range(3, 13):
+        for x in range(3, 13):
+            if on:
+                c = LAVA[5] if (x * 7 + y * 3) % 11 == 0 else LAVA[4] if (x + y * 2) % 5 == 0 else LAVA[3] if y > 6 else LAVA[2]
+            else:
+                c = LAVA[1] if (x + y) % 4 == 0 else LAVA[0]
+            px[x, y] = rgba(c)
+    for x in range(3, 13):                               # the grate
+        if x % 3 == 0:
+            for y in range(3, 13):
+                px[x, y] = rgba(STEEL[2])
+    return img
+
+
+def wind_turbine_front(on):
+    """A three-bladed rotor on a hub; the blades blur into a disc while it spins."""
+    import math
+    img = casing3()
+    px = img.load()
+    cx, cy = 7.5, 7.5
+    for y in range(16):
+        for x in range(16):
+            r = math.hypot(x - cx, y - cy)
+            if r > 6.2 or (x in (0, 15) or y in (0, 15)):
+                continue
+            ang = math.atan2(y - cy, x - cx)
+            if r < 1.5:
+                px[x, y] = rgba(ELECTRUM_TRIM[4] if x + y < 15 else ELECTRUM_TRIM[2])
+            elif on:
+                if 1.5 <= r <= 6.2:
+                    px[x, y] = rgba(STEEL[5] if int(r * 1.5) % 2 else STEEL[4])
+            else:
+                blade = min(abs(((ang - k * 2.094 + math.pi) % (2 * math.pi)) - math.pi) for k in range(3))
+                if r * math.sin(min(blade, 1.5)) < 1.1 - r * 0.06:
+                    px[x, y] = rgba(STEEL[6] if x + y < 15 else STEEL[4])
+                else:
+                    px[x, y] = rgba("#1a1d22")
+    return img
+
+
+def solar_top(trim):
+    """Photovoltaic cells: deep blue squares with silver grid lines in a frame of the tier's trim colour."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    CELL = ["#0c1a3a", "#13285a", "#1c3a7c", "#2a54a8", "#4a7ad0"]
+    for y in range(16):
+        for x in range(16):
+            if x in (0, 15) or y in (0, 15):
+                c = trim[4] if (x == 0 or y == 0) else trim[1]
+            elif x in (5, 10) or y in (5, 10):
+                c = STEEL[5]
+            else:
+                lx, ly = (x - 1) % 5, (y - 1) % 5
+                c = CELL[4] if lx + ly == 0 else CELL[3] if lx + ly < 3 else CELL[2] if lx + ly < 6 else CELL[1]
+            px[x, y] = rgba(c)
+    return img
+
+
 def chemical_dissolver_front(on):
     """A glass vat of yellow acid with a stirrer; it bubbles while dissolving."""
     img = casing3()
@@ -2064,6 +2128,14 @@ def main():
         "block/reinforced_bulk_bin_side": bin_side(STEEL_TRIM),
         "block/reinforced_bulk_bin_front": bin_front(STEEL_TRIM),
         "gui/crate": crate_gui(),
+        **{f"block/{n}_front{'_on' if on else ''}": fn(on)
+           for n, fn in (("geothermal_generator", geothermal_front), ("wind_turbine", wind_turbine_front)) for on in (False, True)},
+        "block/solar_panel_top": solar_top(COPPER),
+        "block/reinforced_solar_panel_top": solar_top(STEEL_TRIM),
+        "block/advanced_solar_panel_top": solar_top(ELECTRUM_TRIM),
+        "block/solar_panel_side": casing(),
+        "block/reinforced_solar_panel_side": casing2(),
+        "block/advanced_solar_panel_side": casing3(),
         "gui/crate_wide": crate_gui(12),
         "block/advanced_crate_side": crate_side(ELECTRUM_TRIM),
         "block/advanced_crate_top": crate_top(ELECTRUM_TRIM),

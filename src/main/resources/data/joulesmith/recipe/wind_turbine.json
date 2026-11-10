@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SBS",
+    "BCB",
+    "SGS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "B": {
+      "tag": "c:plates/invar"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    },
+    "G": {
+      "tag": "c:gears/electrum"
+    }
+  },
+  "result": {
+    "id": "joulesmith:wind_turbine",
+    "count": 1
+  }
+}
