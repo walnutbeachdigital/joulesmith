@@ -13,18 +13,18 @@ import java.util.Locale;
  */
 public enum Metal {
     //        source         dust  plate  gear   wire   ramp: outline, dark, mid, light, highlight
-    IRON    (Source.VANILLA, true, true,  true,  false, 0x3A3D4A, 0x6E7280, 0xA7ABB5, 0xD6D9DE, 0xFBFBF7),
-    COPPER  (Source.VANILLA, true, true,  true,  true,  0x5C1F12, 0xA3401F, 0xDD7034, 0xF6A45B, 0xFFD79A),
-    GOLD    (Source.VANILLA, true, true,  true,  true,  0x6E3D05, 0xB8780B, 0xEAB21E, 0xFBDC4F, 0xFFFBB5),
-    TIN     (Source.ORE,     true, true,  true,  false, 0x2F3C5A, 0x5B7393, 0x93ACC6, 0xC7D9EA, 0xF3FBFF),
-    LEAD    (Source.ORE,     true, true,  true,  false, 0x1B1838, 0x363A6E, 0x535D96, 0x7682B8, 0xA9B5DD),
-    SILVER  (Source.ORE,     true, true,  true,  true,  0x34526A, 0x6F97B2, 0xA8CDE0, 0xD5ECF6, 0xFFFFFF),
-    NICKEL  (Source.ORE,     true, true,  true,  false, 0x4F4628, 0x8D8458, 0xC3BB8A, 0xE3DCB0, 0xFDF9E0),
-    URANIUM (Source.ORE,     true, false, false, false, 0x173416, 0x2F6A22, 0x4FA338, 0x84D656, 0xCAFB92),
-    STEEL   (Source.ALLOY,   true, true,  true,  true,  0x22252E, 0x474E5A, 0x6E7783, 0x9AA3AE, 0xCCD4DC),
-    BRONZE  (Source.ALLOY,   true, true,  true,  false, 0x5A2A0C, 0x9A5419, 0xD18A2D, 0xEFB352, 0xFFE39A),
-    INVAR   (Source.ALLOY,   true, true,  true,  false, 0x333F3C, 0x5F6F69, 0x8FA098, 0xBCCBC3, 0xE9F3EE),
-    ELECTRUM(Source.ALLOY,   true, true,  true,  true,  0x5B450A, 0xA88518, 0xDCBD34, 0xF4DD66, 0xFFF9BE);
+    IRON    (Source.VANILLA, true, true,  true,  false, 0x1D2028, 0x4B505C, 0x8C919C, 0xCDD1D8, 0xFFFFFF),
+    COPPER  (Source.VANILLA, true, true,  true,  true,  0x4A120A, 0x8F2B14, 0xD0561F, 0xF39A45, 0xFFE2A8),
+    GOLD    (Source.VANILLA, true, true,  true,  true,  0x5A2C02, 0xA76408, 0xE7A817, 0xFCDF55, 0xFFFBD0),
+    TIN     (Source.ORE,     true, true,  true,  false, 0x1E3442, 0x3F6878, 0x7FA6B0, 0xB7D4D8, 0xEFFCFC),
+    LEAD    (Source.ORE,     true, true,  true,  false, 0x08081F, 0x161B48, 0x2E3A78, 0x5866A6, 0xA0ADDD),
+    SILVER  (Source.ORE,     true, true,  true,  true,  0x1B2836, 0x45596D, 0x8597A9, 0xC6D3DE, 0xFFFFFF),
+    NICKEL  (Source.ORE,     true, true,  true,  false, 0x3E3020, 0x7A6648, 0xB49F78, 0xDCCAA3, 0xFFF6DC),
+    URANIUM (Source.ORE,     true, false, false, false, 0x0F2A0E, 0x25601B, 0x47A02F, 0x86D855, 0xD8FFA8),
+    STEEL   (Source.ALLOY,   true, true,  true,  true,  0x15181E, 0x363D48, 0x626C79, 0x97A1AD, 0xD9E0E8),
+    BRONZE  (Source.ALLOY,   true, true,  true,  false, 0x4B1F0A, 0x8A4418, 0xC9802F, 0xECB865, 0xFFF0C8),
+    INVAR   (Source.ALLOY,   true, true,  true,  false, 0x2A3332, 0x5A6866, 0x94A3A0, 0xC6D1CF, 0xF4F9F8),
+    ELECTRUM(Source.ALLOY,   true, true,  true,  true,  0x5A4304, 0xA78812, 0xDCC033, 0xF6E47A, 0xFFFDE0);
 
     public enum Source { VANILLA, ORE, ALLOY }
 

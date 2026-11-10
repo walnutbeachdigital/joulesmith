@@ -33,7 +33,8 @@ import net.minecraft.server.packs.resources.IoSupplier;
  * It reads Minecraft's own iron ingot, iron nugget, raw iron, sugar, iron block and raw iron block
  * textures from the player's copy of the game and recolours each one through a metal's five-step
  * gradient, so ingots, nuggets, raw ore, dusts and blocks keep vanilla's shapes with rich,
- * hand-picked colours. No Mojang texture is shipped inside the mod.
+ * hand-picked colours: light from the top-left, streaky metal grain and a few bright glints.
+ * No Mojang texture is shipped inside the mod.
  */
 public final class MetalTexturePack implements PackResources {
     private static final PackLocationInfo INFO = new PackLocationInfo(
@@ -97,30 +98,56 @@ public final class MetalTexturePack implements PackResources {
             throw new IOException("Missing vanilla texture " + src.vanilla());
         }
         try (InputStream in = vanilla.get(); NativeImage image = NativeImage.read(in)) {
-            // Find the darkest and brightest visible pixels, then spread them across the whole ramp.
+            int w = image.getWidth(), h = image.getHeight();
+            // Darkest and brightest visible pixels, and the shape's bounds.
             double lo = 255, hi = 0;
-            for (int y = 0; y < image.getHeight(); y++) {
-                for (int x = 0; x < image.getWidth(); x++) {
+            int x0 = w, x1 = 0, y0 = h, y1 = 0;
+            for (int y = 0; y < h; y++) {
+                for (int x = 0; x < w; x++) {
                     int abgr = image.getPixelRGBA(x, y);
                     if ((abgr >>> 24) == 0) continue;
                     double l = luminance(abgr);
                     lo = Math.min(lo, l);
                     hi = Math.max(hi, l);
+                    x0 = Math.min(x0, x); x1 = Math.max(x1, x);
+                    y0 = Math.min(y0, y); y1 = Math.max(y1, y);
                 }
             }
             double span = Math.max(1, hi - lo);
-            for (int y = 0; y < image.getHeight(); y++) {
-                for (int x = 0; x < image.getWidth(); x++) {
+            boolean block = target.getPath().startsWith("textures/block/");
+            double light = block ? 0.08 : 0.26;     // blocks tile, so they get only a gentle sweep
+            int seed = src.metal().ordinal() + 1;
+            for (int y = 0; y < h; y++) {
+                for (int x = 0; x < w; x++) {
                     int abgr = image.getPixelRGBA(x, y);
                     int alpha = abgr >>> 24;
                     if (alpha == 0) continue;
-                    int rgb = src.metal().rampColor((luminance(abgr) - lo) / span);
+                    double base = (luminance(abgr) - lo) / span;
+                    double v;
+                    if (base < 0.12) {
+                        v = 0;                                              // outline: darkest tone
+                    } else {
+                        // light from the top-left, streaky grain along the rows, a few bright glints
+                        double diag = 1 - ((x - x0) / (double) Math.max(1, x1 - x0) + (y - y0) / (double) Math.max(1, y1 - y0)) / 2;
+                        double streak = 0.6 * hash(x / 3, y, seed + 7) + 0.4 * hash(x, y, seed);
+                        double t = 0.78 * base + light * diag + (streak - 0.5) * 0.24;
+                        v = 0.08 + 0.80 * t;
+                        if (base > 0.6 && hash(x, y, seed + 99) > 0.93) v = 1;
+                    }
+                    int rgb = src.metal().rampColor(v);
                     // NativeImage stores pixels as ABGR
                     image.setPixelRGBA(x, y, alpha << 24 | (rgb & 0xFF) << 16 | (rgb & 0xFF00) | (rgb >> 16 & 0xFF));
                 }
             }
             return image.asByteArray();
         }
+    }
+
+    /** Repeatable pseudo-random number in [0, 1] for a pixel, so textures look the same every launch. */
+    private static double hash(int x, int y, int seed) {
+        long n = (x * 374761393L + y * 668265263L + seed * 2147483647L) & 0xFFFFFFFFL;
+        n = ((n ^ (n >>> 13)) * 1274126177L) & 0xFFFFFFFFL;
+        return ((n ^ (n >>> 16)) & 0xFFFF) / 65535.0;
     }
 
     private static double luminance(int abgr) {

@@ -21,18 +21,18 @@ TEX = os.path.join(ROOT, "src", "main", "resources", "assets", "joulesmith", "te
 
 # outline, dark, mid, light, highlight
 PALETTES = {  # same ramps as Metal.java
-    "iron":     ["#3a3d4a", "#6e7280", "#a7abb5", "#d6d9de", "#fbfbf7"],
-    "copper":   ["#5c1f12", "#a3401f", "#dd7034", "#f6a45b", "#ffd79a"],
-    "gold":     ["#6e3d05", "#b8780b", "#eab21e", "#fbdc4f", "#fffbb5"],
-    "tin":      ["#2f3c5a", "#5b7393", "#93acc6", "#c7d9ea", "#f3fbff"],
-    "lead":     ["#1b1838", "#363a6e", "#535d96", "#7682b8", "#a9b5dd"],
-    "silver":   ["#34526a", "#6f97b2", "#a8cde0", "#d5ecf6", "#ffffff"],
-    "nickel":   ["#4f4628", "#8d8458", "#c3bb8a", "#e3dcb0", "#fdf9e0"],
-    "uranium":  ["#173416", "#2f6a22", "#4fa338", "#84d656", "#cafb92"],
-    "steel":    ["#22252e", "#474e5a", "#6e7783", "#9aa3ae", "#ccd4dc"],
-    "bronze":   ["#5a2a0c", "#9a5419", "#d18a2d", "#efb352", "#ffe39a"],
-    "invar":    ["#333f3c", "#5f6f69", "#8fa098", "#bccbc3", "#e9f3ee"],
-    "electrum": ["#5b450a", "#a88518", "#dcbd34", "#f4dd66", "#fff9be"],
+    "iron":     ["#1d2028", "#4b505c", "#8c919c", "#cdd1d8", "#ffffff"],
+    "copper":   ["#4a120a", "#8f2b14", "#d0561f", "#f39a45", "#ffe2a8"],
+    "gold":     ["#5a2c02", "#a76408", "#e7a817", "#fcdf55", "#fffbd0"],
+    "tin":      ["#1e3442", "#3f6878", "#7fa6b0", "#b7d4d8", "#effcfc"],
+    "lead":     ["#08081f", "#161b48", "#2e3a78", "#5866a6", "#a0addd"],
+    "silver":   ["#1b2836", "#45596d", "#8597a9", "#c6d3de", "#ffffff"],
+    "nickel":   ["#3e3020", "#7a6648", "#b49f78", "#dccaa3", "#fff6dc"],
+    "uranium":  ["#0f2a0e", "#25601b", "#47a02f", "#86d855", "#d8ffa8"],
+    "steel":    ["#15181e", "#363d48", "#626c79", "#97a1ad", "#d9e0e8"],
+    "bronze":   ["#4b1f0a", "#8a4418", "#c9802f", "#ecb865", "#fff0c8"],
+    "invar":    ["#2a3332", "#5a6866", "#94a3a0", "#c6d1cf", "#f4f9f8"],
+    "electrum": ["#5a4304", "#a78812", "#dcc033", "#f6e47a", "#fffde0"],
 }
 
 
