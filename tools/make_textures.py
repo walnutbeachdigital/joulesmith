@@ -452,6 +452,22 @@ def block_studs():
 INGOT_TONE_MIX = [10, 6, 15, 19, 22, 17, 10, 1]
 
 
+def with_gear_shading(lv, spread=6):
+    """Lay the gears' and plates' shading under a block pattern: a soft top-left to bottom-right
+    sweep and blocky 2x2 light patches. The pattern's own shades are spread apart so they stay in
+    charge; a smaller spread lets the sweep cross them, for small repeating patterns."""
+    out = blank()
+    for y in range(16):
+        for x in range(16):
+            v = lv[y][x]
+            if v is None:
+                continue
+            sweep = round((1 - (x + y) / 30.0) * 4) - 2            # +2 top-left .. -2 bottom-right
+            patch = 1 if ((x // 2) + (y // 2)) % 2 == 0 else 0
+            out[y][x] = v * spread + sweep + patch
+    return out
+
+
 def match_ingot_tones(lv):
     """Remap a block's shades so its mix of dark, mid and bright matches an ingot's. Each shade keeps its
     place in the order (darker stays darker), so the pattern is untouched; only the tones shift."""
@@ -580,7 +596,9 @@ def draw(kind, name):
         return paint8(ore_overlay(sum(map(ord, m)) * 7), m)
     if name.startswith("raw_"):
         return paint(raw_block(seed), m)
-    return paint8(match_ingot_tones(BLOCK_DESIGN[m]()), m)
+    # small repeating patterns (studs, panels) need the sweep to cross their shades to read as lit
+    spread = 2 if BLOCK_DESIGN[m] in (block_studs, block_panels) else 6
+    return paint8(match_ingot_tones(with_gear_shading(BLOCK_DESIGN[m](), spread)), m)
 
 
 def main():
