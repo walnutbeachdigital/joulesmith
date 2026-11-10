@@ -132,7 +132,7 @@ public final class MetalTexturePack implements PackResources {
                         double streak = 0.6 * hash(x / 3, y, seed + 7) + 0.4 * hash(x, y, seed);
                         double t = 0.78 * base + light * diag + (streak - 0.5) * 0.24;
                         v = 0.08 + 0.80 * t;
-                        if (base > 0.6 && hash(x, y, seed + 99) > 0.93) v = 1;
+                        if (base > 0.6 && hash(x, y, seed + 99) > (block ? 0.99 : 0.93)) v = 1;
                     }
                     int rgb = src.metal().rampColor(v);
                     // NativeImage stores pixels as ABGR
