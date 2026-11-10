@@ -138,25 +138,33 @@ def plate():
     return outline(lv, mask, all_dark=True)
 
 def gear():
-    """A chunky eight-tooth gear with a dark hub ring around the axle hole."""
+    """A compact six-tooth gear: round body, chunky three-pixel teeth, small axle hole."""
     lv, mask = blank(), [[False] * 16 for _ in range(16)]
     cx = cy = 7.5
+    dirs = [math.radians(a) for a in (-90, -30, 30, 90, 150, 210)]   # a tooth points straight up
     for y in range(16):
         for x in range(16):
             dx, dy = x - cx, y - cy
             r = math.hypot(dx, dy)
-            tooth = math.cos(math.atan2(dy, dx) * 8) > -0.3
-            if 1.6 < r <= (7.6 if tooth else 5.8):
+            body = r <= 5.1
+            tooth = any(0 < dx * math.cos(t) + dy * math.sin(t) <= 7.4 and
+                        abs(-dx * math.sin(t) + dy * math.cos(t)) <= 2.1 for t in dirs)
+            if (body or tooth) and r > 1.0:
                 mask[y][x] = True
-                lit = -(dx + dy) / max(r, 0.01)
-                if r <= 2.7:
-                    shade = 1                            # hub ring
-                elif r <= 3.6:
-                    shade = 2 if lit > 0 else 4          # bevel facing out of the hub
+                lit = -(dx * 0.8 + dy) / max(r, 0.01)      # +1 facing the light (top-left)
+                if r <= 2.2:
+                    shade = 3 if lit < 0 else 1            # inside edge of the hole
+                elif lit > 0.55:
+                    shade = 4
+                elif lit > -0.15:
+                    shade = 3
+                elif lit > -0.7:
+                    shade = 2
                 else:
-                    shade = 4 if lit > 0.55 else (3 if lit > -0.45 else 2)
+                    shade = 1
                 lv[y][x] = shade
     return outline(lv, mask, all_dark=True)
+
 
 def wire():
     """A coil of wire: a thick wound ring with dark lines between the turns, and a loose end."""
