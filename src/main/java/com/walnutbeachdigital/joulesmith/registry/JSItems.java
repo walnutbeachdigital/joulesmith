@@ -40,6 +40,10 @@ public final class JSItems {
     public static final Map<UpgradeCardItem.Type, DeferredItem<UpgradeCardItem>> UPGRADE = new EnumMap<>(UpgradeCardItem.Type.class);
     public static final DeferredItem<Item> SAWDUST = ITEMS.registerSimpleItem("sawdust");
     public static final DeferredItem<Item> BASIC_CIRCUIT = ITEMS.registerSimpleItem("basic_circuit");
+    /** Crafting parts: coils for generators and heaters, motors for anything that turns. */
+    public static final DeferredItem<Item> COPPER_COIL = ITEMS.registerSimpleItem("copper_coil");
+    public static final DeferredItem<Item> ELECTRUM_COIL = ITEMS.registerSimpleItem("electrum_coil");
+    public static final DeferredItem<Item> MOTOR = ITEMS.registerSimpleItem("motor");
     public static final DeferredItem<Item> ADVANCED_CIRCUIT = ITEMS.registerSimpleItem("advanced_circuit");
     public static final DeferredItem<Item> PLASTIC_SHEET = ITEMS.registerSimpleItem("plastic_sheet");
     public static final DeferredItem<com.walnutbeachdigital.joulesmith.farming.FertilizerItem> FERTILIZER = ITEMS.register("fertilizer",
@@ -113,6 +117,9 @@ public final class JSItems {
             UPGRADE.put(type, register(type.id() + "_upgrade", () -> new UpgradeCardItem(type, new Item.Properties().stacksTo(16))));
         }
         TAB_ORDER.add(SAWDUST);
+        TAB_ORDER.add(COPPER_COIL);
+        TAB_ORDER.add(ELECTRUM_COIL);
+        TAB_ORDER.add(MOTOR);
         TAB_ORDER.add(BASIC_CIRCUIT);
         TAB_ORDER.add(ADVANCED_CIRCUIT);
         TAB_ORDER.add(PLASTIC_SHEET);

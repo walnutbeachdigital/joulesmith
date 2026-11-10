@@ -1,0 +1,12 @@
+{
+  "type": "joulesmith:crystallizing",
+  "fluid": {
+    "id": "joulesmith:liquid_latex",
+    "amount": 200
+  },
+  "results": [
+    {
+      "id": "joulesmith:rubber"
+    }
+  ]
+}

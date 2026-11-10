@@ -17,7 +17,7 @@
       "item": "joulesmith:fluid_pipe"
     },
     "G": {
-      "tag": "c:gears/copper"
+      "item": "joulesmith:motor"
     },
     "R": {
       "tag": "c:dusts/redstone"

@@ -112,6 +112,8 @@
     "item/sulfuric_acid_bucket",
     "item/coolant_bucket",
     "item/biofuel_bucket",
+    "item/oil_bucket",
+    "item/liquid_latex_bucket",
     "block/rubber_log",
     "block/rubber_log_top",
     "block/rubber_planks",

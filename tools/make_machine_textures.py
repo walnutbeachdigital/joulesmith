@@ -2239,6 +2239,42 @@ def module_item(art=None):
     return module_cartridge(MODULE_COLOR[kind], icon)
 
 
+
+def coil_item(wire):
+    """A coil: tight windings of wire (light and dark turns) round a steel core whose ends show at each side."""
+    core = _mask({y: (1, 14) for y in (7, 8)})
+    winding = _mask({y: (4, 11) for y in range(3, 13)})
+    img = _parts((core, STEEL8, 3, 7), (winding, wire, 2, 7))
+    px = img.load()
+    for y in range(4, 12):
+        for x in range(5, 11):
+            if x % 2 == 0:
+                px[x, y] = rgba(wire[2] if y > 8 else wire[4])     # the gaps between turns
+    for x in range(4, 12):
+        px[x, 3] = rgba(wire[7] if x < 9 else wire[5])
+    for y in (7, 8):                                       # core ends: bright face on the left
+        px[1, y] = rgba(STEEL8[7]); px[14, y] = rgba(STEEL8[2])
+    return img
+
+
+def motor_item():
+    """An electric motor: a steel can with cooling fins, a copper end cap with bolts, a shaft out the right
+    and a mounting foot."""
+    can = _mask({y: (2, 10) for y in range(3, 12)})
+    cap = _mask({y: (1, 1) for y in range(4, 11)})
+    endcap = _mask({y: (11, 12) for y in range(4, 11)})
+    shaft = _mask({y: (13, 15) for y in (7, 8)})
+    foot = _mask({12: (3, 9), 13: (2, 10)})
+    img = _parts((foot, STEEL8, 1, 5), (can, STEEL8, 2, 7), (cap, COPPER8, 3, 7), (endcap, COPPER8, 2, 6), (shaft, STEEL8, 3, 7))
+    px = img.load()
+    for x in range(3, 10, 2):                              # fins
+        for y in range(4, 11):
+            px[x, y] = rgba(STEEL8[3] if y > 5 else STEEL8[4])
+    for (x, y) in ((11, 5), (11, 9)):                      # bolts
+        px[x, y] = rgba(COPPER8[7])
+    return img
+
+
 def main():
     os.makedirs(os.path.join(TEX, "block"), exist_ok=True)
     os.makedirs(os.path.join(TEX, "gui"), exist_ok=True)
@@ -2307,6 +2343,9 @@ def main():
         "block/sawmill_front_on": sawmill_front(True),
         "item/sawdust": sawdust_item(),
         "item/basic_circuit": basic_circuit_item(),
+        "item/copper_coil": coil_item(COPPER8),
+        "item/electrum_coil": coil_item(ELECTRUM8),
+        "item/motor": motor_item(),
         "block/rubber_log_spot_dry": rubber_spot("dry"),
         "block/rubber_log_spot_wet": rubber_spot("wet"),
         "item/latex": latex_item(),

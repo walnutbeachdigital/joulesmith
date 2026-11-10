@@ -14,7 +14,7 @@
       "item": "joulesmith:advanced_circuit"
     },
     "G": {
-      "tag": "c:gears/steel"
+      "item": "joulesmith:electrum_coil"
     },
     "B": {
       "tag": "c:storage_blocks/copper"

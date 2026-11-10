@@ -11,7 +11,7 @@
       "tag": "c:ingots/iron"
     },
     "G": {
-      "tag": "c:gears/copper"
+      "item": "joulesmith:motor"
     },
     "F": {
       "item": "minecraft:flint"

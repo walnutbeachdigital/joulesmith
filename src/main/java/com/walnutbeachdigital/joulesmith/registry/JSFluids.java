@@ -64,6 +64,10 @@ public final class JSFluids {
     public static final Entry SULFURIC_ACID = register("sulfuric_acid", 0xE0D9D23A, 1100, 1100, 300);
     public static final Entry COOLANT = register("coolant", 0xE03ED6E0, 1000, 1000, 250);
     public static final Entry BIOFUEL = register("biofuel", 0xE07FA331, 900, 1200, 300);
+    /** Crude oil, from coal dissolved in acid; the Fluid Mixer makes plastic from it. */
+    public static final Entry OIL = register("oil", 0xF02A2620, 900, 3000, 300);
+    /** Tree-tap latex thinned with water; the Crystallizer sets it into rubber. */
+    public static final Entry LIQUID_LATEX = register("liquid_latex", 0xF0EDE6CF, 1050, 2500, 300);
     /** Steam only lives in tanks and pipes: no bucket, no block. */
     public static final Entry STEAM = register("steam", 0xC0E6ECF0, -1000, 200, 400, false);
     /** Experience from the Mob Grinder, 20 mB a point, for the Auto Enchanter or bottling. Tanks and pipes only. */

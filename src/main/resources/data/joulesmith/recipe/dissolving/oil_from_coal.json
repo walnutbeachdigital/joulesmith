@@ -1,0 +1,18 @@
+{
+  "type": "joulesmith:dissolving",
+  "fluid": {
+    "id": "joulesmith:sulfuric_acid",
+    "amount": 100
+  },
+  "inputs": [
+    {
+      "tag": "minecraft:coals"
+    }
+  ],
+  "fluid_result": {
+    "id": "joulesmith:oil",
+    "amount": 250
+  },
+  "energy": 2400,
+  "time": 100
+}

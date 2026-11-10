@@ -1,0 +1,13 @@
+{
+  "type": "joulesmith:mixing",
+  "fluid": {
+    "id": "joulesmith:oil",
+    "amount": 500
+  },
+  "results": [
+    {
+      "id": "joulesmith:plastic_sheet",
+      "count": 2
+    }
+  ]
+}

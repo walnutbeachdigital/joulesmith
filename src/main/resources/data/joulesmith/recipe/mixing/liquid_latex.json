@@ -1,0 +1,17 @@
+{
+  "type": "joulesmith:mixing",
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 250
+  },
+  "inputs": [
+    {
+      "item": "joulesmith:latex",
+      "count": 2
+    }
+  ],
+  "fluid_result": {
+    "id": "joulesmith:liquid_latex",
+    "amount": 500
+  }
+}

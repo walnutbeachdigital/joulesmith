@@ -106,6 +106,8 @@ public final class MetalTexturePack implements PackResources {
         addFluidBucket(0xD9D23A, "sulfuric_acid");
         addFluidBucket(0x3ED6E0, "coolant");
         addFluidBucket(0x7FA331, "biofuel");
+        addFluidBucket(0x4A4238, "oil");
+        addFluidBucket(0xEDE6CF, "liquid_latex");
         // the Exo-Suit: vanilla's diamond armor in dark blue-grey plating
         for (String piece : new String[] {"helmet", "chestplate", "leggings", "boots"}) {
             addFull(EXO, "item/exo_" + piece, "item/diamond_" + piece);

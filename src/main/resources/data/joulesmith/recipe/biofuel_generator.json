@@ -14,7 +14,7 @@
       "item": "joulesmith:basic_circuit"
     },
     "G": {
-      "tag": "c:gears/bronze"
+      "item": "joulesmith:copper_coil"
     },
     "T": {
       "item": "joulesmith:combustion_generator"

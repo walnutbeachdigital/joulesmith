@@ -11,7 +11,7 @@
       "tag": "c:ingots/iron"
     },
     "G": {
-      "tag": "c:gears/copper"
+      "item": "joulesmith:copper_coil"
     },
     "F": {
       "item": "minecraft:furnace"

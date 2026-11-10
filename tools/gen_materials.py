@@ -644,7 +644,7 @@ shaped("centrifuge", ["PCP", "GMG", "PRP"],
        {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit", "G": "#c:gears/invar", "M": "#c:ingots/electrum", "R": "#c:dusts/redstone"})
 
 # ---- fluids: a block to place, a bucket (NeoForge's tinted bucket model) and names
-FLUIDS = {"sulfuric_acid": "Sulfuric Acid", "coolant": "Coolant", "biofuel": "Biofuel"}
+FLUIDS = {"sulfuric_acid": "Sulfuric Acid", "coolant": "Coolant", "biofuel": "Biofuel", "oil": "Oil", "liquid_latex": "Liquid Latex"}
 bucket_generated = []
 for fid, fname in FLUIDS.items():
     write(os.path.join(ASSETS, "blockstates", f"{fid}.json"), {"variants": {"": {"model": f"{MOD}:block/{fid}"}}})
@@ -1048,6 +1048,33 @@ lang.update({
     "config.jade.plugin_joulesmith.machine": "Joulesmith machine progress",
     "config.jade.plugin_joulesmith.solar_panel": "Joulesmith solar output",
 })
+
+# ---- crafting parts: coils and motors, now in the machines that heat, generate or turn
+for iid, name in (("copper_coil", "Copper Coil"), ("electrum_coil", "Electrum Coil"), ("motor", "Motor")):
+    write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
+          {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{iid}"}})
+    lang[f"item.{MOD}.{iid}"] = name
+shaped("copper_coil", [" W ", "WIW", " W "], {"W": "#c:wires/copper", "I": "#c:ingots/iron"})
+shaped("electrum_coil", [" W ", "WIW", " W "], {"W": "#c:wires/electrum", "I": "#c:ingots/steel"})
+shaped("motor", ["ICI", "CGC", "IRI"], {"I": "#c:ingots/iron", "C": f"{MOD}:copper_coil", "G": "#c:gears/copper", "R": "#c:dusts/redstone"})
+COIL, ECOIL, MOTOR = f"{MOD}:copper_coil", f"{MOD}:electrum_coil", f"{MOD}:motor"
+shaped("electric_furnace", ["IGI", "GFG", "IRI"], {"I": "#c:ingots/iron", "G": COIL, "F": "minecraft:furnace", "R": "#c:dusts/redstone"})
+shaped("combustion_generator", ["III", "GFG", "IRI"], {"I": "#c:ingots/iron", "G": COIL, "F": "minecraft:furnace", "R": "#c:dusts/redstone"})
+shaped("crusher", ["IGI", "FPF", "IRI"], {"I": "#c:ingots/iron", "G": MOTOR, "F": "minecraft:flint", "P": "minecraft:piston", "R": "#c:dusts/redstone"})
+shaped("pump", ["IBI", "PGP", "IRI"], {"I": "#c:ingots/iron", "B": "minecraft:bucket", "P": f"{MOD}:fluid_pipe", "G": MOTOR, "R": "#c:dusts/redstone"})
+shaped("sawmill", ["ISI", "GAG", "IRI"], {"I": "#c:ingots/iron", "S": "minecraft:stonecutter", "G": MOTOR, "A": "minecraft:iron_axe", "R": "#c:dusts/redstone"})
+shaped("wire_drawer", ["IGI", "TST", "IRI"], {"I": "#c:ingots/iron", "G": MOTOR, "T": "#c:ingots/tin", "S": "minecraft:shears", "R": "#c:dusts/redstone"})
+shaped("biofuel_generator", ["PCP", "GTG", "PRP"], {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit", "G": COIL,
+                                                   "T": f"{MOD}:combustion_generator", "R": "#c:dusts/redstone"})
+shaped("steam_turbine", ["PCP", "GBG", "PRP"], {"P": "#c:plates/steel", "C": f"{MOD}:advanced_circuit", "G": ECOIL,
+                                               "B": "#c:storage_blocks/copper", "R": "#c:storage_blocks/redstone"})
+shaped("wind_turbine", ["SBS", "BCB", "SGS"], {"S": "#c:plates/steel", "B": "#c:plates/invar", "C": f"{MOD}:advanced_circuit", "G": ECOIL})
+# ---- oil and liquid latex
+OIL, LLATEX = f"{MOD}:oil", f"{MOD}:liquid_latex"
+machine_fluid("dissolving", "oil_from_coal", (ACID, 100), [("#minecraft:coals", 1)], [], (OIL, 250), energy=2400, time=100)
+machine_fluid("mixing", "plastic_sheet_from_oil", (OIL, 500), [], [(f"{MOD}:plastic_sheet", 2, 1)])
+machine_fluid("mixing", "liquid_latex", ("minecraft:water", 250), [(f"{MOD}:latex", 2)], [], (LLATEX, 500))
+machine_fluid("crystallizing", "rubber_from_liquid_latex", (LLATEX, 200), [], [(f"{MOD}:rubber", 1, 1)])
 
 # ---- tier 3 ore processing: Chemical Dissolver (ore + acid -> 1000 mB slurry) and Crystallizer
 # (250 mB slurry -> one crystal); the Crusher turns each crystal into a dust: four per raw ore.

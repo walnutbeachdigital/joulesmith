@@ -17,7 +17,7 @@
       "item": "joulesmith:advanced_circuit"
     },
     "G": {
-      "tag": "c:gears/electrum"
+      "item": "joulesmith:electrum_coil"
     }
   },
   "result": {
