@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "joulesmith:block/charging_pad"
+    },
+    "lit=true": {
+      "model": "joulesmith:block/charging_pad_on"
+    }
+  }
+}

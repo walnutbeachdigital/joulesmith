@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SES",
+    "SCS",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    },
+    "E": {
+      "item": "joulesmith:energy_cell"
+    }
+  },
+  "result": {
+    "id": "joulesmith:exo_chestplate",
+    "count": 1
+  }
+}

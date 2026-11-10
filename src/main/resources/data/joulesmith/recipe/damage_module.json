@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "joulesmith:blank_module"
+    },
+    {
+      "tag": "c:gems/quartz"
+    },
+    {
+      "tag": "c:gems/diamond"
+    }
+  ],
+  "result": {
+    "id": "joulesmith:damage_module"
+  }
+}

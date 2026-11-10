@@ -7,6 +7,11 @@ import java.util.Map;
 
 import com.walnutbeachdigital.joulesmith.Joulesmith;
 import com.walnutbeachdigital.joulesmith.gear.AreaToolItem;
+import com.walnutbeachdigital.joulesmith.gear.powered.ChainsawItem;
+import com.walnutbeachdigital.joulesmith.gear.powered.EnergyCellItem;
+import com.walnutbeachdigital.joulesmith.gear.powered.EnergySwordItem;
+import com.walnutbeachdigital.joulesmith.gear.powered.ExoArmorItem;
+import com.walnutbeachdigital.joulesmith.gear.powered.PowerDrillItem;
 import com.walnutbeachdigital.joulesmith.material.Metal;
 
 import net.minecraft.core.registries.Registries;
@@ -24,6 +29,7 @@ import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.SimpleTier;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -61,6 +67,39 @@ public final class JSGear {
     static {
         JSItems.TAB_ORDER.add(STEEL_HAMMER);
         JSItems.TAB_ORDER.add(STEEL_EXCAVATOR);
+    }
+
+    // ---- powered gear: holds FE instead of durability
+    /** Every item that holds power, for the energy capability. */
+    public static final List<DeferredItem<? extends Item>> POWERED = new ArrayList<>();
+
+    public static final DeferredItem<EnergyCellItem> ENERGY_CELL = powered("energy_cell", () -> new EnergyCellItem(new Item.Properties()));
+    public static final DeferredItem<PowerDrillItem> POWER_DRILL = powered("power_drill", () -> new PowerDrillItem(new Item.Properties()
+            .attributes(DiggerItem.createAttributes(Tiers.DIAMOND, 1.0f, -2.8f))));
+    public static final DeferredItem<ChainsawItem> CHAINSAW = powered("chainsaw", () -> new ChainsawItem(new Item.Properties()
+            .attributes(DiggerItem.createAttributes(Tiers.DIAMOND, 5.0f, -3.0f))));
+    public static final DeferredItem<EnergySwordItem> ENERGY_SWORD = powered("energy_sword", () -> new EnergySwordItem(new Item.Properties()));
+
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> EXO = ARMOR_MATERIALS.register("exo", () -> {
+        Map<ArmorItem.Type, Integer> def = new EnumMap<>(ArmorItem.Type.class);
+        def.put(ArmorItem.Type.BOOTS, 2);
+        def.put(ArmorItem.Type.LEGGINGS, 5);
+        def.put(ArmorItem.Type.CHESTPLATE, 6);
+        def.put(ArmorItem.Type.HELMET, 2);
+        def.put(ArmorItem.Type.BODY, 6);
+        return new ArmorMaterial(def, 0, SoundEvents.ARMOR_EQUIP_NETHERITE, () -> Ingredient.EMPTY,
+                List.of(new ArmorMaterial.Layer(Joulesmith.id("exo"))), 2.0f, 0f);
+    });
+    public static final DeferredItem<ExoArmorItem> EXO_HELMET = powered("exo_helmet", () -> new ExoArmorItem(EXO, ArmorItem.Type.HELMET, new Item.Properties()));
+    public static final DeferredItem<ExoArmorItem> EXO_CHESTPLATE = powered("exo_chestplate", () -> new ExoArmorItem(EXO, ArmorItem.Type.CHESTPLATE, new Item.Properties()));
+    public static final DeferredItem<ExoArmorItem> EXO_LEGGINGS = powered("exo_leggings", () -> new ExoArmorItem(EXO, ArmorItem.Type.LEGGINGS, new Item.Properties()));
+    public static final DeferredItem<ExoArmorItem> EXO_BOOTS = powered("exo_boots", () -> new ExoArmorItem(EXO, ArmorItem.Type.BOOTS, new Item.Properties()));
+
+    private static <I extends Item> DeferredItem<I> powered(String name, java.util.function.Supplier<I> factory) {
+        DeferredItem<I> item = JSItems.ITEMS.register(name, factory);
+        POWERED.add(item);
+        JSItems.TAB_ORDER.add(item);
+        return item;
     }
 
     /** {@code defense}: boots, leggings, chestplate, helmet. */

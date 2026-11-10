@@ -57,6 +57,7 @@ public final class MetalTexturePack implements PackResources {
     }
 
     /** Rubber wood, in vanilla shapes: acacia's smooth streaked bark, oak's log ends, planks and leaves. */
+    private static final int[] EXO = {0x11161D, 0x1F2A35, 0x2F3E4C, 0x41566A, 0x557089, 0x6C8BA3, 0x8AAABF, 0xB4D4E4};
     private static final int[] RUBBER_BARK = {0x3D3127, 0x4F4235, 0x615244, 0x736353, 0x857463, 0x978673, 0xA89885, 0xB8A994};
     private static final int[] RUBBER_END = {0x3A3027, 0x5B4F41, 0x7A6447, 0x97794E, 0xAD8E5C, 0xC2A26A, 0xD3B47A, 0xE2C78B};
     private static final int[] RUBBER_PLANKS = {0x5A4128, 0x7A5A38, 0x96734A, 0xAD8A5A, 0xC09E6A, 0xD0B07A, 0xDDC08C, 0xE8D0A0};
@@ -93,6 +94,12 @@ public final class MetalTexturePack implements PackResources {
             addMetal(m, "models/armor/" + id + "_layer_1", "models/armor/iron_layer_1");
             addMetal(m, "models/armor/" + id + "_layer_2", "models/armor/iron_layer_2");
         }
+        // the Exo-Suit: vanilla's diamond armor in dark blue-grey plating
+        for (String piece : new String[] {"helmet", "chestplate", "leggings", "boots"}) {
+            addFull(EXO, "item/exo_" + piece, "item/diamond_" + piece);
+        }
+        addFull(EXO, "models/armor/exo_layer_1", "models/armor/diamond_layer_1");
+        addFull(EXO, "models/armor/exo_layer_2", "models/armor/diamond_layer_2");
         addRamp(RUBBER_BARK, "block/rubber_log", "block/acacia_log");
         addRamp(RUBBER_END, "block/rubber_log_top", "block/oak_log_top");
         addRamp(RUBBER_PLANKS, "block/rubber_planks", "block/oak_planks");
@@ -100,6 +107,11 @@ public final class MetalTexturePack implements PackResources {
         // the sapling in two parts: birch's leaves in rubber greens, its stem in rubber bark
         TEXTURES.put(Joulesmith.id("textures/block/rubber_sapling.png"), new Source(RUBBER_LEAVES,
                 ResourceLocation.withDefaultNamespace("textures/block/birch_sapling.png"), false, true, RUBBER_BARK));
+    }
+
+    private static void addFull(int[] ramp, String path, String vanillaPath) {
+        TEXTURES.put(Joulesmith.id("textures/" + path + ".png"),
+                new Source(ramp, ResourceLocation.withDefaultNamespace("textures/" + vanillaPath + ".png"), false));
     }
 
     private static void addRamp(int[] ramp, String path, String vanillaPath) {

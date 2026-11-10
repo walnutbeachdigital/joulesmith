@@ -193,5 +193,9 @@ public final class JSBlockEntities {
         DeferredHolder<BlockEntityType<?>, T> value;
     }
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.gear.pad.ChargingPadBlockEntity>> CHARGING_PAD =
+            BLOCK_ENTITIES.register("charging_pad", () -> BlockEntityType.Builder.of(com.walnutbeachdigital.joulesmith.gear.pad.ChargingPadBlockEntity::new,
+                    JSBlocks.CHARGING_PAD.get()).build(null));
+
     private JSBlockEntities() {}
 }

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " D ",
+    "SCS",
+    "PEP"
+  ],
+  "key": {
+    "D": {
+      "tag": "c:gems/diamond"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    },
+    "P": {
+      "tag": "c:plates/invar"
+    },
+    "E": {
+      "item": "joulesmith:energy_cell"
+    }
+  },
+  "result": {
+    "id": "joulesmith:power_drill",
+    "count": 1
+  }
+}

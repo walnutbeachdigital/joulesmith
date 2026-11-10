@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SCS",
+    "SES"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    },
+    "E": {
+      "item": "joulesmith:energy_cell"
+    }
+  },
+  "result": {
+    "id": "joulesmith:exo_helmet",
+    "count": 1
+  }
+}

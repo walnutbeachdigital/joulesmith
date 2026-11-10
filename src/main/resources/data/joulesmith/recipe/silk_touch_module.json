@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "joulesmith:blank_module"
+    },
+    {
+      "item": "minecraft:white_wool"
+    },
+    {
+      "tag": "c:gems/emerald"
+    }
+  ],
+  "result": {
+    "id": "joulesmith:silk_touch_module"
+  }
+}

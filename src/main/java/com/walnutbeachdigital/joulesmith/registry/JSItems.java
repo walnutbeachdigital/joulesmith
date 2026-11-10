@@ -45,6 +45,8 @@ public final class JSItems {
     public static final DeferredItem<Item> LATEX = ITEMS.registerSimpleItem("latex");
     public static final DeferredItem<Item> RUBBER = ITEMS.registerSimpleItem("rubber");
     public static final DeferredItem<TreeTapItem> TREE_TAP = ITEMS.register("tree_tap", () -> new TreeTapItem(new Item.Properties().durability(128)));
+    public static final Map<com.walnutbeachdigital.joulesmith.gear.powered.Module, DeferredItem<com.walnutbeachdigital.joulesmith.gear.powered.ModuleItem>> MODULES =
+            new EnumMap<>(com.walnutbeachdigital.joulesmith.gear.powered.Module.class);
     public static final Map<Metal, DeferredItem<Item>> CRUSHED = new EnumMap<>(Metal.class);
     public static final DeferredItem<FilterCardItem> FILTER_CARD = register("filter_card", () -> new FilterCardItem(new Item.Properties().stacksTo(16)));
 
@@ -109,6 +111,13 @@ public final class JSItems {
         register("reinforced_crate", () -> new CrateItem(JSBlocks.REINFORCED_CRATE.get(), new Item.Properties().stacksTo(1)));
         register("basic_bulk_bin", () -> new BinItem(JSBlocks.BASIC_BULK_BIN.get(), new Item.Properties().stacksTo(1)));
         register("reinforced_bulk_bin", () -> new BinItem(JSBlocks.REINFORCED_BULK_BIN.get(), new Item.Properties().stacksTo(1)));
+        blockItem(JSBlocks.CHARGING_PAD);
+        blockItem(JSBlocks.MODIFICATION_TABLE);
+        item("blank_module");
+        for (var module : com.walnutbeachdigital.joulesmith.gear.powered.Module.values()) {
+            MODULES.put(module, register(module.id() + "_module",
+                    () -> new com.walnutbeachdigital.joulesmith.gear.powered.ModuleItem(module, new Item.Properties().stacksTo(16))));
+        }
         blockItem(JSBlocks.CREATIVE_POWER_CELL);
         for (Metal metal : Metal.values()) {
             String id = metal.id();

@@ -70,6 +70,8 @@
     "joulesmith:energy_sensor",
     "joulesmith:time_sensor",
     "joulesmith:proximity_sensor",
-    "joulesmith:logic_controller"
+    "joulesmith:logic_controller",
+    "joulesmith:charging_pad",
+    "joulesmith:modification_table"
   ]
 }

@@ -73,7 +73,7 @@ public class AreaToolItem extends DiggerItem {
     }
 
     /** Which face of the block the player is looking at. */
-    private static Direction facing(ServerPlayer player) {
+    public static Direction facing(ServerPlayer player) {
         double reach = player.blockInteractionRange();
         Vec3 eye = player.getEyePosition();
         Vec3 end = eye.add(player.getLookAngle().scale(reach));

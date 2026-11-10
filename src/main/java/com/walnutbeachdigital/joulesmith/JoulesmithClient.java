@@ -68,6 +68,7 @@ public class JoulesmithClient {
         event.register(JSMenus.FILTER.get(), FilterScreen::new);
         event.register(JSMenus.CRATE.get(), CrateScreen::new);
         event.register(JSMenus.LOGIC.get(), LogicScreen::new);
+        event.register(JSMenus.MODIFICATION_TABLE.get(), com.walnutbeachdigital.joulesmith.client.ModificationTableScreen::new);
     }
 
     /** Adds the built-in pack that colours vanilla-shaped metal textures through each metal's gradient. */

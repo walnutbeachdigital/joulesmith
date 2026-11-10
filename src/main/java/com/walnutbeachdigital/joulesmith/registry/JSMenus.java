@@ -28,5 +28,8 @@ public final class JSMenus {
     public static final DeferredHolder<MenuType<?>, MenuType<LogicMenu>> LOGIC =
             MENUS.register("logic", () -> IMenuTypeExtension.create(LogicMenu::new));
 
+    public static final DeferredHolder<MenuType<?>, MenuType<com.walnutbeachdigital.joulesmith.gear.table.ModificationTableMenu>> MODIFICATION_TABLE =
+            MENUS.register("modification_table", () -> IMenuTypeExtension.create(com.walnutbeachdigital.joulesmith.gear.table.ModificationTableMenu::new));
+
     private JSMenus() {}
 }

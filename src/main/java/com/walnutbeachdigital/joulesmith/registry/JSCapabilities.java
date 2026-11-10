@@ -47,6 +47,13 @@ public final class JSCapabilities {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.FLUID_TANK.get(), (tank, side) -> tank.columnHandler());
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, JSBlockEntities.ENERGY_CABLE.get(),
                 (cable, side) -> cable.energyHandler());
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, JSBlockEntities.CHARGING_PAD.get(), (pad, side) -> pad.energyHandler());
+        for (var holder : JSGear.POWERED) {
+            var item = holder.get();
+            var powered = (com.walnutbeachdigital.joulesmith.gear.powered.PoweredItem) item;
+            event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, context) -> new net.neoforged.neoforge.energy.ComponentEnergyStorage(
+                    stack, JSDataComponents.ENERGY.get(), powered.capacity(), powered.transferRate(), powered.transferRate()), item);
+        }
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, JSBlockEntities.CREATIVE_POWER_CELL.get(),
                 (cell, side) -> CreativePowerCellBlockEntity.ENDLESS);
     }

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "SWS",
+    "S S"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/electrum"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    },
+    "W": {
+      "item": "minecraft:crafting_table"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "result": {
+    "id": "joulesmith:modification_table",
+    "count": 1
+  }
+}

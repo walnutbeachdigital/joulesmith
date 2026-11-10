@@ -1717,6 +1717,208 @@ def gui():
     gauge_marks(img)
     return img
 
+# ------------------------------------------------------------------ powered gear (tier 3)
+# Same lit-shape method as the rubber items: each part a shape on an eight-step ramp, lit from the top-left.
+EXO8 = ["#11161d", "#1a222c", "#24303c", "#2f3e4c", "#3c4e5e", "#4d6273", "#647a8b", "#8197a6"]
+ENERGY8 = ["#0a3a52", "#0f5677", "#13749b", "#1a93bd", "#2fb3da", "#5fd0ef", "#9be6f8", "#dff8ff"]
+ELECTRUM8 = ["#957c3d", "#a19144", "#bca54f", "#c9b255", "#d9c25f", "#e9da75", "#f8f796", "#fbfbbc"]
+
+
+def _diag(test):
+    """A mask from a test on (along, across): along runs bottom-left to top-right, across top-left to
+    bottom-right, both centred on the icon."""
+    import math
+    m = [[False] * 16 for _ in range(16)]
+    for y in range(16):
+        for x in range(16):
+            dx, dy = x - 7.5, y - 7.5
+            if test((dx - dy) / math.sqrt(2), (dx + dy) / math.sqrt(2)):
+                m[y][x] = True
+    return m
+
+
+def _parts(*parts):
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    for mask, ramp, lo, hi in parts:
+        if any(any(r) for r in mask):
+            _paint(img, _lit(mask, lo, hi), ramp)
+    return img
+
+
+def power_drill_item():
+    """A pistol-grip drill: a dark body with a glowing power strip, a gold chuck and a spiralled steel bit."""
+    body = _diag(lambda a, c: -6.4 <= a <= 0.6 and abs(c + 0.7) <= 2.2)
+    grip = _diag(lambda a, c: -6.0 <= a <= -3.2 and 1.5 < c + 0.7 <= 6.6)
+    chuck = _diag(lambda a, c: 0.6 < a <= 2.4 and abs(c + 0.7) <= 1.6)
+    bit = _diag(lambda a, c: 2.4 < a <= 8.8 and abs(c + 0.7) <= max(0.4, (9.4 - a) * 0.32))
+    img = _parts((grip, RUBBER8, 2, 6), (body, EXO8, 2, 7), (chuck, ELECTRUM8, 2, 7), (bit, STEEL8, 3, 7))
+    px = img.load()
+    strip = _diag(lambda a, c: -5.6 <= a <= -0.2 and abs(c + 0.7) <= 0.4)
+    trigger = _diag(lambda a, c: -3.0 <= a <= -2.0 and 1.5 < c + 0.7 <= 3.4)
+    for y in range(16):
+        for x in range(16):
+            if strip[y][x]:
+                px[x, y] = rgba(ENERGY8[6] if (x + y) % 3 else ENERGY8[4])
+            if trigger[y][x]:
+                px[x, y] = rgba(ELECTRUM8[3])
+            if bit[y][x] and ((x - y) // 2) % 2 == 0 and (x + y) % 2 == 0:   # the spiral
+                px[x, y] = rgba(STEEL8[2])
+    return img
+
+
+def chainsaw_item():
+    """A long guide bar with a toothed chain, a dark motor housing with a power strip and a top handle."""
+    import math
+    body = _diag(lambda a, c: -9.4 <= a <= -1.6 and abs(c) <= 3.0)
+    handle = _diag(lambda a, c: (-8.6 <= a <= -2.6 and -5.6 <= c < -4.4)
+                   or ((-8.6 <= a <= -7.4 or -3.8 <= a <= -2.6) and -4.4 <= c < -3.0))
+    bar = _diag(lambda a, c: -1.6 < a <= 9.6 and abs(c) <= 2.2)
+    img = _parts((handle, STEEL8, 2, 6), (body, EXO8, 2, 7), (bar, STEEL8, 3, 7))
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            dx, dy = x - 7.5, y - 7.5
+            a, c = (dx - dy) / math.sqrt(2), (dx + dy) / math.sqrt(2)
+            if bar[y][x] and abs(c) > 1.2:              # the chain, light and dark links
+                px[x, y] = rgba(STEEL8[3] if ((x - y) // 2) % 2 else STEEL8[7])
+            if body[y][x] and -8.2 <= a <= -2.8 and abs(c) <= 0.6:
+                px[x, y] = rgba(ENERGY8[6] if (x + y) % 3 else ENERGY8[4])
+    return img
+
+
+def energy_sword_item():
+    """A blade of light: a glowing cyan edge around a white core, a gold guard and a rubber grip."""
+    blade = _diag(lambda a, c: -1.4 <= a <= 7.6 and abs(c) <= min(1.3, (8.0 - a) * 0.55))
+    guard = _diag(lambda a, c: -2.6 <= a < -1.4 and abs(c) <= 3.0)
+    grip = _diag(lambda a, c: -6.4 <= a < -2.6 and abs(c) <= 0.8)
+    pommel = _diag(lambda a, c: -7.6 <= a < -6.4 and abs(c) <= 1.3)
+    img = _parts((grip, RUBBER8, 3, 7), (pommel, ELECTRUM8, 2, 7), (guard, ELECTRUM8, 2, 7), (blade, ENERGY8, 3, 7))
+    px = img.load()
+    core = _diag(lambda a, c: -1.0 <= a <= 6.6 and abs(c) <= 0.4)
+    for y in range(16):
+        for x in range(16):
+            if core[y][x]:
+                px[x, y] = rgba(ENERGY8[7])
+    return img
+
+
+def energy_cell_item():
+    """An upright power cell: gold caps, a dark body and a glowing charge window."""
+    body = _mask({y: (5, 10) for y in range(3, 14)})
+    cap = _mask({1: (7, 8), 2: (6, 9)})
+    base = _mask({14: (5, 10)})
+    img = _parts((body, EXO8, 2, 7), (cap, ELECTRUM8, 3, 7), (base, ELECTRUM8, 1, 4))
+    px = img.load()
+    for y in range(5, 12):
+        for x in (7, 8):
+            px[x, y] = rgba(ENERGY8[7 if y < 7 else 5 if y < 10 else 3] if x == 7 else ENERGY8[5 if y < 7 else 4 if y < 10 else 2])
+    for x in range(5, 11):                             # gold bands
+        px[x, 3] = rgba(ELECTRUM8[6] if x < 9 else ELECTRUM8[3])
+        px[x, 13] = rgba(ELECTRUM8[4] if x < 9 else ELECTRUM8[1])
+    return img
+
+
+MODULE_COLOR = {"tool": "#ffb347", "weapon": "#ff6b5a", "tool_or_weapon": "#ffe066", "armor": "#7fe8ff"}
+MODULE_ART = {
+    "speed": ("tool", ["#..#...", ".#..#..", "..#..#.", ".#..#..", "#..#..."]),
+    "range": ("tool", ["#.#.#.#", ".......", "#.###.#", ".......", "#.#.#.#"]),
+    "silk_touch": ("tool", ["...#...", "..#.#..", ".#...#.", "..#.#..", "...#..."]),
+    "fortune": ("tool", ["#.#.###", ".#....#", "#.#.###", "......#", "....###"]),
+    "auto_smelt": ("tool", ["#######", "#.....#", "#..#..#", "#.###.#", "#######"]),
+    "magnet": ("tool_or_weapon", ["##...##", "##...##", "##...##", ".#####.", "..###.."]),
+    "damage": ("weapon", ["...#...", "..###..", ".#.#.#.", "...#...", "...#..."]),
+    "looting": ("weapon", ["..###..", ".#...#.", "#..#..#", ".#...#.", "..###.."]),
+    "fire": ("weapon", ["...#...", "..##.#.", ".#####.", "#######", ".#####."]),
+    "night_vision": ("armor", [".#####.", "#..#..#", "#.###.#", "#..#..#", ".#####."]),
+    "water_breathing": ("armor", [".#...#.", "#.#.#.#", ".#...#.", "...#...", "..#.#.."]),
+    "solar": ("armor", ["#..#..#", ".#.#.#.", "..###..", ".#.#.#.", "#..#..#"]),
+    "jetpack": ("armor", ["...#...", "..###..", ".#####.", "..#.#..", ".#...#."]),
+    "swiftness": ("armor", ["####...", ".......", "######.", ".......", "####..."]),
+    "jump_boost": ("armor", ["...#...", "..###..", ".#.#.#.", "...#...", "#######"]),
+    "step_assist": ("armor", ["....###", "....#..", "..###..", "..#....", "###...."]),
+    "fall_protection": ("armor", ["...#...", "...#...", ".#.#.#.", "..###..", "#######"]),
+}
+
+
+def module_item(art=None):
+    """A module: a dark chip with gold pins down each side and its symbol in the colour of what it fits."""
+    body = _mask({y: (3, 13) for y in range(3, 14)})
+    img = _parts((body, EXO8, 2, 6))
+    px = img.load()
+    for y in range(4, 13, 2):
+        px[2, y] = rgba(ELECTRUM8[6])
+        px[14, y] = rgba(ELECTRUM8[2])
+    if art is None:
+        for x, y in ((7, 7), (8, 7), (7, 8), (8, 8)):
+            px[x, y] = rgba(ENERGY8[5])
+        return img
+    kind, icon = art
+    for j, row in enumerate(icon):
+        for i, ch in enumerate(row):
+            if ch == "#":
+                px[5 + i, 6 + j] = rgba(MODULE_COLOR[kind])
+    return img
+
+
+def charging_pad_top(on):
+    """The pad's face: a steel plate in a gold frame with a ring-shaped charging coil."""
+    img = casing3()
+    px = img.load()
+    for y in range(2, 14):
+        for x in range(2, 14):
+            px[x, y] = rgba(EXO8[3] if (x + y) % 2 else EXO8[2])
+    coil = ENERGY8 if on else ["#1a2630", "#22323e", "#2b3f4d", "#35505f", "#3f5f70", "#4b6f80", "#587e8e", "#668c9b"]
+    for y in range(16):
+        for x in range(16):
+            d = ((x - 7.5) ** 2 + (y - 7.5) ** 2) ** 0.5
+            if 4.2 <= d <= 5.4 or d <= 1.6:
+                px[x, y] = rgba(coil[6] if (x + y) < 15 else coil[4])
+            elif 2.6 <= d <= 3.2:
+                px[x, y] = rgba(coil[3])
+    return img
+
+
+def modification_table_top():
+    """A work mat: a dark grid in a gold frame."""
+    img = casing3()
+    px = img.load()
+    for y in range(2, 14):
+        for x in range(2, 14):
+            px[x, y] = rgba(EXO8[4] if x % 4 == 1 or y % 4 == 1 else EXO8[2])
+    return img
+
+
+def modification_table_side(front):
+    """The bench: a gold-trimmed top band over a dark column; the front has a small screen."""
+    img = casing3()
+    px = img.load()
+    for y in range(4):
+        for x in range(16):
+            px[x, y] = rgba(ELECTRUM_TRIM[4 if y == 0 else 3 if y == 1 else 2 if y == 2 else 0])
+    for y in range(4, 16):
+        for x in range(2, 14):
+            px[x, y] = rgba(EXO8[3] if x in (2, 13) else EXO8[2] if (x + y) % 5 else EXO8[1])
+    if front:
+        for y in range(6, 11):
+            for x in range(4, 12):
+                px[x, y] = rgba(ENERGY8[1] if x in (4, 11) or y in (6, 10) else ENERGY8[4] if (x + y) % 3 else ENERGY8[6])
+    return img
+
+
+def modification_table_gui():
+    """The Modification Table screen: the gear slot, a gold link, and two module slots."""
+    img = gui_panel()
+    d = ImageDraw.Draw(img)
+    gui_slot(d, 43, 34)
+    gui_slot(d, 97, 34)
+    gui_slot(d, 115, 34)
+    for x in range(64, 94):                            # the link from gear to modules
+        for y in (42, 43):
+            img.putpixel((x, y), rgba(ELECTRUM8[4 if y == 42 else 1]))
+    for x, y in ((90, 40), (91, 41), (90, 45), (91, 44)):
+        img.putpixel((x, y), rgba(ELECTRUM8[3]))
+    return img
+
 
 def main():
     os.makedirs(os.path.join(TEX, "block"), exist_ok=True)
@@ -1814,6 +2016,18 @@ def main():
         "block/circuit_assembler_front_on": circuit_assembler_front(True),
         **{f"item/{u}_upgrade": upgrade_card(*art) for u, art in UPGRADE_ART.items()},
         "gui/machine": gui(),
+        "item/power_drill": power_drill_item(),
+        "item/chainsaw": chainsaw_item(),
+        "item/energy_sword": energy_sword_item(),
+        "item/energy_cell": energy_cell_item(),
+        "item/blank_module": module_item(),
+        **{f"item/{m}_module": module_item(art) for m, art in MODULE_ART.items()},
+        "block/charging_pad_top": charging_pad_top(False),
+        "block/charging_pad_top_on": charging_pad_top(True),
+        "block/modification_table_top": modification_table_top(),
+        "block/modification_table_side": modification_table_side(False),
+        "block/modification_table_front": modification_table_side(True),
+        "gui/modification_table": modification_table_gui(),
     }
     for name, img in out.items():
         img.save(os.path.join(TEX, name + ".png"))

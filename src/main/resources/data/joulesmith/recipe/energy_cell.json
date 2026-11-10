@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "LWL",
+    "RBR",
+    "LWL"
+  ],
+  "key": {
+    "L": {
+      "tag": "c:plates/lead"
+    },
+    "W": {
+      "tag": "c:wires/gold"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "B": {
+      "item": "joulesmith:basic_battery"
+    }
+  },
+  "result": {
+    "id": "joulesmith:energy_cell",
+    "count": 1
+  }
+}

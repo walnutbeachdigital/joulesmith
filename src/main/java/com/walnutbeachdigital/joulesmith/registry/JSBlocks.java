@@ -235,5 +235,14 @@ public final class JSBlocks {
             () -> new CreativePowerCellBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE)
                     .strength(-1.0f, 3_600_000.0f).noLootTable().sound(SoundType.METAL).lightLevel(state -> 7)));
 
+    // ---- powered gear
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.gear.pad.ChargingPadBlock> CHARGING_PAD = BLOCKS.register("charging_pad",
+            () -> new com.walnutbeachdigital.joulesmith.gear.pad.ChargingPadBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL)
+                    .strength(3.0f, 6.0f).requiresCorrectToolForDrops().sound(SoundType.METAL).noOcclusion()
+                    .lightLevel(state -> state.getValue(com.walnutbeachdigital.joulesmith.gear.pad.ChargingPadBlock.LIT) ? 7 : 0)));
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.gear.table.ModificationTableBlock> MODIFICATION_TABLE = BLOCKS.register("modification_table",
+            () -> new com.walnutbeachdigital.joulesmith.gear.table.ModificationTableBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL)
+                    .strength(3.0f, 6.0f).requiresCorrectToolForDrops().sound(SoundType.METAL).noOcclusion()));
+
     private JSBlocks() {}
 }

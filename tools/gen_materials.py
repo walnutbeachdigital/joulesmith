@@ -925,6 +925,129 @@ lang.update({
 for (ns, reg, path), values in tags.items():
     write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
 
+# ---- powered gear (tier 3): tools, weapon and Exo-Suit that run on FE, the Energy Cell, modules,
+# the Charging Pad and the Modification Table
+POWERED = {"energy_cell": "Energy Cell", "power_drill": "Power Drill", "chainsaw": "Chainsaw", "energy_sword": "Energy Sword"}
+for iid, name in POWERED.items():
+    write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
+          {"parent": "minecraft:item/generated" if iid == "energy_cell" else "minecraft:item/handheld",
+           "textures": {"layer0": f"{MOD}:item/{iid}"}})
+    lang[f"item.{MOD}.{iid}"] = name
+EXO = {"helmet": ("Exo-Suit Helmet", "head_armor", ["SCS", "SES"]),
+       "chestplate": ("Exo-Suit Chestplate", "chest_armor", ["SES", "SCS", "SSS"]),
+       "leggings": ("Exo-Suit Leggings", "leg_armor", ["SCS", "SES", "S S"]),
+       "boots": ("Exo-Suit Boots", "foot_armor", ["SES", "S S"])}
+for piece, (name, item_tag, pattern) in EXO.items():
+    iid = f"exo_{piece}"
+    write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
+          {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{iid}"}})
+    shaped(iid, pattern, {"S": "#c:plates/steel", "C": f"{MOD}:advanced_circuit", "E": f"{MOD}:energy_cell"})
+    lang[f"item.{MOD}.{iid}"] = name
+    gear_generated.append(f"item/{iid}")
+gear_generated += ["models/armor/exo_layer_1", "models/armor/exo_layer_2"]
+shaped("energy_cell", ["LWL", "RBR", "LWL"], {"L": "#c:plates/lead", "W": "#c:wires/gold",
+                                              "R": "#c:dusts/redstone", "B": f"{MOD}:basic_battery"})
+shaped("power_drill", [" D ", "SCS", "PEP"], {"D": "#c:gems/diamond", "S": "#c:plates/steel", "C": f"{MOD}:advanced_circuit",
+                                              "P": "#c:plates/invar", "E": f"{MOD}:energy_cell"})
+shaped("chainsaw", ["SAS", "SCS", "PEP"], {"A": "minecraft:iron_axe", "S": "#c:plates/steel", "C": f"{MOD}:advanced_circuit",
+                                           "P": "#c:plates/invar", "E": f"{MOD}:energy_cell"})
+shaped("energy_sword", [" D ", " D ", "CEC"], {"D": "#c:gems/diamond", "C": f"{MOD}:advanced_circuit", "E": f"{MOD}:energy_cell"})
+
+MODULES = {
+    "speed": ("Speed Module", "Mines 75% faster, using 50% more power per block", "tool", ["#c:dusts/redstone", "#c:dusts/glowstone"]),
+    "range": ("Range Module", "Power Drill: digs 3x3 (sneak for one block)", "tool", ["minecraft:piston"]),
+    "silk_touch": ("Silk Touch Module", "Silk Touch", "tool", ["minecraft:white_wool", "#c:gems/emerald"]),
+    "fortune": ("Fortune Module", "Fortune III", "tool", ["#c:gems/diamond", "#c:gems/lapis"]),
+    "auto_smelt": ("Auto-Smelt Module", "Smelts what you mine as it drops", "tool", ["minecraft:blast_furnace"]),
+    "magnet": ("Magnet Module", "Drops land right at your feet", "tool_or_weapon", ["minecraft:ender_pearl", "#c:ingots/iron"]),
+    "damage": ("Damage Module", "Sharpness V", "weapon", ["#c:gems/quartz", "#c:gems/diamond"]),
+    "looting": ("Looting Module", "Looting III", "weapon", ["#c:gems/emerald", "#c:gems/lapis"]),
+    "fire": ("Fire Module", "Fire Aspect II", "weapon", ["minecraft:blaze_powder", "minecraft:blaze_powder"]),
+    "night_vision": ("Night Vision Module", "See in the dark", "helmet", ["minecraft:golden_carrot"]),
+    "water_breathing": ("Water Breathing Module", "Breathe underwater", "helmet", ["minecraft:prismarine_crystals", "minecraft:pufferfish"]),
+    "solar": ("Solar Module", "Charges the whole suit in daylight", "helmet", ["minecraft:daylight_detector"]),
+    "jetpack": ("Jetpack Module", "Fly as in creative, using power while flying", "chestplate",
+                ["minecraft:phantom_membrane", "minecraft:phantom_membrane", "minecraft:firework_rocket"]),
+    "swiftness": ("Swiftness Module", "Run 35% faster", "leggings", ["minecraft:sugar", "minecraft:sugar"]),
+    "jump_boost": ("Jump Boost Module", "Jump about two blocks high", "leggings", ["minecraft:rabbit_foot"]),
+    "step_assist": ("Step Assist Module", "Walk straight up full blocks", "boots", ["#minecraft:stairs", "minecraft:piston"]),
+    "fall_protection": ("Fall Protection Module", "No fall damage while charged", "boots", ["minecraft:slime_ball", "minecraft:feather"]),
+}
+FITS = {"tool": "Fits: Power Drill, Chainsaw", "weapon": "Fits: Energy Sword", "tool_or_weapon": "Fits: Power Drill, Chainsaw, Energy Sword",
+        "helmet": "Fits: Exo-Suit Helmet", "chestplate": "Fits: Exo-Suit Chestplate", "leggings": "Fits: Exo-Suit Leggings",
+        "boots": "Fits: Exo-Suit Boots"}
+shaped("blank_module", ["EWE", "WCW", "EWE"], {"E": "#c:plates/electrum", "W": "#c:wires/gold", "C": f"{MOD}:advanced_circuit"})
+for mid, (name, desc, kind, extras) in MODULES.items():
+    iid = f"{mid}_module"
+    write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
+          {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{iid}"}})
+    write(os.path.join(DATA, MOD, "recipe", f"{iid}.json"), {
+        "type": "minecraft:crafting_shapeless", "category": "misc",
+        "ingredients": [ing(f"{MOD}:blank_module")] + [ing(e) for e in extras], "result": {"id": f"{MOD}:{iid}"}})
+    recipes[iid] = True
+    lang[f"item.{MOD}.{iid}"] = name
+    lang[f"tooltip.{MOD}.module.{mid}"] = desc
+write(os.path.join(ASSETS, "models", "item", "blank_module.json"),
+      {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/blank_module"}})
+lang[f"item.{MOD}.blank_module"] = "Blank Module"
+lang.update({f"tooltip.{MOD}.module.fits.{k}": v for k, v in FITS.items()})
+
+# Charging Pad: a 3-pixel-high plate, its coil glowing while it charges
+for on in (False, True):
+    suffix = "_on" if on else ""
+    model(f"charging_pad{suffix}", {"parent": "minecraft:block/block", "textures": {
+        "particle": f"{MOD}:block/machine_side", "top": f"{MOD}:block/charging_pad_top{suffix}",
+        "side": f"{MOD}:block/machine_side", "bottom": f"{MOD}:block/machine_bottom"},
+        "elements": [{"from": [0, 0, 0], "to": [16, 3, 16], "faces": {
+            "up": {"texture": "#top"}, "down": {"texture": "#bottom", "cullface": "down"},
+            **{f: {"uv": [0, 13, 16, 16], "texture": "#side", "cullface": f} for f in ("north", "south", "east", "west")}}}]})
+write(os.path.join(ASSETS, "blockstates", "charging_pad.json"), {"variants": {
+    "lit=false": {"model": f"{MOD}:block/charging_pad"}, "lit=true": {"model": f"{MOD}:block/charging_pad_on"}}})
+write(os.path.join(ASSETS, "models", "item", "charging_pad.json"), {"parent": f"{MOD}:block/charging_pad"})
+simple_loot("charging_pad")
+shaped("charging_pad", ["WPW", "SBS"], {"W": "#c:wires/gold", "P": "minecraft:heavy_weighted_pressure_plate",
+                                       "S": "#c:plates/steel", "B": f"{MOD}:basic_battery"})
+
+# Modification Table: a bench top over a column, with a small screen on the front
+def table_faces(tex_front, box, side_uv):
+    return {f: {"uv": side_uv, "texture": tex_front if f == "north" else "#side"} for f in ("north", "south", "east", "west")}
+model("modification_table", {"parent": "minecraft:block/block", "textures": {
+    "particle": f"{MOD}:block/modification_table_side", "top": f"{MOD}:block/modification_table_top",
+    "side": f"{MOD}:block/modification_table_side", "front": f"{MOD}:block/modification_table_front",
+    "bottom": f"{MOD}:block/machine_bottom"},
+    "elements": [
+        {"from": [0, 12, 0], "to": [16, 16, 16], "faces": {
+            "up": {"texture": "#top", "cullface": "up"}, "down": {"texture": "#bottom"},
+            **table_faces("#front", None, [0, 0, 16, 4])}},
+        {"from": [2, 0, 2], "to": [14, 12, 14], "faces": {
+            "down": {"uv": [2, 2, 14, 14], "texture": "#bottom", "cullface": "down"},
+            **table_faces("#front", None, [2, 4, 14, 16])}}]})
+write(os.path.join(ASSETS, "blockstates", "modification_table.json"), {"variants": {
+    f"facing={f}": dict({"model": f"{MOD}:block/modification_table"}, **({"y": r} if r else {})) for f, r in ROTATION.items()}})
+write(os.path.join(ASSETS, "models", "item", "modification_table.json"), {"parent": f"{MOD}:block/modification_table"})
+simple_loot("modification_table")
+shaped("modification_table", ["PCP", "SWS", "S S"], {"P": "#c:plates/electrum", "C": f"{MOD}:advanced_circuit",
+                                                    "W": "minecraft:crafting_table", "S": "#c:plates/steel"})
+for bid in ("charging_pad", "modification_table"):
+    tags[("minecraft", "block", "mineable/pickaxe")].append(f"{MOD}:{bid}")
+lang.update({
+    f"block.{MOD}.charging_pad": "Charging Pad",
+    f"block.{MOD}.modification_table": "Modification Table",
+    f"container.{MOD}.modification_table": "Modification Table",
+    "gui.joulesmith.modification_table.gear": "Powered gear: tools, Energy Sword or Exo-Suit",
+    "gui.joulesmith.modification_table.module": "Modules for the gear on the left (two at most)",
+    "tooltip.joulesmith.energy": "Energy: %s / %s FE",
+    "tooltip.joulesmith.power_drill": "Pickaxe and shovel in one",
+    "tooltip.joulesmith.chainsaw": "Fells a whole tree; sneak to cut one log",
+    "tooltip.joulesmith.energy_sword": "Hits harder the fuller its charge",
+    "tooltip.joulesmith.exo_suit": "While charged, each piece soaks up 20% of damage",
+    "tooltip.joulesmith.energy_cell": "Charges the powered gear you carry (use to switch off)",
+    "tooltip.joulesmith.energy_cell.off": "Switched off (use to switch on)",
+    "message.joulesmith.energy_cell.on": "Energy Cell: charging your gear",
+    "message.joulesmith.energy_cell.off": "Energy Cell: switched off",
+})
+for (ns, reg, path), values in tags.items():
+    write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
 # ---- the new machines, upgrade cards and sawdust
 shaped("alloy_smelter", ["IGI", "BFB", "IRI"],
        {"I": "#c:ingots/iron", "G": "#c:gears/copper", "B": "minecraft:bricks", "F": "minecraft:furnace", "R": "#c:dusts/redstone"})

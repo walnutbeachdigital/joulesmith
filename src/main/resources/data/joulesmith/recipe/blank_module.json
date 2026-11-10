@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "EWE",
+    "WCW",
+    "EWE"
+  ],
+  "key": {
+    "E": {
+      "tag": "c:plates/electrum"
+    },
+    "W": {
+      "tag": "c:wires/gold"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "joulesmith:blank_module",
+    "count": 1
+  }
+}
