@@ -13,6 +13,7 @@ public final class JSConfig {
     public static final ModConfigSpec.IntValue COMBUSTION, BIOFUEL, GEOTHERMAL, STEAM_FE_PER_MB, WIND_MIN, WIND_MAX;
     public static final ModConfigSpec.IntValue TOOL_COST, SWORD_COST, JETPACK_COST, GRINDER_DAMAGE, RANCHER_CAP;
     public static final ModConfigSpec.DoubleValue EXO_ABSORB;
+    public static final ModConfigSpec.BooleanValue SOUNDS;
 
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
@@ -21,6 +22,7 @@ public final class JSConfig {
                 .defineInRange("speed", 1.0, 0.1, 10.0);
         MACHINE_ENERGY = b.comment("Multiplies the power every recipe machine uses per job")
                 .defineInRange("energy", 1.0, 0.0, 10.0);
+        SOUNDS = b.comment("Whether machines make a quiet sound while they run").define("sounds", true);
         b.pop();
 
         b.comment("Generators, in FE per tick").push("generators");

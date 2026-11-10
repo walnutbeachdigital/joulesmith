@@ -1361,6 +1361,143 @@ write(os.path.join(DATA, MOD, "curios", "entities", "joulesmith.json"), {"entiti
 write(os.path.join(DATA, "curios", "tags", "item", "belt.json"), {"replace": False, "values": [
     f"{MOD}:basic_energy_cell", f"{MOD}:reinforced_energy_cell", f"{MOD}:energy_cell"]})
 
+# ---- descriptions: a short line on each block's and part's tooltip ("desc.") and a fuller JEI info page
+# ("jei.joulesmith.info."); both shown by client code for any id that has one
+DESC = {
+    # power
+    "combustion_generator": ("Burns furnace fuel for 40 FE/t", "Burns anything a furnace burns (coal, charcoal, wood, lava buckets) and makes 40 FE/t, pushing it into cables and machines beside it."),
+    "biofuel_generator": ("Burns Biofuel for 160 FE/t", "Burns 1 mB of Biofuel a tick for 160 FE/t. Make Biofuel from crops, seeds and saplings in a Bio Reactor."),
+    "geothermal_generator": ("Power from lava and heat: up to 120 FE/t", "Each lava block touching it gives 20 FE/t for free, magma blocks 10 and fire or lit campfires 5. It tops up to 120 FE/t by burning lava from its tank, 1 mB a tick."),
+    "solar_panel": ("10 FE/t in full sun", "Makes power from daylight under open sky: 10 FE/t at noon, less at dawn, dusk and in rain, none at night. Gives power to blocks below and beside it. Upgrade it in place with an Upgrade Kit."),
+    "reinforced_solar_panel": ("40 FE/t in full sun", "Makes power from daylight under open sky: 40 FE/t at noon, less at dawn, dusk and in rain, none at night."),
+    "advanced_solar_panel": ("160 FE/t in full sun", "Makes power from daylight under open sky: 160 FE/t at noon, less at dawn, dusk and in rain, none at night."),
+    "wind_turbine": ("50 to 300 FE/t, more the higher it sits", "Makes 50 FE/t at y 64 rising to 300 FE/t at y 192, a quarter more in rain and half again in storms. Blocks in the 5x5 around its rotor slow it, so give it open air."),
+    "boiler": ("Boils water into steam", "Turns water into steam using furnace fuel, or a heat source such as lava or fire beneath it. Pipe the steam to a Steam Turbine."),
+    "steam_turbine": ("Steam to power: up to 400 FE/t", "Uses up to 200 mB of steam a tick, making 2 FE for each mB."),
+    "basic_battery": ("Stores 100,000 FE", "Stores power. Set each side to take power in or give it out with the side settings tab or a Wrench."),
+    "reinforced_battery": ("Stores 1,000,000 FE", "Stores power. Set each side to take power in or give it out with the side settings tab or a Wrench."),
+    "advanced_battery": ("Stores 10,000,000 FE", "Stores power. Set each side to take power in or give it out with the side settings tab or a Wrench."),
+    "energy_cable": ("Carries 500 FE/t", "Connects on its own to anything that stores or uses power. Use a Wrench on a side to set it to push, pull or off. A network runs at its slowest cable's rate."),
+    "reinforced_energy_cable": ("Carries 2,000 FE/t", "Connects on its own to anything that stores or uses power. Use a Wrench on a side to set it to push, pull or off."),
+    "advanced_energy_cable": ("Carries 10,000 FE/t", "Connects on its own to anything that stores or uses power. Use a Wrench on a side to set it to push, pull or off."),
+    "charging_pad": ("Stand on it to charge your gear", "Charges every powered item you carry or wear, up to 4,000 FE/t, while you stand on it. Takes power from cables."),
+    "creative_power_cell": ("Endless power, creative only", "Gives out unlimited power on every side."),
+    # transport
+    "item_duct": ("Moves 1 item every half second", "Pulls from inventories set to pull with a Wrench and delivers to the rest. Fit a Filter Card to a side to choose what passes. Items that can't be delivered stay where they are."),
+    "reinforced_item_duct": ("Moves 4 items every half second", "Pulls from inventories set to pull with a Wrench and delivers to the rest. Fit a Filter Card to a side to choose what passes."),
+    "advanced_item_duct": ("Moves 16 items every half second", "Pulls from inventories set to pull with a Wrench and delivers to the rest. Fit a Filter Card to a side to choose what passes."),
+    "fluid_pipe": ("Carries 100 mB/t", "Moves fluids between tanks and machines. Use a Wrench on a side to set it to push, pull or off. A network carries one fluid at a time."),
+    "reinforced_fluid_pipe": ("Carries 400 mB/t", "Moves fluids between tanks and machines. Use a Wrench on a side to set it to push, pull or off."),
+    "advanced_fluid_pipe": ("Carries 1,600 mB/t", "Moves fluids between tanks and machines. Use a Wrench on a side to set it to push, pull or off."),
+    "pump": ("Drains fluid from below", "Pumps a bucket a second of the fluid beneath it (lakes, lava pools) into its tank, for pipes to carry away."),
+    "conveyor_belt": ("Carries items, mobs and players", "Moves whatever is on it the way it faces, about a block a second, with no power. Items reaching its end go into the inventory or machine in front. Sneak to stand still."),
+    "fluid_tank": ("Holds 16,000 mB", "Stores one fluid and keeps it when broken. Tanks stacked on top of each other act as one tank."),
+    "reinforced_fluid_tank": ("Holds 64,000 mB", "Stores one fluid and keeps it when broken. Tanks stacked on top of each other act as one tank."),
+    "advanced_fluid_tank": ("Holds 256,000 mB", "Stores one fluid and keeps it when broken. Tanks stacked on top of each other act as one tank."),
+    # processing
+    "electric_furnace": ("Smelts twice as fast as a furnace", "Smelts anything a furnace does, twice as fast, using power instead of fuel."),
+    "crusher": ("Ore to two dusts", "Crushes raw ore into two dusts, cobblestone into gravel and gravel into sand. Smelt the dust for ingots."),
+    "alloy_smelter": ("Smelts metals together into alloys", "Makes bronze, steel, invar and electrum from their metals."),
+    "compressor": ("Ingots to plates, dusts to blocks", "Presses ingots into plates and nine dusts into a block."),
+    "wire_drawer": ("Ingots to wire", "Draws ingots into wire, for cables, coils and circuits."),
+    "sawmill": ("Logs to six planks and sawdust", "Saws logs into six planks plus sawdust."),
+    "ore_washer": ("Ore to three crushed ores", "Washes raw ore with water into three crushed ores, sometimes with a related metal. Crush them for three dusts."),
+    "fluid_mixer": ("Mixes fluids with items", "Makes sulfuric acid, coolant, plastic, liquid latex and Bottles o' Enchanting."),
+    "centrifuge": ("Splits dusts and slurries", "Spins dusts, slurries and mob drops into their parts and byproducts."),
+    "circuit_assembler": ("Builds circuit boards", "Makes the Basic and Advanced Circuits that tier 2 and 3 machines need."),
+    "chemical_dissolver": ("Ore and acid to slurry", "Dissolves raw ore in sulfuric acid into 1,000 mB of slurry, which the Crystallizer grows into four crystals. Also turns coal into oil."),
+    "crystallizer": ("Slurry to crystals", "Grows a crystal from every 250 mB of slurry; crush crystals into dusts. Also sets liquid latex into rubber."),
+    "bio_reactor": ("Crops to Biofuel", "Turns crops, seeds, saplings, leaves and sawdust into Biofuel."),
+    "fertilizer_mixer": ("Makes Fertilizer", "Mixes bone meal or rotten flesh with sawdust, or bone meal with gunpowder, into Fertilizer."),
+    "advanced_pump": ("A fast pump that leaves stone behind", "Pumps four times as fast as a Pump and fills each drained source with stone, so nothing flows back in."),
+    # automation and logic
+    "block_placer": ("Places blocks from its inventory", "Places blocks from its inventory in front of it, using power."),
+    "block_breaker": ("Mines the block in front", "Mines the block in front of it with the tool in its tool slot (enchantments count), and keeps the drops."),
+    "autocrafter": ("Crafts from a pattern", "Set a 3x3 pattern in its ghost grid; it crafts that recipe with ingredients from its inventory or from inventories beside it."),
+    "fluid_placer": ("Places fluid source blocks", "Places a source block of the fluid in its tank in front of it."),
+    "fluid_drain": ("Picks up fluid source blocks", "Picks up the fluid source block in front of it into its tank."),
+    "mechanical_user": ("Right-clicks with any item", "Uses the item in its slot on the block or mob in front, like a player right-clicking: shears, bone meal, buckets and more."),
+    "quarry": ("Mines out a whole area", "Mines a square from its level down to bedrock: 16x16, or 32 and 64 with Range Upgrades. Its tool slot's enchantments count. Drops go to its outputs."),
+    "mob_fighter": ("Attacks with a held weapon", "Swings the weapon in its slot at mobs in front, for player-kill drops."),
+    "inventory_sensor": ("Redstone from how full an inventory is", "Place it facing an inventory: its redstone signal grows stronger the fuller the inventory is. Right-click to see its reading."),
+    "tank_sensor": ("Redstone from a tank's level", "Place it facing a tank: its redstone signal grows stronger the fuller the tank is. Right-click to see its reading."),
+    "energy_sensor": ("Redstone from stored power", "Place it facing a battery or machine: its redstone signal grows stronger the more power it holds. Right-click to see its reading."),
+    "time_sensor": ("Redstone in daytime", "Gives a redstone signal while it is day."),
+    "proximity_sensor": ("Redstone when players or mobs are near", "Counts players, hostile mobs or animals within 8 blocks (right-click to choose which), one signal level for each."),
+    "logic_controller": ("If this, then that, for redstone", "Up to six rules: when a measure (power, items, fluid, time, players, mobs) is above or below a level, send a signal out of a side."),
+    # farming
+    "planter": ("Tills, plants and replants", "Tills and plants seeds from its inventory in a 5x5 in front (9x9 and 13x13 with Range Upgrades)."),
+    "harvester": ("Harvests ripe crops", "Harvests ripe crops, melons, pumpkins, sugar cane and cactus in the same area, keeping one seed to replant."),
+    "tree_farm": ("Plants and fells trees", "Plants saplings and fells whole grown trees, leaves included, in front of it."),
+    "sprinkler": ("Waters crops nearby", "Fill it with water by bucket or pipe. It keeps farmland wet and makes crops in the 9x9 around it grow several times faster."),
+    "animal_rancher": ("Shears, milks and breeds animals", "Shears sheep, milks cows into empty buckets, collects eggs and wool, and breeds animals with food from its inputs, up to 16 in its area."),
+    "hydroponic_bed": ("Grows a crop indoors", "Put seeds (or cane, cactus, bamboo, berries, cocoa or nether wart) in it. It harvests every 30 seconds on water and power, keeping the seeds; Fertilizer halves the time. Beds stack."),
+    "mob_grinder": ("Kills mobs, stores their XP", "Kills mobs in front of it as player kills, collects their drops, and stores their experience as Liquid XP. Leaves bosses, named mobs and pets alone."),
+    "auto_enchanter": ("Enchants with Liquid XP", "Enchants books and unenchanted gear as a level 30 enchanting table would, using 1,000 mB of Liquid XP each."),
+    # storage and gear blocks
+    "basic_crate": ("54 slots; keeps its items when broken", "A big chest that keeps everything in it when you break it."),
+    "reinforced_crate": ("81 slots; keeps its items when broken", "A big chest that keeps everything in it when you break it."),
+    "advanced_crate": ("108 slots; keeps its items when broken", "A big chest that keeps everything in it when you break it."),
+    "basic_bulk_bin": ("Holds 4,096 of one item", "Holds a lot of one kind of item. Right-click the front with an item to put it in (empty hand: every matching item you carry); left-click to take a stack out, sneak for one."),
+    "reinforced_bulk_bin": ("Holds 16,384 of one item", "Holds a lot of one kind of item. Right-click the front with an item to put it in (empty hand: every matching item you carry); left-click to take a stack out, sneak for one."),
+    "advanced_bulk_bin": ("Holds 65,536 of one item", "Holds a lot of one kind of item. Right-click the front with an item to put it in (empty hand: every matching item you carry); left-click to take a stack out, sneak for one."),
+    "modification_table": ("Fits modules to powered gear", "Put powered gear on the left and up to two modules on the right. The modules stay on the item."),
+    # parts
+    "basic_circuit": ("The tier 2 crafting part", "Made in the Circuit Assembler; every tier 2 machine needs one."),
+    "advanced_circuit": ("The tier 3 crafting part", "Made in the Circuit Assembler from a Basic Circuit, electrum wire and plastic; every tier 3 machine needs one."),
+    "copper_coil": ("For generators and heaters", "A crafting part for the Electric Furnace and the Combustion and Biofuel Generators."),
+    "electrum_coil": ("For turbines", "A crafting part for the Steam and Wind Turbines."),
+    "motor": ("For anything that turns", "A crafting part for the Crusher, Pump, Sawmill and Wire Drawer."),
+    "plastic_sheet": ("For Advanced Circuits", "Made in the Fluid Mixer from Biofuel and latex, or from oil."),
+    "latex": ("From a Tree Tap on a rubber tree", "Tap a rubber log with a Tree Tap and come back when it drips. Smelt it into rubber."),
+    "rubber": ("Insulates cables and pipes", "Smelted from latex, or set from liquid latex in a Crystallizer."),
+    "sawdust": ("From the Sawmill", "Used for Biofuel and Fertilizer."),
+    "blank_module": ("The base of every module", "Craft it with a themed item to make a module."),
+    "wrench": (None, "Right-click a machine to turn it, or a pipe or cable side to switch it between connected, push, pull and off. Holding it shows each machine face's side setting."),
+}
+for iid, (short, info) in DESC.items():
+    if short:                                              # items with their own tooltip text skip this line
+        lang[f"desc.{MOD}.{iid}"] = short
+    lang[f"jei.{MOD}.info.{iid}"] = info
+
+# ---- machine sounds: each event plays a quiet vanilla sound (resource packs can swap the event's sounds)
+SOUNDS = {"furnace": ("minecraft:block.furnace.fire_crackle", 0.7, 1.0, "Machine crackles"),
+          "grind": ("minecraft:block.grindstone.use", 0.3, 0.8, "Machine grinds"),
+          "saw": ("minecraft:ui.stonecutter.take_result", 0.35, 0.9, "Saw cuts"),
+          "hum": ("minecraft:block.beacon.ambient", 0.25, 1.4, "Machine hums"),
+          "fluid": ("minecraft:block.brewing_stand.brew", 0.4, 1.0, "Machine bubbles"),
+          "pump": ("minecraft:item.bucket.fill", 0.3, 0.8, "Pump draws"),
+          "turbine": ("minecraft:block.conduit.ambient", 0.4, 1.5, "Turbine whirs"),
+          "enchant": ("minecraft:block.enchantment_table.use", 0.5, 1.0, "Enchanter glows"),
+          "press": ("minecraft:block.piston.extend", 0.25, 0.8, "Machine presses")}
+write(os.path.join(ASSETS, "sounds.json"), {f"machine.{k}": {
+    "subtitle": f"subtitles.{MOD}.machine.{k}",
+    "sounds": [{"name": ev, "type": "event", "volume": vol, "pitch": pitch}]} for k, (ev, vol, pitch, sub) in SOUNDS.items()})
+lang.update({f"subtitles.{MOD}.machine.{k}": sub for k, (ev, vol, pitch, sub) in SOUNDS.items()})
+
+# ---- the Joulesmith Manual: a vanilla written book, crafted from a book and a tin ingot
+PAGES = [
+    "\u00a7lJoulesmith\u00a7r\nA tech mod in three tiers: Basic, Reinforced and Advanced.\n\nEvery block's tooltip says what it does, and JEI shows every recipe and an info page for each machine.",
+    "\u00a7lGetting started\u00a7r\nMine tin, lead, silver, nickel and uranium. Smelt raw ore for ingots.\n\nBuild a Combustion Generator: it burns furnace fuel for power (FE). Join it to machines with Energy Cables.",
+    "\u00a7lMore from ore\u00a7r\nCrusher: one raw ore makes two dusts.\nOre Washer (tier 2): three.\nChemical Dissolver and Crystallizer (tier 3): four.\n\nSmelt dusts in an Electric Furnace.",
+    "\u00a7lTiers\u00a7r\nA Basic Circuit opens tier 2 and an Advanced Circuit tier 3; both come from the Circuit Assembler.\n\nUpgrade Kits raise cables, pipes, batteries, crates, bins, tanks and solar panels a tier where they stand.",
+    "\u00a7lMachines\u00a7r\nEach has slide-out tabs: redstone mode, side settings (input, output, both, off) and upgrade slots for Speed, Efficiency, Bonus, Eject and Range cards.\n\nHover the red bar to see FE/t.",
+    "\u00a7lThe Wrench\u00a7r\nRight-click a machine to turn it. Right-click a pipe or cable side to switch it between connected, push, pull and off.\n\nHold it to see each machine face's side setting in colour.",
+    "\u00a7lPipes\u00a7r\nItem Ducts, Fluid Pipes and Energy Cables connect on their own. Set a side to pull to take from an inventory.\n\nPut a Filter Card on a duct side to choose what passes: by item, tag or mod.",
+    "\u00a7lPower\u00a7r\nTier 1: Combustion Generator, Solar Panel.\nTier 2: Biofuel and Geothermal Generators.\nTier 3: Boiler and Steam Turbine, Wind Turbine.\n\nStore it in Batteries.",
+    "\u00a7lRubber and plastic\u00a7r\nRubber trees grow in forests and jungles. Tap a log with a Tree Tap for latex; smelt it into rubber.\n\nThe Fluid Mixer makes plastic from Biofuel and latex, or from oil.",
+    "\u00a7lFarming\u00a7r\nPlanters, Harvesters and Tree Farms work the area in front of them. Sprinklers speed growth. Hydroponic Beds grow crops indoors.\n\nThe Mob Grinder stores XP as Liquid XP for the Auto Enchanter.",
+    "\u00a7lAutomation\u00a7r\nBlock Placer, Block Breaker, Autocrafter, Mechanical User, Quarry and Mob Fighter.\n\nSensors give redstone from what they read; a Logic Controller turns readings into signals.",
+    "\u00a7lPowered gear\u00a7r\nThe Power Drill, Chainsaw, Energy Sword and Exo-Suit run on FE instead of durability.\n\nCharge them on a Charging Pad or by carrying an Energy Cell.",
+    "\u00a7lModules\u00a7r\nAt the Modification Table, fit two modules to a powered item: Fortune, Silk Touch, Range, Magnet, Jetpack, Night Vision, Lifesteal and more.\n\nEach module's tooltip says what it fits.",
+]
+write(os.path.join(DATA, MOD, "recipe", "manual.json"), {
+    "type": "minecraft:crafting_shapeless", "category": "misc",
+    "ingredients": [ing("minecraft:book"), ing("#c:ingots/tin")],
+    "result": {"id": "minecraft:written_book", "components": {"minecraft:written_book_content": {
+        "title": "Joulesmith Manual", "author": "Joulesmith", "resolved": True, "pages": PAGES}}}})
+recipes["manual"] = True
+
 # ---- advancements: a guided path through the tiers (data/joulesmith/advancement)
 ADV = [
     # id, parent, icon, items needed (all of them; a "#" tag or a list means any one), frame, title, description

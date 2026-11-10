@@ -35,6 +35,7 @@ public class JoulesmithClient {
         modEventBus.addListener(JoulesmithClient::fluids);
         modEventBus.addListener(JoulesmithClient::setup);
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(com.walnutbeachdigital.joulesmith.client.WrenchOverlay::render);
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(com.walnutbeachdigital.joulesmith.client.DescriptionTooltips::add);
     }
 
     /** Joulesmith fluids reuse vanilla's water textures, tinted to each fluid's colour. */

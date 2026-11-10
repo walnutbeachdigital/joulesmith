@@ -83,6 +83,13 @@ public class JoulesmithJeiPlugin implements IModPlugin {
             registration.addIngredientInfo(JSBlocks.DEEPSLATE_ORE.get(metal).get(), info);
             registration.addIngredientInfo(JSItems.RAW.get(metal).get(), info);
         }
+        // What each block and part does, for the ones with an info text in the language file.
+        var language = net.minecraft.locale.Language.getInstance();
+        for (var holder : JSItems.ITEMS.getEntries()) {
+            var id = holder.getId();
+            String key = "jei." + Joulesmith.MODID + ".info." + id.getPath();
+            if (language.has(key)) registration.addIngredientInfo(holder.get(), Component.translatable(key));
+        }
     }
 
     @Override

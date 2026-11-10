@@ -177,6 +177,13 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         if (allowed && level.getGameTime() % EJECT_INTERVAL == 0 && upgrades(UpgradeCardItem.Type.EJECT) > 0) {
             eject(level, pos);
         }
+        if (running && level.getGameTime() % SOUND_INTERVAL == Math.floorMod(pos.hashCode(), SOUND_INTERVAL)
+                && com.walnutbeachdigital.joulesmith.JSConfig.SOUNDS.getAsBoolean()) {
+            if (sound == null) sound = java.util.Optional.ofNullable(com.walnutbeachdigital.joulesmith.registry.JSSounds.forBlock(
+                    net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath()));
+            sound.ifPresent(s -> level.playSound(null, pos, s, net.minecraft.sounds.SoundSource.BLOCKS, 1.0f,
+                    0.95f + level.random.nextFloat() * 0.1f));
+        }
         if (state.getValue(MachineBlock.LIT) != running) {
             level.setBlock(pos, state.setValue(MachineBlock.LIT, running), 3);
         }
@@ -479,6 +486,9 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     /** 0-5 energy, progress, redstone, sides; then 3 per tank; then FE/t made and used (averaged over a second). */
     public static final int MAX_TANKS = 2, VALUES = 6 + 3 * MAX_TANKS + 2, MADE = 6 + 3 * MAX_TANKS, USED = MADE + 1;
     private int madePerTick, usedPerTick;
+    /** The running sound, looked up once; empty for machines that run quietly. */
+    private java.util.Optional<net.minecraft.sounds.SoundEvent> sound;
+    private static final int SOUND_INTERVAL = 40;
 
     public int value(int index) {
         return switch (index) {

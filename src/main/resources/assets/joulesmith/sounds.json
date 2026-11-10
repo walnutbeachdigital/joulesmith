@@ -1,0 +1,101 @@
+{
+  "machine.furnace": {
+    "subtitle": "subtitles.joulesmith.machine.furnace",
+    "sounds": [
+      {
+        "name": "minecraft:block.furnace.fire_crackle",
+        "type": "event",
+        "volume": 0.7,
+        "pitch": 1.0
+      }
+    ]
+  },
+  "machine.grind": {
+    "subtitle": "subtitles.joulesmith.machine.grind",
+    "sounds": [
+      {
+        "name": "minecraft:block.grindstone.use",
+        "type": "event",
+        "volume": 0.3,
+        "pitch": 0.8
+      }
+    ]
+  },
+  "machine.saw": {
+    "subtitle": "subtitles.joulesmith.machine.saw",
+    "sounds": [
+      {
+        "name": "minecraft:ui.stonecutter.take_result",
+        "type": "event",
+        "volume": 0.35,
+        "pitch": 0.9
+      }
+    ]
+  },
+  "machine.hum": {
+    "subtitle": "subtitles.joulesmith.machine.hum",
+    "sounds": [
+      {
+        "name": "minecraft:block.beacon.ambient",
+        "type": "event",
+        "volume": 0.25,
+        "pitch": 1.4
+      }
+    ]
+  },
+  "machine.fluid": {
+    "subtitle": "subtitles.joulesmith.machine.fluid",
+    "sounds": [
+      {
+        "name": "minecraft:block.brewing_stand.brew",
+        "type": "event",
+        "volume": 0.4,
+        "pitch": 1.0
+      }
+    ]
+  },
+  "machine.pump": {
+    "subtitle": "subtitles.joulesmith.machine.pump",
+    "sounds": [
+      {
+        "name": "minecraft:item.bucket.fill",
+        "type": "event",
+        "volume": 0.3,
+        "pitch": 0.8
+      }
+    ]
+  },
+  "machine.turbine": {
+    "subtitle": "subtitles.joulesmith.machine.turbine",
+    "sounds": [
+      {
+        "name": "minecraft:block.conduit.ambient",
+        "type": "event",
+        "volume": 0.4,
+        "pitch": 1.5
+      }
+    ]
+  },
+  "machine.enchant": {
+    "subtitle": "subtitles.joulesmith.machine.enchant",
+    "sounds": [
+      {
+        "name": "minecraft:block.enchantment_table.use",
+        "type": "event",
+        "volume": 0.5,
+        "pitch": 1.0
+      }
+    ]
+  },
+  "machine.press": {
+    "subtitle": "subtitles.joulesmith.machine.press",
+    "sounds": [
+      {
+        "name": "minecraft:block.piston.extend",
+        "type": "event",
+        "volume": 0.25,
+        "pitch": 0.8
+      }
+    ]
+  }
+}

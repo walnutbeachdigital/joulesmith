@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:book"
+    },
+    {
+      "tag": "c:ingots/tin"
+    }
+  ],
+  "result": {
+    "id": "minecraft:written_book",
+    "components": {
+      "minecraft:written_book_content": {
+        "title": "Joulesmith Manual",
+        "author": "Joulesmith",
+        "resolved": true,
+        "pages": [
+          "\u00a7lJoulesmith\u00a7r\nA tech mod in three tiers: Basic, Reinforced and Advanced.\n\nEvery block's tooltip says what it does, and JEI shows every recipe and an info page for each machine.",
+          "\u00a7lGetting started\u00a7r\nMine tin, lead, silver, nickel and uranium. Smelt raw ore for ingots.\n\nBuild a Combustion Generator: it burns furnace fuel for power (FE). Join it to machines with Energy Cables.",
+          "\u00a7lMore from ore\u00a7r\nCrusher: one raw ore makes two dusts.\nOre Washer (tier 2): three.\nChemical Dissolver and Crystallizer (tier 3): four.\n\nSmelt dusts in an Electric Furnace.",
+          "\u00a7lTiers\u00a7r\nA Basic Circuit opens tier 2 and an Advanced Circuit tier 3; both come from the Circuit Assembler.\n\nUpgrade Kits raise cables, pipes, batteries, crates, bins, tanks and solar panels a tier where they stand.",
+          "\u00a7lMachines\u00a7r\nEach has slide-out tabs: redstone mode, side settings (input, output, both, off) and upgrade slots for Speed, Efficiency, Bonus, Eject and Range cards.\n\nHover the red bar to see FE/t.",
+          "\u00a7lThe Wrench\u00a7r\nRight-click a machine to turn it. Right-click a pipe or cable side to switch it between connected, push, pull and off.\n\nHold it to see each machine face's side setting in colour.",
+          "\u00a7lPipes\u00a7r\nItem Ducts, Fluid Pipes and Energy Cables connect on their own. Set a side to pull to take from an inventory.\n\nPut a Filter Card on a duct side to choose what passes: by item, tag or mod.",
+          "\u00a7lPower\u00a7r\nTier 1: Combustion Generator, Solar Panel.\nTier 2: Biofuel and Geothermal Generators.\nTier 3: Boiler and Steam Turbine, Wind Turbine.\n\nStore it in Batteries.",
+          "\u00a7lRubber and plastic\u00a7r\nRubber trees grow in forests and jungles. Tap a log with a Tree Tap for latex; smelt it into rubber.\n\nThe Fluid Mixer makes plastic from Biofuel and latex, or from oil.",
+          "\u00a7lFarming\u00a7r\nPlanters, Harvesters and Tree Farms work the area in front of them. Sprinklers speed growth. Hydroponic Beds grow crops indoors.\n\nThe Mob Grinder stores XP as Liquid XP for the Auto Enchanter.",
+          "\u00a7lAutomation\u00a7r\nBlock Placer, Block Breaker, Autocrafter, Mechanical User, Quarry and Mob Fighter.\n\nSensors give redstone from what they read; a Logic Controller turns readings into signals.",
+          "\u00a7lPowered gear\u00a7r\nThe Power Drill, Chainsaw, Energy Sword and Exo-Suit run on FE instead of durability.\n\nCharge them on a Charging Pad or by carrying an Energy Cell.",
+          "\u00a7lModules\u00a7r\nAt the Modification Table, fit two modules to a powered item: Fortune, Silk Touch, Range, Magnet, Jetpack, Night Vision, Lifesteal and more.\n\nEach module's tooltip says what it fits."
+        ]
+      }
+    }
+  }
+}
