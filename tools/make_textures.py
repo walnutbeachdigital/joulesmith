@@ -68,6 +68,17 @@ def paint8(levels, metal):
     return img
 
 
+def paint_ramp(levels, ramp_hex):
+    ramp = [hex_rgba(c) for c in ramp_hex]
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    for y in range(16):
+        for x in range(16):
+            v = levels[y][x]
+            if v is not None:
+                img.putpixel((x, y), ramp[max(0, min(len(ramp) - 1, v))])
+    return img
+
+
 def edge_light(levels, mask):
     """Reference-style edges: top-left edges catch the light, bottom-right edges fall to the darkest tones.
     No full outline."""
@@ -217,34 +228,48 @@ def gear():
     return lv
 
 
+SPOOL_RAMP = ["#2b2620", "#3d342a", "#54473a", "#6b5a48", "#857059", "#9e876c", "#b9a183", "#d4bd9e"]  # dark wood
+
+
 def wire():
-    """A coil of wire seen at a slight angle: three stacked loops of thick wire, each loop lit along
-    its top-left and shaded underneath, with a short loose end. Eight-step ramp, reference-style edges."""
-    lv, mask = blank(), [[False] * 16 for _ in range(16)]
-    loops = [(7.5, 4.5), (7.5, 7.5), (7.5, 10.5)]                  # centres of the stacked loops
-    rx, ry, thick = 5.6, 2.3, 0.62
+    """A spool of wire seen from slightly above: wood flanges top and bottom, the metal's wire wound
+    between them in rounded rows (lit on the left, shaded to the right), and a loose end trailing off.
+    Returns (spool levels, wire levels); both on eight-step ramps."""
+    spool, wire_lv = blank(), blank()
+    cx = 7.5
+    # flanges: flat ellipses, top one fully visible, bottom one showing its front rim
     for y in range(16):
         for x in range(16):
-            best = None
-            for k, (lx, ly) in enumerate(loops):
-                d = math.hypot((x - lx) / rx, (y - ly) / ry)
-                if abs(d - 1) * min(rx, ry) <= thick:
-                    best = (k, x - lx, y - ly)       # later (lower) loops draw over earlier ones
-            if best:
-                k, dx, dy = best
-                mask[y][x] = True
-                front = dy > 0                              # near half of the loop faces us
-                lit = -(dx / rx * 0.6 + dy / ry)
-                v = 5 if front else 3
-                if lit > 0.5:
-                    v += 2
-                elif lit < -0.6:
-                    v -= 1
-                lv[y][x] = max(2, min(7, v))
-    for x, y in ((12, 13), (13, 13), (14, 14)):                    # loose end
-        mask[y][x] = True
-        lv[y][x] = 5
-    return edge_light(lv, mask)
+            dt = ((x - cx) / 6.6) ** 2 + ((y - 3.5) / 2.1) ** 2
+            db = ((x - cx) / 6.6) ** 2 + ((y - 12.0) / 2.1) ** 2
+            if dt <= 1:
+                inner = ((x - cx) / 1.6) ** 2 + ((y - 3.5) / 0.6) ** 2 <= 1      # spindle hole
+                spool[y][x] = 1 if inner else (6 if y <= 3 else 4) - (1 if x > cx + 3 else 0)
+            elif db <= 1 and y >= 12:
+                spool[y][x] = 3 if x < cx + 2 else 2
+    # darker rim around each flange
+    for y in range(16):
+        for x in range(16):
+            if spool[y][x] is not None and spool[y][x] > 1:
+                edge = any(not (0 <= x + dx < 16 and 0 <= y + dy < 16) or spool[y + dy][x + dx] is None
+                           for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+                if edge:
+                    spool[y][x] = 2 if (y > 3 or x > cx) else 4
+    # wound wire: a cylinder between the flanges, rows of wire lit on the left
+    for y in range(5, 12):
+        for x in range(2, 14):
+            u = (x - 2) / 11.0                                  # 0 left .. 1 right
+            light = math.cos((u - 0.3) * math.pi * 0.9)          # brightest a little left of centre
+            row_top = (y - 5) % 2 == 0                           # each winding: lit top half, shaded bottom
+            v = 2 + light * 4.2 + (0.8 if row_top else -0.6)
+            wire_lv[y][x] = max(1, min(7, int(round(v))))
+    for y in range(5, 12):                                       # darker edges of the cylinder
+        wire_lv[y][2] = max(1, wire_lv[y][2] - 2)
+        wire_lv[y][13] = 1
+    # loose end leaving the bottom-right of the coil
+    for x, y, v in ((14, 9, 5), (14, 10, 4), (15, 11, 4), (15, 12, 2)):
+        wire_lv[y][x] = v
+    return spool, wire_lv
 
 
 def raw(seed):
@@ -391,8 +416,13 @@ def draw(kind, name):
         if name.startswith("raw_"):
             return paint(raw(seed), m)
         form = name.rsplit("_", 1)[1]
-        if form in ("plate", "gear", "dust", "wire"):
-            return paint8({"plate": plate, "gear": gear, "dust": dust, "wire": wire}[form](), m)
+        if form == "wire":
+            spool, wound = wire()
+            img = paint_ramp(spool, SPOOL_RAMP)
+            img.alpha_composite(paint8(wound, m))
+            return img
+        if form in ("plate", "gear", "dust"):
+            return paint8({"plate": plate, "gear": gear, "dust": dust}[form](), m)
         return paint({"ingot": ingot, "nugget": nugget, "dust": dust, "wire": wire}[form](), m)
     if name.endswith("_overlay"):
         # stone and deepslate ores share one layout per metal; only the stone behind them differs
