@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "top": "joulesmith:block/machine_top",
+    "bottom": "joulesmith:block/machine_bottom",
+    "side": "joulesmith:block/machine_side",
+    "front": "joulesmith:block/advanced_battery_front_on"
+  }
+}

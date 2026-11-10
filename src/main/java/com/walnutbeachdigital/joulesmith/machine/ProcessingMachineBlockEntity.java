@@ -22,8 +22,10 @@ public class ProcessingMachineBlockEntity extends RecipeMachineBlockEntity {
 
     /** Ore Washer: water tank on the left, one input, a main output and a byproduct. */
     public static final List<SlotDef> WASHER = List.of(SlotDef.input(56, 35), SlotDef.output(116, 35), SlotDef.byproduct(142, 35));
-    /** Fluid Mixer: one item input between the two tanks. */
+    /** Bio Reactor: one item input beside its tank. */
     public static final List<SlotDef> MIXER = List.of(SlotDef.input(56, 35));
+    /** Fluid Mixer: one item input between the two tanks, and an output under the arrow for solid results. */
+    public static final List<SlotDef> FLUID_MIXER = List.of(SlotDef.input(56, 35), SlotDef.byproduct(83, 57));
     /** Centrifuge: one input, four outputs in a square. */
     public static final List<SlotDef> CENTRIFUGE = List.of(SlotDef.input(56, 35),
             SlotDef.byproduct(112, 26), SlotDef.byproduct(130, 26), SlotDef.byproduct(112, 44), SlotDef.byproduct(130, 44));

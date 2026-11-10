@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 
-/** A fluid pipe: tier 1 moves 100 mB/t, tier 2 moves 400 mB/t at each connection. */
+/** A fluid pipe: tier 1 moves 100 mB/t, tier 2 400 and tier 3 1,600 at each connection. */
 public class FluidPipeBlock extends PipeBlock {
     public static final MapCodec<FluidPipeBlock> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.INT.fieldOf("tier").forGetter(FluidPipeBlock::tier),

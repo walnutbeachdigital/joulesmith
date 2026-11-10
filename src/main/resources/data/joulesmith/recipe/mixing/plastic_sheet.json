@@ -1,0 +1,18 @@
+{
+  "type": "joulesmith:mixing",
+  "fluid": {
+    "id": "joulesmith:biofuel",
+    "amount": 500
+  },
+  "inputs": [
+    {
+      "item": "joulesmith:latex"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:plastic_sheet",
+      "count": 2
+    }
+  ]
+}

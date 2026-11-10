@@ -26,7 +26,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
-/** An item duct (tier 1 moves 1 item, tier 2 moves 4, every half second). Right-click a side with a Filter Card to fit it. */
+/** An item duct (tier 1 moves 1 item, tier 2 moves 4, tier 3 moves 16, every half second). Right-click a side with a Filter Card to fit it. */
 public class ItemDuctBlock extends PipeBlock {
     public static final MapCodec<ItemDuctBlock> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.INT.fieldOf("tier").forGetter(ItemDuctBlock::tier),

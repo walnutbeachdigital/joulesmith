@@ -40,6 +40,8 @@ public final class JSItems {
     public static final Map<UpgradeCardItem.Type, DeferredItem<UpgradeCardItem>> UPGRADE = new EnumMap<>(UpgradeCardItem.Type.class);
     public static final DeferredItem<Item> SAWDUST = ITEMS.registerSimpleItem("sawdust");
     public static final DeferredItem<Item> BASIC_CIRCUIT = ITEMS.registerSimpleItem("basic_circuit");
+    public static final DeferredItem<Item> ADVANCED_CIRCUIT = ITEMS.registerSimpleItem("advanced_circuit");
+    public static final DeferredItem<Item> PLASTIC_SHEET = ITEMS.registerSimpleItem("plastic_sheet");
     public static final DeferredItem<Item> LATEX = ITEMS.registerSimpleItem("latex");
     public static final DeferredItem<Item> RUBBER = ITEMS.registerSimpleItem("rubber");
     public static final DeferredItem<TreeTapItem> TREE_TAP = ITEMS.register("tree_tap", () -> new TreeTapItem(new Item.Properties().durability(128)));
@@ -49,7 +51,13 @@ public final class JSItems {
     static {
         blockItem(JSBlocks.COMBUSTION_GENERATOR);
         blockItem(JSBlocks.BASIC_BATTERY);
+        blockItem(JSBlocks.REINFORCED_BATTERY);
+        blockItem(JSBlocks.ADVANCED_BATTERY);
+        blockItem(JSBlocks.BOILER);
+        blockItem(JSBlocks.STEAM_TURBINE);
         blockItem(JSBlocks.ENERGY_CABLE);
+        blockItem(JSBlocks.REINFORCED_ENERGY_CABLE);
+        blockItem(JSBlocks.ADVANCED_ENERGY_CABLE);
         blockItem(JSBlocks.ELECTRIC_FURNACE);
         blockItem(JSBlocks.CRUSHER);
         blockItem(JSBlocks.ALLOY_SMELTER);
@@ -77,11 +85,15 @@ public final class JSItems {
         }
         TAB_ORDER.add(SAWDUST);
         TAB_ORDER.add(BASIC_CIRCUIT);
+        TAB_ORDER.add(ADVANCED_CIRCUIT);
+        TAB_ORDER.add(PLASTIC_SHEET);
         blockItem(JSBlocks.PUMP);
         blockItem(JSBlocks.ITEM_DUCT);
         blockItem(JSBlocks.REINFORCED_ITEM_DUCT);
         blockItem(JSBlocks.FLUID_PIPE);
         blockItem(JSBlocks.REINFORCED_FLUID_PIPE);
+        blockItem(JSBlocks.ADVANCED_ITEM_DUCT);
+        blockItem(JSBlocks.ADVANCED_FLUID_PIPE);
         register("fluid_tank", () -> new FluidTankItem(JSBlocks.FLUID_TANK.get(), new Item.Properties()));
         register("basic_crate", () -> new CrateItem(JSBlocks.BASIC_CRATE.get(), new Item.Properties().stacksTo(1)));
         register("reinforced_crate", () -> new CrateItem(JSBlocks.REINFORCED_CRATE.get(), new Item.Properties().stacksTo(1)));

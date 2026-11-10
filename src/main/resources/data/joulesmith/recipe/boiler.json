@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "GFG",
+    "PTP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/invar"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    },
+    "G": {
+      "tag": "c:gears/steel"
+    },
+    "F": {
+      "item": "minecraft:blast_furnace"
+    },
+    "T": {
+      "item": "joulesmith:fluid_tank"
+    }
+  },
+  "result": {
+    "id": "joulesmith:boiler",
+    "count": 1
+  }
+}

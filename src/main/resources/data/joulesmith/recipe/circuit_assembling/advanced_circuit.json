@@ -1,0 +1,22 @@
+{
+  "type": "joulesmith:circuit_assembling",
+  "inputs": [
+    {
+      "tag": "c:wires/electrum",
+      "count": 2
+    },
+    {
+      "item": "joulesmith:basic_circuit"
+    },
+    {
+      "item": "joulesmith:plastic_sheet"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:advanced_circuit"
+    }
+  ],
+  "energy": 6000,
+  "time": 160
+}

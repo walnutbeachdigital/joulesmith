@@ -27,6 +27,10 @@
     "joulesmith:electrum_block",
     "joulesmith:combustion_generator",
     "joulesmith:basic_battery",
+    "joulesmith:reinforced_battery",
+    "joulesmith:advanced_battery",
+    "joulesmith:boiler",
+    "joulesmith:steam_turbine",
     "joulesmith:electric_furnace",
     "joulesmith:crusher",
     "joulesmith:pump",
@@ -44,10 +48,14 @@
     "joulesmith:bio_reactor",
     "joulesmith:biofuel_generator",
     "joulesmith:energy_cable",
+    "joulesmith:reinforced_energy_cable",
+    "joulesmith:advanced_energy_cable",
     "joulesmith:item_duct",
     "joulesmith:reinforced_item_duct",
+    "joulesmith:advanced_item_duct",
     "joulesmith:fluid_pipe",
     "joulesmith:reinforced_fluid_pipe",
+    "joulesmith:advanced_fluid_pipe",
     "joulesmith:fluid_tank"
   ]
 }

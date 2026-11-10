@@ -168,9 +168,9 @@ def generator_front(on):
     return img
 
 
-def battery_front(on):
+def battery_front(on, trim=None):
     """Four charge bars in a window: dark when empty, glowing green when charged."""
-    img = casing()
+    img = casing(STEEL, trim or COPPER)
     px = img.load()
     window(img, 4, 3, 11, 12)
     for y in range(3, 13):
@@ -1344,6 +1344,107 @@ def rubber_spot(state):
     return img
 
 
+# ------------------------------------------------------------------ tier 3 (electrum-gold trim)
+ELECTRUM_TRIM = ["#5a4410", "#8a6c1c", "#b8932a", "#e0bc3e", "#f4d860", "#fff09a"]
+STEAM = ["#9aa6ae", "#b8c2c8", "#d6dde0", "#eef2f4"]
+
+
+def casing3():
+    return casing(STEEL, ELECTRUM_TRIM)
+
+
+def boiler_front(on):
+    """A firebox door under a riveted pressure drum; the firebox glows and steam wisps while running."""
+    img = casing3()
+    px = img.load()
+    for y in range(3, 8):                                   # the drum
+        for x in range(3, 13):
+            px[x, y] = rgba(COPPER[3] if y == 3 else COPPER[2] if y < 7 else COPPER[1])
+    for x in (4, 7, 10):
+        px[x, 5] = rgba(COPPER[5])
+    window(img, 5, 9, 10, 12)                               # firebox
+    for y in range(9, 13):
+        for x in range(5, 11):
+            px[x, y] = rgba((FIRE[5] if y == 12 else FIRE[4] if y > 10 else FIRE[3]) if on else FIRE[0])
+    if on:
+        for x, y in ((12, 2), (13, 1), (12, 1)):
+            px[x, y] = rgba(STEAM[3])
+    return img
+
+
+def turbine_front(on):
+    """A bladed rotor in a round housing; it blurs into a ring while spinning."""
+    import math
+    img = casing3()
+    px = img.load()
+    cx, cy = 7.5, 7.5
+    for y in range(16):
+        for x in range(16):
+            r = math.hypot(x - cx, y - cy)
+            if 4.4 < r <= 5.4:
+                px[x, y] = rgba(STEEL[1] if (x + y) < 15 else STEEL[6])
+            elif r <= 4.4:
+                ang = math.atan2(y - cy, x - cx)
+                if r < 1.3:
+                    c = ELECTRUM_TRIM[3]
+                elif on:
+                    c = STEEL[5] if int(r * 2) % 2 else STEEL[4]
+                else:
+                    blade = math.cos(ang * 6 + r * 0.5) > 0.2
+                    c = (STEEL[6] if x + y < 15 else STEEL[4]) if blade else "#16181c"
+                px[x, y] = rgba(c)
+    return img
+
+
+def cable_texture(core, sheath, stripe):
+    """An insulated cable: a sheath with a tier stripe running along it, the metal core showing at the ends."""
+    img = Image.new("RGBA", (16, 16))
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            c = sheath[2]
+            if (x + y) % 5 == 0:
+                c = sheath[3]
+            if x in (7, 8):
+                c = stripe[3] if x == 7 else stripe[1]
+            if y in (0, 15):
+                c = sheath[0]
+            px[x, y] = rgba(c)
+    for y in range(6, 10):                                  # the core seen on the cut faces
+        for x in range(6, 10):
+            px[x, y] = rgba(core[4] if (x + y) % 3 else core[3])
+    return img
+
+
+def plastic_sheet_item():
+    """A sheet of plastic: the plate's shape, in pale off-white."""
+    plastic = ["#6e7378", "#8a8f94", "#a6abaf", "#bfc3c6", "#d2d5d7", "#e2e4e5", "#eef0f0", "#fafbfb"]
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    _paint(img, _mt().plate(), plastic)
+    return img
+
+
+def advanced_circuit_item():
+    """The Basic Circuit's board in blue, with gold traces and two chips."""
+    board = ["#0d1f3a", "#163266", "#21498e", "#2f62b4"]
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    for y in range(3, 13):
+        for x in range(2, 14):
+            edge = x in (2, 13) or y in (3, 12)
+            px[x, y] = rgba(board[0] if edge else board[3] if (x + y) < 13 else board[2])
+    for x in range(3, 13):
+        px[x, 7] = rgba(ELECTRUM_TRIM[3])
+    for y in (4, 5, 9, 10, 11):
+        px[4, y] = rgba(ELECTRUM_TRIM[3])
+        px[11, y] = rgba(ELECTRUM_TRIM[2])
+    for cx in (5, 9):
+        for y in range(5, 10):
+            for x in range(cx, cx + 2):
+                px[x, y] = rgba("#222226" if (x, y) != (cx, 5) else "#55555c")
+    return img
+
+
 # ------------------------------------------------------------------ screen
 LIGHT = (255, 255, 255, 255)
 
@@ -1457,6 +1558,20 @@ def main():
         "block/crusher_front": crusher_front(False),
         "block/crusher_front_on": crusher_front(True),
         "block/energy_cable": energy_cable(),
+        "block/reinforced_energy_cable": cable_texture(COPPER, ["#141414", "#1f1f21", "#2c2c30", "#3c3c42"], STEEL_TRIM),
+        "block/advanced_energy_cable": cable_texture(ELECTRUM_TRIM, ["#8a8f94", "#a6abaf", "#c6cacd", "#dcdfe1"], ELECTRUM_TRIM),
+        "block/advanced_item_duct": pipe_texture(LEAD, ELECTRUM_TRIM, ["#0c0d12", "#1b1d26", "#2a2d3a", "#4a5066", "#9aa3c0"]),
+        "block/advanced_fluid_pipe": pipe_texture(TIN, ELECTRUM_TRIM, GLASS),
+        "block/reinforced_battery_front": battery_front(False, STEEL_TRIM),
+        "block/reinforced_battery_front_on": battery_front(True, STEEL_TRIM),
+        "block/advanced_battery_front": battery_front(False, ELECTRUM_TRIM),
+        "block/advanced_battery_front_on": battery_front(True, ELECTRUM_TRIM),
+        "block/boiler_front": boiler_front(False),
+        "block/boiler_front_on": boiler_front(True),
+        "block/steam_turbine_front": turbine_front(False),
+        "block/steam_turbine_front_on": turbine_front(True),
+        "item/plastic_sheet": plastic_sheet_item(),
+        "item/advanced_circuit": advanced_circuit_item(),
         "block/item_duct": pipe_texture(LEAD, COPPER, ["#0c0d12", "#1b1d26", "#2a2d3a", "#4a5066", "#9aa3c0"]),
         "block/reinforced_item_duct": pipe_texture(LEAD, STEEL_TRIM, ["#0c0d12", "#1b1d26", "#2a2d3a", "#4a5066", "#9aa3c0"]),
         "block/fluid_pipe": pipe_texture(TIN, COPPER, GLASS),

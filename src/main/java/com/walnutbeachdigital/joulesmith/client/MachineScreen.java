@@ -78,8 +78,8 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
                 g.blit(TEXTURE, x + def.x() - 1, y + def.y() - 1, SLOT_U, SLOT_V, 18, 18);
             }
         }
-        // energy bar, filling from the bottom
-        g.blit(TEXTURE, x + BAR_X, y + BAR_Y, BAR_U, BAR_V, 16, 50);
+        // energy bar, filling from the bottom (machines that hold no power, like the Boiler, have none)
+        if (menu.value(1) > 0) g.blit(TEXTURE, x + BAR_X, y + BAR_Y, BAR_U, BAR_V, 16, 50);
         int energy = menu.value(0), capacity = Math.max(1, menu.value(1));
         int filled = (int) Math.round(48.0 * Math.min(energy, capacity) / capacity);
         if (filled > 0) {
@@ -268,7 +268,7 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 
     private List<Component> tooltipAt(double rx, double ry) {
         List<Component> tip = new ArrayList<>();
-        if (rx >= BAR_X && rx < BAR_X + 16 && ry >= BAR_Y && ry < BAR_Y + 50) {
+        if (menu.value(1) > 0 && rx >= BAR_X && rx < BAR_X + 16 && ry >= BAR_Y && ry < BAR_Y + 50) {
             tip.add(Component.translatable("gui.joulesmith.energy", String.format("%,d", menu.value(0)), String.format("%,d", menu.value(1))));
         } else if (tankAt(rx, ry) >= 0) {
             int t = tankAt(rx, ry);

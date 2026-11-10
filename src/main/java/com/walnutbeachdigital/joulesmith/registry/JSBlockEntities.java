@@ -3,6 +3,8 @@ package com.walnutbeachdigital.joulesmith.registry;
 import com.walnutbeachdigital.joulesmith.Joulesmith;
 import com.walnutbeachdigital.joulesmith.energy.cable.EnergyCableBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.battery.BatteryBlockEntity;
+import com.walnutbeachdigital.joulesmith.machine.steam.BoilerBlockEntity;
+import com.walnutbeachdigital.joulesmith.machine.steam.SteamTurbineBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.creative.CreativePowerCellBlockEntity;
 import com.walnutbeachdigital.joulesmith.farming.HarvesterBlockEntity;
 import com.walnutbeachdigital.joulesmith.farming.PlanterBlockEntity;
@@ -47,7 +49,19 @@ public final class JSBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BatteryBlockEntity>> BASIC_BATTERY =
             BLOCK_ENTITIES.register("basic_battery", () -> BlockEntityType.Builder
-                    .of(BatteryBlockEntity::new, JSBlocks.BASIC_BATTERY.get()).build(null));
+                    .of((pos, state) -> new BatteryBlockEntity(pos, state, batteryTier(state)),
+                            JSBlocks.BASIC_BATTERY.get(), JSBlocks.REINFORCED_BATTERY.get(), JSBlocks.ADVANCED_BATTERY.get()).build(null));
+
+    private static int batteryTier(net.minecraft.world.level.block.state.BlockState state) {
+        return state.is(JSBlocks.ADVANCED_BATTERY.get()) ? 3 : state.is(JSBlocks.REINFORCED_BATTERY.get()) ? 2 : 1;
+    }
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BoilerBlockEntity>> BOILER =
+            BLOCK_ENTITIES.register("boiler", () -> BlockEntityType.Builder
+                    .of(BoilerBlockEntity::new, JSBlocks.BOILER.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SteamTurbineBlockEntity>> STEAM_TURBINE =
+            BLOCK_ENTITIES.register("steam_turbine", () -> BlockEntityType.Builder
+                    .of(SteamTurbineBlockEntity::new, JSBlocks.STEAM_TURBINE.get()).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> CRUSHER =
             processing("crusher", JSBlocks.CRUSHER, ProcessingMachineBlockEntity.ONE_TO_TWO, MachineRecipeKind.CRUSHING);
@@ -62,15 +76,18 @@ public final class JSBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnergyCableBlockEntity>> ENERGY_CABLE =
             BLOCK_ENTITIES.register("energy_cable", () -> BlockEntityType.Builder
-                    .of(EnergyCableBlockEntity::new, JSBlocks.ENERGY_CABLE.get()).build(null));
+                    .of(EnergyCableBlockEntity::new, JSBlocks.ENERGY_CABLE.get(), JSBlocks.REINFORCED_ENERGY_CABLE.get(),
+                            JSBlocks.ADVANCED_ENERGY_CABLE.get()).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ItemDuctBlockEntity>> ITEM_DUCT =
             BLOCK_ENTITIES.register("item_duct", () -> BlockEntityType.Builder
-                    .of(ItemDuctBlockEntity::new, JSBlocks.ITEM_DUCT.get(), JSBlocks.REINFORCED_ITEM_DUCT.get()).build(null));
+                    .of(ItemDuctBlockEntity::new, JSBlocks.ITEM_DUCT.get(), JSBlocks.REINFORCED_ITEM_DUCT.get(),
+                            JSBlocks.ADVANCED_ITEM_DUCT.get()).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidPipeBlockEntity>> FLUID_PIPE =
             BLOCK_ENTITIES.register("fluid_pipe", () -> BlockEntityType.Builder
-                    .of(FluidPipeBlockEntity::new, JSBlocks.FLUID_PIPE.get(), JSBlocks.REINFORCED_FLUID_PIPE.get()).build(null));
+                    .of(FluidPipeBlockEntity::new, JSBlocks.FLUID_PIPE.get(), JSBlocks.REINFORCED_FLUID_PIPE.get(),
+                            JSBlocks.ADVANCED_FLUID_PIPE.get()).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidTankBlockEntity>> FLUID_TANK =
             BLOCK_ENTITIES.register("fluid_tank", () -> BlockEntityType.Builder
@@ -84,7 +101,7 @@ public final class JSBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> ORE_WASHER =
             processing("ore_washer", JSBlocks.ORE_WASHER, ProcessingMachineBlockEntity.WASHER, MachineRecipeKind.WASHING, 30, -1);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> FLUID_MIXER =
-            processing("fluid_mixer", JSBlocks.FLUID_MIXER, ProcessingMachineBlockEntity.MIXER, MachineRecipeKind.MIXING, 30, 116);
+            processing("fluid_mixer", JSBlocks.FLUID_MIXER, ProcessingMachineBlockEntity.FLUID_MIXER, MachineRecipeKind.MIXING, 30, 116);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> CENTRIFUGE =
             processing("centrifuge", JSBlocks.CENTRIFUGE, ProcessingMachineBlockEntity.CENTRIFUGE, MachineRecipeKind.CENTRIFUGING);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> CIRCUIT_ASSEMBLER =

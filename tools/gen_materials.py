@@ -283,6 +283,10 @@ write(os.path.join(ASSETS, "lang", "en_us.json"), lang)
 MACHINES = {
     "combustion_generator": {"name": "Combustion Generator", "front": "combustion_generator_front"},
     "basic_battery": {"name": "Basic Battery", "front": "basic_battery_front"},
+    "reinforced_battery": {"name": "Reinforced Battery", "front": "reinforced_battery_front"},
+    "advanced_battery": {"name": "Advanced Battery", "front": "advanced_battery_front"},
+    "boiler": {"name": "Boiler", "front": "boiler_front"},
+    "steam_turbine": {"name": "Steam Turbine", "front": "steam_turbine_front"},
     "electric_furnace": {"name": "Electric Furnace", "front": "electric_furnace_front"},
     "crusher": {"name": "Crusher", "front": "crusher_front"},
     "pump": {"name": "Pump", "front": "pump_front"},
@@ -334,26 +338,29 @@ for (ns, reg, path), values in tags.items():
 # ---- energy cable: a core plus an arm per connected side (multipart)
 SIDE_ROT = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 270},
             "up": {"x": 270}, "down": {"x": 90}}
-cable_tex = f"{MOD}:block/energy_cable"
-write(os.path.join(ASSETS, "models", "block", "energy_cable_core.json"), {
-    "parent": "minecraft:block/block", "textures": {"particle": cable_tex, "cable": cable_tex},
-    "elements": [{"from": [6, 6, 6], "to": [10, 10, 10],
-                  "faces": {f: {"texture": "#cable"} for f in SIDES}}]})
-write(os.path.join(ASSETS, "models", "block", "energy_cable_arm.json"), {
-    "parent": "minecraft:block/block", "textures": {"particle": cable_tex, "cable": cable_tex},
-    "elements": [{"from": [6, 6, 0], "to": [10, 10, 6],
-                  "faces": {f: {"texture": "#cable"} for f in ("east", "west", "up", "down", "north")}}]})
-write(os.path.join(ASSETS, "blockstates", "energy_cable.json"), {"multipart":
-    [{"apply": {"model": f"{MOD}:block/energy_cable_core"}}] +
-    [{"when": {side: "true"}, "apply": {"model": f"{MOD}:block/energy_cable_arm", **rot}} for side, rot in SIDE_ROT.items()]})
-write(os.path.join(ASSETS, "models", "item", "energy_cable.json"), {
-    "parent": "minecraft:block/block", "textures": {"particle": cable_tex, "cable": cable_tex},
-    "elements": [{"from": [0, 6, 6], "to": [16, 10, 10], "faces": {f: {"texture": "#cable"} for f in SIDES}}]})
-write(os.path.join(DATA, MOD, "loot_table", "blocks", "energy_cable.json"), {
-    "type": "minecraft:block", "random_sequence": f"{MOD}:blocks/energy_cable",
-    "pools": [{"rolls": 1, "bonus_rolls": 0, "entries": [{"type": "minecraft:item", "name": f"{MOD}:energy_cable"}],
-               "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
-tags[("minecraft", "block", "mineable/pickaxe")].append(f"{MOD}:energy_cable")
+CABLES = {"energy_cable": "Energy Cable", "reinforced_energy_cable": "Reinforced Energy Cable",
+          "advanced_energy_cable": "Advanced Energy Cable"}
+for cid in CABLES:
+    cable_tex = f"{MOD}:block/{cid}"
+    write(os.path.join(ASSETS, "models", "block", f"{cid}_core.json"), {
+        "parent": "minecraft:block/block", "textures": {"particle": cable_tex, "cable": cable_tex},
+        "elements": [{"from": [6, 6, 6], "to": [10, 10, 10],
+                      "faces": {f: {"texture": "#cable"} for f in SIDES}}]})
+    write(os.path.join(ASSETS, "models", "block", f"{cid}_arm.json"), {
+        "parent": "minecraft:block/block", "textures": {"particle": cable_tex, "cable": cable_tex},
+        "elements": [{"from": [6, 6, 0], "to": [10, 10, 6],
+                      "faces": {f: {"texture": "#cable"} for f in ("east", "west", "up", "down", "north")}}]})
+    write(os.path.join(ASSETS, "blockstates", f"{cid}.json"), {"multipart":
+        [{"apply": {"model": f"{MOD}:block/{cid}_core"}}] +
+        [{"when": {side: "true"}, "apply": {"model": f"{MOD}:block/{cid}_arm", **rot}} for side, rot in SIDE_ROT.items()]})
+    write(os.path.join(ASSETS, "models", "item", f"{cid}.json"), {
+        "parent": "minecraft:block/block", "textures": {"particle": cable_tex, "cable": cable_tex},
+        "elements": [{"from": [0, 6, 6], "to": [16, 10, 10], "faces": {f: {"texture": "#cable"} for f in SIDES}}]})
+    write(os.path.join(DATA, MOD, "loot_table", "blocks", f"{cid}.json"), {
+        "type": "minecraft:block", "random_sequence": f"{MOD}:blocks/{cid}",
+        "pools": [{"rolls": 1, "bonus_rolls": 0, "entries": [{"type": "minecraft:item", "name": f"{MOD}:{cid}"}],
+                   "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
+    tags[("minecraft", "block", "mineable/pickaxe")].append(f"{MOD}:{cid}")
 write(os.path.join(DATA, "minecraft", "tags", "block", "mineable/pickaxe.json"),
       {"replace": False, "values": tags[("minecraft", "block", "mineable/pickaxe")]})
 
@@ -391,8 +398,8 @@ model("pipe_push", {"parent": "minecraft:block/block", "textures": {"particle": 
 model("pipe_pull", {"parent": "minecraft:block/block", "textures": {"particle": "#pipe", "attach": ATTACH},
       "elements": [arm(3, 5), {"from": [4, 4, 0], "to": [12, 12, 3], "faces": attach_faces(8, 3)}]})
 
-PIPES = {"item_duct": "Item Duct", "reinforced_item_duct": "Reinforced Item Duct",
-         "fluid_pipe": "Fluid Pipe", "reinforced_fluid_pipe": "Reinforced Fluid Pipe"}
+PIPES = {"item_duct": "Item Duct", "reinforced_item_duct": "Reinforced Item Duct", "advanced_item_duct": "Advanced Item Duct",
+         "fluid_pipe": "Fluid Pipe", "reinforced_fluid_pipe": "Reinforced Fluid Pipe", "advanced_fluid_pipe": "Advanced Fluid Pipe"}
 SIDE_ROT = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 270},
             "up": {"x": 270}, "down": {"x": 90}}
 
@@ -820,6 +827,29 @@ shaped("reinforced_bulk_bin", ["SPS", "PBP", "SPS"], {"S": "#c:ingots/steel", "P
 for (ns, reg, path), values in tags.items():
     write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
 
+# ---- tier 3: steam, plastic and the Advanced Circuit, higher-tier cables, ducts, pipes and batteries
+machine_fluid("mixing", "plastic_sheet", (BIOFUEL, 500), [(f"{MOD}:latex", 1)], [(f"{MOD}:plastic_sheet", 2, 1)])
+machine("circuit_assembling", "advanced_circuit",
+        [("#c:wires/electrum", 2), (f"{MOD}:basic_circuit", 1), (f"{MOD}:plastic_sheet", 1)], [(f"{MOD}:advanced_circuit", 1, 1)], 6000, 160)
+shaped("reinforced_energy_cable", ["RRR", "WWW", "RRR"], {"R": f"{MOD}:rubber", "W": "#c:wires/copper"}, count=6)
+shaped("advanced_energy_cable", ["RRR", "WWW", "RRR"], {"R": f"{MOD}:plastic_sheet", "W": "#c:wires/electrum"}, count=6)
+shaped("advanced_item_duct", ["DDD", "DPD", "DDD"], {"D": f"{MOD}:reinforced_item_duct", "P": "#c:plates/electrum"}, count=8)
+shaped("advanced_fluid_pipe", ["DDD", "DPD", "DDD"], {"D": f"{MOD}:reinforced_fluid_pipe", "P": f"{MOD}:plastic_sheet"}, count=8)
+shaped("reinforced_battery", ["PCP", "BRB", "PCP"],
+       {"P": "#c:plates/invar", "C": f"{MOD}:basic_circuit", "B": f"{MOD}:basic_battery", "R": "#c:storage_blocks/redstone"})
+shaped("advanced_battery", ["PCP", "BRB", "PCP"],
+       {"P": "#c:plates/electrum", "C": f"{MOD}:advanced_circuit", "B": f"{MOD}:reinforced_battery", "R": "#c:storage_blocks/redstone"})
+shaped("boiler", ["PCP", "GFG", "PTP"],
+       {"P": "#c:plates/invar", "C": f"{MOD}:advanced_circuit", "G": "#c:gears/steel", "F": "minecraft:blast_furnace", "T": f"{MOD}:fluid_tank"})
+shaped("steam_turbine", ["PCP", "GBG", "PRP"],
+       {"P": "#c:plates/steel", "C": f"{MOD}:advanced_circuit", "G": "#c:gears/steel", "B": "#c:storage_blocks/copper", "R": "#c:storage_blocks/redstone"})
+for iid in ("advanced_circuit", "plastic_sheet"):
+    write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
+          {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{iid}"}})
+lang.update({f"item.{MOD}.advanced_circuit": "Advanced Circuit", f"item.{MOD}.plastic_sheet": "Plastic Sheet"})
+for (ns, reg, path), values in tags.items():
+    write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+
 # ---- the new machines, upgrade cards and sawdust
 shaped("alloy_smelter", ["IGI", "BFB", "IRI"],
        {"I": "#c:ingots/iron", "G": "#c:gears/copper", "B": "minecraft:bricks", "F": "minecraft:furnace", "R": "#c:dusts/redstone"})
@@ -840,7 +870,8 @@ for iid in [f"{u}_upgrade" for u in UPGRADES if u != "range"] + ["sawdust", "bas
           {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{iid}"}})
 lang.update({f"block.{MOD}.{k}": v["name"] for k, v in MACHINES.items()})
 lang.update({f"block.{MOD}.{k}": v for k, v in CREATIVE.items()})
-lang[f"block.{MOD}.energy_cable"] = "Energy Cable"
+lang.update({f"block.{MOD}.{c}": n for c, n in CABLES.items()})
+lang[f"fluid_type.{MOD}.steam"] = "Steam"
 lang.update({f"item.{MOD}.{u}_upgrade": name for u, name in UPGRADES.items()})
 lang.update({
     f"item.{MOD}.sawdust": "Sawdust",

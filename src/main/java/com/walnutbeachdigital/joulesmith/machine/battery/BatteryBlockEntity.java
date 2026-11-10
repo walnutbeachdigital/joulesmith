@@ -18,17 +18,21 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
  * them. By default the front gives out and every other face takes in. Its front lights while charged.
  */
 public class BatteryBlockEntity extends MachineBlockEntity {
-    public static final int CAPACITY = 100_000, RATE = 200;
+    /** Capacity and transfer per tick for tiers 1 (Basic), 2 (Reinforced) and 3 (Advanced). */
+    private static final int[] CAPACITY = {100_000, 1_000_000, 10_000_000}, RATE = {200, 1_000, 5_000};
 
-    public BatteryBlockEntity(BlockPos pos, BlockState state) {
-        super(JSBlockEntities.BASIC_BATTERY.get(), pos, state, List.of(), CAPACITY, RATE, RATE);
+    private final int rate;
+
+    public BatteryBlockEntity(BlockPos pos, BlockState state, int tier) {
+        super(JSBlockEntities.BASIC_BATTERY.get(), pos, state, List.of(), CAPACITY[tier - 1], RATE[tier - 1], RATE[tier - 1]);
+        this.rate = RATE[tier - 1];
         for (MachineFace face : MachineFace.values()) setDefaultSide(face, SideMode.INPUT);
         setDefaultSide(MachineFace.FRONT, SideMode.OUTPUT);
     }
 
     @Override
     protected boolean work(Level level, BlockPos pos, boolean allowed) {
-        if (allowed) pushEnergy(level, pos, RATE);
+        if (allowed) pushEnergy(level, pos, rate);
         return energy.getEnergyStored() > 0;
     }
 

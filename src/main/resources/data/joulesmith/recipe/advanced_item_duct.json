@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "DDD",
+    "DPD",
+    "DDD"
+  ],
+  "key": {
+    "D": {
+      "item": "joulesmith:reinforced_item_duct"
+    },
+    "P": {
+      "tag": "c:plates/electrum"
+    }
+  },
+  "result": {
+    "id": "joulesmith:advanced_item_duct",
+    "count": 8
+  }
+}

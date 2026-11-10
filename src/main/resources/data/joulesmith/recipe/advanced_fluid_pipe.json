@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "DDD",
+    "DPD",
+    "DDD"
+  ],
+  "key": {
+    "D": {
+      "item": "joulesmith:reinforced_fluid_pipe"
+    },
+    "P": {
+      "item": "joulesmith:plastic_sheet"
+    }
+  },
+  "result": {
+    "id": "joulesmith:advanced_fluid_pipe",
+    "count": 8
+  }
+}

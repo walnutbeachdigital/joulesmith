@@ -19,6 +19,11 @@ public final class JSCapabilities {
         machine(event, JSBlockEntities.COMBUSTION_GENERATOR.get());
         machine(event, JSBlockEntities.BASIC_BATTERY.get());
         machine(event, JSBlockEntities.PUMP.get());
+        machine(event, JSBlockEntities.STEAM_TURBINE.get());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.STEAM_TURBINE.get(), (t, side) -> t.fluidHandler(side));
+        // the Boiler holds no power, so cables don't connect to it
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, JSBlockEntities.BOILER.get(), (b, side) -> b.itemHandler(side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.BOILER.get(), (b, side) -> b.fluidHandler(side));
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, JSBlockEntities.CRATE.get(), (crate, side) -> crate.items());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, JSBlockEntities.BULK_BIN.get(), (bin, side) -> bin.handler);
         machine(event, JSBlockEntities.PLANTER.get());

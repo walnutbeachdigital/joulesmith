@@ -19,7 +19,13 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
  * The network is rebuilt whenever a cable or a neighbour changes.
  */
 public final class CableNetwork {
-    public static final int RATE = 500;          // tier 1: FE per tick into or out of the network at each connection
+    /** FE per tick into or out of the network at each connection, by cable tier (1 Basic, 2 Reinforced, 3 Advanced). */
+    public static int rateFor(int tier) {
+        return tier >= 3 ? 10_000 : tier == 2 ? 2_000 : 500;
+    }
+
+    /** The network's rate: its weakest cable's. */
+    private int rate = Integer.MAX_VALUE;
     private static final int MAX_CABLES = 4096;
 
     private final Set<BlockPos> cables = new HashSet<>();
@@ -35,7 +41,7 @@ public final class CableNetwork {
         @Override
         public int receiveEnergy(int amount, boolean simulate) {
             if (!valid) return 0;
-            int accepted = Math.min(Math.min(amount, RATE), capacity() - buffer);
+            int accepted = Math.min(Math.min(amount, rate), capacity() - buffer);
             if (accepted > 0 && !simulate) buffer += accepted;
             return Math.max(0, accepted);
         }
@@ -48,7 +54,7 @@ public final class CableNetwork {
     };
 
     private int capacity() {
-        return RATE * 2;
+        return rate * 2;
     }
 
     public IEnergyStorage intake() {
@@ -69,7 +75,8 @@ public final class CableNetwork {
         while (!queue.isEmpty() && net.cables.size() < MAX_CABLES) {
             BlockPos pos = queue.poll();
             BlockState state = level.getBlockState(pos);
-            if (!(state.getBlock() instanceof EnergyCableBlock)) continue;
+            if (!(state.getBlock() instanceof EnergyCableBlock block)) continue;
+            net.rate = Math.min(net.rate, rateFor(block.tier()));
             if (level.getBlockEntity(pos) instanceof EnergyCableBlockEntity cable) cable.network = net;
             for (Direction dir : Direction.values()) {
                 if (!state.getValue(EnergyCableBlock.CONNECTED.get(dir))) continue;
@@ -82,6 +89,7 @@ public final class CableNetwork {
                 }
             }
         }
+        if (net.rate == Integer.MAX_VALUE) net.rate = rateFor(1);
         return net;
     }
 
@@ -108,7 +116,7 @@ public final class CableNetwork {
             IEnergyStorage target = level.getCapability(Capabilities.EnergyStorage.BLOCK, endPositions.get(i), endFaces.get(i));
             if (target == null || !target.canReceive()) continue;
             int share = Math.max(1, buffer / (n - k));
-            buffer -= target.receiveEnergy(Math.min(Math.min(share, buffer), RATE), false);
+            buffer -= target.receiveEnergy(Math.min(Math.min(share, buffer), rate), false);
         }
     }
 }

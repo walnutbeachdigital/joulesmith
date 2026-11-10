@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RRR",
+    "WWW",
+    "RRR"
+  ],
+  "key": {
+    "R": {
+      "item": "joulesmith:rubber"
+    },
+    "W": {
+      "tag": "c:wires/copper"
+    }
+  },
+  "result": {
+    "id": "joulesmith:reinforced_energy_cable",
+    "count": 6
+  }
+}

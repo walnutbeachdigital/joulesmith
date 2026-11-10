@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "GBG",
+    "PRP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    },
+    "G": {
+      "tag": "c:gears/steel"
+    },
+    "B": {
+      "tag": "c:storage_blocks/copper"
+    },
+    "R": {
+      "tag": "c:storage_blocks/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:steam_turbine",
+    "count": 1
+  }
+}

@@ -20,6 +20,8 @@ import com.walnutbeachdigital.joulesmith.machine.generator.CombustionGeneratorBl
 import com.walnutbeachdigital.joulesmith.machine.creative.CreativePowerCellBlock;
 import com.walnutbeachdigital.joulesmith.machine.furnace.ElectricFurnaceBlock;
 import com.walnutbeachdigital.joulesmith.machine.pump.PumpBlockEntity;
+import com.walnutbeachdigital.joulesmith.machine.steam.BoilerBlockEntity;
+import com.walnutbeachdigital.joulesmith.machine.steam.SteamTurbineBlockEntity;
 import com.walnutbeachdigital.joulesmith.storage.bin.BinBlock;
 import com.walnutbeachdigital.joulesmith.storage.crate.CrateBlock;
 import com.walnutbeachdigital.joulesmith.storage.tank.FluidTankBlock;
@@ -136,11 +138,31 @@ public final class JSBlocks {
                     JSBlockEntities.COMBUSTION_GENERATOR::get, CombustionGeneratorBlockEntity::new));
 
     public static final DeferredBlock<SimpleMachineBlock<BatteryBlockEntity>> BASIC_BATTERY = BLOCKS.register("basic_battery",
-            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.BASIC_BATTERY::get, BatteryBlockEntity::new));
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.BASIC_BATTERY::get, (p, s) -> new BatteryBlockEntity(p, s, 1)));
 
-    public static final DeferredBlock<EnergyCableBlock> ENERGY_CABLE = BLOCKS.register("energy_cable",
-            () -> new EnergyCableBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.5f)
-                    .sound(SoundType.WOOL).noOcclusion()));
+    public static final DeferredBlock<EnergyCableBlock> ENERGY_CABLE = cable("energy_cable", 1);
+    public static final DeferredBlock<EnergyCableBlock> REINFORCED_ENERGY_CABLE = cable("reinforced_energy_cable", 2);
+    public static final DeferredBlock<EnergyCableBlock> ADVANCED_ENERGY_CABLE = cable("advanced_energy_cable", 3);
+
+    private static DeferredBlock<EnergyCableBlock> cable(String name, int tier) {
+        return BLOCKS.register(name, () -> new EnergyCableBlock(tier, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE)
+                .strength(0.5f).sound(SoundType.WOOL).noOcclusion()));
+    }
+
+    public static final DeferredBlock<SimpleMachineBlock<BatteryBlockEntity>> REINFORCED_BATTERY = battery("reinforced_battery", 2);
+    public static final DeferredBlock<SimpleMachineBlock<BatteryBlockEntity>> ADVANCED_BATTERY = battery("advanced_battery", 3);
+
+    private static DeferredBlock<SimpleMachineBlock<BatteryBlockEntity>> battery(String name, int tier) {
+        return BLOCKS.register(name, () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.BASIC_BATTERY::get,
+                (p, s) -> new BatteryBlockEntity(p, s, tier)));
+    }
+
+    // ---- steam (tier 3)
+    public static final DeferredBlock<SimpleMachineBlock<BoilerBlockEntity>> BOILER = BLOCKS.register("boiler",
+            () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 12 : 0),
+                    JSBlockEntities.BOILER::get, BoilerBlockEntity::new));
+    public static final DeferredBlock<SimpleMachineBlock<SteamTurbineBlockEntity>> STEAM_TURBINE = BLOCKS.register("steam_turbine",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.STEAM_TURBINE::get, SteamTurbineBlockEntity::new));
 
     // ---- transport and fluid storage
     private static BlockBehaviour.Properties pipe(MapColor color) {
@@ -155,6 +177,10 @@ public final class JSBlocks {
             () -> new FluidPipeBlock(1, pipe(MapColor.METAL)));
     public static final DeferredBlock<FluidPipeBlock> REINFORCED_FLUID_PIPE = BLOCKS.register("reinforced_fluid_pipe",
             () -> new FluidPipeBlock(2, pipe(MapColor.METAL)));
+    public static final DeferredBlock<ItemDuctBlock> ADVANCED_ITEM_DUCT = BLOCKS.register("advanced_item_duct",
+            () -> new ItemDuctBlock(3, pipe(MapColor.COLOR_GRAY)));
+    public static final DeferredBlock<FluidPipeBlock> ADVANCED_FLUID_PIPE = BLOCKS.register("advanced_fluid_pipe",
+            () -> new FluidPipeBlock(3, pipe(MapColor.METAL)));
 
     public static final DeferredBlock<FluidTankBlock> FLUID_TANK = BLOCKS.register("fluid_tank",
             () -> new FluidTankBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(2.0f, 6.0f)

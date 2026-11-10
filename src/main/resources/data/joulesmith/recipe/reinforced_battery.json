@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "BRB",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/invar"
+    },
+    "C": {
+      "item": "joulesmith:basic_circuit"
+    },
+    "B": {
+      "item": "joulesmith:basic_battery"
+    },
+    "R": {
+      "tag": "c:storage_blocks/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:reinforced_battery",
+    "count": 1
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RRR",
+    "WWW",
+    "RRR"
+  ],
+  "key": {
+    "R": {
+      "item": "joulesmith:plastic_sheet"
+    },
+    "W": {
+      "tag": "c:wires/electrum"
+    }
+  },
+  "result": {
+    "id": "joulesmith:advanced_energy_cable",
+    "count": 6
+  }
+}

@@ -2,7 +2,9 @@ package com.walnutbeachdigital.joulesmith.energy.cable;
 
 import java.util.Map;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.walnutbeachdigital.joulesmith.registry.JSBlockEntities;
 
 import net.minecraft.core.BlockPos;
@@ -27,11 +29,14 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
 
 /**
- * A tier 1 energy cable. Joins to other cables and to anything that holds power; every connected cable
+ * An energy cable. Joins to other cables and to anything that holds power; every connected cable
  * forms one network that carries up to 500 FE/t to the machines along it.
  */
 public class EnergyCableBlock extends BaseEntityBlock {
-    public static final MapCodec<EnergyCableBlock> CODEC = simpleCodec(EnergyCableBlock::new);
+    public static final MapCodec<EnergyCableBlock> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            Codec.INT.fieldOf("tier").forGetter(EnergyCableBlock::tier),
+            propertiesCodec()
+    ).apply(i, EnergyCableBlock::new));
     public static final Map<Direction, BooleanProperty> CONNECTED = PipeBlock.PROPERTY_BY_DIRECTION;
 
     private static final VoxelShape CORE = box(6, 6, 6, 10, 10, 10);
@@ -40,11 +45,19 @@ public class EnergyCableBlock extends BaseEntityBlock {
             Direction.WEST, box(0, 6, 6, 6, 10, 10), Direction.EAST, box(10, 6, 6, 16, 10, 10),
             Direction.DOWN, box(6, 0, 6, 10, 6, 10), Direction.UP, box(6, 10, 6, 10, 16, 10));
 
-    public EnergyCableBlock(Properties properties) {
+    private final int tier;
+
+    public EnergyCableBlock(int tier, Properties properties) {
         super(properties);
+        this.tier = tier;
         BlockState state = stateDefinition.any();
         for (BooleanProperty p : CONNECTED.values()) state = state.setValue(p, false);
         registerDefaultState(state);
+    }
+
+    /** 1 Basic (500 FE/t), 2 Reinforced (2,000), 3 Advanced (10,000). A network runs at its weakest cable's rate. */
+    public int tier() {
+        return tier;
     }
 
     @Override

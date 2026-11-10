@@ -49,17 +49,29 @@ public final class JSFluids {
 
         BaseFlowingFluid.Properties properties() {
             if (properties == null) {
-                properties = new BaseFlowingFluid.Properties(type, source, flowing).bucket(bucket).block(block);
+                properties = new BaseFlowingFluid.Properties(type, source, flowing);
+                if (bucket != null) properties.bucket(bucket).block(block);
             }
             return properties;
+        }
+
+        /** Whether it has a bucket and can be placed in the world (steam can't). */
+        public boolean placeable() {
+            return bucket != null;
         }
     }
 
     public static final Entry SULFURIC_ACID = register("sulfuric_acid", 0xE0D9D23A, 1100, 1100, 300);
     public static final Entry COOLANT = register("coolant", 0xE03ED6E0, 1000, 1000, 250);
     public static final Entry BIOFUEL = register("biofuel", 0xE07FA331, 900, 1200, 300);
+    /** Steam only lives in tanks and pipes: no bucket, no block. */
+    public static final Entry STEAM = register("steam", 0xC0E6ECF0, -1000, 200, 400, false);
 
     private static Entry register(String name, int color, int density, int viscosity, int temperature) {
+        return register(name, color, density, viscosity, temperature, true);
+    }
+
+    private static Entry register(String name, int color, int density, int viscosity, int temperature, boolean placeable) {
         Entry e = new Entry(name, color);
         e.type = TYPES.register(name, () -> new FluidType(FluidType.Properties.create()
                 .descriptionId("fluid_type." + Joulesmith.MODID + "." + name)
@@ -67,11 +79,13 @@ public final class JSFluids {
                 .canConvertToSource(false).canExtinguish(name.equals("coolant"))));
         e.source = FLUIDS.register(name, () -> new BaseFlowingFluid.Source(e.properties()));
         e.flowing = FLUIDS.register("flowing_" + name, () -> new BaseFlowingFluid.Flowing(e.properties()));
-        e.block = JSBlocks.BLOCKS.register(name, () -> new LiquidBlock(e.source.get(),
-                BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)));
-        e.bucket = JSItems.ITEMS.register(name + "_bucket", () -> new BucketItem(e.source.get(),
-                new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
-        JSItems.TAB_ORDER.add(e.bucket);
+        if (placeable) {
+            e.block = JSBlocks.BLOCKS.register(name, () -> new LiquidBlock(e.source.get(),
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)));
+            e.bucket = JSItems.ITEMS.register(name + "_bucket", () -> new BucketItem(e.source.get(),
+                    new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+            JSItems.TAB_ORDER.add(e.bucket);
+        }
         ALL.add(e);
         return e;
     }
