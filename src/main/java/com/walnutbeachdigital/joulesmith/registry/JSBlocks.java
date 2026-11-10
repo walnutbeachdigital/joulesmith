@@ -234,6 +234,9 @@ public final class JSBlocks {
     public static final DeferredBlock<SimpleMachineBlock<PumpBlockEntity>> PUMP = BLOCKS.register("pump",
             () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.PUMP::get, PumpBlockEntity::new));
 
+    public static final DeferredBlock<SimpleMachineBlock<PumpBlockEntity>> ADVANCED_PUMP = BLOCKS.register("advanced_pump",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.PUMP::get, PumpBlockEntity::new));
+
     public static final DeferredBlock<CreativePowerCellBlock> CREATIVE_POWER_CELL = BLOCKS.register("creative_power_cell",
             () -> new CreativePowerCellBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE)
                     .strength(-1.0f, 3_600_000.0f).noLootTable().sound(SoundType.METAL).lightLevel(state -> 7)));

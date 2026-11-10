@@ -1,0 +1,16 @@
+{
+  "type": "joulesmith:compressing",
+  "inputs": [
+    {
+      "tag": "c:dusts/nickel",
+      "count": 9
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:nickel_block"
+    }
+  ],
+  "energy": 3600,
+  "time": 120
+}

@@ -1,0 +1,19 @@
+{
+  "type": "joulesmith:centrifuging",
+  "fluid": {
+    "id": "joulesmith:iron_slurry",
+    "amount": 1000
+  },
+  "results": [
+    {
+      "id": "joulesmith:iron_dust",
+      "count": 3
+    },
+    {
+      "id": "joulesmith:nickel_dust",
+      "chance": 0.5
+    }
+  ],
+  "energy": 4800,
+  "time": 160
+}

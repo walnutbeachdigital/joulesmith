@@ -48,8 +48,12 @@ public class PumpBlockEntity extends MachineBlockEntity {
     private int cooldown;
     private int active;
 
+    /** The Advanced Pump: four times as fast, and fills each emptied source with stone so no fluid flows in. */
+    private final boolean advanced;
+
     public PumpBlockEntity(BlockPos pos, BlockState state) {
         super(JSBlockEntities.PUMP.get(), pos, state, List.of(), CAPACITY, MAX_INPUT);
+        advanced = state.is(com.walnutbeachdigital.joulesmith.registry.JSBlocks.ADVANCED_PUMP.get());
     }
 
     @Override
@@ -64,7 +68,7 @@ public class PumpBlockEntity extends MachineBlockEntity {
 
     @Override
     protected boolean work(Level level, BlockPos pos, boolean allowed) {
-        if (allowed && ++cooldown >= INTERVAL) {
+        if (allowed && ++cooldown >= (advanced ? INTERVAL / 4 : INTERVAL)) {
             cooldown = 0;
             if (energy.getEnergyStored() >= ENERGY_PER_BUCKET && tank.getSpace() >= 1000 && pumpOne(level, pos)) {
                 energy.consume(ENERGY_PER_BUCKET);
@@ -91,6 +95,9 @@ public class PumpBlockEntity extends MachineBlockEntity {
                 ItemStack bucket = pickup.pickupBlock(null, level, p, state);
                 if (bucket.isEmpty()) continue;
                 tank.fill(stack, IFluidHandler.FluidAction.EXECUTE);
+                if (advanced && level.getBlockState(p).isAir()) {
+                    level.setBlock(p, net.minecraft.world.level.block.Blocks.STONE.defaultBlockState(), 3);
+                }
                 return true;
             }
         }

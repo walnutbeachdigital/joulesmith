@@ -130,7 +130,7 @@ public final class JSBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PumpBlockEntity>> PUMP =
             BLOCK_ENTITIES.register("pump", () -> BlockEntityType.Builder
-                    .of(PumpBlockEntity::new, JSBlocks.PUMP.get()).build(null));
+                    .of(PumpBlockEntity::new, JSBlocks.PUMP.get(), JSBlocks.ADVANCED_PUMP.get()).build(null));
 
     // tier 2
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> ORE_WASHER =
@@ -138,7 +138,7 @@ public final class JSBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> FLUID_MIXER =
             processing("fluid_mixer", JSBlocks.FLUID_MIXER, ProcessingMachineBlockEntity.FLUID_MIXER, MachineRecipeKind.MIXING, 30, 116);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> CENTRIFUGE =
-            processing("centrifuge", JSBlocks.CENTRIFUGE, ProcessingMachineBlockEntity.CENTRIFUGE, MachineRecipeKind.CENTRIFUGING);
+            processing("centrifuge", JSBlocks.CENTRIFUGE, ProcessingMachineBlockEntity.CENTRIFUGE, MachineRecipeKind.CENTRIFUGING, 30, -1);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> CIRCUIT_ASSEMBLER =
             processing("circuit_assembler", JSBlocks.CIRCUIT_ASSEMBLER, ProcessingMachineBlockEntity.ASSEMBLER, MachineRecipeKind.CIRCUIT_ASSEMBLING);
 

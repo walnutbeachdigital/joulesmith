@@ -346,10 +346,10 @@ def tank_top():
     return img
 
 
-def pump_front(on):
+def pump_front(on, base=None):
     """An impeller behind a round grille; spinning blades and blue water when running."""
     import math
-    img = casing()
+    img = base() if base else casing()
     px = img.load()
     cx, cy = 7.5, 7.5
     for y in range(16):
@@ -2014,6 +2014,8 @@ def main():
         "block/fluid_tank_top": tank_top(),
         "block/pump_front": pump_front(False),
         "block/pump_front_on": pump_front(True),
+        "block/advanced_pump_front": pump_front(False, casing3),
+        "block/advanced_pump_front_on": pump_front(True, casing3),
         "item/wrench": wrench_item(),
         "item/filter_card": filter_card_item(),
         "gui/filter": filter_gui(),

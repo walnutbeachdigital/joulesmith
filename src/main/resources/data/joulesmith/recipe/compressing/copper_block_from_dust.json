@@ -1,0 +1,16 @@
+{
+  "type": "joulesmith:compressing",
+  "inputs": [
+    {
+      "tag": "c:dusts/copper",
+      "count": 9
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:copper_block"
+    }
+  ],
+  "energy": 3600,
+  "time": 120
+}

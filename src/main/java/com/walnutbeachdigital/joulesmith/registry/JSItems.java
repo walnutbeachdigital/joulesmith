@@ -103,6 +103,7 @@ public final class JSItems {
         TAB_ORDER.add(ADVANCED_CIRCUIT);
         TAB_ORDER.add(PLASTIC_SHEET);
         blockItem(JSBlocks.PUMP);
+        blockItem(JSBlocks.ADVANCED_PUMP);
         blockItem(JSBlocks.ITEM_DUCT);
         blockItem(JSBlocks.REINFORCED_ITEM_DUCT);
         blockItem(JSBlocks.FLUID_PIPE);

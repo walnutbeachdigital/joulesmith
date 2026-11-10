@@ -24,12 +24,13 @@ import net.minecraft.world.item.ItemStack;
  */
 public class FilterMenu extends AbstractContainerMenu {
     public static final int GRID_X = 44, GRID_Y = 17, INVENTORY_Y = 84;
-    public static final int BUTTON_TOGGLE = 0;
+    public static final int BUTTON_TOGGLE = 0, BUTTON_MATCH = 1;
 
     private final InteractionHand hand;
     private final SimpleContainer ghosts = new SimpleContainer(FilterContents.SIZE);
     private final int lockedSlot;
     private boolean blacklist;
+    private int match;
 
     public FilterMenu(int id, Inventory inventory, RegistryFriendlyByteBuf buf) {
         this(id, inventory, buf.readEnum(InteractionHand.class));
@@ -41,6 +42,7 @@ public class FilterMenu extends AbstractContainerMenu {
         FilterContents filter = inventory.player.getItemInHand(hand).getOrDefault(JSDataComponents.FILTER.get(), FilterContents.EMPTY);
         for (int i = 0; i < FilterContents.SIZE; i++) ghosts.setItem(i, filter.items().get(i).copy());
         blacklist = filter.blacklist();
+        match = filter.match();
 
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
@@ -68,6 +70,14 @@ public class FilterMenu extends AbstractContainerMenu {
             @Override public int get() { return blacklist ? 1 : 0; }
             @Override public void set(int value) { blacklist = value == 1; }
         });
+        addDataSlot(new DataSlot() {
+            @Override public int get() { return match; }
+            @Override public void set(int value) { match = value; }
+        });
+    }
+
+    public int match() {
+        return match;
     }
 
     public boolean blacklist() {
@@ -79,7 +89,7 @@ public class FilterMenu extends AbstractContainerMenu {
         if (!card.is(JSItems.FILTER_CARD.get())) return;
         List<ItemStack> items = new ArrayList<>();
         for (int i = 0; i < FilterContents.SIZE; i++) items.add(ghosts.getItem(i));
-        card.set(JSDataComponents.FILTER.get(), new FilterContents(items, blacklist));
+        card.set(JSDataComponents.FILTER.get(), new FilterContents(items, blacklist, match));
     }
 
     @Override
@@ -117,8 +127,9 @@ public class FilterMenu extends AbstractContainerMenu {
 
     @Override
     public boolean clickMenuButton(Player player, int id) {
-        if (id != BUTTON_TOGGLE) return false;
-        blacklist = !blacklist;
+        if (id == BUTTON_MATCH) match = (match + 1) % FilterContents.MATCH_MODES;
+        else if (id == BUTTON_TOGGLE) blacklist = !blacklist;
+        else return false;
         save(player);
         return true;
     }

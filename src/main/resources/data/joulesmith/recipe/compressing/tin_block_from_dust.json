@@ -1,0 +1,16 @@
+{
+  "type": "joulesmith:compressing",
+  "inputs": [
+    {
+      "tag": "c:dusts/tin",
+      "count": 9
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:tin_block"
+    }
+  ],
+  "energy": 3600,
+  "time": 120
+}

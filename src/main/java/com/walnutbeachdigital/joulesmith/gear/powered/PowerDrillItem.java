@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Pickaxe and shovel in one, mining like diamond and a little faster. With a Range module it digs the
- * 3x3 square facing you; sneak to dig one block.
+ * 3x3 square facing you (5x5 with two); sneak to dig one block.
  */
 public class PowerDrillItem extends PoweredToolItem {
     private static final ThreadLocal<Boolean> BREAKING = ThreadLocal.withInitial(() -> false);
@@ -39,11 +39,12 @@ public class PowerDrillItem extends PoweredToolItem {
             return true;
         }
         Direction face = AreaToolItem.facing(player);
+        int r = (int) PoweredItem.modules(stack).stream().filter(m -> m == Module.RANGE).count();   // 1: 3x3, 2: 5x5
         float hardness = state.getDestroySpeed(level, pos);
         BREAKING.set(true);
         try {
-            for (int a = -1; a <= 1; a++) {
-                for (int b = -1; b <= 1; b++) {
+            for (int a = -r; a <= r; a++) {
+                for (int b = -r; b <= r; b++) {
                     if (a == 0 && b == 0) continue;
                     BlockPos other = switch (face.getAxis()) {
                         case X -> pos.offset(0, a, b);

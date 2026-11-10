@@ -36,6 +36,10 @@ public class FilterCardItem extends Item {
         FilterContents filter = stack.getOrDefault(JSDataComponents.FILTER.get(), FilterContents.EMPTY);
         tooltip.add(Component.translatable(filter.blacklist() ? "tooltip.joulesmith.filter.blacklist" : "tooltip.joulesmith.filter.whitelist")
                 .withStyle(ChatFormatting.GRAY));
+        if (filter.match() != FilterContents.MATCH_ITEM) {
+            tooltip.add(Component.translatable(filter.match() == FilterContents.MATCH_TAG ? "gui.joulesmith.filter.match.tag" : "gui.joulesmith.filter.match.mod")
+                    .withStyle(ChatFormatting.GRAY));
+        }
         for (ItemStack item : filter.items()) {
             if (!item.isEmpty()) tooltip.add(Component.literal(" - ").append(item.getHoverName()).withStyle(ChatFormatting.DARK_GRAY));
         }

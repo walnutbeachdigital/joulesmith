@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "BMB",
+    "PRP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/electrum"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "M": {
+      "item": "joulesmith:pump"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:advanced_pump",
+    "count": 1
+  }
+}

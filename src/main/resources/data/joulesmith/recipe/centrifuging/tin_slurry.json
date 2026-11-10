@@ -1,0 +1,19 @@
+{
+  "type": "joulesmith:centrifuging",
+  "fluid": {
+    "id": "joulesmith:tin_slurry",
+    "amount": 1000
+  },
+  "results": [
+    {
+      "id": "joulesmith:tin_dust",
+      "count": 3
+    },
+    {
+      "id": "joulesmith:iron_dust",
+      "chance": 0.5
+    }
+  ],
+  "energy": 4800,
+  "time": 160
+}

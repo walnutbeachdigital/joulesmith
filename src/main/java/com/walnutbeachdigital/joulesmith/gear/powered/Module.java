@@ -66,6 +66,6 @@ public enum Module implements StringRepresentable {
 
     /** Modules that can't be fitted together. */
     public boolean conflicts(Module other) {
-        return (this == SILK_TOUCH && other == FORTUNE) || (this == FORTUNE && other == SILK_TOUCH) || this == other;
+        return (this == SILK_TOUCH && other == FORTUNE) || (this == FORTUNE && other == SILK_TOUCH) || (this == other && this != RANGE);   // a second Range module widens to 5x5
     }
 }

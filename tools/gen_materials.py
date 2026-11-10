@@ -314,6 +314,7 @@ MACHINES = {
     "bio_reactor": {"name": "Bio Reactor", "front": "bio_reactor_front"},
     "biofuel_generator": {"name": "Biofuel Generator", "front": "biofuel_generator_front"},
     "chemical_dissolver": {"name": "Chemical Dissolver", "front": "chemical_dissolver_front"},
+    "advanced_pump": {"name": "Advanced Pump", "front": "advanced_pump_front"},
     "crystallizer": {"name": "Crystallizer", "front": "crystallizer_front"},
 }
 CREATIVE = {"creative_power_cell": "Creative Power Cell"}
@@ -946,6 +947,25 @@ shaped("chemical_dissolver", ["PCP", "GMG", "PRP"],
 shaped("crystallizer", ["PCP", "QTQ", "PRP"],
        {"P": "#c:plates/electrum", "C": f"{MOD}:advanced_circuit", "Q": "#c:gems/quartz", "T": f"{MOD}:fluid_tank", "R": "#c:dusts/redstone"})
 lang.update({"jei.joulesmith.dissolving": "Dissolving", "jei.joulesmith.crystallizing": "Crystallizing"})
+# the Centrifuge splits a slurry into three dusts plus a related metal (the Crystallizer gives four, no extra)
+for m, (src, dust, plate, gear, wire) in METALS.items():
+    if src in ("ore", "vanilla"):
+        machine_fluid("centrifuging", f"{m}_slurry", (f"{MOD}:{m}_slurry", 1000), [],
+                      [(DUST(m), 3, 1), (DUST(ORE_BONUS[m]), 1, 0.5)], energy=4800, time=160)
+# Compressor: nine dusts into a block of the metal
+for m, (src, dust, plate, gear, wire) in METALS.items():
+    if dust:
+        block = f"minecraft:{m}_block" if src == "vanilla" else f"{MOD}:{m}_block"
+        machine("compressing", f"{m}_block_from_dust", [(f"#c:dusts/{m}", 9)], [(block, 1, 1)], 3600, 120)
+shaped("advanced_pump", ["PCP", "BMB", "PRP"], {"P": "#c:plates/electrum", "C": f"{MOD}:advanced_circuit",
+                                               "B": "minecraft:bucket", "M": f"{MOD}:pump", "R": "#c:dusts/redstone"})
+lang.update({
+    "gui.joulesmith.redstone.pulse": "Runs one job each time a signal switches on",
+    "gui.joulesmith.filter.match.item": "Matches: exact items",
+    "gui.joulesmith.filter.match.tag": "Matches: anything sharing a tag with a listed item",
+    "gui.joulesmith.filter.match.mod": "Matches: anything from a listed item's mod",
+    "tooltip.joulesmith.advanced_pump": "Pumps four times as fast and fills emptied sources with stone",
+})
 
 # ---- powered gear (tier 3): tools, weapon and Exo-Suit that run on FE, the Energy Cell, modules,
 # the Charging Pad and the Modification Table
@@ -977,7 +997,7 @@ shaped("energy_sword", [" D ", " D ", "CEC"], {"D": "#c:gems/diamond", "C": f"{M
 
 MODULES = {
     "speed": ("Speed Module", "Mines 75% faster, using 50% more power per block", "tool", ["#c:dusts/redstone", "#c:dusts/glowstone"]),
-    "range": ("Range Module", "Power Drill: digs 3x3 (sneak for one block)", "tool", ["minecraft:piston"]),
+    "range": ("Range Module", "Power Drill: digs 3x3, or 5x5 with two (sneak for one block)", "tool", ["minecraft:piston"]),
     "silk_touch": ("Silk Touch Module", "Silk Touch", "tool", ["minecraft:white_wool", "#c:gems/emerald"]),
     "fortune": ("Fortune Module", "Fortune III", "tool", ["#c:gems/diamond", "#c:gems/lapis"]),
     "auto_smelt": ("Auto-Smelt Module", "Smelts what you mine as it drops", "tool", ["minecraft:blast_furnace"]),

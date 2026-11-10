@@ -75,6 +75,10 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     private final List<SlotDef> slots;
     private final SideMode[] sides = new SideMode[MachineFace.values().length];
     private RedstoneMode redstone = RedstoneMode.IGNORED;
+    /** For PULSE: whether the signal was on last tick, and ticks left of the window a new pulse opened. */
+    private boolean wasPowered;
+    private int pulseWindow;
+    private static final int PULSE_WINDOW = 20;
     protected int progress;
     protected int maxProgress;
 
@@ -153,7 +157,17 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     }
 
     private void tick(Level level, BlockPos pos, BlockState state) {
-        boolean allowed = redstone.allows(level.hasNeighborSignal(pos));
+        boolean powered = level.hasNeighborSignal(pos);
+        boolean allowed;
+        if (redstone == RedstoneMode.PULSE) {
+            if (powered && !wasPowered) pulseWindow = PULSE_WINDOW;
+            // a job started inside the window carries on until it is done
+            allowed = pulseWindow > 0 || progress > 0;
+            if (pulseWindow > 0) pulseWindow--;
+        } else {
+            allowed = redstone.allows(powered);
+        }
+        wasPowered = powered;
         boolean running = work(level, pos, allowed);
         if (allowed && level.getGameTime() % EJECT_INTERVAL == 0 && upgrades(UpgradeCardItem.Type.EJECT) > 0) {
             eject(level, pos);
@@ -211,6 +225,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
     /** Uses the inputs, rolls the chance outputs and puts what came out into the output slots. */
     protected void finish(Process process) {
+        pulseWindow = 0;                                  // a pulse runs one job
         int[] consume = process.consume();
         for (int i = 0; i < Math.min(consume.length, slots.size()); i++) {
             if (consume[i] > 0) items.extractItem(i, consume[i], false);
@@ -325,7 +340,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         return sides[face.ordinal()];
     }
 
-    protected Direction facing() {
+    public Direction facing() {
         return getBlockState().getValue(MachineBlock.FACING);
     }
 
@@ -439,6 +454,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         setChanged();
         if (level != null) {
             level.invalidateCapabilities(worldPosition);     // face settings changed what pipes may do
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);   // for the wrench overlay
         }
         return true;
     }
@@ -528,6 +544,39 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         List<TankDef> tanks = tanks();
         for (int t = 0; t < tanks.size(); t++) {
             tag.put(t == 0 ? "Tank" : "Tank" + t, tanks.get(t).tank().writeToNBT(registries, new CompoundTag()));
+        }
+    }
+
+    // Clients get the face settings only, for the wrench's coloured overlay.
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = new CompoundTag();
+        int[] faces = new int[sides.length];
+        for (int f = 0; f < sides.length; f++) faces[f] = sides[f].ordinal();
+        tag.putIntArray("Sides", faces);
+        return tag;
+    }
+
+    @Override
+    public net.minecraft.network.protocol.Packet<net.minecraft.network.protocol.game.ClientGamePacketListener> getUpdatePacket() {
+        return net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
+        readSides(tag);
+    }
+
+    @Override
+    public void onDataPacket(net.minecraft.network.Connection net, net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket packet,
+                             HolderLookup.Provider registries) {
+        readSides(packet.getTag());
+    }
+
+    private void readSides(CompoundTag tag) {
+        int[] faces = tag.getIntArray("Sides");
+        for (int f = 0; f < Math.min(faces.length, sides.length); f++) {
+            sides[f] = SideMode.values()[Math.floorMod(faces[f], SideMode.values().length)];
         }
     }
 
