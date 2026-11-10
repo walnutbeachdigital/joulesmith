@@ -1,0 +1,210 @@
+Make a Mob Grinder || 制作生物研磨机 || Создайте мясорубку для мобов || Fabrica una trituradora de criaturas || Stelle einen Kreaturenhäcksler her || Faça um moedor de criaturas
+Make a Network Terminal || 制作网络终端 || Создайте сетевой терминал || Fabrica un terminal de red || Stelle ein Netzwerkterminal her || Faça um terminal de rede
+Make a Power Drill || 制作电钻 || Создайте электродрель || Fabrica un taladro eléctrico || Stelle einen Bohrer her || Faça uma furadeira
+Make a Quarry || 制作采石场 || Создайте карьер || Fabrica una cantera || Stelle einen Steinbruch her || Faça uma pedreira
+Make a Railgun || 制作轨道炮 || Создайте рельсотрон || Fabrica un cañón de riel || Stelle eine Railgun her || Faça um canhão de trilho
+Make a Reinforced Crate || 制作强化板条箱 || Создайте усиленный ящик || Fabrica una caja reforzada || Stelle eine verstärkte Kiste her || Faça um caixote reforçado
+Make a Steam Turbine || 制作蒸汽涡轮 || Создайте паровую турбину || Fabrica una turbina de vapor || Stelle eine Dampfturbine her || Faça uma turbina a vapor
+Make a module for the Modification Table || 为改装台制作一个模块 || Создайте модуль для стола модификаций || Fabrica un módulo para la mesa de modificación || Stelle ein Modul für den Modifikationstisch her || Faça um módulo para a mesa de modificação
+Make an Advanced Circuit: tier 3 begins || 制作高级电路板：第 3 阶开始 || Создайте продвинутую схему: начинается уровень 3 || Fabrica un circuito avanzado: empieza el nivel 3 || Stelle einen fortgeschrittenen Schaltkreis her: Stufe 3 beginnt || Faça um circuito avançado: começa o nível 3
+Make an Advanced Solar Panel || 制作高级太阳能板 || Создайте продвинутую солнечную панель || Fabrica un panel solar avanzado || Stelle ein fortgeschrittenes Solarmodul her || Faça um painel solar avançado
+Make an Item Duct || 制作物品导管 || Создайте предметный трубопровод || Fabrica un conducto de objetos || Stelle eine Gegenstandsleitung her || Faça um duto de itens
+Make an Ore Washer: three dusts from every ore || 制作洗矿机：每份矿石出三份粉 || Создайте рудомойку: три пыли из каждой руды || Fabrica una lavadora de mena: tres polvos de cada mena || Stelle eine Erzwäsche her: drei Staub aus jedem Erz || Faça uma lavadora de minério: três pós de cada minério
+Makes %s %s || 产出 %s 个%s || Даёт: %s × %s || Produce %s %s || Ergibt %s %s || Produz %s %s
+Making %s FE/t || 产出 %s FE/t || Вырабатывает %s FE/т || Produce %s FE/t || Erzeugt %s FE/t || Gerando %s FE/t
+Matches: anything from a listed item's mod || 匹配：与列出物品同一模组的任何物品 || Совпадение: всё из мода указанного предмета || Coincide: cualquier cosa del mod de un objeto de la lista || Passt: alles aus der Mod eines gelisteten Gegenstands || Corresponde: qualquer coisa do mod de um item da lista
+Matches: anything sharing a tag with a listed item || 匹配：与列出物品共享标签的任何物品 || Совпадение: всё с общим тегом с указанным предметом || Coincide: cualquier cosa que comparta etiqueta con un objeto de la lista || Passt: alles mit einem gemeinsamen Tag eines gelisteten Gegenstands || Corresponde: qualquer coisa que compartilhe uma tag com um item da lista
+Matches: exact items || 匹配：完全相同的物品 || Совпадение: точные предметы || Coincide: objetos exactos || Passt: genau diese Gegenstände || Corresponde: itens exatos
+Mechanical User || 机械使用器 || Механический пользователь || Usuario mecánico || Mechanischer Benutzer || Usuário mecânico
+Middle-click to craft (Shift-middle-click: a stack) || 中键点击以合成（Shift+中键：一组） || СКМ — создать (Shift+СКМ — стак) || Clic central para fabricar (Mayús+clic central: una pila) || Mittelklick zum Herstellen (Umschalt+Mittelklick: ein Stapel) || Clique do meio para fabricar (Shift+clique do meio: uma pilha)
+Mines 75% faster, using 50% more power per block || 挖掘速度提升 75%，每方块多耗能 50% || Добывает на 75% быстрее, тратя на 50% больше энергии за блок || Mina un 75% más rápido, gastando un 50% más de energía por bloque || Baut 75% schneller ab, mit 50% mehr Energie pro Block || Minera 75% mais rápido, gastando 50% mais energia por bloco
+Missing %s %s (and %s kinds in all) || 缺少 %s 个%s（共缺 %s 种） || Не хватает: %s × %s (всего видов: %s) || Faltan %s %s (y %s tipos en total) || Es fehlen %s %s (insgesamt %s Arten) || Faltam %s %s (e %s tipos no total)
+Mob Duplicator || 生物复制机 || Дубликатор мобов || Duplicador de criaturas || Kreaturenduplikator || Duplicador de criaturas
+Mob Fighter || 生物战斗机 || Боец с мобами || Luchador de criaturas || Kreaturenkämpfer || Lutador de criaturas
+Mob Grinder || 生物研磨机 || Мясорубка для мобов || Trituradora de criaturas || Kreaturenhäcksler || Moedor de criaturas
+Mob Imprint || 生物印记 || Отпечаток моба || Impronta de criatura || Kreaturenabdruck || Impressão de criatura
+Modification Table || 改装台 || Стол модификаций || Mesa de modificación || Modifikationstisch || Mesa de modificação
+Modules for the gear on the left (two at most) || 左侧装备的模块（最多两个） || Модули для снаряжения слева (не более двух) || Módulos para el equipo de la izquierda (dos como máximo) || Module für die Ausrüstung links (höchstens zwei) || Módulos para o equipamento à esquerda (no máximo dois)
+Motor || 电机 || Мотор || Motor || Motor || Motor
+Nearest first || 最近优先 || Сначала ближние || Primero el más cercano || Nächste zuerst || Mais próximo primeiro
+Needs 500,000 FE to light || 需要 500,000 FE 才能点燃 || Нужно 500 000 FE для запуска || Necesita 500 000 FE para encenderse || Braucht 500.000 FE zum Zünden || Precisa de 500.000 FE para acender
+Needs deuterium and tritium || 需要氘和氚 || Нужны дейтерий и тритий || Necesita deuterio y tritio || Braucht Deuterium und Tritium || Precisa de deutério e trítio
+Network Cable || 网络线缆 || Сетевой кабель || Cable de red || Netzwerkkabel || Cabo de rede
+Network Core || 网络核心 || Ядро сети || Núcleo de red || Netzwerkkern || Núcleo de rede
+Network Terminal || 网络终端 || Сетевой терминал || Terminal de red || Netzwerkterminal || Terminal de rede
+Network has no power (%s blocks, %s Drive Bays) || 网络没有能量（%s 个方块，%s 个驱动器仓） || У сети нет энергии (блоков: %s, отсеков: %s) || La red no tiene energía (%s bloques, %s bahías de unidades) || Netzwerk hat keine Energie (%s Blöcke, %s Laufwerksschächte) || A rede está sem energia (%s blocos, %s baias de unidades)
+Network needs exactly one Network Core || 网络需要且只能有一个网络核心 || Сети нужно ровно одно ядро сети || La red necesita exactamente un núcleo de red || Das Netzwerk braucht genau einen Netzwerkkern || A rede precisa de exatamente um núcleo de rede
+Network offline || 网络离线 || Сеть отключена || Red desconectada || Netzwerk offline || Rede offline
+Network offline: no power || 网络离线：没有能量 || Сеть отключена: нет энергии || Red desconectada: sin energía || Netzwerk offline: keine Energie || Rede offline: sem energia
+Network online: %s Drive Bays, %s CPUs || 网络在线：%s 个驱动器仓，%s 个处理器 || Сеть работает: отсеков: %s, процессоров: %s || Red en línea: %s bahías de unidades, %s CPU || Netzwerk online: %s Laufwerksschächte, %s CPUs || Rede online: %s baias de unidades, %s CPUs
+Network online: %s blocks, %s Drive Bays || 网络在线：%s 个方块，%s 个驱动器仓 || Сеть работает: блоков: %s, отсеков: %s || Red en línea: %s bloques, %s bahías de unidades || Netzwerk online: %s Blöcke, %s Laufwerksschächte || Rede online: %s blocos, %s baias de unidades
+Never runs || 从不运行 || Никогда не работает || Nunca funciona || Läuft nie || Nunca funciona
+Night Vision Module || 夜视模块 || Модуль ночного зрения || Módulo de visión nocturna || Nachtsichtmodul || Módulo de visão noturna
+No drives || 没有驱动器 || Нет накопителей || Sin unidades || Keine Laufwerke || Sem unidades
+No fall damage while charged || 充能时免疫摔落伤害 || Нет урона от падения, пока заряжен || Sin daño por caída mientras tenga carga || Kein Fallschaden, solange geladen || Sem dano de queda enquanto carregado
+No filter || 无过滤器 || Без фильтра || Sin filtro || Kein Filter || Sem filtro
+No filter: fit a Filter Card to choose what to export || 无过滤器：安装过滤卡以选择输出内容 || Без фильтра: поставьте карту фильтра, чтобы выбрать, что экспортировать || Sin filtro: coloca una tarjeta de filtro para elegir qué exportar || Kein Filter: setze eine Filterkarte ein, um zu wählen, was exportiert wird || Sem filtro: instale um cartão de filtro para escolher o que exportar
+No filter: importing everything || 无过滤器：输入所有物品 || Без фильтра: импортируется всё || Sin filtro: se importa todo || Kein Filter: alles wird importiert || Sem filtro: importando tudo
+No water! || 没有水！ || Нет воды! || ¡Sin agua! || Kein Wasser! || Sem água!
+North || 北 || Север || Norte || Norden || Norte
+Not linked || 未连接 || Не привязан || Sin vincular || Nicht verknüpft || Não vinculado
+Not linked: sneak and use it on a network block || 未连接：潜行并对网络方块使用 || Не привязан: присядьте и используйте на блоке сети || Sin vincular: agáchate y úsalo en un bloque de red || Nicht verknüpft: schleichend auf einen Netzwerkblock anwenden || Não vinculado: agache e use em um bloco da rede
+Nothing else to set on this pipe || 这根管道没有其他可设置的 || У этой трубы больше нечего настраивать || No hay nada más que ajustar en esta tubería || An diesem Rohr gibt es nichts weiter einzustellen || Não há mais nada para ajustar neste cano
+Nothing to connect to on that side || 那一侧没有可连接的东西 || С этой стороны не к чему подключиться || No hay nada a lo que conectar por ese lado || Auf dieser Seite gibt es nichts zum Verbinden || Não há nada para conectar desse lado
+Nutrient Paste || 营养膏 || Питательная паста || Pasta nutritiva || Nährpaste || Pasta nutritiva
+Off || 关闭 || Выкл. || Apagado || Aus || Desligado
+Oil || 石油 || Нефть || Petróleo || Öl || Petróleo
+Oil Bucket || 石油桶 || Ведро нефти || Cubo de petróleo || Öleimer || Balde de petróleo
+Omni-Tool || 全能工具 || Мультиинструмент || Omniherramienta || Omni-Werkzeug || Omniferramenta
+Ore Washer || 洗矿机 || Рудомойка || Lavadora de mena || Erzwäsche || Lavadora de minério
+Out of power || 能量耗尽 || Нет энергии || Sin energía || Keine Energie || Sem energia
+Out of range of its network || 超出网络范围 || Вне зоны действия сети || Fuera del alcance de su red || Außer Reichweite seines Netzwerks || Fora do alcance da rede
+Output Bonus Upgrade || 产出加成升级 || Улучшение: бонус выхода || Mejora de bonificación de producción || Ertragsbonus-Upgrade || Melhoria de bônus de produção
+Output: results can be taken out || 输出：可以取出产物 || Вывод: можно забирать результаты || Salida: se pueden sacar los resultados || Ausgabe: Ergebnisse können entnommen werden || Saída: resultados podem ser retirados
+Pattern || 样板 || Шаблон || Patrón || Muster || Padrão
+Pattern recorded: %s || 样板已记录：%s || Шаблон записан: %s || Patrón registrado: %s || Muster gespeichert: %s || Padrão registrado: %s
+Pickaxe and shovel in one || 镐和锹二合一 || Кирка и лопата в одном || Pico y pala en uno || Spitzhacke und Schaufel in einem || Picareta e pá em uma
+Pipe side: push, pull, both or off || 管道侧面：推送、拉取、双向或关闭 || Сторона трубы: подача, забор, оба или выкл. || Lado de tubería: empujar, tirar, ambos o apagado || Rohrseite: schieben, ziehen, beides oder aus || Lado do cano: empurrar, puxar, ambos ou desligado
+Pipes joined || 管道已连接 || Трубы соединены || Tuberías unidas || Rohre verbunden || Canos unidos
+Pipes split apart || 管道已断开 || Трубы разъединены || Tuberías separadas || Rohre getrennt || Canos separados
+Planter || 种植机 || Сеялка || Plantadora || Pflanzer || Plantadeira
+Plasma || 等离子体 || Плазма || Plasma || Plasma || Plasma
+Plasma Cannon || 等离子炮 || Плазменная пушка || Cañón de plasma || Plasmakanone || Canhão de plasma
+Plasma Refinery || 等离子精炼厂 || Плазменный очиститель || Refinería de plasma || Plasmaraffinerie || Refinaria de plasma
+Plastic Sheet || 塑料片 || Пластиковый лист || Lámina de plástico || Kunststoffplatte || Folha de plástico
+Plating Module || 装甲板模块 || Модуль бронеплит || Módulo de blindaje || Panzerungsmodul || Módulo de blindagem
+Players || 玩家 || Игроки || Jugadores || Spieler || Jogadores
+Plumbing for Items || 物品管道工程 || Сантехника для предметов || Fontanería para objetos || Klempnerei für Gegenstände || Encanamento para itens
+Power || 能量 || Энергия || Energía || Energie || Energia
+Power Drill || 电钻 || Электродрель || Taladro eléctrico || Bohrer || Furadeira
+Power Drill: digs 3x3, or 5x5 with two (sneak for one block) || 电钻：挖掘 3x3，装两个时 5x5（潜行时只挖一格） || Электродрель: копает 3x3 или 5x5 с двумя (присядьте для одного блока) || Taladro eléctrico: excava 3x3, o 5x5 con dos (agáchate para un bloque) || Bohrer: gräbt 3x3, mit zweien 5x5 (schleichen für einen Block) || Furadeira: cava 3x3, ou 5x5 com dois (agache para um bloco)
+Powered gear: tools, Energy Sword or Exo-Suit || 动力装备：工具、能量剑或外骨骼 || Электроснаряжение: инструменты, энергомеч или экзокостюм || Equipo eléctrico: herramientas, espada de energía o exotraje || Energieausrüstung: Werkzeuge, Energieschwert oder Exoanzug || Equipamento elétrico: ferramentas, espada de energia ou exotraje
+Powered: || 供能： || Питание: || Alimentado: || Mit Strom: || Alimentado:
+Processor || 处理器 || Процессор || Procesador || Prozessor || Processador
+Proximity Sensor || 接近传感器 || Датчик приближения || Sensor de proximidad || Näherungssensor || Sensor de proximidade
+Pull: takes out of this block || 拉取：从此方块取出 || Забор: извлекает из этого блока || Tirar: saca de este bloque || Ziehen: entnimmt aus diesem Block || Puxar: retira deste bloco
+Pump || 泵 || Насос || Bomba || Pumpe || Bomba
+Pump draws || 泵抽取 || Насос качает || La bomba succiona || Pumpe saugt || A bomba puxa
+Pumps four times as fast and fills emptied sources with stone || 抽取速度提升四倍，并用石头填充已抽空的源 || Качает в четыре раза быстрее и заполняет опустевшие источники камнем || Bombea cuatro veces más rápido y rellena con piedra las fuentes vaciadas || Pumpt viermal so schnell und füllt geleerte Quellen mit Stein || Bombeia quatro vezes mais rápido e preenche as fontes esvaziadas com pedra
+Push and pull || 推送和拉取 || Подача и забор || Empujar y tirar || Schieben und ziehen || Empurrar e puxar
+Push: sends into this block || 推送：送入此方块 || Подача: отправляет в этот блок || Empujar: envía a este bloque || Schieben: schickt in diesen Block || Empurrar: envia para este bloco
+Pushes finished items out of the machine's output faces || 将成品从机器的输出面推出 || Выталкивает готовые предметы через выходные стороны машины || Expulsa los objetos terminados por las caras de salida de la máquina || Schiebt fertige Gegenstände aus den Ausgabeseiten der Maschine || Empurra os itens prontos pelas faces de saída da máquina
+Quantum Leap || 量子飞跃 || Квантовый скачок || Salto cuántico || Quantensprung || Salto quântico
+Quantum Processor || 量子处理器 || Квантовый процессор || Procesador cuántico || Quantenprozessor || Processador quântico
+Quarry || 采石场 || Карьер || Cantera || Steinbruch || Pedreira
+Rail Against the Machine || 向机器开炮 || Рельсы против машины || Raíles contra la máquina || Railgun gegen die Maschine || Trilhos contra a máquina
+Railgun || 轨道炮 || Рельсотрон || Cañón de riel || Railgun || Canhão de trilho
+Range Module || 范围模块 || Модуль радиуса || Módulo de alcance || Reichweitenmodul || Módulo de alcance
+Range Upgrade || 范围升级 || Улучшение: радиус || Mejora de alcance || Reichweiten-Upgrade || Melhoria de alcance
+Reactor Casing || 反应堆外壳 || Корпус реактора || Carcasa de reactor || Reaktorgehäuse || Carcaça de reator
+Reactor Glass || 反应堆玻璃 || Стекло реактора || Vidrio de reactor || Reaktorglas || Vidro de reator
+Reactor Port || 反应堆接口 || Порт реактора || Puerto de reactor || Reaktoranschluss || Porta de reator
+Reading || 读数 || Показание || Lectura || Messwert || Leitura
+Receiver, channel: %s || 接收器，频道：%s || Приёмник, канал: %s || Receptor, canal: %s || Empfänger, Kanal: %s || Receptor, canal: %s
+Record the grid's recipe on a Blank Pattern from your inventory || 将网格中的配方记录到物品栏中的空白样板上 || Записать рецепт из сетки на пустой шаблон из инвентаря || Registra la receta de la cuadrícula en un patrón en blanco de tu inventario || Rezept aus dem Raster auf ein leeres Muster aus deinem Inventar schreiben || Registre a receita da grade em um padrão em branco do seu inventário
+Redstone || 红石 || Редстоун || Redstone || Redstone || Redstone
+Redstone control || 红石控制 || Управление редстоуном || Control por redstone || Redstone-Steuerung || Controle por redstone
+Regeneration Module || 再生模块 || Модуль регенерации || Módulo de regeneración || Regenerationsmodul || Módulo de regeneração
+Right || 右 || Справа || Derecha || Rechts || Direita
+Right-click: put in. Left-click: take a stack (sneak: one) || 右键：放入。左键：取出一组（潜行：一个） || ПКМ: положить. ЛКМ: забрать стак (присев: один) || Clic derecho: meter. Clic izquierdo: sacar una pila (agachado: uno) || Rechtsklick: hineinlegen. Linksklick: einen Stapel nehmen (schleichend: einen) || Clique direito: colocar. Clique esquerdo: pegar uma pilha (agachado: um)
+Room to Spare || 绰绰有余 || Место с запасом || Espacio de sobra || Platz im Überfluss || Espaço de sobra
+Round robin (takes turns) || 轮询（轮流） || По кругу (по очереди) || Rotación (por turnos) || Reihum (abwechselnd) || Rodízio (revezando)
+Routing only applies to a side set to pull || 路由只对设为拉取的一侧生效 || Маршрутизация работает только на стороне забора || El enrutado solo afecta a un lado configurado para tirar || Routing gilt nur für eine Seite auf „Ziehen“ || O roteamento só vale para um lado configurado para puxar
+Routing: %s || 路由：%s || Маршрут: %s || Enrutado: %s || Routing: %s || Roteamento: %s
+Rubber || 橡胶 || Резина || Goma || Gummi || Borracha
+Rubber Leaves || 橡胶树树叶 || Листва гевеи || Hojas de árbol de caucho || Gummibaumblätter || Folhas de seringueira
+Rubber Log || 橡胶树原木 || Бревно гевеи || Tronco de árbol de caucho || Gummibaumstamm || Tronco de seringueira
+Rubber Planks || 橡胶木板 || Доски из гевеи || Tablones de árbol de caucho || Gummibaumbretter || Tábuas de seringueira
+Rubber Sapling || 橡胶树树苗 || Саженец гевеи || Brote de árbol de caucho || Gummibaumsetzling || Muda de seringueira
+Rule off || 规则关闭 || Правило выкл. || Regla desactivada || Regel aus || Regra desligada
+Rule on (lamp: green while it holds, red while it doesn't) || 规则开启（指示灯：成立时绿色，否则红色） || Правило вкл. (лампа: зелёная, пока выполняется, красная — нет) || Regla activada (luz: verde si se cumple, roja si no) || Regel an (Lampe: grün, solange sie gilt, sonst rot) || Regra ligada (luz: verde enquanto vale, vermelha quando não)
+Run 35% faster || 奔跑速度提升 35% || Бег на 35% быстрее || Corre un 35% más rápido || 35% schneller laufen || Corra 35% mais rápido
+Running || 运行中 || Работает || En marcha || Läuft || Funcionando
+Runs one job each time a signal switches on || 每次信号开启时运行一次任务 || Выполняет одно задание при каждом включении сигнала || Hace un trabajo cada vez que se activa una señal || Erledigt einen Auftrag bei jedem Einschalten eines Signals || Faz uma tarefa cada vez que um sinal liga
+Runs with a redstone signal || 有红石信号时运行 || Работает при сигнале редстоуна || Funciona con señal de redstone || Läuft mit Redstone-Signal || Funciona com sinal de redstone
+Runs without a redstone signal || 无红石信号时运行 || Работает без сигнала редстоуна || Funciona sin señal de redstone || Läuft ohne Redstone-Signal || Funciona sem sinal de redstone
+SCRAM: cooling down || 紧急停堆：冷却中 || Аварийный останов: остывает || SCRAM: enfriándose || Notabschaltung: kühlt ab || SCRAM: esfriando
+Saw cuts || 锯子切割 || Пила режет || La sierra corta || Säge schneidet || A serra corta
+Sawdust || 锯末 || Опилки || Serrín || Sägemehl || Serragem
+Sawmill || 锯木机 || Лесопилка || Aserradero || Sägewerk || Serraria
+Search || 搜索 || Поиск || Buscar || Suchen || Pesquisar
+See in the dark || 在黑暗中视物 || Видеть в темноте || Ver en la oscuridad || Im Dunkeln sehen || Enxergar no escuro
+Sharpness V || 锋利 V || Острота V || Filo V || Schärfe V || Afiação V
+Shell incomplete || 外壳不完整 || Оболочка не завершена || Carcasa incompleta || Hülle unvollständig || Carcaça incompleta
+Side || 侧面 || Сторона || Lado || Seite || Lado
+Side configuration || 侧面配置 || Настройка сторон || Configuración de lados || Seitenkonfiguration || Configuração dos lados
+Silk Touch || 精准采集 || Шёлковое касание || Toque de seda || Behutsamkeit || Toque Suave
+Silk Touch Module || 精准采集模块 || Модуль шёлкового касания || Módulo de toque de seda || Behutsamkeitsmodul || Módulo de toque suave
+Smelt an alloy in the Alloy Smelter || 在合金炉中冶炼一种合金 || Выплавьте сплав в плавильне сплавов || Funde una aleación en la fundidora de aleaciones || Schmelze eine Legierung im Legierungsofen || Funda uma liga na fundidora de ligas
+Smelts what you mine as it drops || 挖掘掉落物时直接熔炼 || Переплавляет добытое сразу при выпадении || Funde lo que extraes al caer || Schmilzt Abgebautes beim Fallenlassen || Funde o que você minera ao cair
+Sneak on a duct side: remove filter or change routing || 在导管侧面潜行：移除过滤器或更改路由 || Присядьте у стороны трубопровода: снять фильтр или сменить маршрут || Agáchate en un lado del conducto: quitar filtro o cambiar el enrutado || Schleichen an einer Leitungsseite: Filter entfernen oder Routing ändern || Agache em um lado do duto: remover filtro ou mudar o roteamento
+Solar Module || 太阳能模块 || Солнечный модуль || Módulo solar || Solarmodul || Módulo solar
+South || 南 || Юг || Sur || Süden || Sul
+Spark of Industry || 工业之火 || Искра промышленности || Chispa de la industria || Funke der Industrie || Faísca da indústria
+Speed Module || 速度模块 || Модуль скорости || Módulo de velocidad || Geschwindigkeitsmodul || Módulo de velocidade
+Speed Upgrade || 速度升级 || Улучшение: скорость || Mejora de velocidad || Geschwindigkeits-Upgrade || Melhoria de velocidade
+Splitting Hairs || 原子分裂 || Расщепление || Hilando fino || Haarspalterei || Dividindo átomos
+Sprinkler || 洒水器 || Разбрызгиватель || Aspersor || Sprinkler || Aspersor
+Star Power || 恒星之力 || Сила звёзд || Poder estelar || Sternenkraft || Poder estelar
+Steam || 蒸汽 || Пар || Vapor || Dampf || Vapor
+Steam Turbine || 蒸汽涡轮 || Паровая турбина || Turbina de vapor || Dampfturbine || Turbina a vapor
+Steel Excavator || 钢挖掘铲 || Стальной экскаватор || Excavadora de acero || Stahlbagger || Escavadeira de aço
+Steel Hammer || 钢锤 || Стальной молот || Martillo de acero || Stahlhammer || Martelo de aço
+Step Assist Module || 辅助攀登模块 || Модуль подъёма на ступени || Módulo de asistencia de paso || Stufenhilfe-Modul || Módulo de assistência de passo
+Stored: %s || 存储：%s || Хранится: %s || Almacenado: %s || Gespeichert: %s || Armazenado: %s
+Stored: %s mB || 存储：%s mB || Хранится: %s mB || Almacenado: %s mB || Gespeichert: %s mB || Armazenado: %s mB
+Suit Upgrade || 装甲升级 || Улучшение костюма || Mejora del traje || Anzug-Upgrade || Melhoria do traje
+Suited Up || 全副武装 || При параде || Bien equipado || Voll ausgerüstet || Traje completo
+Sulfuric Acid || 硫酸 || Серная кислота || Ácido sulfúrico || Schwefelsäure || Ácido sulfúrico
+Sulfuric Acid Bucket || 硫酸桶 || Ведро серной кислоты || Cubo de ácido sulfúrico || Schwefelsäureeimer || Balde de ácido sulfúrico
+Swiftness Module || 迅捷模块 || Модуль быстроты || Módulo de rapidez || Schnelligkeitsmodul || Módulo de rapidez
+Switched off (use to switch on) || 已关闭（使用以开启） || Выключена (используйте, чтобы включить) || Apagada (úsala para encenderla) || Ausgeschaltet (benutzen zum Einschalten) || Desligada (use para ligar)
+Takes Speed, Efficiency, Output Bonus or Auto-Eject cards || 可放入速度、效率、产出加成或自动弹出卡 || Принимает карты скорости, эффективности, бонуса выхода или автовыброса || Admite tarjetas de velocidad, eficiencia, bonificación de producción o expulsión automática || Nimmt Geschwindigkeits-, Effizienz-, Ertragsbonus- oder Auto-Auswurf-Karten || Aceita cartões de velocidade, eficiência, bônus de produção ou ejeção automática
+Tank Sensor || 储罐传感器 || Датчик резервуара || Sensor de tanque || Tanksensor || Sensor de tanque
+That can't be imprinted || 无法记录这个 || Это нельзя записать || Eso no se puede registrar || Das kann nicht gespeichert werden || Isso não pode ser registrado
+That job is too big for one CPU || 这项任务对一个处理器来说太大了 || Это задание слишком велико для одного процессора || Ese trabajo es demasiado grande para una CPU || Dieser Auftrag ist zu groß für eine CPU || Essa tarefa é grande demais para uma CPU
+The network's contents changed; try again || 网络内容已改变，请重试 || Содержимое сети изменилось; попробуйте снова || El contenido de la red ha cambiado; inténtalo de nuevo || Der Netzwerkinhalt hat sich geändert; versuche es erneut || O conteúdo da rede mudou; tente de novo
+The side of the controller to read from || 控制器读取数据的一侧 || Сторона контроллера для считывания || El lado del controlador del que leer || Die Seite der Steuerung, von der gelesen wird || O lado do controlador de onde ler
+The side to power while the rule holds || 规则成立时输出信号的一侧 || Сторона, на которую подаётся сигнал, пока правило выполняется || El lado que se activa mientras se cumple la regla || Die Seite, die mit Strom versorgt wird, solange die Regel gilt || O lado que recebe sinal enquanto a regra vale
+The value to compare with || 用于比较的值 || Значение для сравнения || El valor con el que comparar || Der Vergleichswert || O valor para comparar
+This network has no Auto-Crafting CPU || 此网络没有自动合成处理器 || В этой сети нет процессора автокрафта || Esta red no tiene CPU de fabricación automática || Dieses Netzwerk hat keine Autocrafting-CPU || Esta rede não tem CPU de fabricação automática
+This piece soaks up a quarter more damage || 此部件多吸收四分之一的伤害 || Эта часть поглощает на четверть больше урона || Esta pieza absorbe una cuarta parte más de daño || Dieses Teil fängt ein Viertel mehr Schaden ab || Esta peça absorve um quarto a mais de dano
+This reading doesn't use a side || 此读数不使用侧面 || Это показание не использует сторону || Esta lectura no usa ningún lado || Dieser Messwert nutzt keine Seite || Esta leitura não usa um lado
+Time || 时间 || Время || Hora || Zeit || Hora
+Time Sensor || 时间传感器 || Датчик времени || Sensor de hora || Zeitsensor || Sensor de hora
+Top || 顶部 || Верх || Arriba || Oben || Topo
+Transmitter, channel: %s || 发射器，频道：%s || Передатчик, канал: %s || Transmisor, canal: %s || Sender, Kanal: %s || Transmissor, canal: %s
+Tree Farm || 树场 || Лесоферма || Granja de árboles || Baumfarm || Fazenda de árvores
+Tree Tap || 树木取液器 || Подсочка || Grifo de árbol || Baumzapfer || Torneira de árvore
+Tritium || 氚 || Тритий || Tritio || Tritium || Trítio
+Turbine whirs || 涡轮呼呼作响 || Турбина жужжит || La turbina zumba || Turbine surrt || A turbina gira
+Turn rubber tree latex into rubber || 将橡胶树乳胶制成橡胶 || Превратите латекс гевеи в резину || Convierte el látex del árbol de caucho en goma || Verarbeite Gummibaumlatex zu Gummi || Transforme látex de seringueira em borracha
+Twice the Ore || 双倍矿石 || Руды вдвое || El doble de mena || Doppelt so viel Erz || O dobro de minério
+Up || 上 || Верх || Arriba || Oben || Cima
+Upgrade an Exo-Suit piece to Elite || 将一件外骨骼升级为精英级 || Улучшите часть экзокостюма до элитной || Mejora una pieza del exotraje a de élite || Rüste ein Exoanzug-Teil auf Elite auf || Melhore uma peça do exotraje para de elite
+Upgrade slot || 升级槽 || Ячейка улучшения || Ranura de mejora || Upgrade-Platz || Espaço de melhoria
+Use on a Reinforced cable, duct, pipe, battery, crate, bin or tank (or a Pump) to make it Advanced || 对强化级线缆、导管、管道、电池、板条箱、储物箱或储罐（或泵）使用，将其升级为高级 || Используйте на усиленном кабеле, трубопроводе, трубе, батарее, ящике, бункере или резервуаре (или насосе), чтобы сделать его продвинутым || Úsalo en un cable, conducto, tubería, batería, caja, contenedor o tanque reforzado (o una bomba) para hacerlo avanzado || Auf ein verstärktes Kabel, eine Leitung, ein Rohr, eine Batterie, Kiste, einen Behälter oder Tank (oder eine Pumpe) anwenden, um es fortgeschritten zu machen || Use em um cabo, duto, cano, bateria, caixote, contêiner ou tanque reforçado (ou uma bomba) para torná-lo avançado
+Use on a rubber log's latex spot || 对橡胶树原木的乳胶点使用 || Используйте на месте с латексом на бревне гевеи || Úsalo en el punto de látex de un tronco de caucho || Auf die Latexstelle eines Gummibaumstamms anwenden || Use no ponto de látex de um tronco de seringueira
+Use on a tier 1 cable, duct, pipe, battery, crate, bin or tank to make it Reinforced, keeping what's in it || 对 1 阶线缆、导管、管道、电池、板条箱、储物箱或储罐使用，将其升级为强化级并保留内容物 || Используйте на кабеле, трубопроводе, трубе, батарее, ящике, бункере или резервуаре уровня 1, чтобы сделать его усиленным с сохранением содержимого || Úsalo en un cable, conducto, tubería, batería, caja, contenedor o tanque de nivel 1 para hacerlo reforzado, conservando su contenido || Auf ein Kabel, eine Leitung, ein Rohr, eine Batterie, Kiste, einen Behälter oder Tank der Stufe 1 anwenden, um es zu verstärken; der Inhalt bleibt erhalten || Use em um cabo, duto, cano, bateria, caixote, contêiner ou tanque de nível 1 para torná-lo reforçado, mantendo o conteúdo
+Use on an Advanced cable, duct, pipe, battery, crate, bin, tank or solar panel to make it Elite || 对高级线缆、导管、管道、电池、板条箱、储物箱、储罐或太阳能板使用，将其升级为精英级 || Используйте на продвинутом кабеле, трубопроводе, трубе, батарее, ящике, бункере, резервуаре или солнечной панели, чтобы сделать его элитным || Úsalo en un cable, conducto, tubería, batería, caja, contenedor, tanque o panel solar avanzado para hacerlo de élite || Auf ein fortgeschrittenes Kabel, eine Leitung, ein Rohr, eine Batterie, Kiste, einen Behälter, Tank oder ein Solarmodul anwenden, um es zu Elite zu machen || Use em um cabo, duto, cano, bateria, caixote, contêiner, tanque ou painel solar avançado para torná-lo de elite
+Use on an Elite cable, duct, pipe, battery, crate, bin, tank or solar panel to make it Ultimate || 对精英级线缆、导管、管道、电池、板条箱、储物箱、储罐或太阳能板使用，将其升级为终极 || Используйте на элитном кабеле, трубопроводе, трубе, батарее, ящике, бункере, резервуаре или солнечной панели, чтобы сделать его совершенным || Úsalo en un cable, conducto, tubería, batería, caja, contenedor, tanque o panel solar de élite para hacerlo definitivo || Auf ein Elite-Kabel, eine Leitung, ein Rohr, eine Batterie, Kiste, einen Behälter, Tank oder ein Solarmodul anwenden, um es ultimativ zu machen || Use em um cabo, duto, cano, bateria, caixote, contêiner, tanque ou painel solar de elite para torná-lo supremo
+Use to edit; right-click a duct's side to fit || 使用以编辑；右击导管侧面以安装 || Используйте для настройки; ПКМ по стороне трубопровода — установить || Úsala para editarla; haz clic derecho en el lado de un conducto para colocarla || Benutzen zum Bearbeiten; Rechtsklick auf eine Leitungsseite zum Einsetzen || Use para editar; clique com o botão direito no lado de um duto para instalar
+Using %s FE/t || 消耗 %s FE/t || Потребляет %s FE/т || Consume %s FE/t || Verbraucht %s FE/t || Consumindo %s FE/t
+Value || 数值 || Значение || Valor || Wert || Valor
+Walk straight up full blocks || 直接走上整格方块 || Подъём на целые блоки шагом || Sube bloques enteros caminando || Volle Blöcke einfach hochlaufen || Suba blocos inteiros andando
+Wash and Repeat || 洗了再洗 || Мыть и повторять || Lavar y repetir || Waschen und wiederholen || Lavar e repetir
+Water Breathing Module || 水下呼吸模块 || Модуль подводного дыхания || Módulo de respiración acuática || Wasseratmungsmodul || Módulo de respiração aquática
+West || 西 || Запад || Oeste || Westen || Oeste
+While charged, each piece soaks up 20% of damage; 2 module slots || 充能时每件吸收 20% 伤害；2 个模块槽 || Пока заряжена, каждая часть поглощает 20% урона; 2 ячейки модулей || Con carga, cada pieza absorbe el 20% del daño; 2 ranuras de módulo || Geladen fängt jedes Teil 20% des Schadens ab; 2 Modulplätze || Carregada, cada peça absorve 20% do dano; 2 espaços de módulo
+While charged, each piece soaks up 22% of damage; 4 module slots || 充能时每件吸收 22% 伤害；4 个模块槽 || Пока заряжена, каждая часть поглощает 22% урона; 4 ячейки модулей || Con carga, cada pieza absorbe el 22% del daño; 4 ranuras de módulo || Geladen fängt jedes Teil 22% des Schadens ab; 4 Modulplätze || Carregada, cada peça absorve 22% do dano; 4 espaços de módulo
+While charged, each piece soaks up 24% of damage; 6 module slots || 充能时每件吸收 24% 伤害；6 个模块槽 || Пока заряжена, каждая часть поглощает 24% урона; 6 ячеек модулей || Con carga, cada pieza absorbe el 24% del daño; 6 ranuras de módulo || Geladen fängt jedes Teil 24% des Schadens ab; 6 Modulplätze || Carregada, cada peça absorve 24% do dano; 6 espaços de módulo
+Whitelist || 白名单 || Белый список || Lista blanca || Erlaubnisliste || Lista branca
+Whitelist: only these items pass || 白名单：只有这些物品可通过 || Белый список: проходят только эти предметы || Lista blanca: solo pasan estos objetos || Erlaubnisliste: nur diese Gegenstände kommen durch || Lista branca: só estes itens passam
+Wind Turbine || 风力涡轮机 || Ветряная турбина || Aerogenerador || Windturbine || Turbina eólica
+Wire Drawer || 拉丝机 || Волочильный станок || Trefiladora || Drahtzieher || Trefiladora
+Wireless Receiver || 无线接收器 || Беспроводной приёмник || Receptor inalámbrico || Drahtloser Empfänger || Receptor sem fio
+Wireless Terminal || 无线终端 || Беспроводной терминал || Terminal inalámbrico || Drahtloses Terminal || Terminal sem fio
+Wireless Transmitter || 无线发射器 || Беспроводной передатчик || Transmisor inalámbrico || Drahtloser Sender || Transmissor sem fio
+Works like three bone meal; Hydroponic Beds grow twice as fast with it || 效果相当于三份骨粉；水培床使用它时生长速度翻倍 || Действует как три костной муки; гидропонные грядки растят вдвое быстрее || Funciona como tres polvos de hueso; los lechos hidropónicos crecen el doble de rápido con él || Wirkt wie drei Knochenmehl; Hydrokulturbeete wachsen damit doppelt so schnell || Funciona como três farinhas de osso; canteiros hidropônicos crescem duas vezes mais rápido com ele
+Wrench || 扳手 || Гаечный ключ || Llave inglesa || Schraubenschlüssel || Chave inglesa
+You need a Blank Pattern in your inventory || 你的物品栏中需要有空白样板 || В инвентаре нужен пустой шаблон || Necesitas un patrón en blanco en tu inventario || Du brauchst ein leeres Muster im Inventar || Você precisa de um padrão em branco no inventário

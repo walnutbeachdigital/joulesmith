@@ -1505,19 +1505,25 @@ lang.update({f"subtitles.{MOD}.machine.{k}": sub for k, (ev, vol, pitch, sub) in
 
 # ---- the Joulesmith Manual: a vanilla written book, crafted from a book and a tin ingot
 PAGES = [
-    "\u00a7lJoulesmith\u00a7r\nA tech mod in three tiers: Basic, Reinforced and Advanced.\n\nEvery block's tooltip says what it does, and JEI shows every recipe and an info page for each machine.",
+    "\u00a7lJoulesmith\u00a7r\nA tech mod in five tiers: Basic, Reinforced, Advanced, Elite and Ultimate.\n\nEvery block's tooltip says what it does, and JEI shows every recipe and an info page for each machine.",
     "\u00a7lGetting started\u00a7r\nMine tin, lead, silver, nickel and uranium. Smelt raw ore for ingots.\n\nBuild a Combustion Generator: it burns furnace fuel for power (FE). Join it to machines with Energy Cables.",
-    "\u00a7lMore from ore\u00a7r\nCrusher: one raw ore makes two dusts.\nOre Washer (tier 2): three.\nChemical Dissolver and Crystallizer (tier 3): four.\n\nSmelt dusts in an Electric Furnace.",
-    "\u00a7lTiers\u00a7r\nA Basic Circuit opens tier 2 and an Advanced Circuit tier 3; both come from the Circuit Assembler.\n\nUpgrade Kits raise cables, pipes, batteries, crates, bins, tanks and solar panels a tier where they stand.",
+    "\u00a7lMore from ore\u00a7r\nCrusher: one raw ore makes two dusts.\nOre Washer (tier 2): three.\nChemical Dissolver and Crystallizer (tier 3): four.\nPlasma Refinery (tier 5): five ingots.\n\nSmelt dusts in an Electric Furnace.",
+    "\u00a7lTiers\u00a7r\nA Basic Circuit opens tier 2 and an Advanced Circuit tier 3 (Circuit Assembler). A Processor opens tier 4 and a Quantum Processor tier 5 (Laser Engraver).\n\nUpgrade Kits raise cables, pipes, batteries, crates, bins, tanks and solar panels a tier where they stand.",
     "\u00a7lMachines\u00a7r\nEach has slide-out tabs: redstone mode, side settings (input, output, both, off) and upgrade slots for Speed, Efficiency, Bonus, Eject and Range cards.\n\nHover the red bar to see FE/t.",
     "\u00a7lThe Wrench\u00a7r\nRight-click a machine to turn it. Right-click a pipe or cable side to switch it between connected, push, pull and off.\n\nHold it to see each machine face's side setting in colour.",
     "\u00a7lPipes\u00a7r\nItem Ducts, Fluid Pipes and Energy Cables connect on their own. Set a side to pull to take from an inventory.\n\nPut a Filter Card on a duct side to choose what passes: by item, tag or mod.",
-    "\u00a7lPower\u00a7r\nTier 1: Combustion Generator, Solar Panel.\nTier 2: Biofuel and Geothermal Generators.\nTier 3: Boiler and Steam Turbine, Wind Turbine.\n\nStore it in Batteries.",
+    "\u00a7lPower\u00a7r\nTier 1: Combustion Generator, Solar Panel.\nTier 2: Biofuel and Geothermal Generators.\nTier 3: Boiler and Steam Turbine, Wind Turbine.\nTier 4: Fission Reactor.\nTier 5: Fusion Core.\n\nStore it in Batteries.",
     "\u00a7lRubber and plastic\u00a7r\nRubber trees grow in forests and jungles. Tap a log with a Tree Tap for latex; smelt it into rubber.\n\nThe Fluid Mixer makes plastic from Biofuel and latex, or from oil.",
     "\u00a7lFarming\u00a7r\nPlanters, Harvesters and Tree Farms work the area in front of them. Sprinklers speed growth. Hydroponic Beds grow crops indoors.\n\nThe Mob Grinder stores XP as Liquid XP for the Auto Enchanter.",
     "\u00a7lAutomation\u00a7r\nBlock Placer, Block Breaker, Autocrafter, Mechanical User, Quarry and Mob Fighter.\n\nSensors give redstone from what they read; a Logic Controller turns readings into signals.",
     "\u00a7lPowered gear\u00a7r\nThe Power Drill, Chainsaw, Energy Sword and Exo-Suit run on FE instead of durability.\n\nCharge them on a Charging Pad or by carrying an Energy Cell.",
-    "\u00a7lModules\u00a7r\nAt the Modification Table, fit two modules to a powered item: Fortune, Silk Touch, Range, Magnet, Jetpack, Night Vision, Lifesteal and more.\n\nEach module's tooltip says what it fits.",
+    "\u00a7lModules\u00a7r\nAt the Modification Table, fit modules to a powered item (two; four or six on Elite and Ultimate Exo-Suits): Fortune, Silk Touch, Range, Magnet, Jetpack, Night Vision, Lifesteal and more.\n\nEach module's tooltip says what it fits.",
+    "\u00a7lFission\u00a7r\nBuild a 3x3x3 shell of Reactor Casing, Glass and Ports with the Fission Reactor in the middle of one face and the very middle empty.\n\nFeed it uranium and water. It never explodes: with no water it shuts down safely.",
+    "\u00a7lFusion\u00a7r\nMake deuterium from water and tritium from deuterium and uranium dust in the Fluid Mixer.\n\nThe Fusion Core needs 500,000 FE to light, then makes 20,000 FE/t and plasma for the Plasma Refinery.",
+    "\u00a7lWireless\u00a7r\nDye a Wireless Transmitter and Receiver the same colour: the Receiver draws power from Transmitters on its channel within 256 blocks.\n\nThe Wireless Terminal opens a storage network from 64 blocks away.",
+    "\u00a7lStorage network\u00a7r\nCable a Network Core (powered), Drive Bays with Item and Fluid Drives, and a Network Terminal together.\n\nImport and Export Buses move things in and out; filters choose what.",
+    "\u00a7lAuto-crafting\u00a7r\nLay out a recipe in a Crafting Terminal and press Encode to record it on a Blank Pattern. Put Patterns in an Auto-Crafting CPU.\n\nMiddle-click an item in a terminal to have it crafted.",
+    "\u00a7lTier 4 and 5 gear\u00a7r\nOmni-Tool, Railgun and Plasma Cannon. Upgrade Exo-Suit pieces to Elite and Ultimate at a Smithing Table; modules and charge carry over.\n\nThe Drone Hub's drones fetch drops and harvest crops."
 ]
 write(os.path.join(DATA, MOD, "recipe", "manual.json"), {
     "type": "minecraft:crafting_shapeless", "category": "misc",
@@ -1985,7 +1991,8 @@ shaped("crafting_cpu", ["PCP", "QXQ", "PTP"], {"P": "#c:plates/electrum", "C": f
                                              "X": f"{MOD}:advanced_casing", "T": "minecraft:crafting_table"})
 C_DESC = {
     "crafting_cpu": ("Crafts on request from its Patterns", "Holds nine Patterns; every terminal on its network can craft from them. "
-                     "Ctrl-click a craftable item in a terminal to craft one batch (Ctrl-Shift: a stack); items no one has in store show "
+                     "Middle-click a craftable item in a terminal to craft one batch (Shift-middle-click: a stack; Ctrl-click works too "
+                     "off a Mac); items none of are stored show "
                      "\"Craft\" and a plain click does the same. It works out every ingredient, crafting ingredients from other patterns "
                      "too, takes them out of storage, then crafts a batch every quarter second (200 FE each) and puts the results back. "
                      "One job at a time per CPU. Sneak and right-click it to see what it's doing."),
@@ -2001,7 +2008,7 @@ lang.update({
     "gui.joulesmith.terminal.encode": "Encode",
     "gui.joulesmith.terminal.encode.tip": "Record the grid's recipe on a Blank Pattern from your inventory",
     "gui.joulesmith.terminal.craft": "Craft",
-    "gui.joulesmith.terminal.craft_hint": "Ctrl-click to craft (Ctrl-Shift: a stack)",
+    "gui.joulesmith.terminal.craft_hint": "Middle-click to craft (Shift-middle-click: a stack)",
     "tooltip.joulesmith.pattern.makes": "Makes %s %s",
     "message.joulesmith.pattern.encoded": "Pattern recorded: %s",
     "message.joulesmith.pattern.no_recipe": "Lay out a recipe in the grid first",
@@ -2014,6 +2021,16 @@ lang.update({
     "message.joulesmith.craft.changed": "The network's contents changed; try again",
     "message.joulesmith.cpu.busy": "Crafting %s: %s batches left",
     "message.joulesmith.cpu.idle": "Idle, %s patterns",
+    "info.joulesmith.network.online": "Network online: %s Drive Bays, %s CPUs",
+    "info.joulesmith.network.unpowered": "Network offline: no power",
+    "info.joulesmith.network.no_core": "Network needs exactly one Network Core",
+    "info.joulesmith.bay.items": "Items: %s / %s",
+    "info.joulesmith.bay.fluids": "Fluids: %s / %s mB",
+    "info.joulesmith.bay.empty": "No drives",
+    "info.joulesmith.bus.filter": "Filtered",
+    "info.joulesmith.bus.no_filter": "No filter",
+    "info.joulesmith.wireless.transmitter": "Transmitter, channel: %s",
+    "info.joulesmith.wireless.receiver": "Receiver, channel: %s",
 })
 write(os.path.join(ASSETS, "models", "item", "wireless_terminal.json"), {"parent": "minecraft:item/handheld", "textures": {"layer0": f"{MOD}:item/wireless_terminal"}})
 lang[f"item.{MOD}.wireless_terminal"] = "Wireless Terminal"
@@ -2142,6 +2159,36 @@ for aid, parent, icon, needs, frame, title, desc in ADV:
     lang[f"advancement.{MOD}.{aid}.desc"] = desc
 
 write(os.path.join(ASSETS, "lang", "en_us.json"), lang)
+
+# ---- translations: names and screen text (tools/lang); JEI info pages and tooltip descriptions stay English
+import sys as _sys
+_sys.dont_write_bytecode = True
+_sys.path.insert(0, os.path.join(ROOT, "tools", "lang"))
+from compose import LANGS as _LANGS, compose as _compose
+_table = {}
+for _f in sorted(os.listdir(os.path.join(ROOT, "tools", "lang"))):
+    if _f.startswith("strings") and _f.endswith(".txt"):
+        for _line in open(os.path.join(ROOT, "tools", "lang", _f), encoding="utf-8"):
+            _parts = [x.strip() for x in _line.rstrip("\n").split(" || ")]
+            if len(_parts) == 1 + len(_LANGS):
+                _table[_parts[0]] = dict(zip(_LANGS, _parts[1:]))
+_missing = set()
+for _code in _LANGS:
+    _out = {}
+    for _k, _v in lang.items():
+        if _k.startswith(("jei.", "desc.")):
+            continue
+        _t = _table.get(_v, {}).get(_code) or _compose(_v, _code)
+        if _t:
+            _out[_k] = _t
+        else:
+            _missing.add(_v)
+    write(os.path.join(ASSETS, "lang", f"{_code}.json"), _out)
+    if _code == "es_es":
+        write(os.path.join(ASSETS, "lang", "es_mx.json"), _out)
+print(f"translations: {len(_LANGS)} languages, {len(_missing)} strings untranslated")
+for _m in sorted(_missing)[:20]:
+    print("  untranslated:", _m)
 
 print(f"{len(blocks)} blocks, {len(items)} items, {len(recipes)} recipes, "
       f"{len(tags)} tags, {len(ORES)} ores")

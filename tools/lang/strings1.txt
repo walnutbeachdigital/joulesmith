@@ -1,0 +1,215 @@
+%s / %s FE || %s / %s FE || %s / %s FE || %s / %s FE || %s / %s FE || %s / %s FE
+%s / %s items || %s / %s 个物品 || %s / %s предметов || %s / %s objetos || %s / %s Gegenstände || %s / %s itens
+%s / %s kinds || %s / %s 种 || %s / %s видов || %s / %s tipos || %s / %s Arten || %s / %s tipos
+%s / %s mB || %s / %s mB || %s / %s mB || %s / %s mB || %s / %s mB || %s / %s mB
+%s of %s slots used || 已用 %s / %s 格 || Занято %s из %s ячеек || %s de %s casillas en uso || %s von %s Plätzen belegt || %s de %s espaços usados
+%s%% done || 已完成 %s%% || Готово на %s%% || %s%% completado || %s%% fertig || %s%% concluído
+%s, now %s || %s，当前 %s || %s, сейчас %s || %s, ahora %s || %s, jetzt %s || %s, agora %s
+%s: %s (signal %s) || %s：%s（信号 %s） || %s: %s (сигнал %s) || %s: %s (señal %s) || %s: %s (Signal %s) || %s: %s (sinal %s)
+%s: %s / %s || %s：%s / %s || %s: %s / %s || %s: %s / %s || %s: %s / %s || %s: %s / %s
+%s: %s / %s mB || %s：%s / %s mB || %s: %s / %s mB || %s: %s / %s mB || %s: %s / %s mB || %s: %s / %s mB
+...and %s more || ……还有 %s 个 || ...и ещё %s || ...y %s más || ...und %s weitere || ...e mais %s
+A network needs exactly one Network Core (%s blocks, %s Drive Bays) || 网络需要且只能有一个网络核心（%s 个方块，%s 个驱动器仓） || Сети нужно ровно одно ядро сети (блоков: %s, отсеков: %s) || Una red necesita exactamente un núcleo de red (%s bloques, %s bahías de unidades) || Ein Netzwerk braucht genau einen Netzwerkkern (%s Blöcke, %s Laufwerksschächte) || Uma rede precisa de exatamente um núcleo de rede (%s blocos, %s baias de unidades)
+Advanced Placement || 高级就位 || Продвинутый уровень || Nivel avanzado || Fortgeschritten platziert || Nível avançado
+Alloy Smelter || 合金炉 || Плавильня сплавов || Fundidora de aleaciones || Legierungsofen || Fundidora de ligas
+Always runs || 总是运行 || Работает всегда || Funciona siempre || Läuft immer || Funciona sempre
+Animal Rancher || 动物牧场主 || Животновод || Ranchero de animales || Tierzüchter || Rancheiro de animais
+Animals || 动物 || Животные || Animales || Tiere || Animais
+Auto Enchanter || 自动附魔器 || Автозачарователь || Encantador automático || Automatischer Verzauberer || Encantador automático
+Auto-Crafting CPU || 自动合成处理器 || Процессор автокрафта || CPU de fabricación automática || Autocrafting-CPU || CPU de fabricação automática
+Auto-Eject Upgrade || 自动弹出升级 || Улучшение: автовыброс || Mejora de expulsión automática || Auto-Auswurf-Upgrade || Melhoria de ejeção automática
+Auto-Smelt Module || 自动熔炼模块 || Модуль автоплавки || Módulo de fundición automática || Autoschmelz-Modul || Módulo de fundição automática
+Autocrafter || 自动合成器 || Автокрафтер || Fabricador automático || Autocrafter || Fabricador automático
+Back || 后 || Сзади || Atrás || Hinten || Trás
+Better Together || 合而为一 || Вместе лучше || Mejor juntos || Gemeinsam besser || Melhor juntos
+Bio Reactor || 生物反应器 || Биореактор || Biorreactor || Bioreaktor || Biorreator
+Biofuel || 生物燃料 || Биотопливо || Biocombustible || Biokraftstoff || Biocombustível
+Biofuel Bucket || 生物燃料桶 || Ведро биотоплива || Cubo de biocombustible || Biokraftstoffeimer || Balde de biocombustível
+Biofuel Generator || 生物燃料发电机 || Генератор на биотопливе || Generador de biocombustible || Biokraftstoffgenerator || Gerador de biocombustível
+Blacklist || 黑名单 || Чёрный список || Lista negra || Sperrliste || Lista negra
+Blacklist: everything but these items passes || 黑名单：除这些物品外都可通过 || Чёрный список: проходит всё, кроме этих предметов || Lista negra: pasa todo menos estos objetos || Sperrliste: alles außer diesen Gegenständen kommt durch || Lista negra: passa tudo menos estes itens
+Blank Module || 空白模块 || Пустой модуль || Módulo en blanco || Leeres Modul || Módulo em branco
+Blank Pattern || 空白样板 || Пустой шаблон || Patrón en blanco || Leeres Muster || Padrão em branco
+Blank: right-click a mob to record it || 空白：右击生物以记录 || Пусто: нажмите ПКМ по мобу, чтобы записать его || Vacío: haz clic derecho en una criatura para registrarla || Leer: Rechtsklick auf einen Mob, um ihn zu speichern || Vazio: clique com o botão direito em uma criatura para registrá-la
+Block Breaker || 方块破坏器 || Разрушитель блоков || Rompedor de bloques || Blockbrecher || Quebrador de blocos
+Block Placer || 方块放置器 || Установщик блоков || Colocador de bloques || Blocksetzer || Colocador de blocos
+Board Meeting || 电路板会议 || Совет директоров || Reunión de la junta || Platinen-Sitzung || Reunião de diretoria
+Boiler || 锅炉 || Котёл || Caldera || Kessel || Caldeira
+Bore Necessities || 钻探必备 || Самое необходимое || Lo indispensable || Bohrnotwendigkeiten || O básico da perfuração
+Bottom || 底部 || Низ || Abajo || Unten || Baixo
+Bouncing Back || 卷土重来 || Отскок || Recuperación elástica || Zurückfedern || De volta com tudo
+Breaks 3x3; sneak to break one block || 破坏 3x3；潜行时只破坏一个方块 || Ломает 3x3; присядьте, чтобы сломать один блок || Rompe 3x3; agáchate para romper un solo bloque || Baut 3x3 ab; schleichen für einen Block || Quebra 3x3; agache para quebrar um bloco
+Breathe underwater || 在水下呼吸 || Дыхание под водой || Respirar bajo el agua || Unter Wasser atmen || Respirar debaixo d'água
+Bright Future || 光明前景 || Светлое будущее || Futuro brillante || Strahlende Zukunft || Futuro brilhante
+Build a Drone Hub || 建造无人机枢纽 || Постройте дрон-станцию || Construye un centro de drones || Baue einen Drohnenhangar || Construa uma central de drones
+Build a Fission Reactor || 建造裂变反应堆 || Постройте реактор деления || Construye un reactor de fisión || Baue einen Spaltreaktor || Construa um reator de fissão
+Build a Fusion Core || 建造聚变核心 || Постройте термоядерное ядро || Construye un núcleo de fusión || Baue einen Fusionskern || Construa um núcleo de fusão
+Burning: %s s left || 燃烧中：剩余 %s 秒 || Горит: осталось %s с || Ardiendo: quedan %s s || Brennt: noch %s s || Queimando: restam %s s
+Centrifuge || 离心机 || Центрифуга || Centrifugadora || Zentrifuge || Centrífuga
+Chain Lightning Module || 连锁闪电模块 || Модуль цепной молнии || Módulo de rayo en cadena || Kettenblitz-Modul || Módulo de relâmpago em cadeia
+Chainsaw || 链锯 || Бензопила || Motosierra || Kettensäge || Motosserra
+Channel set to %s || 频道已设为%s || Канал: %s || Canal: %s || Kanal auf %s gesetzt || Canal definido como %s
+Charges the powered gear you carry (use to switch off) || 为你携带的动力装备充能（使用以关闭） || Заряжает ваше электроснаряжение (используйте, чтобы выключить) || Carga el equipo eléctrico que llevas (úsala para apagarla) || Lädt deine Energieausrüstung (benutzen zum Ausschalten) || Carrega o equipamento elétrico que você carrega (use para desligar)
+Charges the whole suit in daylight || 在日光下为整套外骨骼充能 || Заряжает весь костюм днём || Carga todo el traje con la luz del día || Lädt den ganzen Anzug bei Tageslicht || Carrega o traje inteiro à luz do dia
+Charging Pad || 充电板 || Зарядная площадка || Plataforma de carga || Ladeplatte || Plataforma de carga
+Chemical Dissolver || 化学溶解器 || Химический растворитель || Disolvente químico || Chemischer Auflöser || Dissolvedor químico
+Circuit Assembler || 电路组装机 || Сборщик схем || Ensamblador de circuitos || Schaltkreismontierer || Montador de circuitos
+Click to change || 点击切换 || Нажмите, чтобы изменить || Haz clic para cambiar || Klicken zum Ändern || Clique para mudar
+Click with a bucket or tank on the cursor to fill it || 手持桶或储罐点击以装满 || Нажмите с ведром или баком в курсоре, чтобы наполнить его || Haz clic con un cubo o tanque en el cursor para llenarlo || Mit einem Eimer oder Tank am Cursor klicken, um ihn zu füllen || Clique com um balde ou tanque no cursor para enchê-lo
+Click with an item to add it; click with an empty hand to clear || 手持物品点击以添加；空手点击以清除 || Нажмите с предметом, чтобы добавить; пустой рукой — очистить || Haz clic con un objeto para añadirlo; con la mano vacía para quitarlo || Mit einem Gegenstand klicken zum Hinzufügen; mit leerer Hand zum Leeren || Clique com um item para adicioná-lo; com a mão vazia para limpar
+Combustion Generator || 燃烧发电机 || Генератор сгорания || Generador de combustión || Verbrennungsgenerator || Gerador de combustão
+Compressor || 压缩机 || Компрессор || Compresor || Kompressor || Compressor
+Conveyor Belt || 传送带 || Конвейер || Cinta transportadora || Förderband || Esteira transportadora
+Coolant || 冷却液 || Хладагент || Refrigerante || Kühlmittel || Refrigerante
+Coolant Bucket || 冷却液桶 || Ведро хладагента || Cubo de refrigerante || Kühlmitteleimer || Balde de refrigerante
+Craft || 合成 || Создать || Fabricar || Herstellen || Fabricar
+Crafting %s %s || 正在合成 %s 个%s || Создаётся: %s × %s || Fabricando %s %s || Stelle %s %s her || Fabricando %s %s
+Crafting %s: %s batches left || 正在合成%s：剩余 %s 批 || Создаётся %s: осталось партий: %s || Fabricando %s: quedan %s tandas || Stelle %s her: noch %s Durchgänge || Fabricando %s: restam %s lotes
+Crafting Terminal || 合成终端 || Терминал крафта || Terminal de fabricación || Crafting-Terminal || Terminal de fabricação
+Creative Power Cell || 创造模式能量电池 || Творческая энергоячейка || Celda de energía creativa || Kreativ-Energiezelle || Célula de energia criativa
+Crusher || 粉碎机 || Дробилка || Trituradora || Zerkleinerer || Triturador
+Crystallizer || 结晶器 || Кристаллизатор || Cristalizador || Kristallisator || Cristalizador
+Customised || 量身定制 || На свой вкус || Personalizado || Maßgeschneidert || Personalizado
+Damage Module || 伤害模块 || Модуль урона || Módulo de daño || Schadensmodul || Módulo de dano
+Deuterium || 氘 || Дейтерий || Deuterio || Deuterium || Deutério
+Down || 下 || Низ || Abajo || Unten || Baixo
+Drive Bay || 驱动器仓 || Отсек накопителей || Bahía de unidades || Laufwerksschacht || Baia de unidades
+Drone || 无人机 || Дрон || Dron || Drohne || Drone
+Drone Hub || 无人机枢纽 || Дрон-станция || Centro de drones || Drohnenhangar || Central de drones
+Drops land right at your feet || 掉落物直接落在你脚下 || Добыча падает прямо к ногам || El botín cae a tus pies || Drops landen direkt vor deinen Füßen || Os drops caem aos seus pés
+Each card: +10% byproduct chance and 10% chance of an extra output || 每张卡：副产物几率 +10%，并有 10% 几率额外产出 || Каждая карта: +10% к шансу побочного продукта и 10% шанс доп. результата || Cada tarjeta: +10% de probabilidad de subproducto y 10% de un resultado extra || Jede Karte: +10% Nebenprodukt-Chance und 10% Chance auf ein Extra || Cada cartão: +10% de chance de subproduto e 10% de chance de um resultado extra
+Each card: 20% less power per run || 每张卡：每次运行耗能减少 20% || Каждая карта: на 20% меньше энергии за цикл || Cada tarjeta: 20% menos energía por ciclo || Jede Karte: 20% weniger Energie pro Durchgang || Cada cartão: 20% menos energia por ciclo
+Each card: runs 50% faster, using 25% more power per run || 每张卡：速度提升 50%，每次运行多耗能 25% || Каждая карта: на 50% быстрее, на 25% больше энергии за цикл || Cada tarjeta: 50% más rápido, 25% más energía por ciclo || Jede Karte: 50% schneller, 25% mehr Energie pro Durchgang || Cada cartão: 50% mais rápido, 25% mais energia por ciclo
+Each hit arcs to up to 3 nearby monsters (300 FE each) || 每次攻击会跳跃到附近最多 3 个怪物（每个 300 FE） || Каждый удар перескакивает на 3 ближайших монстров (300 FE каждый) || Cada golpe salta a hasta 3 monstruos cercanos (300 FE cada uno) || Jeder Treffer springt auf bis zu 3 Monster in der Nähe über (je 300 FE) || Cada golpe salta para até 3 monstros próximos (300 FE cada)
+East || 东 || Восток || Este || Osten || Leste
+Efficiency Upgrade || 效率升级 || Улучшение: эффективность || Mejora de eficiencia || Effizienz-Upgrade || Melhoria de eficiência
+Electric Furnace || 电炉 || Электропечь || Horno eléctrico || Elektroofen || Fornalha elétrica
+Empty (holds %s of one item) || 空（可存放 %s 个同种物品） || Пусто (вмещает %s одного предмета) || Vacío (guarda %s de un objeto) || Leer (fasst %s eines Gegenstands) || Vazio (guarda %s de um item)
+Empty: 0 / %s mB || 空：0 / %s mB || Пусто: 0 / %s mB || Vacío: 0 / %s mB || Leer: 0 / %s mB || Vazio: 0 / %s mB
+Enchanter glows || 附魔器发光 || Зачарователь светится || El encantador brilla || Verzauberer leuchtet || O encantador brilha
+Encode || 编码 || Записать || Codificar || Kodieren || Codificar
+Energy || 能量 || Энергия || Energía || Energie || Energia
+Energy Cell: charging your gear || 能量电池：正在为装备充能 || Энергоячейка: заряжает снаряжение || Celda de energía: cargando tu equipo || Energiezelle: lädt deine Ausrüstung || Célula de energia: carregando seu equipamento
+Energy Cell: switched off || 能量电池：已关闭 || Энергоячейка: выключена || Celda de energía: apagada || Energiezelle: ausgeschaltet || Célula de energia: desligada
+Energy Sensor || 能量传感器 || Датчик энергии || Sensor de energía || Energiesensor || Sensor de energia
+Energy Sword || 能量剑 || Энергомеч || Espada de energía || Energieschwert || Espada de energia
+Energy: %s / %s FE || 能量：%s / %s FE || Энергия: %s / %s FE || Energía: %s / %s FE || Energie: %s / %s FE || Energia: %s / %s FE
+Engrave a Processor: tier 4 begins || 蚀刻处理器：第 4 阶开始 || Выгравируйте процессор: начинается уровень 4 || Graba un procesador: empieza el nivel 4 || Graviere einen Prozessor: Stufe 4 beginnt || Grave um processador: começa o nível 4
+Engrave a Quantum Processor: tier 5 begins || 蚀刻量子处理器：第 5 阶开始 || Выгравируйте квантовый процессор: начинается уровень 5 || Graba un procesador cuántico: empieza el nivel 5 || Graviere einen Quantenprozessor: Stufe 5 beginnt || Grave um processador quântico: começa o nível 5
+Etched in Stone || 铭刻于心 || Высечено в камне || Grabado en piedra || In Stein gemeißelt || Gravado na pedra
+Every CPU is busy || 所有处理器都在忙 || Все процессоры заняты || Todas las CPU están ocupadas || Alle CPUs sind beschäftigt || Todas as CPUs estão ocupadas
+Every tool in one; sneak-right-click to till || 万能工具；潜行右击可耕地 || Все инструменты в одном; присядьте и нажмите ПКМ, чтобы вспахать || Todas las herramientas en una; agáchate y haz clic derecho para arar || Jedes Werkzeug in einem; schleichen + Rechtsklick zum Pflügen || Todas as ferramentas em uma; agache e clique com o botão direito para arar
+Everything in Its Place || 各得其所 || Всё на своих местах || Cada cosa en su sitio || Alles an seinem Platz || Tudo em seu lugar
+Experienced || 经验丰富 || Опытный || Experimentado || Erfahren || Experiente
+Export Bus || 输出总线 || Шина экспорта || Bus de exportación || Exportbus || Barramento de exportação
+Eyes in the Sky || 天空之眼 || Глаза в небе || Ojos en el cielo || Augen am Himmel || Olhos no céu
+Fall Protection Module || 摔落保护模块 || Модуль защиты от падения || Módulo de protección contra caídas || Fallschutz-Modul || Módulo de proteção contra queda
+Farm machines: each card widens the area (5x5, 9x9, 13x13) || 农场机器：每张卡扩大范围（5x5、9x9、13x13） || Фермерские машины: каждая карта расширяет область (5x5, 9x9, 13x13) || Máquinas de granja: cada tarjeta amplía el área (5x5, 9x9, 13x13) || Farmmaschinen: jede Karte vergrößert den Bereich (5x5, 9x9, 13x13) || Máquinas de fazenda: cada cartão amplia a área (5x5, 9x9, 13x13)
+Feeder Module || 喂食模块 || Модуль кормления || Módulo alimentador || Fütterungsmodul || Módulo alimentador
+Feeds you when you're hungry (1,000 FE a point) || 饥饿时为你补充饱食度（每点 1,000 FE） || Кормит вас, когда вы голодны (1 000 FE за единицу) || Te alimenta cuando tienes hambre (1000 FE por punto) || Füttert dich, wenn du hungrig bist (1.000 FE pro Punkt) || Alimenta você quando estiver com fome (1.000 FE por ponto)
+Fells a whole tree; sneak to cut one log || 砍倒整棵树；潜行时只砍一块原木 || Валит всё дерево; присядьте, чтобы срубить одно бревно || Tala un árbol entero; agáchate para cortar un tronco || Fällt einen ganzen Baum; schleichen für einen Stamm || Derruba a árvore inteira; agache para cortar um tronco
+Fertilizer || 肥料 || Удобрение || Fertilizante || Dünger || Fertilizante
+Fertilizer Mixer || 肥料混合机 || Смеситель удобрений || Mezcladora de fertilizante || Düngermischer || Misturador de fertilizante
+Filter Card || 过滤卡 || Карта фильтра || Tarjeta de filtro || Filterkarte || Cartão de filtro
+Filter Card fitted || 已安装过滤卡 || Карта фильтра установлена || Tarjeta de filtro colocada || Filterkarte eingesetzt || Cartão de filtro instalado
+Filter Card removed || 已取下过滤卡 || Карта фильтра снята || Tarjeta de filtro quitada || Filterkarte entfernt || Cartão de filtro removido
+Filter fitted || 已安装过滤器 || Фильтр установлен || Filtro colocado || Filter eingesetzt || Filtro instalado
+Filter taken out || 已取出过滤器 || Фильтр извлечён || Filtro retirado || Filter entnommen || Filtro retirado
+Filtered || 已过滤 || С фильтром || Con filtro || Gefiltert || Com filtro
+Filtered (sneak with an empty hand to take the filter out) || 已过滤（空手潜行以取出过滤器） || С фильтром (присядьте с пустой рукой, чтобы извлечь его) || Con filtro (agáchate con la mano vacía para quitarlo) || Gefiltert (mit leerer Hand schleichen, um den Filter zu entnehmen) || Com filtro (agache com a mão vazia para retirá-lo)
+Find tin, the start of everything electric || 找到锡，一切电气的起点 || Найдите олово — начало всего электрического || Encuentra estaño, el comienzo de todo lo eléctrico || Finde Zinn, den Anfang alles Elektrischen || Encontre estanho, o começo de tudo que é elétrico
+Fire Aspect II || 火焰附加 II || Заговор огня II || Aspecto ígneo II || Verbrennung II || Aspecto Flamejante II
+Fire Module || 火焰模块 || Модуль огня || Módulo de fuego || Feuermodul || Módulo de fogo
+Fire Shield Module || 火焰护盾模块 || Модуль огненного щита || Módulo de escudo ígneo || Feuerschild-Modul || Módulo de escudo de fogo
+Fire and lava can't hurt you while charged || 充能时火焰和岩浆无法伤害你 || Пока заряжен, огонь и лава вам не вредят || Mientras tenga carga, el fuego y la lava no te dañan || Solange geladen, schaden dir Feuer und Lava nicht || Enquanto carregado, fogo e lava não te ferem
+Fission Reactor || 裂变反应堆 || Реактор деления || Reactor de fisión || Spaltreaktor || Reator de fissão
+Fit Filter Cards on a side that touches a block || 将过滤卡安装在接触方块的一侧 || Ставьте карты фильтра на сторону, касающуюся блока || Coloca tarjetas de filtro en un lado que toque un bloque || Filterkarten auf eine Seite setzen, die einen Block berührt || Coloque cartões de filtro em um lado que toque um bloco
+Fits: Energy Sword || 适用：能量剑 || Подходит: энергомеч || Para: espada de energía || Passt in: Energieschwert || Serve em: espada de energia
+Fits: Exo-Suit Boots || 适用：外骨骼靴子 || Подходит: ботинки экзокостюма || Para: botas de exotraje || Passt in: Exoanzug-Stiefel || Serve em: botas de exotraje
+Fits: Exo-Suit Chestplate || 适用：外骨骼胸甲 || Подходит: нагрудник экзокостюма || Para: peto de exotraje || Passt in: Exoanzug-Brustplatte || Serve em: peitoral de exotraje
+Fits: Exo-Suit Helmet || 适用：外骨骼头盔 || Подходит: шлем экзокостюма || Para: casco de exotraje || Passt in: Exoanzug-Helm || Serve em: capacete de exotraje
+Fits: Exo-Suit Leggings || 适用：外骨骼护腿 || Подходит: поножи экзокостюма || Para: grebas de exotraje || Passt in: Exoanzug-Beinschutz || Serve em: calças de exotraje
+Fits: Power Drill, Chainsaw, Omni-Tool || 适用：电钻、链锯、全能工具 || Подходит: электродрель, бензопила, мультиинструмент || Para: taladro eléctrico, motosierra, omniherramienta || Passt in: Bohrer, Kettensäge, Omni-Werkzeug || Serve em: furadeira, motosserra, omniferramenta
+Fits: Power Drill, Chainsaw, Omni-Tool, Energy Sword || 适用：电钻、链锯、全能工具、能量剑 || Подходит: электродрель, бензопила, мультиинструмент, энергомеч || Para: taladro eléctrico, motosierra, omniherramienta, espada de energía || Passt in: Bohrer, Kettensäge, Omni-Werkzeug, Energieschwert || Serve em: furadeira, motosserra, omniferramenta, espada de energia
+Fits: any Exo-Suit piece || 适用：任意外骨骼部件 || Подходит: любая часть экзокостюма || Para: cualquier pieza de exotraje || Passt in: jedes Exoanzug-Teil || Serve em: qualquer peça de exotraje
+Flight Module || 飞行模块 || Модуль полёта || Módulo de vuelo || Flugmodul || Módulo de voo
+Fluid || 流体 || Жидкость || Fluido || Flüssigkeit || Fluido
+Fluid Drain || 流体抽取器 || Сборщик жидкости || Drenador de fluidos || Flüssigkeitsabsauger || Drenador de fluidos
+Fluid Export Bus || 流体输出总线 || Шина экспорта жидкостей || Bus de exportación de fluidos || Flüssigkeits-Exportbus || Barramento de exportação de fluidos
+Fluid Import Bus || 流体输入总线 || Шина импорта жидкостей || Bus de importación de fluidos || Flüssigkeits-Importbus || Barramento de importação de fluidos
+Fluid Mixer || 流体混合机 || Смеситель жидкостей || Mezcladora de fluidos || Flüssigkeitsmischer || Misturador de fluidos
+Fluid Placer || 流体放置器 || Разливщик жидкостей || Colocador de fluidos || Flüssigkeitsplatzierer || Colocador de fluidos
+Fluids: %s / %s mB || 流体：%s / %s mB || Жидкости: %s / %s mB || Fluidos: %s / %s mB || Flüssigkeiten: %s / %s mB || Fluidos: %s / %s mB
+Fly as in creative, using power while flying (replaces the Jetpack) || 像创造模式一样飞行，飞行时耗能（替代喷气背包） || Полёт как в творческом режиме, тратит энергию в полёте (заменяет реактивный ранец) || Vuela como en creativo, gastando energía al volar (sustituye a la mochila propulsora) || Fliegen wie im Kreativmodus, verbraucht Energie beim Fliegen (ersetzt das Jetpack) || Voe como no criativo, gastando energia ao voar (substitui a mochila a jato)
+Fortune III || 时运 III || Удача III || Fortuna III || Glück III || Fortuna III
+Fortune Module || 时运模块 || Модуль удачи || Módulo de fortuna || Glücksmodul || Módulo de fortuna
+Four Times the Ore || 四倍矿石 || Руды вчетверо || El cuádruple de mena || Viermal so viel Erz || O quádruplo de minério
+Front || 前 || Спереди || Frente || Vorne || Frente
+Full Steam Ahead || 全速前进 || Полный вперёд || A todo vapor || Volldampf voraus || A todo vapor
+Furthest first || 最远优先 || Сначала дальние || Primero el más lejano || Entfernteste zuerst || Mais distante primeiro
+Fusion Core || 聚变核心 || Термоядерное ядро || Núcleo de fusión || Fusionskern || Núcleo de fusão
+Geothermal Generator || 地热发电机 || Геотермальный генератор || Generador geotérmico || Geothermiegenerator || Gerador geotérmico
+Grow a crystal in the Crystallizer || 在结晶器中培育晶体 || Вырастите кристалл в кристаллизаторе || Haz crecer un cristal en el cristalizador || Lass einen Kristall im Kristallisator wachsen || Cultive um cristal no cristalizador
+Grown Power || 种出来的能量 || Выращенная энергия || Energía cultivada || Gewachsene Energie || Energia cultivada
+Harvester || 收割机 || Сборщик урожая || Cosechadora || Erntemaschine || Colheitadeira
+Have all four Exo-Suit pieces || 集齐全部四件外骨骼 || Соберите все четыре части экзокостюма || Consigue las cuatro piezas del exotraje || Besitze alle vier Exoanzug-Teile || Tenha as quatro peças do exotraje
+Heals half a heart every four seconds while hurt || 受伤时每四秒恢复半颗心 || Восстанавливает полсердца каждые 4 секунды, пока вы ранены || Cura medio corazón cada cuatro segundos si estás herido || Heilt alle vier Sekunden ein halbes Herz, wenn du verletzt bist || Cura meio coração a cada quatro segundos quando ferido
+Heals you for a fifth of the damage you deal || 按造成伤害的五分之一治疗你 || Лечит на пятую часть нанесённого урона || Te cura una quinta parte del daño que causas || Heilt dich um ein Fünftel des verursachten Schadens || Cura você em um quinto do dano causado
+Heat %s%% || 热量 %s%% || Нагрев %s%% || Calor %s%% || Hitze %s%% || Calor %s%%
+Hits harder the fuller its charge || 充能越满伤害越高 || Бьёт сильнее, чем больше заряд || Golpea más fuerte cuanto más cargada está || Trifft härter, je voller die Ladung || Bate mais forte quanto mais carregada
+Hold jump to climb slowly; no fall damage while airborne. Uses power in the air || 按住跳跃缓慢上升；空中不受摔落伤害。在空中耗能 || Удерживайте прыжок, чтобы медленно подниматься; нет урона от падения в воздухе. Тратит энергию в воздухе || Mantén saltar para subir despacio; sin daño de caída en el aire. Gasta energía en el aire || Springen halten zum langsamen Steigen; kein Fallschaden in der Luft. Verbraucht in der Luft Energie || Segure pular para subir devagar; sem dano de queda no ar. Gasta energia no ar
+Hold to charge, release to fire (25,000 FE) || 按住蓄力，松开发射（25,000 FE） || Удерживайте для зарядки, отпустите для выстрела (25 000 FE) || Mantén para cargar, suelta para disparar (25 000 FE) || Halten zum Laden, loslassen zum Feuern (25.000 FE) || Segure para carregar, solte para disparar (25.000 FE)
+Hold to charge, release to fire (5,000 FE) || 按住蓄力，松开发射（5,000 FE） || Удерживайте для зарядки, отпустите для выстрела (5 000 FE) || Mantén para cargar, suelta para disparar (5000 FE) || Halten zum Laden, loslassen zum Feuern (5.000 FE) || Segure para carregar, solte para disparar (5.000 FE)
+Holds when the reading is above the value || 读数高于设定值时成立 || Выполняется, когда показание выше значения || Se cumple cuando la lectura supera el valor || Gilt, wenn der Messwert über dem Wert liegt || Vale quando a leitura está acima do valor
+Holds when the reading is below the value || 读数低于设定值时成立 || Выполняется, когда показание ниже значения || Se cumple cuando la lectura está por debajo del valor || Gilt, wenn der Messwert unter dem Wert liegt || Vale quando a leitura está abaixo do valor
+Holds: %s || 记录：%s || Содержит: %s || Contiene: %s || Enthält: %s || Contém: %s
+Hole Lot of Work || 挖洞大工程 || Яма работы || Un hoyo de trabajo || Ein Loch voller Arbeit || Um buraco de trabalho
+Hostile mobs || 敌对生物 || Враждебные мобы || Criaturas hostiles || Feindliche Kreaturen || Criaturas hostis
+Hydroponic Bed || 水培床 || Гидропонная грядка || Lecho hidropónico || Hydrokulturbeet || Canteiro hidropônico
+Idle || 空闲 || Простаивает || Inactivo || Untätig || Ocioso
+Idle, %s patterns || 空闲，%s 个样板 || Простаивает, шаблонов: %s || Inactiva, %s patrones || Untätig, %s Muster || Ociosa, %s padrões
+If || 如果 || Если || Si || Wenn || Se
+If This, Then That || 如果这样，就那样 || Если это, то то || Si esto, entonces aquello || Wenn dies, dann das || Se isto, então aquilo
+Import Bus || 输入总线 || Шина импорта || Bus de importación || Importbus || Barramento de importação
+Imprinted: %s || 已记录：%s || Записано: %s || Registrado: %s || Gespeichert: %s || Registrado: %s
+Input and output || 输入和输出 || Ввод и вывод || Entrada y salida || Ein- und Ausgabe || Entrada e saída
+Input: items can be put in || 输入：可以放入物品 || Ввод: можно класть предметы || Entrada: se pueden meter objetos || Eingabe: Gegenstände können hinein || Entrada: itens podem ser colocados
+Inventory Sensor || 物品栏传感器 || Датчик инвентаря || Sensor de inventario || Inventarsensor || Sensor de inventário
+Items || 物品 || Предметы || Objetos || Gegenstände || Itens
+Items: %s / %s || 物品：%s / %s || Предметы: %s / %s || Objetos: %s / %s || Gegenstände: %s / %s || Itens: %s / %s
+Its network block isn't there (or isn't loaded) || 它所连接的网络方块不在了（或未加载） || Блок его сети отсутствует (или не загружен) || Su bloque de red no está (o no está cargado) || Sein Netzwerkblock ist nicht da (oder nicht geladen) || O bloco da rede não está lá (ou não está carregado)
+Jetpack Module || 喷气背包模块 || Модуль реактивного ранца || Módulo de mochila propulsora || Jetpack-Modul || Módulo de mochila a jato
+Joulesmith || Joulesmith || Joulesmith || Joulesmith || Joulesmith || Joulesmith
+Joulesmith machine progress || Joulesmith 机器进度 || Прогресс машин Joulesmith || Progreso de máquinas de Joulesmith || Joulesmith-Maschinenfortschritt || Progresso das máquinas Joulesmith
+Joulesmith solar output || Joulesmith 太阳能输出 || Выработка солнечных панелей Joulesmith || Producción solar de Joulesmith || Joulesmith-Solarleistung || Produção solar Joulesmith
+Jump Boost Module || 跳跃提升模块 || Модуль прыгучести || Módulo de supersalto || Sprungkraft-Modul || Módulo de super pulo
+Jump about two blocks high || 跳跃高度约两格 || Прыжок примерно на два блока || Salta unos dos bloques de alto || Springe etwa zwei Blöcke hoch || Pule cerca de dois blocos de altura
+Laser Engraver || 激光蚀刻机 || Лазерный гравёр || Grabador láser || Lasergravierer || Gravador a laser
+Latex || 乳胶 || Латекс || Látex || Latex || Látex
+Lay out a recipe in the grid first || 请先在网格中摆好配方 || Сначала разложите рецепт в сетке || Primero coloca una receta en la cuadrícula || Lege zuerst ein Rezept ins Raster || Primeiro monte uma receita na grade
+Left || 左 || Слева || Izquierda || Links || Esquerda
+Left-click: next   Right-click: back || 左键：下一个   右键：上一个 || ЛКМ: далее   ПКМ: назад || Clic izquierdo: siguiente   Clic derecho: anterior || Linksklick: weiter   Rechtsklick: zurück || Clique esquerdo: próximo   Clique direito: anterior
+Lifesteal Module || 吸血模块 || Модуль вампиризма || Módulo de robo de vida || Lebensraub-Modul || Módulo de roubo de vida
+Lift Off || 升空 || Взлёт || Despegue || Abheben || Decolagem
+Linked to %s, %s, %s || 已连接到 %s, %s, %s || Привязан к %s, %s, %s || Vinculado a %s, %s, %s || Verknüpft mit %s, %s, %s || Vinculado a %s, %s, %s
+Linked to this network || 已连接到此网络 || Привязан к этой сети || Vinculado a esta red || Mit diesem Netzwerk verknüpft || Vinculado a esta rede
+Liquid Latex || 液态乳胶 || Жидкий латекс || Látex líquido || Flüssiges Latex || Látex líquido
+Liquid Latex Bucket || 液态乳胶桶 || Ведро жидкого латекса || Cubo de látex líquido || Eimer mit flüssigem Latex || Balde de látex líquido
+Liquid XP || 液态经验 || Жидкий опыт || Experiencia líquida || Flüssige Erfahrung || Experiência líquida
+Lit || 已点燃 || Горит || Encendido || Gezündet || Aceso
+Logic Controller || 逻辑控制器 || Логический контроллер || Controlador lógico || Logiksteuerung || Controlador lógico
+Looting III || 抢夺 III || Добыча III || Botín III || Plünderung III || Saque III
+Looting Module || 抢夺模块 || Модуль добычи || Módulo de botín || Plünderungsmodul || Módulo de saque
+Machine bubbles || 机器冒泡 || Машина булькает || La máquina burbujea || Maschine blubbert || A máquina borbulha
+Machine crackles || 机器噼啪作响 || Машина потрескивает || La máquina crepita || Maschine knistert || A máquina crepita
+Machine grinds || 机器研磨 || Машина перемалывает || La máquina tritura || Maschine mahlt || A máquina tritura
+Machine hums || 机器嗡嗡作响 || Машина гудит || La máquina zumba || Maschine summt || A máquina zumbe
+Machine presses || 机器冲压 || Машина прессует || La máquina prensa || Maschine presst || A máquina prensa
+Machine: turn it to face the next way || 机器：转向下一个方向 || Машина: повернуть в следующую сторону || Máquina: gírala hacia la siguiente dirección || Maschine: in die nächste Richtung drehen || Máquina: gire para a próxima direção
+Magnet Module || 磁铁模块 || Модуль магнита || Módulo imán || Magnetmodul || Módulo ímã
+Make a Basic Circuit: tier 2 begins || 制作基础电路板：第 2 阶开始 || Создайте базовую схему: начинается уровень 2 || Fabrica un circuito básico: empieza el nivel 2 || Stelle einen einfachen Schaltkreis her: Stufe 2 beginnt || Faça um circuito básico: começa o nível 2
+Make a Biofuel Generator || 制作生物燃料发电机 || Создайте генератор на биотопливе || Fabrica un generador de biocombustible || Stelle einen Biokraftstoffgenerator her || Faça um gerador de biocombustível
+Make a Combustion Generator || 制作燃烧发电机 || Создайте генератор сгорания || Fabrica un generador de combustión || Stelle einen Verbrennungsgenerator her || Faça um gerador de combustão
+Make a Crusher: two dusts from every ore || 制作粉碎机：每份矿石出两份粉 || Создайте дробилку: две пыли из каждой руды || Fabrica una trituradora: dos polvos de cada mena || Stelle einen Zerkleinerer her: zwei Staub aus jedem Erz || Faça um triturador: dois pós de cada minério
+Make a Flight Module || 制作飞行模块 || Создайте модуль полёта || Fabrica un módulo de vuelo || Stelle ein Flugmodul her || Faça um módulo de voo
+Make a Logic Controller || 制作逻辑控制器 || Создайте логический контроллер || Fabrica un controlador lógico || Stelle eine Logiksteuerung her || Faça um controlador lógico

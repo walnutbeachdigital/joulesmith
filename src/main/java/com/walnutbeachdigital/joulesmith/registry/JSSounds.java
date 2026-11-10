@@ -44,7 +44,9 @@ public final class JSSounds {
             Map.entry("steam_turbine", TURBINE), Map.entry("wind_turbine", TURBINE),
             Map.entry("centrifuge", HUM), Map.entry("circuit_assembler", HUM), Map.entry("hydroponic_bed", HUM),
             Map.entry("autocrafter", HUM),
-            Map.entry("auto_enchanter", ENCHANT));
+            Map.entry("auto_enchanter", ENCHANT),
+            Map.entry("laser_engraver", HUM), Map.entry("drone_hub", HUM), Map.entry("fusion_core", TURBINE),
+            Map.entry("fission_reactor", TURBINE), Map.entry("plasma_refinery", FURNACE), Map.entry("mob_duplicator", FLUID));
 
     public static SoundEvent forBlock(String id) {
         var holder = BY_BLOCK.get(id);

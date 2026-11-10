@@ -17,19 +17,25 @@
         "author": "Joulesmith",
         "resolved": true,
         "pages": [
-          "\u00a7lJoulesmith\u00a7r\nA tech mod in three tiers: Basic, Reinforced and Advanced.\n\nEvery block's tooltip says what it does, and JEI shows every recipe and an info page for each machine.",
+          "\u00a7lJoulesmith\u00a7r\nA tech mod in five tiers: Basic, Reinforced, Advanced, Elite and Ultimate.\n\nEvery block's tooltip says what it does, and JEI shows every recipe and an info page for each machine.",
           "\u00a7lGetting started\u00a7r\nMine tin, lead, silver, nickel and uranium. Smelt raw ore for ingots.\n\nBuild a Combustion Generator: it burns furnace fuel for power (FE). Join it to machines with Energy Cables.",
-          "\u00a7lMore from ore\u00a7r\nCrusher: one raw ore makes two dusts.\nOre Washer (tier 2): three.\nChemical Dissolver and Crystallizer (tier 3): four.\n\nSmelt dusts in an Electric Furnace.",
-          "\u00a7lTiers\u00a7r\nA Basic Circuit opens tier 2 and an Advanced Circuit tier 3; both come from the Circuit Assembler.\n\nUpgrade Kits raise cables, pipes, batteries, crates, bins, tanks and solar panels a tier where they stand.",
+          "\u00a7lMore from ore\u00a7r\nCrusher: one raw ore makes two dusts.\nOre Washer (tier 2): three.\nChemical Dissolver and Crystallizer (tier 3): four.\nPlasma Refinery (tier 5): five ingots.\n\nSmelt dusts in an Electric Furnace.",
+          "\u00a7lTiers\u00a7r\nA Basic Circuit opens tier 2 and an Advanced Circuit tier 3 (Circuit Assembler). A Processor opens tier 4 and a Quantum Processor tier 5 (Laser Engraver).\n\nUpgrade Kits raise cables, pipes, batteries, crates, bins, tanks and solar panels a tier where they stand.",
           "\u00a7lMachines\u00a7r\nEach has slide-out tabs: redstone mode, side settings (input, output, both, off) and upgrade slots for Speed, Efficiency, Bonus, Eject and Range cards.\n\nHover the red bar to see FE/t.",
           "\u00a7lThe Wrench\u00a7r\nRight-click a machine to turn it. Right-click a pipe or cable side to switch it between connected, push, pull and off.\n\nHold it to see each machine face's side setting in colour.",
           "\u00a7lPipes\u00a7r\nItem Ducts, Fluid Pipes and Energy Cables connect on their own. Set a side to pull to take from an inventory.\n\nPut a Filter Card on a duct side to choose what passes: by item, tag or mod.",
-          "\u00a7lPower\u00a7r\nTier 1: Combustion Generator, Solar Panel.\nTier 2: Biofuel and Geothermal Generators.\nTier 3: Boiler and Steam Turbine, Wind Turbine.\n\nStore it in Batteries.",
+          "\u00a7lPower\u00a7r\nTier 1: Combustion Generator, Solar Panel.\nTier 2: Biofuel and Geothermal Generators.\nTier 3: Boiler and Steam Turbine, Wind Turbine.\nTier 4: Fission Reactor.\nTier 5: Fusion Core.\n\nStore it in Batteries.",
           "\u00a7lRubber and plastic\u00a7r\nRubber trees grow in forests and jungles. Tap a log with a Tree Tap for latex; smelt it into rubber.\n\nThe Fluid Mixer makes plastic from Biofuel and latex, or from oil.",
           "\u00a7lFarming\u00a7r\nPlanters, Harvesters and Tree Farms work the area in front of them. Sprinklers speed growth. Hydroponic Beds grow crops indoors.\n\nThe Mob Grinder stores XP as Liquid XP for the Auto Enchanter.",
           "\u00a7lAutomation\u00a7r\nBlock Placer, Block Breaker, Autocrafter, Mechanical User, Quarry and Mob Fighter.\n\nSensors give redstone from what they read; a Logic Controller turns readings into signals.",
           "\u00a7lPowered gear\u00a7r\nThe Power Drill, Chainsaw, Energy Sword and Exo-Suit run on FE instead of durability.\n\nCharge them on a Charging Pad or by carrying an Energy Cell.",
-          "\u00a7lModules\u00a7r\nAt the Modification Table, fit two modules to a powered item: Fortune, Silk Touch, Range, Magnet, Jetpack, Night Vision, Lifesteal and more.\n\nEach module's tooltip says what it fits."
+          "\u00a7lModules\u00a7r\nAt the Modification Table, fit modules to a powered item (two; four or six on Elite and Ultimate Exo-Suits): Fortune, Silk Touch, Range, Magnet, Jetpack, Night Vision, Lifesteal and more.\n\nEach module's tooltip says what it fits.",
+          "\u00a7lFission\u00a7r\nBuild a 3x3x3 shell of Reactor Casing, Glass and Ports with the Fission Reactor in the middle of one face and the very middle empty.\n\nFeed it uranium and water. It never explodes: with no water it shuts down safely.",
+          "\u00a7lFusion\u00a7r\nMake deuterium from water and tritium from deuterium and uranium dust in the Fluid Mixer.\n\nThe Fusion Core needs 500,000 FE to light, then makes 20,000 FE/t and plasma for the Plasma Refinery.",
+          "\u00a7lWireless\u00a7r\nDye a Wireless Transmitter and Receiver the same colour: the Receiver draws power from Transmitters on its channel within 256 blocks.\n\nThe Wireless Terminal opens a storage network from 64 blocks away.",
+          "\u00a7lStorage network\u00a7r\nCable a Network Core (powered), Drive Bays with Item and Fluid Drives, and a Network Terminal together.\n\nImport and Export Buses move things in and out; filters choose what.",
+          "\u00a7lAuto-crafting\u00a7r\nLay out a recipe in a Crafting Terminal and press Encode to record it on a Blank Pattern. Put Patterns in an Auto-Crafting CPU.\n\nMiddle-click an item in a terminal to have it crafted.",
+          "\u00a7lTier 4 and 5 gear\u00a7r\nOmni-Tool, Railgun and Plasma Cannon. Upgrade Exo-Suit pieces to Elite and Ultimate at a Smithing Table; modules and charge carry over.\n\nThe Drone Hub's drones fetch drops and harvest crops."
         ]
       }
     }

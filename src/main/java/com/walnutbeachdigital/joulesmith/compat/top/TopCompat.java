@@ -67,6 +67,11 @@ public final class TopCompat {
             if (used > 0) text.invoke(info, Component.translatable("gui.joulesmith.energy.using", String.format("%,d", used)));
             int mode = machine.value(4);
             if (mode != 0) text.invoke(info, Component.translatable(RedstoneMode.values()[Math.floorMod(mode, RedstoneMode.values().length)].key()));
+            if (machine.heatPercent() >= 0) text.invoke(info, Component.translatable("gui.joulesmith.heat", machine.heatPercent()));
+            if (machine.status() > 0) text.invoke(info, Component.translatable("gui.joulesmith.status." + machine.status()));
+        } else if (level.getBlockState(pos).getBlock() instanceof com.walnutbeachdigital.joulesmith.network.NetworkPart
+                || level.getBlockState(pos).getBlock() instanceof com.walnutbeachdigital.joulesmith.energy.wireless.WirelessEnergyBlock) {
+            for (Component line : com.walnutbeachdigital.joulesmith.network.NetworkInfo.lines(level, pos)) text.invoke(info, line);
         } else if (level.getBlockState(pos).getBlock() instanceof SolarPanelBlock panel) {
             text.invoke(info, Component.translatable("jade.joulesmith.making", SolarPanelBlockEntity.output(level, pos, panel.rate())));
         }

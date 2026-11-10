@@ -26,6 +26,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
  * The Network Terminal: a 9x6 grid of everything on the network, sorted by count, with a search box (type
  * "@mod" to search by mod). Click to take a stack, right-click for half, shift-click to send a stack to your
  * inventory; click with an item held to put it in (right-click: one). Shift-click your own items to store them.
+ * Middle-click something a pattern makes to craft a batch (Shift: a stack).
  */
 public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
     private static final ResourceLocation TEXTURE = Joulesmith.id("textures/gui/network_terminal.png");
@@ -186,7 +187,7 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
     @Override
     public boolean mouseClicked(double mx, double my, int button) {
         int cell = cellAt(mx, my);
-        if (cell >= 0 && (button == 0 || button == 1)) {
+        if (cell >= 0 && (button == 0 || button == 1 || button == 2)) {
             ItemStack carried = menu.getCarried();
             int action;
             ItemStack like = ItemStack.EMPTY;
@@ -200,7 +201,8 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
                 if (cell >= view.size() || !view.get(cell).fluid().isEmpty()) return true;
                 Entry c = view.get(cell);
                 like = c.item();
-                if (craftable(like) && (Screen.hasControlDown() || c.count() == 0)) {
+                // middle-click crafts (Ctrl-click too, off a Mac); a plain click on something none of is stored crafts it
+                if (craftable(like) && (button == 2 || (Screen.hasControlDown() && !net.minecraft.client.Minecraft.ON_OSX) || c.count() == 0)) {
                     action = Screen.hasShiftDown() ? TerminalMenu.CRAFT_STACK : TerminalMenu.CRAFT_ONE;
                 } else {
                     action = Screen.hasShiftDown() ? TerminalMenu.TAKE_TO_INVENTORY : button == 0 ? TerminalMenu.TAKE_STACK : TerminalMenu.TAKE_HALF;
