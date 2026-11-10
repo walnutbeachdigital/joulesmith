@@ -7,6 +7,7 @@ import com.walnutbeachdigital.joulesmith.registry.JSBlockEntities;
 import com.walnutbeachdigital.joulesmith.registry.JSBlocks;
 import com.walnutbeachdigital.joulesmith.registry.JSCapabilities;
 import com.walnutbeachdigital.joulesmith.registry.JSCreativeTabs;
+import com.walnutbeachdigital.joulesmith.registry.JSDataComponents;
 import com.walnutbeachdigital.joulesmith.registry.JSItems;
 import com.walnutbeachdigital.joulesmith.registry.JSMenus;
 import com.walnutbeachdigital.joulesmith.registry.JSRecipes;
@@ -27,6 +28,7 @@ public class Joulesmith {
         JSCreativeTabs.TABS.register(modEventBus);
         JSBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         JSMenus.MENUS.register(modEventBus);
+        JSDataComponents.COMPONENTS.register(modEventBus);
         JSRecipes.TYPES.register(modEventBus);
         JSRecipes.SERIALIZERS.register(modEventBus);
         modEventBus.addListener(JSCapabilities::register);

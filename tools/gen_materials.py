@@ -282,6 +282,7 @@ MACHINES = {
     "basic_battery": {"name": "Basic Battery", "front": "basic_battery_front"},
     "electric_furnace": {"name": "Electric Furnace", "front": "electric_furnace_front"},
     "crusher": {"name": "Crusher", "front": "crusher_front"},
+    "pump": {"name": "Pump", "front": "pump_front"},
 }
 CREATIVE = {"creative_power_cell": "Creative Power Cell"}
 ROTATION = {"north": 0, "east": 90, "south": 180, "west": 270}
@@ -340,6 +341,92 @@ tags[("minecraft", "block", "mineable/pickaxe")].append(f"{MOD}:energy_cable")
 write(os.path.join(DATA, "minecraft", "tags", "block", "mineable/pickaxe.json"),
       {"replace": False, "values": tags[("minecraft", "block", "mineable/pickaxe")]})
 
+# ---- item ducts and fluid pipes: shared parent models (built facing north), one texture per pipe
+def model(name, obj):
+    write(os.path.join(ASSETS, "models", "block", f"{name}.json"), obj)
+
+def face(uv, rotation=0):
+    f = {"uv": uv, "texture": "#pipe"}
+    if rotation:
+        f["rotation"] = rotation
+    return f
+
+def attach_faces(u0, depth):
+    """The plate where a pipe meets a block: front and back from the attachment sheet, thin edges below."""
+    return {"north": {"uv": [u0, 0, u0 + 8, 8], "texture": "#attach"},
+            "south": {"uv": [u0, 0, u0 + 8, 8], "texture": "#attach"},
+            "up": {"uv": [u0, 8, u0 + 8, 8 + depth], "texture": "#attach"},
+            "down": {"uv": [u0, 8, u0 + 8, 8 + depth], "texture": "#attach"},
+            "east": {"uv": [u0, 8, u0 + depth, 16], "texture": "#attach"},
+            "west": {"uv": [u0, 8, u0 + depth, 16], "texture": "#attach"}}
+
+def arm(z0, z1):
+    length = z1 - z0
+    return {"from": [5, 5, z0], "to": [11, 11, z1], "faces": {
+        "east": face([0, 0, length, 6]), "west": face([0, 0, length, 6]),
+        "up": face([0, 0, length, 6], 90), "down": face([0, 0, length, 6], 90)}}
+
+ATTACH = f"{MOD}:block/pipe_attachment"
+model("pipe_core", {"parent": "minecraft:block/block", "textures": {"particle": "#pipe"},
+      "elements": [{"from": [5, 5, 5], "to": [11, 11, 11], "faces": {f: face([0, 6, 6, 12]) for f in SIDES}}]})
+model("pipe_arm", {"parent": "minecraft:block/block", "textures": {"particle": "#pipe"}, "elements": [arm(0, 5)]})
+model("pipe_push", {"parent": "minecraft:block/block", "textures": {"particle": "#pipe", "attach": ATTACH},
+      "elements": [arm(2, 5), {"from": [4, 4, 0], "to": [12, 12, 2], "faces": attach_faces(0, 2)}]})
+model("pipe_pull", {"parent": "minecraft:block/block", "textures": {"particle": "#pipe", "attach": ATTACH},
+      "elements": [arm(3, 5), {"from": [4, 4, 0], "to": [12, 12, 3], "faces": attach_faces(8, 3)}]})
+
+PIPES = {"item_duct": "Item Duct", "reinforced_item_duct": "Reinforced Item Duct",
+         "fluid_pipe": "Fluid Pipe", "reinforced_fluid_pipe": "Reinforced Fluid Pipe"}
+SIDE_ROT = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 270},
+            "up": {"x": 270}, "down": {"x": 90}}
+
+def simple_loot(bid, functions=None):
+    entry = {"type": "minecraft:item", "name": f"{MOD}:{bid}"}
+    if functions:
+        entry["functions"] = functions
+    write(os.path.join(DATA, MOD, "loot_table", "blocks", f"{bid}.json"), {
+        "type": "minecraft:block", "random_sequence": f"{MOD}:blocks/{bid}",
+        "pools": [{"rolls": 1, "bonus_rolls": 0, "entries": [entry],
+                   "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
+
+for pid in PIPES:
+    tex = f"{MOD}:block/{pid}"
+    for part in ("core", "arm", "push", "pull"):
+        model(f"{pid}_{part}", {"parent": f"{MOD}:block/pipe_{part}", "textures": {"pipe": tex}})
+    parts = [{"apply": {"model": f"{MOD}:block/{pid}_core"}}]
+    for side, rot in SIDE_ROT.items():
+        for look in ("pipe", "push", "pull"):
+            part = "arm" if look == "pipe" else look
+            parts.append({"when": {side: look}, "apply": {"model": f"{MOD}:block/{pid}_{part}", **rot}})
+    write(os.path.join(ASSETS, "blockstates", f"{pid}.json"), {"multipart": parts})
+    write(os.path.join(ASSETS, "models", "item", f"{pid}.json"), {
+        "parent": "minecraft:block/block", "textures": {"particle": tex, "pipe": tex},
+        "elements": [{"from": [0, 5, 5], "to": [16, 11, 11], "faces": {
+            "east": face([0, 6, 6, 12]), "west": face([0, 6, 6, 12]),
+            "north": face([0, 0, 16, 6]), "south": face([0, 0, 16, 6]),
+            "up": face([0, 0, 16, 6]), "down": face([0, 0, 16, 6])}}],
+        "display": {"gui": {"rotation": [30, 45, 0], "scale": [0.8, 0.8, 0.8]}}})
+    simple_loot(pid)
+    tags[("minecraft", "block", "mineable/pickaxe")].append(f"{MOD}:{pid}")
+
+# ---- fluid tank: frame and glass (cut out so the fluid drawn inside shows); keeps its fluid when broken
+write(os.path.join(ASSETS, "blockstates", "fluid_tank.json"), {"variants": {"": {"model": f"{MOD}:block/fluid_tank"}}})
+model("fluid_tank", {"parent": "minecraft:block/cube_column", "render_type": "minecraft:cutout",
+      "textures": {"side": f"{MOD}:block/fluid_tank_side", "end": f"{MOD}:block/fluid_tank_top"}})
+write(os.path.join(ASSETS, "models", "item", "fluid_tank.json"), {"parent": f"{MOD}:block/fluid_tank"})
+simple_loot("fluid_tank", [{"function": "minecraft:copy_components", "source": "block_entity",
+                            "include": [f"{MOD}:fluid"]}])
+tags[("minecraft", "block", "mineable/pickaxe")].append(f"{MOD}:fluid_tank")
+
+# ---- plain items
+for iid in ("wrench", "filter_card"):
+    write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
+          {"parent": "minecraft:item/handheld" if iid == "wrench" else "minecraft:item/generated",
+           "textures": {"layer0": f"{MOD}:item/{iid}"}})
+
+write(os.path.join(DATA, "minecraft", "tags", "block", "mineable/pickaxe.json"),
+      {"replace": False, "values": tags[("minecraft", "block", "mineable/pickaxe")]})
+
 # ---- crafting recipes for the machines
 def shaped(name, pattern, key, count=1):
     write(os.path.join(DATA, MOD, "recipe", f"{name}.json"), {
@@ -357,6 +444,16 @@ shaped("basic_battery", ["ILI", "LRL", "ILI"],
 shaped("crusher", ["IGI", "FPF", "IRI"],
        {"I": "#c:ingots/iron", "G": "#c:gears/copper", "F": "minecraft:flint", "P": "minecraft:piston", "R": "#c:dusts/redstone"})
 shaped("energy_cable", ["CRC"], {"C": "#c:ingots/copper", "R": "#c:dusts/redstone"}, count=6)
+shaped("pump", ["IBI", "PGP", "IRI"],
+       {"I": "#c:ingots/iron", "B": "minecraft:bucket", "P": f"{MOD}:fluid_pipe", "G": "#c:gears/copper", "R": "#c:dusts/redstone"})
+shaped("item_duct", ["LGL"], {"L": "#c:ingots/lead", "G": "#c:glass_blocks"}, count=6)
+shaped("fluid_pipe", ["TGT"], {"T": "#c:ingots/tin", "G": "#c:glass_blocks"}, count=6)
+# Tier 2 for now: eight tier 1 pipes around an iron gear. These move to steel and invar once the Alloy Smelter is in.
+shaped("reinforced_item_duct", ["DDD", "DGD", "DDD"], {"D": f"{MOD}:item_duct", "G": "#c:gears/iron"}, count=8)
+shaped("reinforced_fluid_pipe", ["DDD", "DGD", "DDD"], {"D": f"{MOD}:fluid_pipe", "G": "#c:gears/iron"}, count=8)
+shaped("fluid_tank", ["IGI", "G G", "IGI"], {"I": "#c:ingots/copper", "G": "#c:glass_blocks"})
+shaped("wrench", ["I I", " T ", " I "], {"I": "#c:ingots/iron", "T": "#c:ingots/tin"})
+shaped("filter_card", ["NPN", "PRP", "NPN"], {"N": "#c:nuggets/tin", "P": "minecraft:paper", "R": "#c:dusts/redstone"})
 
 # ---- crushing recipes (Crusher)
 def crushing(name, ingredient, result, count=1, energy=2000, time=100):
@@ -378,6 +475,39 @@ crushing("sand_from_gravel", "#c:gravels", "minecraft:sand", 1, 1200, 60)
 lang.update({f"block.{MOD}.{k}": v["name"] for k, v in MACHINES.items()})
 lang.update({f"block.{MOD}.{k}": v for k, v in CREATIVE.items()})
 lang[f"block.{MOD}.energy_cable"] = "Energy Cable"
+lang.update({f"block.{MOD}.{k}": v for k, v in PIPES.items()})
+lang.update({
+    f"block.{MOD}.fluid_tank": "Fluid Tank",
+    f"item.{MOD}.wrench": "Wrench",
+    f"item.{MOD}.filter_card": "Filter Card",
+    "message.joulesmith.pipe.mode.push": "Push: sends into this block",
+    "message.joulesmith.pipe.mode.pull": "Pull: takes out of this block",
+    "message.joulesmith.pipe.mode.both": "Push and pull",
+    "message.joulesmith.pipe.mode.disabled": "Off",
+    "message.joulesmith.pipe.joined": "Pipes joined",
+    "message.joulesmith.pipe.split": "Pipes split apart",
+    "message.joulesmith.pipe.nothing": "Nothing to connect to on that side",
+    "message.joulesmith.pipe.no_options": "Nothing else to set on this pipe",
+    "message.joulesmith.routing": "Routing: %s",
+    "message.joulesmith.routing.round_robin": "Round robin (takes turns)",
+    "message.joulesmith.routing.nearest": "Nearest first",
+    "message.joulesmith.routing.furthest": "Furthest first",
+    "message.joulesmith.routing.pull_only": "Routing only applies to a side set to pull",
+    "message.joulesmith.filter.added": "Filter Card fitted",
+    "message.joulesmith.filter.removed": "Filter Card removed",
+    "message.joulesmith.filter.no_inventory": "Fit Filter Cards on a side that touches a block",
+    "message.joulesmith.fluid": "%s: %s / %s mB",
+    "message.joulesmith.fluid.empty": "Empty: 0 / %s mB",
+    "gui.joulesmith.filter.whitelist": "Whitelist: only these items pass",
+    "gui.joulesmith.filter.blacklist": "Blacklist: everything but these items passes",
+    "gui.joulesmith.filter.hint": "Click with an item to add it; click with an empty hand to clear",
+    "tooltip.joulesmith.filter.whitelist": "Whitelist",
+    "tooltip.joulesmith.filter.blacklist": "Blacklist",
+    "tooltip.joulesmith.filter.use": "Use to edit; right-click a duct's side to fit",
+    "tooltip.joulesmith.wrench.pipe": "Pipe side: push, pull, both or off",
+    "tooltip.joulesmith.wrench.sneak": "Sneak on a duct side: remove filter or change routing",
+    "tooltip.joulesmith.wrench.machine": "Machine: turn it to face the next way",
+})
 lang.update({
     "jei.joulesmith.crushing": "Crushing",
     "jei.joulesmith.energy": "%s FE",

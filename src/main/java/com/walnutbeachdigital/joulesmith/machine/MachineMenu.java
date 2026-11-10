@@ -5,6 +5,10 @@ import java.util.List;
 import com.walnutbeachdigital.joulesmith.registry.JSMenus;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -27,6 +31,7 @@ public class MachineMenu extends AbstractContainerMenu {
     private final ContainerData data;
     private final List<SlotDef> slotDefs;
     private final MachineBlockEntity.ProgressStyle progressStyle;
+    private final int tankX;
 
     /** Server side: wraps the real machine. */
     public MachineMenu(int id, Inventory inventory, MachineBlockEntity machine) {
@@ -47,6 +52,7 @@ public class MachineMenu extends AbstractContainerMenu {
         }
         this.slotDefs = be.slotDefs();
         this.progressStyle = be.progressStyle();
+        this.tankX = be.tankX();
         IItemHandler handler = items != null ? items : new ItemStackHandler(slotDefs.size());
         this.data = data != null ? data : new SimpleContainerData(MachineBlockEntity.VALUES * 2);
         for (int i = 0; i < slotDefs.size(); i++) {
@@ -84,6 +90,22 @@ public class MachineMenu extends AbstractContainerMenu {
     /** A machine value, rebuilt from the two 16-bit halves it is synced in. */
     public int value(int index) {
         return (data.get(index * 2) & 0xFFFF) | ((data.get(index * 2 + 1) & 0xFFFF) << 16);
+    }
+
+    public int tankX() {
+        return tankX;
+    }
+
+    /** The fluid in the machine's tank (amount included), or empty. */
+    public FluidStack fluid() {
+        int amount = value(7);
+        if (amount <= 0) return FluidStack.EMPTY;
+        Fluid fluid = BuiltInRegistries.FLUID.byId(value(6));
+        return fluid == Fluids.EMPTY ? FluidStack.EMPTY : new FluidStack(fluid, amount);
+    }
+
+    public int tankCapacity() {
+        return value(8);
     }
 
     public RedstoneMode redstoneMode() {

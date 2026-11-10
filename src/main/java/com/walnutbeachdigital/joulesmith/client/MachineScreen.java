@@ -13,6 +13,11 @@ import com.walnutbeachdigital.joulesmith.machine.SlotDef;
 import com.walnutbeachdigital.joulesmith.machine.SlotRole;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -36,6 +41,8 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
     private static final int BAR_U = 202, BAR_V = 0;            // 16x50 frame, 14x48 fill to its right
     private static final int FLAME_U = 176, FLAME_V = 78;       // 14x14 unlit, lit to its right
     private static final int FLAME_X = 81, FLAME_Y = 35;
+    private static final int MARKS_U = 176, MARKS_V = 96;       // 14x48 gauge marks drawn over the fluid
+    private static final int TANK_Y = 17;
 
     private static final int BAR_X = 8, BAR_Y = 17, ARROW_X = 79, ARROW_Y = 35;
     private static final int TAB = 24, SIDE_PANEL = 62;
@@ -94,7 +101,28 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
             }
             case NONE -> { }
         }
+        if (menu.tankCapacity() > 0) drawTank(g, x + menu.tankX(), y + TANK_Y);
         drawTabs(g, x + imageWidth, y);
+    }
+
+    /** A fluid gauge: the same frame as the energy bar, filled from the bottom with the fluid's own texture. */
+    private void drawTank(GuiGraphics g, int x, int y) {
+        g.blit(TEXTURE, x, y, BAR_U, BAR_V, 16, 50);
+        FluidStack fluid = menu.fluid();
+        int capacity = Math.max(1, menu.tankCapacity());
+        if (!fluid.isEmpty()) {
+            int h = Math.max(1, (int) Math.round(48.0 * Math.min(fluid.getAmount(), capacity) / capacity));
+            IClientFluidTypeExtensions ext = IClientFluidTypeExtensions.of(fluid.getFluid());
+            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(ext.getStillTexture(fluid));
+            int color = ext.getTintColor(fluid);
+            float r = (color >> 16 & 255) / 255f, gr = (color >> 8 & 255) / 255f, b = (color & 255) / 255f;
+            int bottom = y + 1 + 48;
+            for (int drawn = 0; drawn < h; drawn += 16) {
+                int piece = Math.min(16, h - drawn);
+                g.blit(x + 1, bottom - drawn - piece, 0, 14, piece, sprite, r, gr, b, 1f);
+            }
+        }
+        g.blit(TEXTURE, x + 1, y + 1, MARKS_U, MARKS_V, 14, 48);
     }
 
     // ------------------------------------------------------------------ tabs
@@ -200,6 +228,11 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
         List<Component> tip = new ArrayList<>();
         if (rx >= BAR_X && rx < BAR_X + 16 && ry >= BAR_Y && ry < BAR_Y + 50) {
             tip.add(Component.translatable("gui.joulesmith.energy", String.format("%,d", menu.value(0)), String.format("%,d", menu.value(1))));
+        } else if (menu.tankCapacity() > 0 && rx >= menu.tankX() && rx < menu.tankX() + 16 && ry >= TANK_Y && ry < TANK_Y + 50) {
+            FluidStack fluid = menu.fluid();
+            String cap = String.format("%,d", menu.tankCapacity());
+            tip.add(fluid.isEmpty() ? Component.translatable("message.joulesmith.fluid.empty", cap)
+                    : Component.translatable("message.joulesmith.fluid", fluid.getHoverName(), String.format("%,d", fluid.getAmount()), cap));
         } else if (menu.progressStyle() == MachineBlockEntity.ProgressStyle.ARROW
                 && rx >= ARROW_X && rx < ARROW_X + 24 && ry >= ARROW_Y && ry < ARROW_Y + 17 && menu.value(3) > 0) {
             tip.add(Component.translatable("gui.joulesmith.progress", menu.value(2) * 100 / menu.value(3)));

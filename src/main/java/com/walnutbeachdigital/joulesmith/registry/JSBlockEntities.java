@@ -7,6 +7,10 @@ import com.walnutbeachdigital.joulesmith.machine.creative.CreativePowerCellBlock
 import com.walnutbeachdigital.joulesmith.machine.crusher.CrusherBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.generator.CombustionGeneratorBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.furnace.ElectricFurnaceBlockEntity;
+import com.walnutbeachdigital.joulesmith.machine.pump.PumpBlockEntity;
+import com.walnutbeachdigital.joulesmith.storage.tank.FluidTankBlockEntity;
+import com.walnutbeachdigital.joulesmith.transport.fluid.FluidPipeBlockEntity;
+import com.walnutbeachdigital.joulesmith.transport.item.ItemDuctBlockEntity;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -40,6 +44,22 @@ public final class JSBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnergyCableBlockEntity>> ENERGY_CABLE =
             BLOCK_ENTITIES.register("energy_cable", () -> BlockEntityType.Builder
                     .of(EnergyCableBlockEntity::new, JSBlocks.ENERGY_CABLE.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ItemDuctBlockEntity>> ITEM_DUCT =
+            BLOCK_ENTITIES.register("item_duct", () -> BlockEntityType.Builder
+                    .of(ItemDuctBlockEntity::new, JSBlocks.ITEM_DUCT.get(), JSBlocks.REINFORCED_ITEM_DUCT.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidPipeBlockEntity>> FLUID_PIPE =
+            BLOCK_ENTITIES.register("fluid_pipe", () -> BlockEntityType.Builder
+                    .of(FluidPipeBlockEntity::new, JSBlocks.FLUID_PIPE.get(), JSBlocks.REINFORCED_FLUID_PIPE.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidTankBlockEntity>> FLUID_TANK =
+            BLOCK_ENTITIES.register("fluid_tank", () -> BlockEntityType.Builder
+                    .of(FluidTankBlockEntity::new, JSBlocks.FLUID_TANK.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PumpBlockEntity>> PUMP =
+            BLOCK_ENTITIES.register("pump", () -> BlockEntityType.Builder
+                    .of(PumpBlockEntity::new, JSBlocks.PUMP.get()).build(null));
 
     private JSBlockEntities() {}
 }

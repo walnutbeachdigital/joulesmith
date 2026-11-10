@@ -8,6 +8,7 @@ import com.walnutbeachdigital.joulesmith.energy.JSEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Containers;
@@ -23,6 +24,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
@@ -205,6 +208,21 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         return energy;
     }
 
+    /** The machine's fluid tank, shown as a gauge on its screen, or null if it has none. */
+    public FluidTank fluidTank() {
+        return null;
+    }
+
+    /** Where the fluid gauge sits on the screen. */
+    public int tankX() {
+        return 152;
+    }
+
+    /** What pipes see on a face for fluids. None by default. */
+    public IFluidHandler fluidHandler(Direction side) {
+        return null;
+    }
+
     /** What cables see on a face. By default the whole store, on every face. */
     public IEnergyStorage energyHandler(Direction side) {
         return energy;
@@ -269,8 +287,11 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         return true;
     }
 
-    /** Values the screen shows: 0 energy, 1 capacity, 2 progress, 3 max progress, 4 redstone mode, 5 face settings. */
-    public static final int VALUES = 6;
+    /**
+     * Values the screen shows: 0 energy, 1 capacity, 2 progress, 3 max progress, 4 redstone mode,
+     * 5 face settings, 6 fluid (registry id), 7 fluid amount, 8 tank capacity.
+     */
+    public static final int VALUES = 9;
 
     public int value(int index) {
         return switch (index) {
@@ -284,6 +305,9 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
                 for (int f = 0; f < sides.length; f++) packed |= sides[f].ordinal() << (f * 2);
                 yield packed;
             }
+            case 6 -> fluidTank() == null || fluidTank().isEmpty() ? 0 : BuiltInRegistries.FLUID.getId(fluidTank().getFluid().getFluid());
+            case 7 -> fluidTank() == null ? 0 : fluidTank().getFluidAmount();
+            case 8 -> fluidTank() == null ? 0 : fluidTank().getCapacity();
             default -> 0;
         };
     }

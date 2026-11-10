@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import com.walnutbeachdigital.joulesmith.Joulesmith;
+import com.walnutbeachdigital.joulesmith.item.WrenchItem;
+import com.walnutbeachdigital.joulesmith.item.filter.FilterCardItem;
 import com.walnutbeachdigital.joulesmith.material.Metal;
+import com.walnutbeachdigital.joulesmith.storage.tank.FluidTankItem;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -28,12 +32,21 @@ public final class JSItems {
     public static final Map<Metal, DeferredItem<Item>> GEAR = new EnumMap<>(Metal.class);
     public static final Map<Metal, DeferredItem<Item>> WIRE = new EnumMap<>(Metal.class);
 
+    public static final DeferredItem<WrenchItem> WRENCH = register("wrench", () -> new WrenchItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<FilterCardItem> FILTER_CARD = register("filter_card", () -> new FilterCardItem(new Item.Properties().stacksTo(16)));
+
     static {
         blockItem(JSBlocks.COMBUSTION_GENERATOR);
         blockItem(JSBlocks.BASIC_BATTERY);
         blockItem(JSBlocks.ENERGY_CABLE);
         blockItem(JSBlocks.ELECTRIC_FURNACE);
         blockItem(JSBlocks.CRUSHER);
+        blockItem(JSBlocks.PUMP);
+        blockItem(JSBlocks.ITEM_DUCT);
+        blockItem(JSBlocks.REINFORCED_ITEM_DUCT);
+        blockItem(JSBlocks.FLUID_PIPE);
+        blockItem(JSBlocks.REINFORCED_FLUID_PIPE);
+        register("fluid_tank", () -> new FluidTankItem(JSBlocks.FLUID_TANK.get(), new Item.Properties()));
         blockItem(JSBlocks.CREATIVE_POWER_CELL);
         for (Metal metal : Metal.values()) {
             String id = metal.id();
@@ -53,6 +66,12 @@ public final class JSItems {
             if (metal.hasGear()) GEAR.put(metal, item(id + "_gear"));
             if (metal.hasWire()) WIRE.put(metal, item(id + "_wire"));
         }
+    }
+
+    private static <I extends Item> DeferredItem<I> register(String name, Supplier<I> factory) {
+        DeferredItem<I> item = ITEMS.register(name, factory);
+        TAB_ORDER.add(item);
+        return item;
     }
 
     private static DeferredItem<Item> item(String name) {

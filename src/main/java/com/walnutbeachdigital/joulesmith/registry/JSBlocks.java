@@ -14,6 +14,10 @@ import com.walnutbeachdigital.joulesmith.machine.crusher.CrusherBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.generator.CombustionGeneratorBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.creative.CreativePowerCellBlock;
 import com.walnutbeachdigital.joulesmith.machine.furnace.ElectricFurnaceBlock;
+import com.walnutbeachdigital.joulesmith.machine.pump.PumpBlockEntity;
+import com.walnutbeachdigital.joulesmith.storage.tank.FluidTankBlock;
+import com.walnutbeachdigital.joulesmith.transport.fluid.FluidPipeBlock;
+import com.walnutbeachdigital.joulesmith.transport.item.ItemDuctBlock;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -71,6 +75,28 @@ public final class JSBlocks {
     public static final DeferredBlock<EnergyCableBlock> ENERGY_CABLE = BLOCKS.register("energy_cable",
             () -> new EnergyCableBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.5f)
                     .sound(SoundType.WOOL).noOcclusion()));
+
+    // ---- transport and fluid storage
+    private static BlockBehaviour.Properties pipe(MapColor color) {
+        return BlockBehaviour.Properties.of().mapColor(color).strength(0.6f).sound(SoundType.METAL).noOcclusion();
+    }
+
+    public static final DeferredBlock<ItemDuctBlock> ITEM_DUCT = BLOCKS.register("item_duct",
+            () -> new ItemDuctBlock(1, pipe(MapColor.COLOR_GRAY)));
+    public static final DeferredBlock<ItemDuctBlock> REINFORCED_ITEM_DUCT = BLOCKS.register("reinforced_item_duct",
+            () -> new ItemDuctBlock(2, pipe(MapColor.COLOR_GRAY)));
+    public static final DeferredBlock<FluidPipeBlock> FLUID_PIPE = BLOCKS.register("fluid_pipe",
+            () -> new FluidPipeBlock(1, pipe(MapColor.METAL)));
+    public static final DeferredBlock<FluidPipeBlock> REINFORCED_FLUID_PIPE = BLOCKS.register("reinforced_fluid_pipe",
+            () -> new FluidPipeBlock(2, pipe(MapColor.METAL)));
+
+    public static final DeferredBlock<FluidTankBlock> FLUID_TANK = BLOCKS.register("fluid_tank",
+            () -> new FluidTankBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(2.0f, 6.0f)
+                    .requiresCorrectToolForDrops().sound(SoundType.GLASS).noOcclusion()
+                    .isViewBlocking((s, l, p) -> false).isSuffocating((s, l, p) -> false)));
+
+    public static final DeferredBlock<SimpleMachineBlock<PumpBlockEntity>> PUMP = BLOCKS.register("pump",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.PUMP::get, PumpBlockEntity::new));
 
     public static final DeferredBlock<CreativePowerCellBlock> CREATIVE_POWER_CELL = BLOCKS.register("creative_power_cell",
             () -> new CreativePowerCellBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE)

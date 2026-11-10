@@ -568,6 +568,53 @@ def ore_overlay(seed):
     return lv
 
 
+# Stone around a chunk, drawn on the overlay so the chunk looks set into the rock: the rock's lip throws
+# a shadow over the chunk's top-left edge and catches light along its bottom-right edge (like vanilla ores).
+ORE_LIP = {False: ("#4a4a4a", "#5e5e5e", "#9c9c9c"), True: ("#1f1f25", "#2b2b33", "#5d5d66")}
+
+
+def recess(lv):
+    """Reshades clusters as sunk in: dark where the stone above or to the left overhangs them,
+    bright along the lower-right where light falls into the hole, mid tones between."""
+    filled = lambda x, y: 0 <= x < 16 and 0 <= y < 16 and lv[y][x] is not None
+    out = blank()
+    for y in range(16):
+        for x in range(16):
+            if lv[y][x] is None:
+                continue
+            under_lip = not filled(x, y - 1) or not filled(x - 1, y)
+            lit_wall = not filled(x, y + 1) or not filled(x + 1, y)
+            if under_lip and lit_wall:
+                v = 3                                    # a small chunk: mostly in shadow
+            elif under_lip:
+                v = 1 if (not filled(x, y - 1) and not filled(x - 1, y)) else 2
+            elif lit_wall:
+                v = 7 if (not filled(x, y + 1) and not filled(x + 1, y)) else 6
+            else:
+                v = 5 if lv[y][x] >= 5 else 4
+            out[y][x] = v
+    return out
+
+
+def ore_image(lv, metal, deepslate):
+    deep, shadow, light = (hex_rgba(c) for c in ORE_LIP[deepslate])
+    img = paint8(recess(lv), metal)
+    filled = lambda x, y: 0 <= x < 16 and 0 <= y < 16 and lv[y][x] is not None
+    for y in range(16):
+        for x in range(16):
+            if filled(x, y):
+                continue
+            below, right = filled(x, y + 1), filled(x + 1, y)
+            above, left = filled(x, y - 1), filled(x - 1, y)
+            if below and right:
+                img.putpixel((x, y), deep)               # the rock's lip right over the chunk's corner
+            elif below or right:
+                img.putpixel((x, y), shadow)
+            elif above and left:
+                img.putpixel((x, y), light)              # light catching the far rim
+    return img
+
+
 # ----------------------------------------------------------------------- main
 def metal_of(name):
     for m in sorted(PALETTES, key=len, reverse=True):
@@ -593,7 +640,7 @@ def draw(kind, name):
         return paint({"ingot": ingot, "nugget": nugget, "dust": dust, "wire": wire}[form](), m)
     if name.endswith("_overlay"):
         # stone and deepslate ores share one layout per metal; only the stone behind them differs
-        return paint8(ore_overlay(sum(map(ord, m)) * 7), m)
+        return ore_image(ore_overlay(sum(map(ord, m)) * 7), m, "deepslate" in name)
     if name.startswith("raw_"):
         return paint(raw_block(seed), m)
     # small repeating patterns (studs, panels) need the sweep to cross their shades to read as lit

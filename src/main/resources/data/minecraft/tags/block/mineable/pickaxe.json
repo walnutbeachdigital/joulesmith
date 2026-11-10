@@ -29,6 +29,12 @@
     "joulesmith:basic_battery",
     "joulesmith:electric_furnace",
     "joulesmith:crusher",
-    "joulesmith:energy_cable"
+    "joulesmith:pump",
+    "joulesmith:energy_cable",
+    "joulesmith:item_duct",
+    "joulesmith:reinforced_item_duct",
+    "joulesmith:fluid_pipe",
+    "joulesmith:reinforced_fluid_pipe",
+    "joulesmith:fluid_tank"
   ]
 }
