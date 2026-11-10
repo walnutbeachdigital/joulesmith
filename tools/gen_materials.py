@@ -1529,7 +1529,9 @@ write(os.path.join(DATA, MOD, "recipe", "manual.json"), {
     "type": "minecraft:crafting_shapeless", "category": "misc",
     "ingredients": [ing("minecraft:book"), ing("#c:ingots/tin")],
     "result": {"id": "minecraft:written_book", "components": {"minecraft:written_book_content": {
-        "title": "Joulesmith Manual", "author": "Joulesmith", "resolved": True, "pages": PAGES}}}})
+        "title": "Joulesmith Manual", "author": "Joulesmith", "resolved": True,
+        # each page is a text component written out as JSON
+        "pages": [json.dumps({"text": p}, ensure_ascii=False) for p in PAGES]}}}})
 recipes["manual"] = True
 
 # ---- machine casings: one per tier; every machine's recipe takes its tier's casing where it took redstone
