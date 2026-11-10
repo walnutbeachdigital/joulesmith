@@ -25,7 +25,15 @@ public class PowerDrillItem extends PoweredToolItem {
     private static final ThreadLocal<Boolean> BREAKING = ThreadLocal.withInitial(() -> false);
 
     public PowerDrillItem(Properties properties) {
-        super(400_000, properties.component(net.minecraft.core.component.DataComponents.TOOL, new Tool(List.of(
+        this(400_000, properties);
+    }
+
+    protected PowerDrillItem(int capacity, Tool tool, Properties properties) {
+        super(capacity, properties.component(net.minecraft.core.component.DataComponents.TOOL, tool));
+    }
+
+    private PowerDrillItem(int capacity, Properties properties) {
+        super(capacity, properties.component(net.minecraft.core.component.DataComponents.TOOL, new Tool(List.of(
                 Tool.Rule.deniesDrops(BlockTags.INCORRECT_FOR_DIAMOND_TOOL),
                 Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 10.0f),
                 Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, 10.0f)), 1.0f, 0)));

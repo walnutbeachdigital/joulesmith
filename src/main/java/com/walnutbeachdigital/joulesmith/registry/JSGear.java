@@ -89,6 +89,11 @@ public final class JSGear {
     public static final DeferredItem<ChainsawItem> CHAINSAW = powered("chainsaw", () -> new ChainsawItem(new Item.Properties()
             .attributes(DiggerItem.createAttributes(Tiers.DIAMOND, 5.0f, -3.0f))));
     public static final DeferredItem<EnergySwordItem> ENERGY_SWORD = powered("energy_sword", () -> new EnergySwordItem(new Item.Properties()));
+    public static final DeferredItem<com.walnutbeachdigital.joulesmith.gear.powered.OmniToolItem> OMNI_TOOL = powered("omni_tool",
+            () -> new com.walnutbeachdigital.joulesmith.gear.powered.OmniToolItem(new Item.Properties().fireResistant()
+                    .attributes(DiggerItem.createAttributes(Tiers.NETHERITE, 4.0f, -2.6f))));
+    public static final DeferredItem<com.walnutbeachdigital.joulesmith.gear.powered.RailgunItem> RAILGUN = powered("railgun",
+            () -> new com.walnutbeachdigital.joulesmith.gear.powered.RailgunItem(new Item.Properties().fireResistant()));
 
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> EXO = ARMOR_MATERIALS.register("exo", () -> {
         Map<ArmorItem.Type, Integer> def = new EnumMap<>(ArmorItem.Type.class);

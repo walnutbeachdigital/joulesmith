@@ -1126,7 +1126,8 @@ lang.update({
 
 # ---- powered gear (tier 3): tools, weapon and Exo-Suit that run on FE, the Energy Cell, modules,
 # the Charging Pad and the Modification Table
-POWERED = {"energy_cell": "Advanced Energy Cell", "power_drill": "Power Drill", "chainsaw": "Chainsaw", "energy_sword": "Energy Sword"}
+POWERED = {"energy_cell": "Advanced Energy Cell", "power_drill": "Power Drill", "chainsaw": "Chainsaw", "energy_sword": "Energy Sword",
+           "omni_tool": "Omni-Tool", "railgun": "Railgun"}
 for iid, name in POWERED.items():
     write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
           {"parent": "minecraft:item/generated" if iid == "energy_cell" else "minecraft:item/handheld",
@@ -1179,7 +1180,8 @@ MODULES = {
     "fall_protection": ("Fall Protection Module", "No fall damage while charged", "boots", ["minecraft:slime_ball", "minecraft:feather"]),
 }
 # the Flight module is a tier 5 part: its own recipe below takes the place of the Blank Module one
-FITS = {"tool": "Fits: Power Drill, Chainsaw", "weapon": "Fits: Energy Sword", "tool_or_weapon": "Fits: Power Drill, Chainsaw, Energy Sword",
+FITS = {"tool": "Fits: Power Drill, Chainsaw, Omni-Tool", "weapon": "Fits: Energy Sword",
+        "tool_or_weapon": "Fits: Power Drill, Chainsaw, Omni-Tool, Energy Sword",
         "helmet": "Fits: Exo-Suit Helmet", "chestplate": "Fits: Exo-Suit Chestplate", "leggings": "Fits: Exo-Suit Leggings",
         "boots": "Fits: Exo-Suit Boots"}
 shaped("blank_module", ["EWE", "WCW", "EWE"], {"E": "#c:plates/electrum", "W": "#c:wires/gold", "C": f"{MOD}:advanced_circuit"})
@@ -1732,6 +1734,31 @@ lang["message.joulesmith.wireless.channel"] = "Channel set to %s"
 for (ns, reg, path), values in tags.items():
     write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
 
+# ---- tier 4 gear: the Omni-Tool and the Railgun
+shaped("omni_tool", ["DPC", "QEQ", " G "], {"D": f"{MOD}:power_drill", "P": "#c:plates/silver", "C": f"{MOD}:chainsaw",
+                                           "Q": f"{MOD}:processor", "E": f"{MOD}:elite_energy_cell", "G": "#c:gems/diamond"})
+shaped("railgun", ["CCC", "QEQ", "PG "], {"C": f"{MOD}:electrum_coil", "Q": f"{MOD}:processor", "E": f"{MOD}:elite_energy_cell",
+                                         "P": "#c:plates/silver", "G": "#c:gems/diamond"})
+tag("minecraft", "item", "pickaxes", f"{MOD}:omni_tool")
+tag("minecraft", "item", "axes", f"{MOD}:omni_tool")
+tag("minecraft", "item", "shovels", f"{MOD}:omni_tool")
+tag("minecraft", "item", "hoes", f"{MOD}:omni_tool")
+G_DESC = {
+    "omni_tool": ("Every tool in one, mining like netherite", "Pickaxe, shovel, axe, hoe and shears in one, faster than the Power Drill "
+                  "and holding 4,000,000 FE. Right-click strips logs and makes paths; sneak and right-click to till. Takes the same "
+                  "modules as the Power Drill, including Range for 3x3 or 5x5 digging."),
+    "railgun": ("Hold to charge, release to fire", "Hold use for a second and let go: a straight shot up to 64 blocks that passes "
+                "through up to four creatures for 24 damage each and stops at the first solid block. 5,000 FE a shot; holds 2,000,000 FE."),
+}
+DESC.update(G_DESC)
+for iid, (short, info) in G_DESC.items():
+    lang[f"desc.{MOD}.{iid}"] = short
+    lang[f"jei.{MOD}.info.{iid}"] = info
+lang.update({"tooltip.joulesmith.omni_tool": "Every tool in one; sneak-right-click to till",
+             "tooltip.joulesmith.railgun": "Hold to charge, release to fire (5,000 FE)"})
+for (ns, reg, path), values in tags.items():
+    write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+
 # ---- advancements: a guided path through the tiers (data/joulesmith/advancement)
 ADV = [
     # id, parent, icon, items needed (all of them; a "#" tag or a list means any one), frame, title, description
@@ -1760,6 +1787,7 @@ ADV = [
     ("solar", "advanced", "advanced_solar_panel", [f"{MOD}:advanced_solar_panel"], "goal", "Bright Future", "Make an Advanced Solar Panel"),
     ("elite", "advanced", "processor", [f"{MOD}:processor"], "goal", "Etched in Stone", "Engrave a Processor: tier 4 begins"),
     ("quantum", "elite", "quantum_processor", [f"{MOD}:quantum_processor"], "challenge", "Quantum Leap", "Engrave a Quantum Processor: tier 5 begins"),
+    ("railgun", "elite", "railgun", [f"{MOD}:railgun"], "task", "Rail Against the Machine", "Make a Railgun"),
     ("fission", "elite", "fission_reactor", [f"{MOD}:fission_reactor"], "goal", "Splitting Hairs", "Build a Fission Reactor"),
     ("flight", "quantum", "flight_module", [f"{MOD}:flight_module"], "challenge", "Lift Off", "Make a Flight Module"),
 ]

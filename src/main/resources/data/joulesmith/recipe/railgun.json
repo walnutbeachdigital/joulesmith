@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CCC",
+    "QEQ",
+    "PG "
+  ],
+  "key": {
+    "C": {
+      "item": "joulesmith:electrum_coil"
+    },
+    "Q": {
+      "item": "joulesmith:processor"
+    },
+    "E": {
+      "item": "joulesmith:elite_energy_cell"
+    },
+    "P": {
+      "tag": "c:plates/silver"
+    },
+    "G": {
+      "tag": "c:gems/diamond"
+    }
+  },
+  "result": {
+    "id": "joulesmith:railgun",
+    "count": 1
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "DPC",
+    "QEQ",
+    " G "
+  ],
+  "key": {
+    "D": {
+      "item": "joulesmith:power_drill"
+    },
+    "P": {
+      "tag": "c:plates/silver"
+    },
+    "C": {
+      "item": "joulesmith:chainsaw"
+    },
+    "Q": {
+      "item": "joulesmith:processor"
+    },
+    "E": {
+      "item": "joulesmith:elite_energy_cell"
+    },
+    "G": {
+      "tag": "c:gems/diamond"
+    }
+  },
+  "result": {
+    "id": "joulesmith:omni_tool",
+    "count": 1
+  }
+}

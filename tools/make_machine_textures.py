@@ -2555,6 +2555,50 @@ def wireless_textures():
     }
 
 
+# ------------------------------------------------------------------ tier 4 gear
+def omni_tool_item():
+    """A multitool corner to corner: a rubber grip, a signal-blue body with a glowing strip, a curved
+    steel pick-and-axe head and a short gold drill tip."""
+    grip = _diag(lambda a, c: -7.2 <= a <= -2.6 and abs(c) <= 1.1)
+    body = _diag(lambda a, c: -2.6 < a <= 2.0 and abs(c) <= 1.6)
+    axe = _diag(lambda a, c: -5.6 <= c <= 0 and 0.8 + max(0, -c - 3) * 0.6 <= a <= 3.6 - c * 0.5)   # a broad axe blade
+    pick = _diag(lambda a, c: 0 < c <= 6.4 and 1.2 + c * 0.35 <= a <= 3.8 + c * 0.05)              # a curved pick spike
+    head = [[axe[y][x] or pick[y][x] for x in range(16)] for y in range(16)]
+    tip = _diag(lambda a, c: 3.4 < a <= 6.4 and abs(c) <= max(0.5, (6.8 - a) * 0.4) and abs(c) < 1.2)
+    img = _parts((grip, RUBBER8, 2, 6), (body, SIGNAL8, 2, 7), (tip, ELECTRUM8, 3, 7), (head, STEEL8, 3, 7))
+    px = img.load()
+    strip = _diag(lambda a, c: -2.2 <= a <= 1.4 and abs(c) <= 0.4)
+    for y in range(16):
+        for x in range(16):
+            if strip[y][x]:
+                px[x, y] = rgba(ENERGY8[6] if (x + y) % 3 else ENERGY8[4])
+    return img
+
+
+def railgun_item():
+    """A rail gun: two steel rails with copper coil bands and a glowing bore between them, on a
+    signal-blue receiver with a grip and a short stock."""
+    rails = _diag(lambda a, c: -0.8 <= a <= 7.0 and 0.9 <= abs(c + 0.4) <= 1.9)
+    bore = _diag(lambda a, c: -0.8 <= a <= 6.6 and abs(c + 0.4) < 0.9)
+    body = _diag(lambda a, c: -5.2 <= a < -0.8 and abs(c + 0.4) <= 2.4)
+    stock = _diag(lambda a, c: -7.6 <= a < -5.2 and -1.4 <= c + 0.4 <= 1.8)
+    grip = _diag(lambda a, c: -4.6 <= a <= -2.8 and 2.4 < c + 0.4 <= 5.6)
+    img = _parts((grip, RUBBER8, 2, 6), (stock, RUBBER8, 2, 6), (body, SIGNAL8, 2, 7), (rails, STEEL8, 3, 7))
+    px = img.load()
+    bands = _diag(lambda a, c: -0.8 <= a <= 6.0 and 0.9 <= abs(c + 0.4) <= 1.9 and int(a + 10) % 3 == 0)
+    for y in range(16):
+        for x in range(16):
+            if bore[y][x]:
+                px[x, y] = rgba(ENERGY8[7] if (x + y) % 3 == 0 else ENERGY8[4])
+            if bands[y][x]:
+                px[x, y] = rgba(COPPER8[6] if x + y < 15 else COPPER8[3])
+    return img
+
+
+def tier4_gear_textures():
+    return {"item/omni_tool": omni_tool_item(), "item/railgun": railgun_item()}
+
+
 def main():
     os.makedirs(os.path.join(TEX, "block"), exist_ok=True)
     os.makedirs(os.path.join(TEX, "gui"), exist_ok=True)
@@ -2705,6 +2749,7 @@ def main():
         **tier45_textures(),
         **reactor_textures(),
         **wireless_textures(),
+        **tier4_gear_textures(),
     }
     for name, img in out.items():
         img.save(os.path.join(TEX, name + ".png"))
