@@ -165,15 +165,13 @@ def gear():
                 mask[y][x] = True
                 lit = -(dx * 0.8 + dy) / max(r, 0.01)      # +1 facing the light (top-left)
                 if r <= 2.2:
-                    shade = 3 if lit < 0 else 1            # inside edge of the hole
+                    shade = 3 if lit < 0 else 2            # inside edge of the hole
                 elif lit > 0.55:
                     shade = 4
                 elif lit > -0.15:
                     shade = 3
-                elif lit > -0.7:
-                    shade = 2
                 else:
-                    shade = 1
+                    shade = 2
                 lv[y][x] = shade
     return outline(lv, mask, all_dark=True)
 
