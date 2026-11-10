@@ -170,6 +170,13 @@ public final class JSBlockEntities {
             BLOCK_ENTITIES.register("biofuel_generator", () -> BlockEntityType.Builder
                     .of(BiofuelGeneratorBlockEntity::new, JSBlocks.BIOFUEL_GENERATOR.get()).build(null));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.machine.reactor.FissionReactorBlockEntity>> FISSION_REACTOR =
+            BLOCK_ENTITIES.register("fission_reactor", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.machine.reactor.FissionReactorBlockEntity::new, JSBlocks.FISSION_REACTOR.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.machine.reactor.ReactorPortBlockEntity>> REACTOR_PORT =
+            BLOCK_ENTITIES.register("reactor_port", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.machine.reactor.ReactorPortBlockEntity::new, JSBlocks.REACTOR_PORT.get()).build(null));
+
     // more generators
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.machine.generator.GeothermalGeneratorBlockEntity>> GEOTHERMAL_GENERATOR =
             BLOCK_ENTITIES.register("geothermal_generator", () -> BlockEntityType.Builder

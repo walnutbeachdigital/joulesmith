@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PQP",
+    "UXU",
+    "PRP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/lead"
+    },
+    "Q": {
+      "item": "joulesmith:processor"
+    },
+    "U": {
+      "tag": "c:ingots/uranium"
+    },
+    "X": {
+      "item": "joulesmith:elite_casing"
+    },
+    "R": {
+      "tag": "c:storage_blocks/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:fission_reactor",
+    "count": 1
+  }
+}

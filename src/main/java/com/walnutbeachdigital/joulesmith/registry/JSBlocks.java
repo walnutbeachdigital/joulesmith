@@ -117,6 +117,18 @@ public final class JSBlocks {
             () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 11 : 0),
                     JSBlockEntities.BIOFUEL_GENERATOR::get, BiofuelGeneratorBlockEntity::new));
 
+    // ---- the Fission Reactor: a controller in a 3x3x3 shell of casing, glass and ports
+    public static final DeferredBlock<SimpleMachineBlock<com.walnutbeachdigital.joulesmith.machine.reactor.FissionReactorBlockEntity>> FISSION_REACTOR =
+            BLOCKS.register("fission_reactor", () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 10 : 0),
+                    JSBlockEntities.FISSION_REACTOR::get, com.walnutbeachdigital.joulesmith.machine.reactor.FissionReactorBlockEntity::new));
+    public static final DeferredBlock<net.minecraft.world.level.block.Block> REACTOR_CASING = BLOCKS.register("reactor_casing",
+            () -> new net.minecraft.world.level.block.Block(machine()));
+    public static final DeferredBlock<net.minecraft.world.level.block.TransparentBlock> REACTOR_GLASS = BLOCKS.register("reactor_glass",
+            () -> new net.minecraft.world.level.block.TransparentBlock(machine().noOcclusion().sound(SoundType.GLASS)
+                    .isViewBlocking((s, l, p) -> false).isSuffocating((s, l, p) -> false).isRedstoneConductor((s, l, p) -> false)));
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.machine.reactor.ReactorPortBlock> REACTOR_PORT = BLOCKS.register("reactor_port",
+            () -> new com.walnutbeachdigital.joulesmith.machine.reactor.ReactorPortBlock(machine()));
+
     // ---- more generators
     public static final DeferredBlock<SimpleMachineBlock<com.walnutbeachdigital.joulesmith.machine.generator.GeothermalGeneratorBlockEntity>> GEOTHERMAL_GENERATOR =
             BLOCKS.register("geothermal_generator", () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 12 : 0),

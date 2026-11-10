@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "LSL",
+    "SXS",
+    "LSL"
+  ],
+  "key": {
+    "L": {
+      "tag": "c:plates/lead"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "X": {
+      "item": "joulesmith:elite_casing"
+    }
+  },
+  "result": {
+    "id": "joulesmith:reactor_casing",
+    "count": 8
+  }
+}

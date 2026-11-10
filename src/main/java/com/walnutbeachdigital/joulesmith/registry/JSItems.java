@@ -81,6 +81,10 @@ public final class JSItems {
         blockItem(JSBlocks.ELITE_SOLAR_PANEL);
         blockItem(JSBlocks.ULTIMATE_SOLAR_PANEL);
         blockItem(JSBlocks.GEOTHERMAL_GENERATOR);
+        blockItem(JSBlocks.FISSION_REACTOR);
+        blockItem(JSBlocks.REACTOR_CASING);
+        blockItem(JSBlocks.REACTOR_GLASS);
+        blockItem(JSBlocks.REACTOR_PORT);
         blockItem(JSBlocks.WIND_TURBINE);
         JSBlocks.SENSORS.values().forEach(JSItems::blockItem);
         blockItem(JSBlocks.LOGIC_CONTROLLER);

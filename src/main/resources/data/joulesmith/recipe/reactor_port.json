@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PHP",
+    "WCW",
+    "PDP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/lead"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "W": {
+      "tag": "c:wires/silver"
+    },
+    "C": {
+      "item": "joulesmith:reactor_casing"
+    },
+    "D": {
+      "item": "joulesmith:fluid_pipe"
+    }
+  },
+  "result": {
+    "id": "joulesmith:reactor_port",
+    "count": 1
+  }
+}

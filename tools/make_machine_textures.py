@@ -2407,6 +2407,94 @@ def tier45_textures():
     return out
 
 
+# ------------------------------------------------------------------ the Fission Reactor
+URANIUM_GLOW = ["#0f2a0c", "#1d4a16", "#2f7a22", "#4fb832", "#8ef060", "#d8ffb8"]
+HAZARD = ["#2a2206", "#5c4a0c", "#b8920f", "#e8c21c", "#f8dc4a"]
+
+
+def reactor_casing():
+    """Heavy lead-grey plating with a yellow-and-black hazard band near the bottom."""
+    img = casing(LEAD, SIGNAL_TRIM)
+    px = img.load()
+    for x in range(2, 14):
+        for y in (11, 12):
+            px[x, y] = rgba(HAZARD[3] if (x + y) // 2 % 2 else "#1a1a1e")
+    for x in range(2, 14):
+        px[x, 10] = rgba(LEAD[1]); px[x, 13] = rgba(LEAD[6])
+    return img
+
+
+def reactor_glass():
+    """A thick lead frame round a tinted window; the middle is see-through."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            d = min(x, y, 15 - x, 15 - y)
+            if d == 0:
+                px[x, y] = rgba(LEAD[6] if x + y < 15 else LEAD[1])
+            elif d == 1:
+                px[x, y] = rgba(LEAD[4] if x + y < 15 else LEAD[2])
+            elif (x - y) in (0, 1) and 4 <= x <= 11:
+                px[x, y] = (200, 255, 210, 110)                     # a glint
+            else:
+                px[x, y] = (60, 110, 80, 60)
+    for cx, cy in ((1, 1), (14, 1), (1, 14), (14, 14)):
+        px[cx, cy] = rgba(SIGNAL_TRIM[3])
+    return img
+
+
+def reactor_port():
+    """Reactor casing with a round socket: a copper ring round a dark hole with three contacts."""
+    img = casing(LEAD, SIGNAL_TRIM)
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            r = math.hypot(x - 7.5, y - 7.5)
+            if 3.6 <= r < 5.2:
+                px[x, y] = rgba(COPPER[4] if x + y < 15 else COPPER[1])
+            elif r < 3.6:
+                px[x, y] = rgba("#121418")
+    for (x, y) in ((7, 5), (5, 9), (10, 9)):
+        px[x, y] = rgba(STEEL8[7])
+    return img
+
+
+def fission_reactor_front(on):
+    """The controller: a status screen above a row of control rods; the screen and core glow green while running."""
+    img = casing(LEAD, SIGNAL_TRIM)
+    px = img.load()
+    window(img, 3, 3, 12, 8)
+    for y in range(3, 9):
+        for x in range(3, 13):
+            px[x, y] = rgba("#0d1210")
+    if on:
+        for x in range(4, 12):                               # a power trace
+            y = 6 - (1 if x % 3 == 0 else 0) + (1 if x % 4 == 1 else 0)
+            px[x, y] = rgba(URANIUM_GLOW[4])
+        px[11, 4] = rgba(URANIUM_GLOW[5])
+    else:
+        for x in range(4, 12):
+            px[x, 6] = rgba(URANIUM_GLOW[1])
+    for i, x in enumerate((4, 6, 8, 10)):                    # control rods
+        top = 10 if on else 11
+        for y in range(top, 13):
+            px[x, y] = rgba(STEEL8[6]); px[x + 1, y] = rgba(STEEL8[3])
+        px[x, top - 1] = rgba(URANIUM_GLOW[4] if on else HAZARD[3])
+        px[x + 1, top - 1] = rgba(URANIUM_GLOW[3] if on else HAZARD[2])
+    return img
+
+
+def reactor_textures():
+    return {
+        "block/reactor_casing": reactor_casing(),
+        "block/reactor_glass": reactor_glass(),
+        "block/reactor_port": reactor_port(),
+        "block/fission_reactor_front": fission_reactor_front(False),
+        "block/fission_reactor_front_on": fission_reactor_front(True),
+    }
+
+
 def main():
     os.makedirs(os.path.join(TEX, "block"), exist_ok=True)
     os.makedirs(os.path.join(TEX, "gui"), exist_ok=True)
@@ -2555,6 +2643,7 @@ def main():
         "block/modification_table_front": modification_table_side(True),
         "gui/modification_table": modification_table_gui(),
         **tier45_textures(),
+        **reactor_textures(),
     }
     for name, img in out.items():
         img.save(os.path.join(TEX, name + ".png"))

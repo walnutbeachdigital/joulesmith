@@ -32,6 +32,7 @@
     "joulesmith:elite_battery",
     "joulesmith:ultimate_battery",
     "joulesmith:laser_engraver",
+    "joulesmith:fission_reactor",
     "joulesmith:boiler",
     "joulesmith:block_placer",
     "joulesmith:block_breaker",
@@ -102,6 +103,9 @@
     "joulesmith:sprinkler",
     "joulesmith:conveyor_belt",
     "joulesmith:charging_pad",
-    "joulesmith:modification_table"
+    "joulesmith:modification_table",
+    "joulesmith:reactor_casing",
+    "joulesmith:reactor_glass",
+    "joulesmith:reactor_port"
   ]
 }

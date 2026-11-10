@@ -484,11 +484,22 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
      * 5 face settings, then for each of up to two tanks: fluid (registry id), amount, capacity.
      */
     /** 0-5 energy, progress, redstone, sides; then 3 per tank; then FE/t made and used (averaged over a second). */
-    public static final int MAX_TANKS = 2, VALUES = 6 + 3 * MAX_TANKS + 2, MADE = 6 + 3 * MAX_TANKS, USED = MADE + 1;
+    public static final int MAX_TANKS = 2, VALUES = 6 + 3 * MAX_TANKS + 4, MADE = 6 + 3 * MAX_TANKS, USED = MADE + 1,
+            HEAT = USED + 1, STATUS = USED + 2;
     private int madePerTick, usedPerTick;
     /** The running sound, looked up once; empty for machines that run quietly. */
     private java.util.Optional<net.minecraft.sounds.SoundEvent> sound;
     private static final int SOUND_INTERVAL = 40;
+
+    /** Heat as a percentage for machines that run hot (shown on the screen), or -1. */
+    public int heatPercent() {
+        return -1;
+    }
+
+    /** A status line for the screen: 0 for none, otherwise the number of a {@code gui.joulesmith.status.<n>} line. */
+    public int status() {
+        return 0;
+    }
 
     public int value(int index) {
         return switch (index) {
@@ -499,6 +510,8 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
             case 4 -> redstone.ordinal();
             case MADE -> madePerTick;
             case USED -> usedPerTick;
+            case HEAT -> heatPercent() + 1;
+            case STATUS -> status();
             case 5 -> {
                 int packed = 0;
                 for (int f = 0; f < sides.length; f++) packed |= sides[f].ordinal() << (f * 2);

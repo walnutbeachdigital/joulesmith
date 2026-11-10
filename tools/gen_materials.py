@@ -290,6 +290,7 @@ MACHINES = {
     "elite_battery": {"name": "Elite Battery", "front": "elite_battery_front"},
     "ultimate_battery": {"name": "Ultimate Battery", "front": "ultimate_battery_front"},
     "laser_engraver": {"name": "Laser Engraver", "front": "laser_engraver_front"},
+    "fission_reactor": {"name": "Fission Reactor", "front": "fission_reactor_front"},
     "boiler": {"name": "Boiler", "front": "boiler_front"},
     "block_placer": {"name": "Block Placer", "front": "block_placer_front"},
     "block_breaker": {"name": "Block Breaker", "front": "block_breaker_front"},
@@ -1655,6 +1656,49 @@ for iid, (short, info) in T45_DESC.items():
 for (ns, reg, path), values in tags.items():
     write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
 
+# ---- the Fission Reactor: a controller in a 3x3x3 shell (hollow in the middle) of casing, glass and ports
+for bid, name in (("reactor_casing", "Reactor Casing"), ("reactor_glass", "Reactor Glass"), ("reactor_port", "Reactor Port")):
+    write(os.path.join(ASSETS, "blockstates", f"{bid}.json"), {"variants": {"": {"model": f"{MOD}:block/{bid}"}}})
+    m = {"parent": "minecraft:block/cube_all", "textures": {"all": f"{MOD}:block/{bid}"}}
+    if bid == "reactor_glass":
+        m["render_type"] = "minecraft:cutout"
+    model(bid, m)
+    write(os.path.join(ASSETS, "models", "item", f"{bid}.json"), {"parent": f"{MOD}:block/{bid}"})
+    simple_loot(bid)
+    tag("minecraft", "block", "mineable/pickaxe", f"{MOD}:{bid}")
+    lang[f"block.{MOD}.{bid}"] = name
+shaped("reactor_casing", ["LSL", "SXS", "LSL"], {"L": "#c:plates/lead", "S": "#c:plates/steel", "X": f"{MOD}:elite_casing"}, count=8)
+shaped("reactor_glass", ["GCG", "C C", "GCG"], {"G": "#c:glass_blocks", "C": f"{MOD}:reactor_casing"}, count=4)
+shaped("reactor_port", ["PHP", "WCW", "PDP"], {"P": "#c:plates/lead", "H": "minecraft:hopper", "W": "#c:wires/silver",
+                                             "C": f"{MOD}:reactor_casing", "D": f"{MOD}:fluid_pipe"})
+shaped("fission_reactor", ["PQP", "UXU", "PRP"], {"P": "#c:plates/lead", "Q": f"{MOD}:processor", "U": "#c:ingots/uranium",
+                                                "X": f"{MOD}:elite_casing", "R": "#c:storage_blocks/redstone"})
+SHELL = ("The Fission Reactor sits in the middle of one face of a 3x3x3 shell. Build the other 25 shell blocks from "
+         "Reactor Casing, Reactor Glass and Reactor Ports, and leave the very middle empty.")
+R_DESC = {
+    "fission_reactor": ("Burns uranium for 1,000 FE/t", SHELL + " Each uranium ingot burns for two minutes at 1,000 FE/t. "
+                        "Fission makes heat that water carries away (10 mB/t while running); without water it heats up and, "
+                        "at 100%, shuts itself down safely until it has cooled to 20%. It never explodes."),
+    "reactor_casing": ("Part of a Fission Reactor's shell", SHELL),
+    "reactor_glass": ("A window in a Fission Reactor's shell", SHELL),
+    "reactor_port": ("Pipes, ducts and cables connect here", "A Reactor Port in a complete reactor's shell takes water and uranium "
+                     "from pipes, ducts and hoppers and gives power to cables, all straight to and from the controller."),
+}
+DESC.update(R_DESC)
+for iid, (short, info) in R_DESC.items():
+    lang[f"desc.{MOD}.{iid}"] = short
+    lang[f"jei.{MOD}.info.{iid}"] = info
+lang.update({
+    "gui.joulesmith.heat": "Heat %s%%",
+    "gui.joulesmith.status.1": "Running",
+    "gui.joulesmith.status.2": "Idle",
+    "gui.joulesmith.status.3": "Shell incomplete",
+    "gui.joulesmith.status.4": "SCRAM: cooling down",
+    "gui.joulesmith.status.5": "No water!",
+})
+for (ns, reg, path), values in tags.items():
+    write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+
 # ---- advancements: a guided path through the tiers (data/joulesmith/advancement)
 ADV = [
     # id, parent, icon, items needed (all of them; a "#" tag or a list means any one), frame, title, description
@@ -1683,6 +1727,7 @@ ADV = [
     ("solar", "advanced", "advanced_solar_panel", [f"{MOD}:advanced_solar_panel"], "goal", "Bright Future", "Make an Advanced Solar Panel"),
     ("elite", "advanced", "processor", [f"{MOD}:processor"], "goal", "Etched in Stone", "Engrave a Processor: tier 4 begins"),
     ("quantum", "elite", "quantum_processor", [f"{MOD}:quantum_processor"], "challenge", "Quantum Leap", "Engrave a Quantum Processor: tier 5 begins"),
+    ("fission", "elite", "fission_reactor", [f"{MOD}:fission_reactor"], "goal", "Splitting Hairs", "Build a Fission Reactor"),
     ("flight", "quantum", "flight_module", [f"{MOD}:flight_module"], "challenge", "Lift Off", "Make a Flight Module"),
 ]
 for aid, parent, icon, needs, frame, title, desc in ADV:

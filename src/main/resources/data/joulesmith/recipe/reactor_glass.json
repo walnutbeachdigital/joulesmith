@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GCG",
+    "C C",
+    "GCG"
+  ],
+  "key": {
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "C": {
+      "item": "joulesmith:reactor_casing"
+    }
+  },
+  "result": {
+    "id": "joulesmith:reactor_glass",
+    "count": 4
+  }
+}

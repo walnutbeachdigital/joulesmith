@@ -23,6 +23,11 @@ public final class JSCapabilities {
         machine(event, JSBlockEntities.GEOTHERMAL_GENERATOR.get());
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.GEOTHERMAL_GENERATOR.get(), (g, side) -> g.fluidHandler(side));
         machine(event, JSBlockEntities.WIND_TURBINE.get());
+        machine(event, JSBlockEntities.FISSION_REACTOR.get());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.FISSION_REACTOR.get(), (r, side) -> r.fluidHandler(side));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, JSBlockEntities.REACTOR_PORT.get(), (p, side) -> p.energy);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.REACTOR_PORT.get(), (p, side) -> p.fluids);
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, JSBlockEntities.REACTOR_PORT.get(), (p, side) -> p.items);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.SPRINKLER.get(), (s, side) -> s.fluidHandler());
         for (var type : java.util.List.of(JSBlockEntities.ANIMAL_RANCHER, JSBlockEntities.HYDROPONIC_BED, JSBlockEntities.MOB_GRINDER,
                 JSBlockEntities.AUTO_ENCHANTER)) {

@@ -76,6 +76,21 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
     }
 
     @Override
+    protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
+        super.renderLabels(g, mouseX, mouseY);
+        int heat = menu.value(MachineBlockEntity.HEAT) - 1, status = menu.value(MachineBlockEntity.STATUS);
+        if (heat >= 0) {                                   // on the title line, right-aligned
+            int colour = heat >= 80 ? 0xD03020 : heat >= 50 ? 0xC07010 : 0x2E7D32;
+            Component line = Component.translatable("gui.joulesmith.heat", heat);
+            g.drawString(font, line, imageWidth - 8 - font.width(line), titleLabelY, colour, false);
+        }
+        if (status > 0) {                                  // on the inventory label's line, right-aligned
+            Component line = Component.translatable("gui.joulesmith.status." + status);
+            g.drawString(font, line, imageWidth - 8 - font.width(line), inventoryLabelY, 0x404040, false);
+        }
+    }
+
+    @Override
     protected void renderBg(GuiGraphics g, float partialTick, int mouseX, int mouseY) {
         int x = leftPos, y = topPos;
         if (hasUpgrades()) drawUpgradePanel(g, x, y);
