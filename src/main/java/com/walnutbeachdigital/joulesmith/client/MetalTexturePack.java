@@ -46,13 +46,18 @@ public final class MetalTexturePack implements PackResources {
      * become. {@code metalOnly}: recolour only the grey (metal) pixels and keep coloured ones, like a
      * tool's wooden handle.
      */
-    private record Source(int[] ramp, ResourceLocation vanilla, boolean metalOnly, boolean byBrightness, int[] otherRamp) {
+    private record Source(int[] ramp, ResourceLocation vanilla, boolean metalOnly, boolean byBrightness, int[] otherRamp,
+                          boolean colouredOnly) {
         Source(int[] ramp, ResourceLocation vanilla, boolean metalOnly) {
-            this(ramp, vanilla, metalOnly, false, null);
+            this(ramp, vanilla, metalOnly, false, null, false);
         }
 
         Source(int[] ramp, ResourceLocation vanilla, boolean metalOnly, boolean byBrightness) {
-            this(ramp, vanilla, metalOnly, byBrightness, null);
+            this(ramp, vanilla, metalOnly, byBrightness, null, false);
+        }
+
+        Source(int[] ramp, ResourceLocation vanilla, boolean metalOnly, boolean byBrightness, int[] otherRamp) {
+            this(ramp, vanilla, metalOnly, byBrightness, otherRamp, false);
         }
     }
 
@@ -80,6 +85,9 @@ public final class MetalTexturePack implements PackResources {
                 add(m, "item/" + id + "_ingot", "item/copper_ingot");   // copper's ingot has the shiny, streaked top face
                 add(m, "item/" + id + "_nugget", "item/iron_nugget");
             }
+            if (m.hasOre() || !m.hasIngot()) {
+                add(m, "item/" + id + "_crystal", "item/amethyst_shard");    // Crystallizer crystals: amethyst shards in the metal's colours
+            }
             if (m.hasOre()) {
                 add(m, "item/raw_" + id, "item/raw_iron");
                 add(m, "block/raw_" + id + "_block", "block/raw_iron_block");
@@ -94,6 +102,10 @@ public final class MetalTexturePack implements PackResources {
             addMetal(m, "models/armor/" + id + "_layer_1", "models/armor/iron_layer_1");
             addMetal(m, "models/armor/" + id + "_layer_2", "models/armor/iron_layer_2");
         }
+        // fluid buckets: vanilla's water bucket with the water in each fluid's colours, the bucket kept
+        addFluidBucket(0xD9D23A, "sulfuric_acid");
+        addFluidBucket(0x3ED6E0, "coolant");
+        addFluidBucket(0x7FA331, "biofuel");
         // the Exo-Suit: vanilla's diamond armor in dark blue-grey plating
         for (String piece : new String[] {"helmet", "chestplate", "leggings", "boots"}) {
             addFull(EXO, "item/exo_" + piece, "item/diamond_" + piece);
@@ -107,6 +119,29 @@ public final class MetalTexturePack implements PackResources {
         // the sapling in two parts: birch's leaves in rubber greens, its stem in rubber bark
         TEXTURES.put(Joulesmith.id("textures/block/rubber_sapling.png"), new Source(RUBBER_LEAVES,
                 ResourceLocation.withDefaultNamespace("textures/block/birch_sapling.png"), false, true, RUBBER_BARK));
+    }
+
+    private static void addFluidBucket(int colour, String fluid) {
+        TEXTURES.put(Joulesmith.id("textures/item/" + fluid + "_bucket.png"), new Source(fluidRamp(colour),
+                ResourceLocation.withDefaultNamespace("textures/item/water_bucket.png"), false, false, null, true));
+    }
+
+    /** Eight shades of a fluid's colour, darkest first, the way vanilla's water runs from deep to bright. */
+    private static int[] fluidRamp(int colour) {
+        int[] ramp = new int[8];
+        int r = colour >> 16 & 0xFF, g = colour >> 8 & 0xFF, b = colour & 0xFF;
+        for (int i = 0; i < 8; i++) {
+            float f = 0.45f + i * 0.11f;                         // 0.45 .. 1.22
+            int rr, gg, bb;
+            if (f <= 1) {
+                rr = Math.round(r * f); gg = Math.round(g * f); bb = Math.round(b * f);
+            } else {                                              // past full colour: lighten toward white
+                float t = f - 1;
+                rr = Math.round(r + (255 - r) * t); gg = Math.round(g + (255 - g) * t); bb = Math.round(b + (255 - b) * t);
+            }
+            ramp[i] = rr << 16 | gg << 8 | bb;
+        }
+        return ramp;
     }
 
     private static void addFull(int[] ramp, String path, String vanillaPath) {
@@ -261,10 +296,11 @@ public final class MetalTexturePack implements PackResources {
 
     /** Whether a pixel takes the metal's colours: every pixel, or for gear only the grey ones. */
     private static boolean recolour(Source src, int abgr) {
-        if (!src.metalOnly()) return true;
+        if (!src.metalOnly() && !src.colouredOnly()) return true;
         int r = abgr & 0xFF, g = abgr >> 8 & 0xFF, b = abgr >> 16 & 0xFF;
         int max = Math.max(r, Math.max(g, b)), min = Math.min(r, Math.min(g, b));
-        return max == 0 || (max - min) / (float) max < 0.18f;
+        boolean grey = max == 0 || (max - min) / (float) max < 0.18f;
+        return src.colouredOnly() ? !grey : grey;           // a bucket's liquid, or a tool's metal
     }
 
     /** A pixel's brightness, rounded so identical vanilla shades group together. */

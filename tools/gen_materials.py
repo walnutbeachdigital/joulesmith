@@ -115,7 +115,7 @@ def layered(base):
 # Forms whose textures are made while the game loads, by MetalTexturePack: Minecraft's own iron
 # ingot (from copper, for its shiny top), iron nugget, raw iron and raw iron block, palette-swapped onto each
 # metal's gradient. They are referenced here but never stored in the repo.
-GENERATED_ITEM_FORMS = {"ingot", "nugget", "raw"}
+GENERATED_ITEM_FORMS = {"ingot", "nugget", "raw", "crystal"}
 GENERATED_BLOCK_KINDS = {"raw_block"}
 
 
@@ -645,11 +645,14 @@ shaped("centrifuge", ["PCP", "GMG", "PRP"],
 
 # ---- fluids: a block to place, a bucket (NeoForge's tinted bucket model) and names
 FLUIDS = {"sulfuric_acid": "Sulfuric Acid", "coolant": "Coolant", "biofuel": "Biofuel"}
+bucket_generated = []
 for fid, fname in FLUIDS.items():
     write(os.path.join(ASSETS, "blockstates", f"{fid}.json"), {"variants": {"": {"model": f"{MOD}:block/{fid}"}}})
     write(os.path.join(ASSETS, "models", "block", f"{fid}.json"), {"textures": {"particle": "minecraft:block/water_still"}})
-    write(os.path.join(ASSETS, "models", "item", f"{fid}_bucket.json"), {
-        "parent": "neoforge:item/bucket", "loader": "neoforge:fluid_container", "fluid": f"{MOD}:{fid}"})
+    # vanilla's water bucket with the water recoloured (MetalTexturePack), like vanilla's own buckets
+    write(os.path.join(ASSETS, "models", "item", f"{fid}_bucket.json"),
+          {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{fid}_bucket"}})
+    bucket_generated.append(f"item/{fid}_bucket")
 
 # ---- farming: Bio Reactor recipes, farm machines, rubber trees
 machine_fluid("bio_reacting", "seeds", None, [("#c:seeds", 2)], [], (BIOFUEL, 50))
@@ -1333,5 +1336,5 @@ write(os.path.join(ROOT, "tools", "texture_manifest.json"), {
     "block": [f"{b}_overlay" for b, k, m in blocks if k in ("ore", "deepslate_ore")] +
              [b for b, k, m in blocks if k == "storage"],
     "item": [i for i, f, m in items if f not in GENERATED_ITEM_FORMS],
-    "generated": gear_generated + ["block/rubber_log", "block/rubber_log_top", "block/rubber_planks", "block/rubber_leaves", "block/rubber_sapling"] + [f"block/{b}" for b, k, m in blocks if k in GENERATED_BLOCK_KINDS] +
+    "generated": gear_generated + bucket_generated + ["block/rubber_log", "block/rubber_log_top", "block/rubber_planks", "block/rubber_leaves", "block/rubber_sapling"] + [f"block/{b}" for b, k, m in blocks if k in GENERATED_BLOCK_KINDS] +
                  [f"item/{i}" for i, f, m in items if f in GENERATED_ITEM_FORMS]})

@@ -1,5 +1,6 @@
 {
-  "parent": "neoforge:item/bucket",
-  "loader": "neoforge:fluid_container",
-  "fluid": "joulesmith:biofuel"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "joulesmith:item/biofuel_bucket"
+  }
 }

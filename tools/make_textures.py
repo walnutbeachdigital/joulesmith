@@ -297,84 +297,68 @@ def raw(seed):
     return outline(lv, mask)
 
 
-def crystal(seed):
-    """A cluster of three pointed crystals rising from a common base, the middle one in front. Each has a
-    lit left facet, a mid-tone face and a dark right facet; a dark seam parts the front crystal from the
-    ones behind it."""
-    lv, mask = blank(), [[False] * 16 for _ in range(16)]
-    owner = [[None] * 16 for _ in range(16)]
-    # back crystals first, then the front one; (centre x, tip y, half width, lean per row)
-    for k, (cx, ty, hw, lean) in enumerate(((3.6, 5, 1.6, 0.18), (12.0, 4, 1.7, -0.18), (7.6, 1, 2.4, 0.0))):
-        for y in range(ty, 15):
-            t = (y - ty) / (14 - ty)
-            w = hw * min(1.0, t / 0.3) if t < 0.3 else hw
-            c = cx - lean * (14 - y)
-            for x in range(16):
-                d = x - c
-                if -w - 0.5 <= d <= w + 0.5:
-                    mask[y][x] = True
-                    owner[y][x] = k
-                    if d < -w * 0.3:
-                        v = 6 if y < ty + 3 else 5
-                    elif d <= w * 0.3:
-                        v = 7 if y < ty + 2 else 4 if (y + seed) % 5 else 5
-                    else:
-                        v = 2
-                    lv[y][x] = v - (1 if k < 2 else 0)
-    for y in range(16):
-        for x in range(16):
-            if owner[y][x] is not None and owner[y][x] < 2:
-                for dx in (-1, 1):
-                    if 0 <= x + dx < 16 and owner[y][x + dx] == 2:
-                        lv[y][x] = 0
-    for x in range(16):
-        if mask[14][x]:
-            lv[14][x] = 1
-    return edge_light(lv, mask)
-
-
 def crushed(seed):
-    """Crushed ore: a low heap of angular metal pieces. Each piece is lit on its top-left; the cracks
-    between pieces and the heap's lower-right edge fall into shadow."""
-    r = random.Random(seed)
-    rows = {4: (6, 9), 5: (4, 11), 6: (3, 12), 7: (2, 13), 8: (2, 13), 9: (1, 14), 10: (1, 14),
-            11: (1, 14), 12: (2, 13), 13: (3, 12)}
-    mask = [[False] * 16 for _ in range(16)]
-    for y, (x0, x1) in rows.items():
-        for x in range(x0, x1 + 1):
-            mask[y][x] = True
-    seeds = [(r.uniform(1, 14), r.uniform(4, 13)) for _ in range(9)]
-    owner = [[None] * 16 for _ in range(16)]
+    """Crushed ore: a heap of faceted chunks, each with a bright top face, a mid left face and a dark
+    right face, separated by shadow seams; levels 0-7 for a metal ramp."""
+    import random
+    rnd = random.Random(seed)
+    lv = [[None] * 16 for _ in range(16)]
+    owner = [[-1] * 16 for _ in range(16)]
+    pieces = [(4.2, 9.6, 3.4), (11.4, 9.4, 3.3), (7.8, 5.6, 3.6), (8.0, 11.6, 3.2), (2.6, 12.4, 2.0), (13.3, 12.6, 1.9)]
+    for k, (cx, cy, r) in enumerate(pieces):
+        cx += rnd.uniform(-0.3, 0.3); cy += rnd.uniform(-0.2, 0.2)
+        verts = []
+        n = 6
+        for v in range(n):
+            ang = v * 2 * math.pi / n + rnd.uniform(-0.25, 0.25) + 0.3
+            rr = r * rnd.uniform(0.85, 1.12)
+            verts.append((cx + rr * math.cos(ang), cy + rr * math.sin(ang) * 0.95))
+        def inside(px_, py_):
+            sign = None
+            for i in range(n):
+                ax, ay = verts[i]; bx, by = verts[(i + 1) % n]
+                cr = (bx - ax) * (py_ - ay) - (by - ay) * (px_ - ax)
+                if sign is None: sign = cr > 0
+                elif (cr > 0) != sign: return False
+            return True
+        for y in range(16):
+            for x in range(16):
+                if inside(x + 0.5, y + 0.5):
+                    dx, dy = x + 0.5 - cx, y + 0.5 - (cy - r * 0.25)
+                    ang = math.degrees(math.atan2(dy, dx))
+                    if dy < -r * 0.15:
+                        v = 6 if dx < r * 0.3 else 5           # top face
+                    elif dx < -r * 0.2:
+                        v = 4                                  # left face
+                    elif dx > r * 0.35:
+                        v = 2                                  # right face
+                    else:
+                        v = 3
+                    lv[y][x] = v
+                    owner[y][x] = k
+        # specular on the top face
+        sx, sy = int(cx - r * 0.35), int(cy - r * 0.55)
+        if 0 <= sx < 16 and 0 <= sy < 16 and owner[sy][sx] == k:
+            lv[sy][sx] = 7
+    mask = [[lv[y][x] is not None for x in range(16)] for y in range(16)]
     for y in range(16):
         for x in range(16):
-            if mask[y][x]:
-                # squared distance with a slant, so the pieces come out angular rather than round
-                owner[y][x] = min(range(len(seeds)), key=lambda i: abs(x - seeds[i][0]) * 1.3 + abs(y - seeds[i][1]))
-    lv = blank()
+            if owner[y][x] < 0: continue
+            # seams: a pixel of a chunk drawn earlier that touches a later chunk's top-left goes dark
+            for dx, dy in ((1, 0), (0, 1)):
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < 16 and 0 <= ny < 16 and owner[ny][nx] > owner[y][x] and owner[ny][nx] >= 0:
+                    lv[y][x] = 1
+            for dx, dy in ((-1, 0), (0, -1)):
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < 16 and 0 <= ny < 16 and owner[ny][nx] >= 0 and owner[ny][nx] < owner[y][x] and lv[y][x] >= 4:
+                    lv[y][x] = min(7, lv[y][x] + 1)
     for y in range(16):
         for x in range(16):
-            if not mask[y][x]:
-                continue
-            o = owner[y][x]
-            same = lambda dx, dy: 0 <= x + dx < 16 and 0 <= y + dy < 16 and owner[y + dy][x + dx] == o
-            if not same(1, 0) or not same(0, 1):
-                v = 1                                   # crack or shadowed edge
-            elif not same(-1, 0) or not same(0, -1):
-                v = 6 if (x + y + o) % 3 else 7         # lit edge of a piece
-            else:
-                v = 4 if (x * 3 + y + o) % 4 else 5
-            lv[y][x] = v
-    for y in range(16):                                # the heap's own lower-right rim is darkest
-        for x in range(16):
-            if mask[y][x] and ((x + 1 > 15 or not mask[y][x + 1]) or (y + 1 > 15 or not mask[y + 1][x])):
-                lv[y][x] = 0
+            if mask[y][x] and (x + 1 >= 16 or not mask[y][x + 1] or y + 1 >= 16 or not mask[y + 1][x]):
+                lv[y][x] = 0 if (x + 1 >= 16 or y + 1 >= 16 or not (x + 1 < 16 and y + 1 < 16 and mask[y + 1][x + 1])) else 1
     return lv
 
-
-# --------------------------------------------------------------------- blocks
-# ---------------------------------------------------------------- metal blocks
-# Each metal's block has its own pattern; all use the metal's eight-step ramp (0 darkest .. 7 brightest)
-# and tile cleanly.
 
 def _edge(x, y):
     """Distance to the nearest edge and which edge it is."""
@@ -705,8 +689,6 @@ def draw(kind, name):
             return paint(raw(seed), m)
         if name.startswith("crushed_"):
             return paint8(crushed(seed), m)
-        if name.endswith("_crystal"):
-            return paint8(crystal(seed), m)
         form = name.rsplit("_", 1)[1]
         if form == "wire":
             spool, wound = wire()

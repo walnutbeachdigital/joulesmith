@@ -374,63 +374,6 @@ def pump_front(on, base=None):
     return img
 
 
-def wrench_item():
-    """A steel open-ended wrench lying corner to corner: a jawed head top-right, a copper grip bottom-left."""
-    import math
-    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
-    px = img.load()
-    fill = {}
-    gap = set()
-    hx, hy = 11.0, 4.5
-    for y in range(16):
-        for x in range(16):
-            # head: a disc with a jaw cut along the handle's line, opening to the top-right
-            dx, dy = x - hx, y - hy
-            r = math.hypot(dx, dy)
-            along = (dx - dy) / math.sqrt(2)          # toward the top-right
-            across = (dx + dy) / math.sqrt(2)          # negative: the upper-left side
-            jaw = along > 0.0 and abs(across) < 1.0
-            if r <= 3.4 and jaw:
-                gap.add((x, y))
-            elif r <= 3.1:
-                fill[(x, y)] = STEEL[6] if across < -1.4 else STEEL[3] if across > 1.4 else STEEL[5]
-            # shaft: a two-pixel diagonal from the head down to the grip
-            if abs(x + y - 15) <= 0.5 or abs(x + y - 16) <= 0.5:
-                if 2 <= x <= 9:
-                    grip = x <= 5
-                    upper = (x + y) == 15
-                    fill[(x, y)] = (COPPER[4] if upper else COPPER[2]) if grip else (STEEL[5] if upper else STEEL[3])
-    for (x, y), c in fill.items():
-        px[x, y] = rgba(c)
-    # dark outline around the shape
-    for y in range(16):
-        for x in range(16):
-            if (x, y) in fill or (x, y) in gap:
-                continue
-            if any((x + ox, y + oy) in fill for ox, oy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
-                px[x, y] = rgba("#1a1c20")
-    return img
-
-
-def filter_card_item():
-    """A small circuit card: green board, copper contacts, and a white funnel on it."""
-    board = ["#0f2a12", "#1d4d22", "#2e7a33", "#43a547", "#6bd06a"]
-    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
-    px = img.load()
-    for y in range(2, 14):
-        for x in range(1, 15):
-            edge = x in (1, 14) or y in (2, 13)
-            c = board[0] if edge else board[3] if (x + y) < 12 else board[2]
-            px[x, y] = rgba(c)
-    for x in range(3, 13, 2):                 # contacts along the bottom edge
-        px[x, 12] = rgba(COPPER[4])
-        px[x, 13] = rgba(COPPER[2])
-    funnel = ["#######", ".#####.", "..###..", "...#...", "...#..."]
-    for j, row in enumerate(funnel):
-        for i, ch in enumerate(row):
-            if ch == "#":
-                px[4 + i, 4 + j] = rgba("#f2f6f2" if j < 2 else "#cfd8cf")
-    return img
 
 
 def gauge_marks(img):
@@ -597,24 +540,6 @@ def sawmill_front(on):
     return img
 
 
-def upgrade_card(board, icon, icon_color):
-    """An upgrade card: the same card as the Filter Card, in its own colour, with its own symbol."""
-    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
-    px = img.load()
-    for y in range(2, 14):
-        for x in range(1, 15):
-            edge = x in (1, 14) or y in (2, 13)
-            px[x, y] = rgba(board[0] if edge else board[3] if (x + y) < 12 else board[2])
-    for x in range(3, 13, 2):
-        px[x, 12] = rgba(COPPER[4])
-        px[x, 13] = rgba(COPPER[2])
-    for j, row in enumerate(icon):
-        for i, ch in enumerate(row):
-            if ch == "#":
-                px[4 + i, 4 + j] = rgba(icon_color)
-    return img
-
-
 UPGRADE_ART = {
     "speed": (["#3a0d0d", "#6b1818", "#a82a2a", "#d04040"],
               ["#..#...", ".#..#..", "..#..#.", ".#..#..", "#..#..."], "#ffe9a8"),
@@ -738,31 +663,6 @@ def circuit_assembler_front(on):
     return img
 
 
-def basic_circuit_item():
-    """A small green board with copper traces and one black chip."""
-    board = ["#0f2a12", "#1d4d22", "#2e7a33", "#43a547", "#6bd06a"]
-    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
-    px = img.load()
-    for y in range(3, 13):
-        for x in range(2, 14):
-            edge = x in (2, 13) or y in (3, 12)
-            px[x, y] = rgba(board[0] if edge else board[3] if (x + y) < 13 else board[2])
-    for x in range(3, 13):
-        if x not in (6, 7, 8, 9):
-            px[x, 7] = rgba(COPPER[3])
-    for y in (4, 5, 9, 10, 11):
-        px[4, y] = rgba(COPPER[3])
-        px[11, y] = rgba(COPPER[2])
-    for y in range(5, 10):                                 # chip
-        for x in range(6, 10):
-            px[x, y] = rgba("#222226" if (x, y) != (6, 5) else "#55555c")
-    for y in (5, 7, 9):
-        px[5, y] = rgba(STEEL[6])
-        px[10, y] = rgba(STEEL[6])
-    return img
-
-
-# ------------------------------------------------------------------ farming
 BARK = ["#2a2018", "#3d3024", "#524233", "#6a5844", "#82705a", "#9c8a72"]
 RUBBER_WOOD = ["#5c4630", "#7a6044", "#967a58", "#b0946c", "#c8ae84", "#dcc59c"]
 LEAF = ["#16351a", "#1f4a24", "#2c6430", "#3b7f3c", "#4f9a48", "#6cb85a", "#8fd070"]
@@ -1425,28 +1325,7 @@ def plastic_sheet_item():
     return img
 
 
-def advanced_circuit_item():
-    """The Basic Circuit's board in blue, with gold traces and two chips."""
-    board = ["#0d1f3a", "#163266", "#21498e", "#2f62b4"]
-    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
-    px = img.load()
-    for y in range(3, 13):
-        for x in range(2, 14):
-            edge = x in (2, 13) or y in (3, 12)
-            px[x, y] = rgba(board[0] if edge else board[3] if (x + y) < 13 else board[2])
-    for x in range(3, 13):
-        px[x, 7] = rgba(ELECTRUM_TRIM[3])
-    for y in (4, 5, 9, 10, 11):
-        px[4, y] = rgba(ELECTRUM_TRIM[3])
-        px[11, y] = rgba(ELECTRUM_TRIM[2])
-    for cx in (5, 9):
-        for y in range(5, 10):
-            for x in range(cx, cx + 2):
-                px[x, y] = rgba("#222226" if (x, y) != (cx, 5) else "#55555c")
-    return img
 
-
-# ------------------------------------------------------------------ automation fronts
 def _dark_window(img, x0, y0, x1, y1):
     window(img, x0, y0, x1, y1)
     px = img.load()
@@ -1844,25 +1723,6 @@ MODULE_ART = {
 }
 
 
-def module_item(art=None):
-    """A module: a dark chip with gold pins down each side and its symbol in the colour of what it fits."""
-    body = _mask({y: (3, 13) for y in range(3, 14)})
-    img = _parts((body, EXO8, 2, 6))
-    px = img.load()
-    for y in range(4, 13, 2):
-        px[2, y] = rgba(ELECTRUM8[6])
-        px[14, y] = rgba(ELECTRUM8[2])
-    if art is None:
-        for x, y in ((7, 7), (8, 7), (7, 8), (8, 8)):
-            px[x, y] = rgba(ENERGY8[5])
-        return img
-    kind, icon = art
-    for j, row in enumerate(icon):
-        for i, ch in enumerate(row):
-            if ch == "#":
-                px[5 + i, 6 + j] = rgba(MODULE_COLOR[kind])
-    return img
-
 
 def charging_pad_top(on):
     """The pad's face: a steel plate in a gold frame with a ring-shaped charging coil."""
@@ -2194,6 +2054,189 @@ def crystallizer_front(on):
     for x in range(3, 13):
         px[x, 12] = rgba(ELECTRUM_TRIM[2])
     return img
+
+
+# ------------------------------------------------------------------ redrawn item art
+import colorsys
+import math
+
+def ramp8(base):
+    """Eight steps from deep shadow to highlight around a base colour (step 5 is the base)."""
+    r, g, b = (int(base[i:i + 2], 16) / 255 for i in (1, 3, 5))
+    h, l, s = colorsys.rgb_to_hls(r, g, b)
+    out = []
+    for i in range(8):
+        li = max(0.05, min(0.93, l * (0.38 + 0.125 * i) + (0.06 * (i - 5) if i > 5 else 0)))
+        si = min(1, s * (1.1 - 0.06 * max(0, i - 5)))
+        hi = (h + (i - 5) * 0.008) % 1                 # warm the lights, cool the shadows a touch
+        rr, gg, bb = colorsys.hls_to_rgb(hi, li, si)
+        out.append("#%02x%02x%02x" % (int(rr * 255), int(gg * 255), int(bb * 255)))
+    return out
+
+
+def card_item(base, icon, frame=STEEL8):
+    """An upgrade/filter card: a bevelled steel frame round a coloured panel, an embossed symbol, gold
+    contacts along the bottom edge."""
+    ramp = ramp8(base)
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    for y in range(1, 15):
+        for x in range(1, 15):
+            if (x, y) in ((1, 1), (14, 1), (1, 14), (14, 14)):
+                continue
+            if x in (1, 14) or y in (1, 14):
+                c = frame[6] if (x == 1 or y == 1) and not (x == 14 or y == 14) else frame[2]
+                if (x == 1 and y == 14) or (x == 14 and y == 1):
+                    c = frame[4]
+            elif x in (2, 13) or y in (2, 11):
+                c = frame[5] if (x == 2 or y == 2) and x != 13 else frame[3]
+            elif y >= 12:
+                c = EXO8[1]
+            else:
+                t = (y - 3) / 8
+                c = ramp[6 if t < 0.15 else 5 if t < 0.45 else 4 if t < 0.8 else 3]
+                if x + y in (8, 9) and y < 7:
+                    c = ramp[6] if x + y == 9 else ramp[7]       # a glossy sheen across the corner
+            px[x, y] = rgba(c)
+    for x in range(3, 13, 2):                               # gold contacts
+        px[x, 12] = rgba(ELECTRUM8[6])
+        px[x, 13] = rgba(ELECTRUM8[3])
+    for j, row in enumerate(icon):                          # the symbol, raised: light face, dark lower edge
+        for i, ch in enumerate(row):
+            if ch == "#":
+                x, y = 4 + i, 4 + j
+                if 0 <= y + 1 < 16 and (j + 1 >= len(icon) or icon[j + 1][i] != "#"):
+                    px[x, y + 1] = rgba(ramp[1])
+        for i, ch in enumerate(row):
+            if ch == "#":
+                px[4 + i, 4 + j] = rgba("#fffaf0" if j < 2 else "#f0e6d2")
+    return img
+
+
+def circuit_item(board, chip_ramp, trace, advanced=False):
+    """A circuit board seen from above: a bevelled board, metal traces, a chip with silver legs and small
+    parts; the advanced one has a gold-lidded chip and more traces."""
+    ramp = ramp8(board)
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    x0, x1, y0, y1 = 1, 14, 2, 13
+    for y in range(y0, y1 + 1):
+        for x in range(x0, x1 + 1):
+            if (x, y) in ((x0, y0), (x1, y0), (x0, y1), (x1, y1)):
+                continue
+            if x == x1 or y == y1:
+                c = ramp[1]
+            elif x == x0 or y == y0:
+                c = ramp[6]
+            elif x == x1 - 1 or y == y1 - 1:
+                c = ramp[3]
+            else:
+                c = ramp[5] if (x + y) < 13 else ramp[4]
+            px[x, y] = rgba(c)
+    tr = ramp8(trace)
+    lines = [(3, 5, 3, 12), (12, 4, 12, 11), (3, 5, 6, 5), (9, 10, 12, 10), (4, 11, 10, 11)]
+    if advanced:
+        lines += [(3, 8, 5, 8), (10, 6, 12, 6), (7, 3, 7, 4), (8, 3, 10, 3)]
+    for (ax, ay, bx, by) in lines:
+        for x in range(min(ax, bx), max(ax, bx) + 1):
+            for y in range(min(ay, by), max(ay, by) + 1):
+                px[x, y] = rgba(tr[5])
+    for (x, y) in ((3, 5), (12, 4), (12, 11), (4, 11), (3, 12)):
+        px[x, y] = rgba(tr[7])                             # solder pads
+    cr = chip_ramp
+    for y in range(5, 10):                                  # the chip
+        for x in range(5, 11):
+            c = cr[2] if (x == 10 or y == 9) else cr[5] if (x == 5 or y == 5) else cr[3]
+            px[x, y] = rgba(c)
+    px[6, 6] = rgba(cr[7] if advanced else cr[6])
+    for y in (5, 7, 9):                                     # legs
+        px[4, y] = rgba(STEEL8[6]); px[11, y] = rgba(STEEL8[4])
+    for x in (6, 8, 10):
+        px[x, 4] = rgba(STEEL8[6]); px[x, 10] = rgba(STEEL8[3])
+    # small parts: a capacitor and a resistor
+    px[10, 12] = rgba("#3a7ad0"); px[11, 12] = rgba("#245aa8")
+    px[2, 9] = rgba("#c8a060"); px[2, 10] = rgba("#8a6a3a")
+    return img
+
+
+def wrench_item():
+    """An open-ended spanner corner to corner: a forged steel head with a U jaw top-right, a fluted
+    steel shaft, and a rubber grip with a copper collar bottom-left."""
+    def at(x, y):
+        dx, dy = x - 7.5, y - 7.5
+        return (dx - dy) / math.sqrt(2), (dx + dy) / math.sqrt(2)
+    head, shaft, grip, collar = (_diag(f) for f in (
+        lambda a, c: math.hypot(a - 6.0, c) <= 3.9 and not (a > 5.4 and abs(c) <= 1.3),
+        lambda a, c: -4.0 <= a <= 3.0 and abs(c) <= 1.3,
+        lambda a, c: -10.0 <= a < -4.6 and abs(c) <= 1.6,
+        lambda a, c: -4.6 <= a < -3.6 and abs(c) <= 1.8))
+    GRIP = ramp8("#b8322a")
+    img = _parts((grip, GRIP, 2, 7), (collar, COPPER8, 2, 7), (shaft, STEEL8, 3, 7), (head, STEEL8, 3, 7))
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            a, c = at(x, y)
+            if shaft[y][x] and abs(c) < 0.4 and -3.5 < a < 3.5:
+                px[x, y] = rgba(STEEL8[3])                  # the flute down the shaft
+            if grip[y][x] and int(a) % 2 == 0 and abs(c) < 1.2:
+                px[x, y] = rgba(GRIP[3])                    # grip ridges
+    return img
+
+
+def module_cartridge(kind_color, icon):
+    """A module cartridge: a dark plated casing with a glowing window in the colour of what it fits,
+    its symbol dark on the glow, and gold pins along the bottom."""
+    glow = ramp8(kind_color)
+    body = _mask({y: (2, 13) for y in range(2, 13)})
+    body[2][2] = body[2][13] = False
+    img = _parts((body, EXO8, 2, 7))
+    px = img.load()
+    for y in range(3, 11):                                  # the window
+        for x in range(3, 13):
+            edge_t = y == 3 or x == 3
+            edge_b = y == 10 or x == 12
+            px[x, y] = rgba(EXO8[0] if edge_t else EXO8[5] if edge_b else glow[7] if y == 4 and x < 8 else glow[6] if y < 6 else glow[5] if y < 8 else glow[4])
+    if icon:
+        for j, row in enumerate(icon):
+            for i, ch in enumerate(row):
+                if ch == "#" and 5 <= 5 + i <= 10 and 5 + j <= 8:
+                    pass
+        # the 7x5 symbol scaled into the 6x4 window: draw its pixels that fit, dark on the glow
+        for j, row in enumerate(icon):
+            for i, ch in enumerate(row):
+                if ch == "#":
+                    px[4 + i, 4 + j] = rgba(glow[1])
+    for x in range(3, 13, 2):                               # pins
+        px[x, 13] = rgba(ELECTRUM8[6]); px[x, 14] = rgba(ELECTRUM8[3])
+
+    return img
+
+
+
+def filter_card_item():
+    """The Filter Card: the upgrade-card design in teal with a funnel."""
+    return card_item("#1fa79a", ["#######", ".#####.", "..###..", "...#...", "...#..."])
+
+
+def upgrade_card(board, icon, icon_color=None):
+    """An upgrade card in its own colour with its own symbol."""
+    return card_item(board[3], icon)
+
+
+def basic_circuit_item():
+    return circuit_item("#2e7a33", ramp8("#3a3a40"), "#d08a3a")
+
+
+def advanced_circuit_item():
+    return circuit_item("#244a8c", ramp8("#c9a640"), "#e0c060", True)
+
+
+def module_item(art=None):
+    """A module cartridge; its window glows in the colour of what it fits."""
+    if art is None:
+        return module_cartridge("#7fe8ff", None)
+    kind, icon = art
+    return module_cartridge(MODULE_COLOR[kind], icon)
 
 
 def main():
