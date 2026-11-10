@@ -1,0 +1,16 @@
+{
+  "type": "joulesmith:dissolving",
+  "fluid": {
+    "id": "joulesmith:sulfuric_acid",
+    "amount": 250
+  },
+  "inputs": [
+    {
+      "tag": "c:raw_materials/iron"
+    }
+  ],
+  "fluid_result": {
+    "id": "joulesmith:iron_slurry",
+    "amount": 1000
+  }
+}

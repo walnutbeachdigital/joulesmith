@@ -1,0 +1,12 @@
+{
+  "type": "joulesmith:crystallizing",
+  "fluid": {
+    "id": "joulesmith:nickel_slurry",
+    "amount": 250
+  },
+  "results": [
+    {
+      "id": "joulesmith:nickel_crystal"
+    }
+  ]
+}

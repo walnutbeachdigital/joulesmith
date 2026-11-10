@@ -297,6 +297,42 @@ def raw(seed):
     return outline(lv, mask)
 
 
+def crystal(seed):
+    """A cluster of three pointed crystals rising from a common base, the middle one in front. Each has a
+    lit left facet, a mid-tone face and a dark right facet; a dark seam parts the front crystal from the
+    ones behind it."""
+    lv, mask = blank(), [[False] * 16 for _ in range(16)]
+    owner = [[None] * 16 for _ in range(16)]
+    # back crystals first, then the front one; (centre x, tip y, half width, lean per row)
+    for k, (cx, ty, hw, lean) in enumerate(((3.6, 5, 1.6, 0.18), (12.0, 4, 1.7, -0.18), (7.6, 1, 2.4, 0.0))):
+        for y in range(ty, 15):
+            t = (y - ty) / (14 - ty)
+            w = hw * min(1.0, t / 0.3) if t < 0.3 else hw
+            c = cx - lean * (14 - y)
+            for x in range(16):
+                d = x - c
+                if -w - 0.5 <= d <= w + 0.5:
+                    mask[y][x] = True
+                    owner[y][x] = k
+                    if d < -w * 0.3:
+                        v = 6 if y < ty + 3 else 5
+                    elif d <= w * 0.3:
+                        v = 7 if y < ty + 2 else 4 if (y + seed) % 5 else 5
+                    else:
+                        v = 2
+                    lv[y][x] = v - (1 if k < 2 else 0)
+    for y in range(16):
+        for x in range(16):
+            if owner[y][x] is not None and owner[y][x] < 2:
+                for dx in (-1, 1):
+                    if 0 <= x + dx < 16 and owner[y][x + dx] == 2:
+                        lv[y][x] = 0
+    for x in range(16):
+        if mask[14][x]:
+            lv[14][x] = 1
+    return edge_light(lv, mask)
+
+
 def crushed(seed):
     """Crushed ore: a low heap of angular metal pieces. Each piece is lit on its top-left; the cracks
     between pieces and the heap's lower-right edge fall into shadow."""
@@ -669,6 +705,8 @@ def draw(kind, name):
             return paint(raw(seed), m)
         if name.startswith("crushed_"):
             return paint8(crushed(seed), m)
+        if name.endswith("_crystal"):
+            return paint8(crystal(seed), m)
         form = name.rsplit("_", 1)[1]
         if form == "wire":
             spool, wound = wire()

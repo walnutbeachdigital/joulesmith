@@ -145,6 +145,12 @@ public final class JSBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> BIO_REACTOR =
             processing("bio_reactor", JSBlocks.BIO_REACTOR, ProcessingMachineBlockEntity.MIXER, MachineRecipeKind.BIO_REACTING, -1, 116);
 
+    // tier 3 ore processing
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> CHEMICAL_DISSOLVER =
+            processing("chemical_dissolver", JSBlocks.CHEMICAL_DISSOLVER, ProcessingMachineBlockEntity.FLUID_MIXER, MachineRecipeKind.DISSOLVING, 30, 116);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> CRYSTALLIZER =
+            processing("crystallizer", JSBlocks.CRYSTALLIZER, ProcessingMachineBlockEntity.CRYSTALLIZER, MachineRecipeKind.CRYSTALLIZING, 30, -1);
+
     // farming
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PlanterBlockEntity>> PLANTER =
             BLOCK_ENTITIES.register("planter", () -> BlockEntityType.Builder
@@ -170,7 +176,7 @@ public final class JSBlockEntities {
     /** Every recipe machine's type, for registering their capabilities together. */
     public static List<DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>>> processingMachines() {
         return List.of(CRUSHER, ALLOY_SMELTER, COMPRESSOR, WIRE_DRAWER, SAWMILL, ORE_WASHER, FLUID_MIXER, CENTRIFUGE,
-                CIRCUIT_ASSEMBLER, BIO_REACTOR);
+                CIRCUIT_ASSEMBLER, BIO_REACTOR, CHEMICAL_DISSOLVER, CRYSTALLIZER);
     }
 
     /** A recipe machine's block entity type: its block, its slot layout and the recipes it runs. */

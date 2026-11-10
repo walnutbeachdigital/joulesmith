@@ -1,0 +1,15 @@
+{
+  "type": "joulesmith:crushing",
+  "inputs": [
+    {
+      "item": "joulesmith:silver_crystal"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:silver_dust"
+    }
+  ],
+  "energy": 1200,
+  "time": 60
+}

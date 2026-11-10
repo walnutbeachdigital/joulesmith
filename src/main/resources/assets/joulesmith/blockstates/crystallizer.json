@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,lit=false": {
+      "model": "joulesmith:block/crystallizer"
+    },
+    "facing=north,lit=true": {
+      "model": "joulesmith:block/crystallizer_on"
+    },
+    "facing=east,lit=false": {
+      "model": "joulesmith:block/crystallizer",
+      "y": 90
+    },
+    "facing=east,lit=true": {
+      "model": "joulesmith:block/crystallizer_on",
+      "y": 90
+    },
+    "facing=south,lit=false": {
+      "model": "joulesmith:block/crystallizer",
+      "y": 180
+    },
+    "facing=south,lit=true": {
+      "model": "joulesmith:block/crystallizer_on",
+      "y": 180
+    },
+    "facing=west,lit=false": {
+      "model": "joulesmith:block/crystallizer",
+      "y": 270
+    },
+    "facing=west,lit=true": {
+      "model": "joulesmith:block/crystallizer_on",
+      "y": 270
+    }
+  }
+}

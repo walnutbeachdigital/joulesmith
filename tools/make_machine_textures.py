@@ -1920,6 +1920,47 @@ def modification_table_gui():
     return img
 
 
+def chemical_dissolver_front(on):
+    """A glass vat of yellow acid with a stirrer; it bubbles while dissolving."""
+    img = casing3()
+    px = img.load()
+    window(img, 4, 3, 11, 12)
+    ACID = ["#3a3510", "#6b6218", "#a89a22", "#d9d23a", "#f2ec7a"]
+    for y in range(3, 13):
+        for x in range(4, 12):
+            if y < 6:
+                px[x, y] = rgba("#16181c")
+            else:
+                px[x, y] = rgba((ACID[3] if (x * 3 + y) % 5 == 0 else ACID[2]) if on else ACID[0])
+    for x in range(4, 12):
+        px[x, 6] = rgba(ACID[4] if on else ACID[1])
+    for y in range(3, 11):
+        px[7, y] = rgba(STEEL[5])
+    if on:
+        for x, y in ((5, 9), (10, 8), (9, 11), (6, 7)):
+            px[x, y] = rgba(ACID[4])
+    return img
+
+
+def crystallizer_front(on):
+    """A dark growth chamber; crystals glow in it while they form."""
+    img = casing3()
+    px = img.load()
+    window(img, 3, 3, 12, 12)
+    for y in range(3, 13):
+        for x in range(3, 13):
+            px[x, y] = rgba("#14161c")
+    GLOW = ["#1d2f3a", "#2c5a6e", "#4aa3c0", "#9be6f8", "#e6fbff"]
+    for cx, top in ((5, 8), (8, 5), (10, 7)):
+        for y in range(top, 12):
+            for x in (cx, cx + 1):
+                lit = x == cx
+                px[x, y] = rgba((GLOW[4] if y == top else GLOW[3] if lit else GLOW[2]) if on else (GLOW[1] if lit else GLOW[0]))
+    for x in range(3, 13):
+        px[x, 12] = rgba(ELECTRUM_TRIM[2])
+    return img
+
+
 def main():
     os.makedirs(os.path.join(TEX, "block"), exist_ok=True)
     os.makedirs(os.path.join(TEX, "gui"), exist_ok=True)
@@ -2016,6 +2057,8 @@ def main():
         "block/circuit_assembler_front_on": circuit_assembler_front(True),
         **{f"item/{u}_upgrade": upgrade_card(*art) for u, art in UPGRADE_ART.items()},
         "gui/machine": gui(),
+        **{f"block/{n}_front{'_on' if on else ''}": fn(on)
+           for n, fn in (("chemical_dissolver", chemical_dissolver_front), ("crystallizer", crystallizer_front)) for on in (False, True)},
         "item/power_drill": power_drill_item(),
         "item/chainsaw": chainsaw_item(),
         "item/energy_sword": energy_sword_item(),

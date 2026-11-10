@@ -1,0 +1,12 @@
+{
+  "type": "joulesmith:crystallizing",
+  "fluid": {
+    "id": "joulesmith:copper_slurry",
+    "amount": 250
+  },
+  "results": [
+    {
+      "id": "joulesmith:copper_crystal"
+    }
+  ]
+}

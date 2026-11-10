@@ -1,0 +1,24 @@
+{
+  "type": "joulesmith:dissolving",
+  "fluid": {
+    "id": "joulesmith:sulfuric_acid",
+    "amount": 250
+  },
+  "inputs": [
+    {
+      "tag": "c:ores/silver"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:crushed_lead",
+      "chance": 0.15
+    }
+  ],
+  "fluid_result": {
+    "id": "joulesmith:silver_slurry",
+    "amount": 1000
+  },
+  "energy": 5000,
+  "time": 200
+}

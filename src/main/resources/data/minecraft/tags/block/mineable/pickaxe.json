@@ -55,6 +55,8 @@
     "joulesmith:tree_farm",
     "joulesmith:bio_reactor",
     "joulesmith:biofuel_generator",
+    "joulesmith:chemical_dissolver",
+    "joulesmith:crystallizer",
     "joulesmith:energy_cable",
     "joulesmith:reinforced_energy_cable",
     "joulesmith:advanced_energy_cable",

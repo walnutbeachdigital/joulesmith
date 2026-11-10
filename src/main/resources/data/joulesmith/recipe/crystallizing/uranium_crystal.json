@@ -1,0 +1,12 @@
+{
+  "type": "joulesmith:crystallizing",
+  "fluid": {
+    "id": "joulesmith:uranium_slurry",
+    "amount": 250
+  },
+  "results": [
+    {
+      "id": "joulesmith:uranium_crystal"
+    }
+  ]
+}

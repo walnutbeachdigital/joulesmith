@@ -102,6 +102,9 @@ public final class JSBlocks {
 
     public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> BIO_REACTOR = processing("bio_reactor", () -> JSBlockEntities.BIO_REACTOR.get());
 
+    public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> CHEMICAL_DISSOLVER = processing("chemical_dissolver", () -> JSBlockEntities.CHEMICAL_DISSOLVER.get());
+    public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> CRYSTALLIZER = processing("crystallizer", () -> JSBlockEntities.CRYSTALLIZER.get());
+
     // ---- farming
     public static final DeferredBlock<SimpleMachineBlock<PlanterBlockEntity>> PLANTER = BLOCKS.register("planter",
             () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.PLANTER::get, (p, s) -> new PlanterBlockEntity(JSBlockEntities.PLANTER.get(), p, s)));

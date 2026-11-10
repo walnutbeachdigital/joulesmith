@@ -48,6 +48,7 @@ public final class JSItems {
     public static final Map<com.walnutbeachdigital.joulesmith.gear.powered.Module, DeferredItem<com.walnutbeachdigital.joulesmith.gear.powered.ModuleItem>> MODULES =
             new EnumMap<>(com.walnutbeachdigital.joulesmith.gear.powered.Module.class);
     public static final Map<Metal, DeferredItem<Item>> CRUSHED = new EnumMap<>(Metal.class);
+    public static final Map<Metal, DeferredItem<Item>> CRYSTAL = new EnumMap<>(Metal.class);
     public static final DeferredItem<FilterCardItem> FILTER_CARD = register("filter_card", () -> new FilterCardItem(new Item.Properties().stacksTo(16)));
 
     static {
@@ -80,6 +81,8 @@ public final class JSItems {
         blockItem(JSBlocks.FLUID_MIXER);
         blockItem(JSBlocks.CENTRIFUGE);
         blockItem(JSBlocks.CIRCUIT_ASSEMBLER);
+        blockItem(JSBlocks.CHEMICAL_DISSOLVER);
+        blockItem(JSBlocks.CRYSTALLIZER);
         blockItem(JSBlocks.PLANTER);
         blockItem(JSBlocks.HARVESTER);
         blockItem(JSBlocks.TREE_FARM);
@@ -129,6 +132,7 @@ public final class JSItems {
             }
             if (metal.hasOre() || !metal.hasIngot()) {         // ore metals and vanilla's iron, copper, gold
                 CRUSHED.put(metal, item("crushed_" + id));
+                CRYSTAL.put(metal, item(id + "_crystal"));
             }
             if (metal.hasIngot()) {
                 blockItem(JSBlocks.STORAGE_BLOCK.get(metal));

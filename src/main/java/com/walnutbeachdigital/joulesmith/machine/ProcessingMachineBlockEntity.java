@@ -33,6 +33,9 @@ public class ProcessingMachineBlockEntity extends RecipeMachineBlockEntity {
     public static final List<SlotDef> ASSEMBLER = List.of(SlotDef.input(35, 26), SlotDef.input(53, 26), SlotDef.input(44, 44),
             SlotDef.output(116, 35));
 
+    /** Crystallizer: slurry tank on the left, one output; no item input. */
+    public static final List<SlotDef> CRYSTALLIZER = List.of(SlotDef.output(116, 35));
+
     public ProcessingMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, List<SlotDef> slots, MachineRecipeKind kind) {
         super(type, pos, state, slots, kind);
     }

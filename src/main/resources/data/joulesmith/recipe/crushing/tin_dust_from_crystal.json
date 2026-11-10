@@ -1,0 +1,15 @@
+{
+  "type": "joulesmith:crushing",
+  "inputs": [
+    {
+      "item": "joulesmith:tin_crystal"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:tin_dust"
+    }
+  ],
+  "energy": 1200,
+  "time": 60
+}

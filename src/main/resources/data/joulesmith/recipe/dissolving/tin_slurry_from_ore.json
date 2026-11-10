@@ -1,0 +1,24 @@
+{
+  "type": "joulesmith:dissolving",
+  "fluid": {
+    "id": "joulesmith:sulfuric_acid",
+    "amount": 250
+  },
+  "inputs": [
+    {
+      "tag": "c:ores/tin"
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:crushed_iron",
+      "chance": 0.15
+    }
+  ],
+  "fluid_result": {
+    "id": "joulesmith:tin_slurry",
+    "amount": 1000
+  },
+  "energy": 5000,
+  "time": 200
+}

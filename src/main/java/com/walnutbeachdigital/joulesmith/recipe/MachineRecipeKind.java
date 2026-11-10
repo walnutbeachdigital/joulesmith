@@ -20,7 +20,9 @@ public enum MachineRecipeKind {
     MIXING("mixing", 2000, 80),
     CENTRIFUGING("centrifuging", 3200, 120),
     CIRCUIT_ASSEMBLING("circuit_assembling", 3000, 100),
-    BIO_REACTING("bio_reacting", 800, 40);
+    BIO_REACTING("bio_reacting", 800, 40),
+    DISSOLVING("dissolving", 4000, 160),
+    CRYSTALLIZING("crystallizing", 2400, 120);
 
     private final String id;
     private final int defaultEnergy;

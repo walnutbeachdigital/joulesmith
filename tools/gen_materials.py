@@ -90,6 +90,7 @@ for m, (src, dust, plate, gear, wire) in METALS.items():
         items.append((f"{m}_wire", "wire", m))
     if src in ("ore", "vanilla"):
         items.append((f"crushed_{m}", "crushed", m))
+        items.append((f"{m}_crystal", "crystal", m))
 
 for d in OWNED_DIRS:
     shutil.rmtree(d, ignore_errors=True)
@@ -181,7 +182,8 @@ for bid, kind, m in blocks:
         both("storage_blocks", f"#c:storage_blocks/{sub}")
 
 FORM_TAG = {"raw": "raw_materials", "ingot": "ingots", "nugget": "nuggets", "dust": "dusts",
-            "plate": "plates", "gear": "gears", "wire": "wires", "crushed": "crushed_ores"}
+            "plate": "plates", "gear": "gears", "wire": "wires", "crushed": "crushed_ores",
+            "crystal": "crystals"}
 for iid, form, m in items:
     group = FORM_TAG[form]
     tag("c", "item", f"{group}/{m}", f"{MOD}:{iid}")
@@ -311,6 +313,8 @@ MACHINES = {
     "tree_farm": {"name": "Tree Farm", "front": "tree_farm_front"},
     "bio_reactor": {"name": "Bio Reactor", "front": "bio_reactor_front"},
     "biofuel_generator": {"name": "Biofuel Generator", "front": "biofuel_generator_front"},
+    "chemical_dissolver": {"name": "Chemical Dissolver", "front": "chemical_dissolver_front"},
+    "crystallizer": {"name": "Crystallizer", "front": "crystallizer_front"},
 }
 CREATIVE = {"creative_power_cell": "Creative Power Cell"}
 ROTATION = {"north": 0, "east": 90, "south": 180, "west": 270}
@@ -924,6 +928,24 @@ lang.update({
 })
 for (ns, reg, path), values in tags.items():
     write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+
+# ---- tier 3 ore processing: Chemical Dissolver (ore + acid -> 1000 mB slurry) and Crystallizer
+# (250 mB slurry -> one crystal); the Crusher turns each crystal into a dust: four per raw ore.
+for m, (src, dust, plate, gear, wire) in METALS.items():
+    if src not in ("ore", "vanilla"):
+        continue
+    slurry = f"{MOD}:{m}_slurry"
+    machine_fluid("dissolving", f"{m}_slurry_from_raw", (ACID, 250), [(f"#c:raw_materials/{m}", 1)], [], (slurry, 1000))
+    machine_fluid("dissolving", f"{m}_slurry_from_ore", (ACID, 250), [(f"#c:ores/{m}", 1)],
+                  [(CRUSHED(ORE_BONUS[m]), 1, 0.15)], (slurry, 1000), energy=5000, time=200)
+    machine_fluid("crystallizing", f"{m}_crystal", (slurry, 250), [], [(f"{MOD}:{m}_crystal", 1, 1)])
+    machine("crushing", f"{m}_dust_from_crystal", [(f"{MOD}:{m}_crystal", 1)], [(DUST(m), 1, 1)], 1200, 60)
+    lang[f"fluid_type.{MOD}.{m}_slurry"] = f"{title(m)} Slurry"
+shaped("chemical_dissolver", ["PCP", "GMG", "PRP"],
+       {"P": "#c:plates/electrum", "C": f"{MOD}:advanced_circuit", "G": "#c:gears/steel", "M": f"{MOD}:fluid_mixer", "R": "#c:dusts/redstone"})
+shaped("crystallizer", ["PCP", "QTQ", "PRP"],
+       {"P": "#c:plates/electrum", "C": f"{MOD}:advanced_circuit", "Q": "#c:gems/quartz", "T": f"{MOD}:fluid_tank", "R": "#c:dusts/redstone"})
+lang.update({"jei.joulesmith.dissolving": "Dissolving", "jei.joulesmith.crystallizing": "Crystallizing"})
 
 # ---- powered gear (tier 3): tools, weapon and Exo-Suit that run on FE, the Energy Cell, modules,
 # the Charging Pad and the Modification Table

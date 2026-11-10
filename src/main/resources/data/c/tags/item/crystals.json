@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "#c:crystals/iron",
+    "#c:crystals/copper",
+    "#c:crystals/gold",
+    "#c:crystals/tin",
+    "#c:crystals/lead",
+    "#c:crystals/silver",
+    "#c:crystals/nickel",
+    "#c:crystals/uranium"
+  ]
+}

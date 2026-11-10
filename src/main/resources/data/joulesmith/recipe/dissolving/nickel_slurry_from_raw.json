@@ -1,0 +1,16 @@
+{
+  "type": "joulesmith:dissolving",
+  "fluid": {
+    "id": "joulesmith:sulfuric_acid",
+    "amount": 250
+  },
+  "inputs": [
+    {
+      "tag": "c:raw_materials/nickel"
+    }
+  ],
+  "fluid_result": {
+    "id": "joulesmith:nickel_slurry",
+    "amount": 1000
+  }
+}

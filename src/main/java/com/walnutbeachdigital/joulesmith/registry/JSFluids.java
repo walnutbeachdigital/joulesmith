@@ -67,6 +67,18 @@ public final class JSFluids {
     /** Steam only lives in tanks and pipes: no bucket, no block. */
     public static final Entry STEAM = register("steam", 0xC0E6ECF0, -1000, 200, 400, false);
 
+    /** Ore slurry from the Chemical Dissolver, one per ore metal, for the Crystallizer. Tanks and pipes only. */
+    public static final java.util.Map<com.walnutbeachdigital.joulesmith.material.Metal, Entry> SLURRY =
+            new java.util.EnumMap<>(com.walnutbeachdigital.joulesmith.material.Metal.class);
+
+    static {
+        for (var metal : com.walnutbeachdigital.joulesmith.material.Metal.values()) {
+            if (metal.hasOre() || !metal.hasIngot()) {
+                SLURRY.put(metal, register(metal.id() + "_slurry", 0xE0000000 | metal.rampStep(4), 1400, 2000, 320, false));
+            }
+        }
+    }
+
     private static Entry register(String name, int color, int density, int viscosity, int temperature) {
         return register(name, color, density, viscosity, temperature, true);
     }
