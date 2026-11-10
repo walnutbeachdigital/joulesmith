@@ -69,7 +69,7 @@ public final class TopCompat {
             if (mode != 0) text.invoke(info, Component.translatable(RedstoneMode.values()[Math.floorMod(mode, RedstoneMode.values().length)].key()));
             if (machine.heatPercent() >= 0) text.invoke(info, Component.translatable("gui.joulesmith.heat", machine.heatPercent()));
             if (machine.status() > 0) text.invoke(info, Component.translatable("gui.joulesmith.status." + machine.status()));
-        } else if (level.getBlockState(pos).getBlock() instanceof com.walnutbeachdigital.joulesmith.network.NetworkPart
+        } else if (com.walnutbeachdigital.joulesmith.network.NetworkPart.at(level, pos)
                 || level.getBlockState(pos).getBlock() instanceof com.walnutbeachdigital.joulesmith.energy.wireless.WirelessEnergyBlock) {
             for (Component line : com.walnutbeachdigital.joulesmith.network.NetworkInfo.lines(level, pos)) text.invoke(info, line);
         } else if (level.getBlockState(pos).getBlock() instanceof SolarPanelBlock panel) {

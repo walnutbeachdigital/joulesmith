@@ -58,7 +58,7 @@ public class WirelessTerminalItem extends Item implements PoweredItem {
         Player player = context.getPlayer();
         if (player == null || !player.isShiftKeyDown()) return InteractionResult.PASS;
         Level level = context.getLevel();
-        if (!(level.getBlockState(context.getClickedPos()).getBlock() instanceof NetworkPart)) return InteractionResult.PASS;
+        if (!NetworkPart.at(level, context.getClickedPos())) return InteractionResult.PASS;
         if (!level.isClientSide) {
             context.getItemInHand().set(JSDataComponents.LINK.get(), GlobalPos.of(level.dimension(), context.getClickedPos().immutable()));
             player.displayClientMessage(Component.translatable("message.joulesmith.wireless_terminal.linked"), true);
@@ -73,7 +73,7 @@ public class WirelessTerminalItem extends Item implements PoweredItem {
         GlobalPos link = link(stack);
         String problem = link == null ? "unlinked"
                 : link.dimension() != level.dimension() || player.blockPosition().distSqr(link.pos()) > (double) RANGE * RANGE ? "range"
-                : !level.isLoaded(link.pos()) || !(level.getBlockState(link.pos()).getBlock() instanceof NetworkPart) ? "gone"
+                : !level.isLoaded(link.pos()) || !NetworkPart.at(level, link.pos()) ? "gone"
                 : !PoweredItem.use(stack, COST, player) ? "power" : null;
         if (problem != null) {
             player.displayClientMessage(Component.translatable("message.joulesmith.wireless_terminal." + problem), true);

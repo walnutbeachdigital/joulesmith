@@ -41,7 +41,7 @@ public final class Network {
         List<NetworkCoreBlockEntity> cores = new ArrayList<>();
         List<DriveBayBlockEntity> bays = new ArrayList<>();
         List<CraftingCpuBlockEntity> cpus = new ArrayList<>();
-        if (level.getBlockState(start).getBlock() instanceof NetworkPart) {
+        if (NetworkPart.at(level, start)) {
             queue.add(start.immutable());
             seen.add(start.immutable());
         }
@@ -55,7 +55,7 @@ public final class Network {
             for (Direction d : Direction.values()) {
                 BlockPos n = p.relative(d);
                 if (seen.contains(n) || !level.isLoaded(n)) continue;
-                if (level.getBlockState(n).getBlock() instanceof NetworkPart) {
+                if (NetworkPart.joins(level, p, d)) {
                     seen.add(n.immutable());
                     queue.add(n.immutable());
                 }

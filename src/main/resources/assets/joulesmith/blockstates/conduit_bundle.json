@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "joulesmith:block/conduit_bundle"
+    }
+  }
+}

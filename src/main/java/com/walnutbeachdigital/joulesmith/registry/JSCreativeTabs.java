@@ -20,7 +20,7 @@ public final class JSCreativeTabs {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MACHINES = tab("machines", "itemGroup.joulesmith.machines",
             CreativeLayout.Tab.MACHINES, () -> JSBlocks.CRUSHER.get().asItem().getDefaultInstance(), MAIN.getKey());
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> LOGISTICS = tab("logistics", "itemGroup.joulesmith.logistics",
-            CreativeLayout.Tab.LOGISTICS, () -> JSBlocks.ITEM_DUCT.get().asItem().getDefaultInstance(), MACHINES.getKey());
+            CreativeLayout.Tab.LOGISTICS, () -> JSItems.conduit(com.walnutbeachdigital.joulesmith.transport.conduit.ConduitType.ITEM, 1).getDefaultInstance(), MACHINES.getKey());
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> GEAR = tab("gear", "itemGroup.joulesmith.gear",
             CreativeLayout.Tab.GEAR, () -> JSGear.POWER_DRILL.get().getDefaultInstance(), LOGISTICS.getKey());
 

@@ -239,3 +239,7 @@ Unlocked %s for %s player(s) || 已为%2$s名玩家解锁%1$s || Открыто:
 Completed %s for %s player(s) || 已为%2$s名玩家完成%1$s || Выполнено: %s для игроков: %s || Completado %s para %s jugador(es) || %s für %s Spieler abgeschlossen || %s concluído para %s jogador(es)
 Locked %s for %s player(s) || 已为%2$s名玩家锁定%1$s || Закрыто: %s для игроков: %s || Bloqueado %s para %s jugador(es) || %s für %s Spieler gesperrt || %s bloqueado para %s jogador(es)
 Reset the Handbook for %s player(s) || 已为%s名玩家重置手册 || Справочник сброшен для игроков: %s || Manual reiniciado para %s jugador(es) || Handbuch für %s Spieler zurückgesetzt || Manual redefinido para %s jogador(es)
+Conduit Bundle || 管道束 || Связка каналов || Haz de conductos || Leitungsbündel || Feixe de Condutos
+Connected || 已连接 || Подключено || Conectado || Verbunden || Conectado
+Disconnected || 已断开 || Отключено || Desconectado || Getrennt || Desconectado
+Pipe side: push, pull, both or off (cables: on or off) || 管道侧面：推送、抽取、双向或关闭（线缆：开或关） || Сторона трубы: толкать, тянуть, оба или выкл. (кабели: вкл. или выкл.) || Lado de tubería: empujar, extraer, ambos o apagado (cables: encendido o apagado) || Rohrseite: schieben, ziehen, beides oder aus (Kabel: an oder aus) || Lado do cano: empurrar, puxar, ambos ou desligado (cabos: ligado ou desligado)

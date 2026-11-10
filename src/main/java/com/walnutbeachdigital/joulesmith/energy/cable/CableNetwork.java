@@ -9,7 +9,10 @@ import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
+import com.walnutbeachdigital.joulesmith.transport.PipeConnection;
+import com.walnutbeachdigital.joulesmith.transport.conduit.BundleBlockEntity;
+import com.walnutbeachdigital.joulesmith.transport.conduit.ConduitType;
+import com.walnutbeachdigital.joulesmith.transport.conduit.EnergyConduit;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
@@ -66,23 +69,28 @@ public final class CableNetwork {
     }
 
     /** Finds every cable joined to {@code start}, and the machines touching them. */
-    static CableNetwork build(Level level, BlockPos start) {
+    private static EnergyConduit cable(Level level, BlockPos pos) {
+        return BundleBlockEntity.conduit(level, pos, ConduitType.ENERGY) instanceof EnergyConduit c ? c : null;
+    }
+
+    public static CableNetwork build(Level level, BlockPos start) {
         CableNetwork net = new CableNetwork();
         net.level = level;
         ArrayDeque<BlockPos> queue = new ArrayDeque<>();
-        queue.add(start);
-        net.cables.add(start);
+        queue.add(start.immutable());
+        net.cables.add(start.immutable());
         while (!queue.isEmpty() && net.cables.size() < MAX_CABLES) {
             BlockPos pos = queue.poll();
-            BlockState state = level.getBlockState(pos);
-            if (!(state.getBlock() instanceof EnergyCableBlock block)) continue;
-            net.rate = Math.min(net.rate, rateFor(block.tier()));
-            if (level.getBlockEntity(pos) instanceof EnergyCableBlockEntity cable) cable.network = net;
+            EnergyConduit cable = cable(level, pos);
+            if (cable == null) continue;
+            net.rate = Math.min(net.rate, rateFor(cable.tier()));
+            cable.network = net;
             for (Direction dir : Direction.values()) {
-                if (!state.getValue(EnergyCableBlock.CONNECTED.get(dir))) continue;
+                PipeConnection conn = cable.connection(dir);
+                if (conn == PipeConnection.NONE) continue;
                 BlockPos other = pos.relative(dir);
-                if (level.getBlockState(other).getBlock() instanceof EnergyCableBlock) {
-                    if (net.cables.add(other)) queue.add(other);
+                if (conn == PipeConnection.PIPE) {
+                    if (level.isLoaded(other) && net.cables.add(other)) queue.add(other);
                 } else {
                     net.endPositions.add(other);
                     net.endFaces.add(dir.getOpposite());
@@ -93,18 +101,19 @@ public final class CableNetwork {
         return net;
     }
 
-    void invalidate() {
+    public void invalidate() {
         if (!valid) return;
         valid = false;
         for (BlockPos pos : cables) {
-            if (level != null && level.isLoaded(pos) && level.getBlockEntity(pos) instanceof EnergyCableBlockEntity cable && cable.network == this) {
-                cable.network = null;
+            if (level != null && level.isLoaded(pos)) {
+                EnergyConduit cable = cable(level, pos);
+                if (cable != null && cable.network == this) cable.network = null;
             }
         }
     }
 
     /** Shares the buffer out among the machines that can take power. Runs once per game tick per network. */
-    void tick(Level level) {
+    public void tick(Level level) {
         long now = level.getGameTime();
         if (now == lastTick) return;
         lastTick = now;

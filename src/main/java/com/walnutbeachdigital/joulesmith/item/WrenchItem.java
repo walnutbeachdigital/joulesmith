@@ -3,7 +3,10 @@ package com.walnutbeachdigital.joulesmith.item;
 import java.util.List;
 
 import com.walnutbeachdigital.joulesmith.machine.MachineBlock;
-import com.walnutbeachdigital.joulesmith.transport.PipeBlock;
+import com.walnutbeachdigital.joulesmith.transport.conduit.BundleBlock;
+import com.walnutbeachdigital.joulesmith.transport.conduit.BundleBlockEntity;
+import com.walnutbeachdigital.joulesmith.transport.conduit.Conduit;
+import com.walnutbeachdigital.joulesmith.transport.conduit.ConduitType;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -34,9 +37,15 @@ public class WrenchItem extends Item {
         BlockPos pos = context.getClickedPos();
         BlockState state = level.getBlockState(pos);
         Player player = context.getPlayer();
-        if (state.getBlock() instanceof PipeBlock pipe) {
-            Direction side = PipeBlock.sideFromHit(pos, context.getClickLocation(), context.getClickedFace());
-            return pipe.wrench(level, pos, player, side, player != null && player.isSecondaryUseActive());
+        if (level.getBlockEntity(pos) instanceof BundleBlockEntity bundle) {
+            ConduitType type = BundleBlock.target(level, pos, context.getClickLocation());
+            Conduit conduit = type == null ? null : bundle.get(type);
+            if (conduit == null) return InteractionResult.PASS;
+            if (level.isClientSide) return InteractionResult.SUCCESS;
+            Direction side = BundleBlock.side(level, pos, type, context.getClickLocation(), context.getClickedFace());
+            Component message = player != null && player.isSecondaryUseActive() ? conduit.sneakWrench(player, side) : conduit.wrench(player, side);
+            if (player != null && message != null) player.displayClientMessage(message, true);
+            return InteractionResult.SUCCESS;
         }
         if (state.getBlock() instanceof MachineBlock && state.hasProperty(MachineBlock.FACING)) {
             if (!level.isClientSide) {

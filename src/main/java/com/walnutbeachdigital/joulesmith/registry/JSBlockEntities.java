@@ -8,7 +8,6 @@ import com.walnutbeachdigital.joulesmith.automation.FluidPlacerBlockEntity;
 import com.walnutbeachdigital.joulesmith.automation.MechanicalUserBlockEntity;
 import com.walnutbeachdigital.joulesmith.automation.MobFighterBlockEntity;
 import com.walnutbeachdigital.joulesmith.automation.QuarryBlockEntity;
-import com.walnutbeachdigital.joulesmith.energy.cable.EnergyCableBlockEntity;
 import com.walnutbeachdigital.joulesmith.logic.LogicControllerBlockEntity;
 import com.walnutbeachdigital.joulesmith.logic.SensorBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.battery.BatteryBlockEntity;
@@ -28,8 +27,6 @@ import com.walnutbeachdigital.joulesmith.machine.pump.PumpBlockEntity;
 import com.walnutbeachdigital.joulesmith.storage.bin.BinBlockEntity;
 import com.walnutbeachdigital.joulesmith.storage.crate.CrateBlockEntity;
 import com.walnutbeachdigital.joulesmith.storage.tank.FluidTankBlockEntity;
-import com.walnutbeachdigital.joulesmith.transport.fluid.FluidPipeBlockEntity;
-import com.walnutbeachdigital.joulesmith.transport.item.ItemDuctBlockEntity;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -110,20 +107,9 @@ public final class JSBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> SAWMILL =
             processing("sawmill", JSBlocks.SAWMILL, ProcessingMachineBlockEntity.ONE_TO_TWO, MachineRecipeKind.SAWING);
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnergyCableBlockEntity>> ENERGY_CABLE =
-            BLOCK_ENTITIES.register("energy_cable", () -> BlockEntityType.Builder
-                    .of(EnergyCableBlockEntity::new, JSBlocks.ENERGY_CABLE.get(), JSBlocks.REINFORCED_ENERGY_CABLE.get(),
-                            JSBlocks.ADVANCED_ENERGY_CABLE.get(), JSBlocks.ELITE_ENERGY_CABLE.get(), JSBlocks.ULTIMATE_ENERGY_CABLE.get()).build(null));
-
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ItemDuctBlockEntity>> ITEM_DUCT =
-            BLOCK_ENTITIES.register("item_duct", () -> BlockEntityType.Builder
-                    .of(ItemDuctBlockEntity::new, JSBlocks.ITEM_DUCT.get(), JSBlocks.REINFORCED_ITEM_DUCT.get(),
-                            JSBlocks.ADVANCED_ITEM_DUCT.get(), JSBlocks.ELITE_ITEM_DUCT.get(), JSBlocks.ULTIMATE_ITEM_DUCT.get()).build(null));
-
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidPipeBlockEntity>> FLUID_PIPE =
-            BLOCK_ENTITIES.register("fluid_pipe", () -> BlockEntityType.Builder
-                    .of(FluidPipeBlockEntity::new, JSBlocks.FLUID_PIPE.get(), JSBlocks.REINFORCED_FLUID_PIPE.get(),
-                            JSBlocks.ADVANCED_FLUID_PIPE.get(), JSBlocks.ELITE_FLUID_PIPE.get(), JSBlocks.ULTIMATE_FLUID_PIPE.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.transport.conduit.BundleBlockEntity>> CONDUIT_BUNDLE =
+            BLOCK_ENTITIES.register("conduit_bundle", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.transport.conduit.BundleBlockEntity::new, JSBlocks.CONDUIT_BUNDLE.get()).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidTankBlockEntity>> FLUID_TANK =
             BLOCK_ENTITIES.register("fluid_tank", () -> BlockEntityType.Builder

@@ -1,6 +1,0 @@
-{
-  "parent": "joulesmith:block/pipe_arm",
-  "textures": {
-    "pipe": "joulesmith:block/advanced_fluid_pipe"
-  }
-}

@@ -1,5 +1,8 @@
 package com.walnutbeachdigital.joulesmith.registry;
 
+import com.walnutbeachdigital.joulesmith.transport.conduit.ConduitItem;
+import com.walnutbeachdigital.joulesmith.transport.conduit.ConduitType;
+
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -24,6 +27,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class JSItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Joulesmith.MODID);
+    private static final java.util.Map<String, DeferredItem<ConduitItem>> CONDUITS = new java.util.HashMap<>();
+
 
     /** Every item in creative-tab order. */
     public static final List<DeferredItem<? extends Item>> TAB_ORDER = new ArrayList<>();
@@ -108,7 +113,7 @@ public final class JSItems {
         blockItem(JSBlocks.NETWORK_CORE);
         blockItem(JSBlocks.DRIVE_BAY);
         blockItem(JSBlocks.NETWORK_TERMINAL);
-        blockItem(JSBlocks.NETWORK_CABLE);
+        conduit("network_cable", ConduitType.NETWORK, 1);
         blockItem(JSBlocks.CRAFTING_TERMINAL);
         blockItem(JSBlocks.CRAFTING_CPU);
         blockItem(JSBlocks.IMPORT_BUS);
@@ -126,11 +131,11 @@ public final class JSItems {
         blockItem(JSBlocks.MECHANICAL_USER);
         blockItem(JSBlocks.QUARRY);
         blockItem(JSBlocks.MOB_FIGHTER);
-        blockItem(JSBlocks.ENERGY_CABLE);
-        blockItem(JSBlocks.REINFORCED_ENERGY_CABLE);
-        blockItem(JSBlocks.ADVANCED_ENERGY_CABLE);
-        blockItem(JSBlocks.ELITE_ENERGY_CABLE);
-        blockItem(JSBlocks.ULTIMATE_ENERGY_CABLE);
+        conduit("energy_cable", ConduitType.ENERGY, 1);
+        conduit("reinforced_energy_cable", ConduitType.ENERGY, 2);
+        conduit("advanced_energy_cable", ConduitType.ENERGY, 3);
+        conduit("elite_energy_cable", ConduitType.ENERGY, 4);
+        conduit("ultimate_energy_cable", ConduitType.ENERGY, 5);
         blockItem(JSBlocks.ELECTRIC_FURNACE);
         blockItem(JSBlocks.CRUSHER);
         blockItem(JSBlocks.ALLOY_SMELTER);
@@ -182,16 +187,16 @@ public final class JSItems {
         TAB_ORDER.add(PLASTIC_SHEET);
         blockItem(JSBlocks.PUMP);
         blockItem(JSBlocks.ADVANCED_PUMP);
-        blockItem(JSBlocks.ITEM_DUCT);
-        blockItem(JSBlocks.REINFORCED_ITEM_DUCT);
-        blockItem(JSBlocks.FLUID_PIPE);
-        blockItem(JSBlocks.REINFORCED_FLUID_PIPE);
-        blockItem(JSBlocks.ADVANCED_ITEM_DUCT);
-        blockItem(JSBlocks.ADVANCED_FLUID_PIPE);
-        blockItem(JSBlocks.ELITE_ITEM_DUCT);
-        blockItem(JSBlocks.ELITE_FLUID_PIPE);
-        blockItem(JSBlocks.ULTIMATE_ITEM_DUCT);
-        blockItem(JSBlocks.ULTIMATE_FLUID_PIPE);
+        conduit("item_duct", ConduitType.ITEM, 1);
+        conduit("reinforced_item_duct", ConduitType.ITEM, 2);
+        conduit("fluid_pipe", ConduitType.FLUID, 1);
+        conduit("reinforced_fluid_pipe", ConduitType.FLUID, 2);
+        conduit("advanced_item_duct", ConduitType.ITEM, 3);
+        conduit("advanced_fluid_pipe", ConduitType.FLUID, 3);
+        conduit("elite_item_duct", ConduitType.ITEM, 4);
+        conduit("elite_fluid_pipe", ConduitType.FLUID, 4);
+        conduit("ultimate_item_duct", ConduitType.ITEM, 5);
+        conduit("ultimate_fluid_pipe", ConduitType.FLUID, 5);
         blockItem(JSBlocks.CONVEYOR_BELT);
         register("fluid_tank", () -> new FluidTankItem(JSBlocks.FLUID_TANK.get(), new Item.Properties()));
         register("reinforced_fluid_tank", () -> new FluidTankItem(JSBlocks.REINFORCED_FLUID_TANK.get(), new Item.Properties()));
@@ -262,6 +267,17 @@ public final class JSItems {
         DeferredItem<Item> item = ITEMS.registerSimpleItem(name);
         TAB_ORDER.add(item);
         return item;
+    }
+
+    private static void conduit(String name, ConduitType type, int tier) {
+        DeferredItem<ConduitItem> item = register(name, () -> new ConduitItem(type, tier, new Item.Properties()));
+        CONDUITS.put(type.id(tier), item);
+    }
+
+    /** The item for a conduit of a kind and tier. */
+    public static Item conduit(ConduitType type, int tier) {
+        DeferredItem<ConduitItem> item = CONDUITS.get(type.id(tier));
+        return item == null ? net.minecraft.world.item.Items.AIR : item.get();
     }
 
     private static void blockItem(DeferredBlock<? extends Block> block) {

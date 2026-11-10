@@ -4,8 +4,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.walnutbeachdigital.joulesmith.transport.PipeBlockEntity;
 import com.walnutbeachdigital.joulesmith.transport.PipeNetwork;
+import com.walnutbeachdigital.joulesmith.transport.conduit.ConduitType;
+import com.walnutbeachdigital.joulesmith.transport.conduit.FluidConduit;
+import com.walnutbeachdigital.joulesmith.transport.conduit.PipeConduit;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -40,9 +42,9 @@ public final class FluidNetwork extends PipeNetwork {
         }
     };
 
-    static FluidNetwork create(Level level, BlockPos start) {
+    public static FluidNetwork create(Level level, BlockPos start) {
         FluidNetwork net = new FluidNetwork();
-        net.build(level, start);
+        net.build(level, start, ConduitType.FLUID);
         int maxRate = 0;
         for (Endpoint e : net.endpoints) maxRate = Math.max(maxRate, mbPerTick(e.tier()));
         net.capacity = Math.max(1000, Math.max(maxRate * 2, net.pipes.size() * 250));
@@ -68,8 +70,8 @@ public final class FluidNetwork extends PipeNetwork {
     }
 
     @Override
-    protected void joined(PipeBlockEntity pipe) {
-        if (pipe instanceof FluidPipeBlockEntity fluidPipe) {
+    protected void joined(PipeConduit pipe) {
+        if (pipe instanceof FluidConduit fluidPipe) {
             FluidStack held = fluidPipe.takeHeld();
             if (!held.isEmpty() && (buffer.isEmpty() || FluidStack.isSameFluidSameComponents(buffer, held))) add(held);
         }
@@ -81,19 +83,17 @@ public final class FluidNetwork extends PipeNetwork {
     }
 
     /** Splits what the network holds evenly over its pipes, so it survives a rebuild or a save. */
-    FluidStack shareFor(FluidPipeBlockEntity pipe) {
+    public FluidStack shareFor(FluidConduit pipe) {
         if (buffer.isEmpty() || pipes.isEmpty()) return FluidStack.EMPTY;
         int share = buffer.getAmount() / pipes.size();
-        if (pipe.getBlockPos().equals(pipes.iterator().next())) share += buffer.getAmount() % pipes.size();
+        if (pipe.pos().equals(pipes.iterator().next())) share += buffer.getAmount() % pipes.size();
         return share <= 0 ? FluidStack.EMPTY : buffer.copyWithAmount(share);
     }
 
     private void shareOut(boolean clear) {
         if (buffer.isEmpty() || level == null) return;
         for (BlockPos pos : pipes) {
-            if (level.isLoaded(pos) && level.getBlockEntity(pos) instanceof FluidPipeBlockEntity pipe) {
-                pipe.hold(shareFor(pipe));
-            }
+            if (level.isLoaded(pos) && pipe(pos) instanceof FluidConduit pipe) pipe.hold(shareFor(pipe));
         }
         if (clear) buffer = FluidStack.EMPTY;
     }

@@ -13,7 +13,6 @@ import com.walnutbeachdigital.joulesmith.automation.FluidPlacerBlockEntity;
 import com.walnutbeachdigital.joulesmith.automation.MechanicalUserBlockEntity;
 import com.walnutbeachdigital.joulesmith.automation.MobFighterBlockEntity;
 import com.walnutbeachdigital.joulesmith.automation.QuarryBlockEntity;
-import com.walnutbeachdigital.joulesmith.energy.cable.EnergyCableBlock;
 import com.walnutbeachdigital.joulesmith.logic.LogicControllerBlock;
 import com.walnutbeachdigital.joulesmith.logic.SensorBlock;
 import com.walnutbeachdigital.joulesmith.machine.MachineBlock;
@@ -34,8 +33,6 @@ import com.walnutbeachdigital.joulesmith.machine.steam.SteamTurbineBlockEntity;
 import com.walnutbeachdigital.joulesmith.storage.bin.BinBlock;
 import com.walnutbeachdigital.joulesmith.storage.crate.CrateBlock;
 import com.walnutbeachdigital.joulesmith.storage.tank.FluidTankBlock;
-import com.walnutbeachdigital.joulesmith.transport.fluid.FluidPipeBlock;
-import com.walnutbeachdigital.joulesmith.transport.item.ItemDuctBlock;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -168,9 +165,6 @@ public final class JSBlocks {
             () -> new com.walnutbeachdigital.joulesmith.network.BusBlock(false, true, machine().noOcclusion()));
     public static final DeferredBlock<com.walnutbeachdigital.joulesmith.network.BusBlock> FLUID_EXPORT_BUS = BLOCKS.register("fluid_export_bus",
             () -> new com.walnutbeachdigital.joulesmith.network.BusBlock(true, true, machine().noOcclusion()));
-    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.network.NetworkCableBlock> NETWORK_CABLE = BLOCKS.register("network_cable",
-            () -> new com.walnutbeachdigital.joulesmith.network.NetworkCableBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL)
-                    .strength(0.5f).sound(SoundType.METAL).noOcclusion()));
 
     // ---- more generators
     public static final DeferredBlock<SimpleMachineBlock<com.walnutbeachdigital.joulesmith.machine.generator.GeothermalGeneratorBlockEntity>> GEOTHERMAL_GENERATOR =
@@ -259,17 +253,6 @@ public final class JSBlocks {
     public static final DeferredBlock<SimpleMachineBlock<BatteryBlockEntity>> BASIC_BATTERY = BLOCKS.register("basic_battery",
             () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.BASIC_BATTERY::get, (p, s) -> new BatteryBlockEntity(p, s, 1)));
 
-    public static final DeferredBlock<EnergyCableBlock> ENERGY_CABLE = cable("energy_cable", 1);
-    public static final DeferredBlock<EnergyCableBlock> REINFORCED_ENERGY_CABLE = cable("reinforced_energy_cable", 2);
-    public static final DeferredBlock<EnergyCableBlock> ADVANCED_ENERGY_CABLE = cable("advanced_energy_cable", 3);
-    public static final DeferredBlock<EnergyCableBlock> ELITE_ENERGY_CABLE = cable("elite_energy_cable", 4);
-    public static final DeferredBlock<EnergyCableBlock> ULTIMATE_ENERGY_CABLE = cable("ultimate_energy_cable", 5);
-
-    private static DeferredBlock<EnergyCableBlock> cable(String name, int tier) {
-        return BLOCKS.register(name, () -> new EnergyCableBlock(tier, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE)
-                .strength(0.5f).sound(SoundType.WOOL).noOcclusion()));
-    }
-
     public static final DeferredBlock<SimpleMachineBlock<BatteryBlockEntity>> REINFORCED_BATTERY = battery("reinforced_battery", 2);
     public static final DeferredBlock<SimpleMachineBlock<BatteryBlockEntity>> ADVANCED_BATTERY = battery("advanced_battery", 3);
     public static final DeferredBlock<SimpleMachineBlock<BatteryBlockEntity>> ELITE_BATTERY = battery("elite_battery", 4);
@@ -324,26 +307,10 @@ public final class JSBlocks {
         return BlockBehaviour.Properties.of().mapColor(color).strength(0.6f).sound(SoundType.METAL).noOcclusion();
     }
 
-    public static final DeferredBlock<ItemDuctBlock> ITEM_DUCT = BLOCKS.register("item_duct",
-            () -> new ItemDuctBlock(1, pipe(MapColor.COLOR_GRAY)));
-    public static final DeferredBlock<ItemDuctBlock> REINFORCED_ITEM_DUCT = BLOCKS.register("reinforced_item_duct",
-            () -> new ItemDuctBlock(2, pipe(MapColor.COLOR_GRAY)));
-    public static final DeferredBlock<FluidPipeBlock> FLUID_PIPE = BLOCKS.register("fluid_pipe",
-            () -> new FluidPipeBlock(1, pipe(MapColor.METAL)));
-    public static final DeferredBlock<FluidPipeBlock> REINFORCED_FLUID_PIPE = BLOCKS.register("reinforced_fluid_pipe",
-            () -> new FluidPipeBlock(2, pipe(MapColor.METAL)));
-    public static final DeferredBlock<ItemDuctBlock> ADVANCED_ITEM_DUCT = BLOCKS.register("advanced_item_duct",
-            () -> new ItemDuctBlock(3, pipe(MapColor.COLOR_GRAY)));
-    public static final DeferredBlock<FluidPipeBlock> ADVANCED_FLUID_PIPE = BLOCKS.register("advanced_fluid_pipe",
-            () -> new FluidPipeBlock(3, pipe(MapColor.METAL)));
-    public static final DeferredBlock<ItemDuctBlock> ELITE_ITEM_DUCT = BLOCKS.register("elite_item_duct",
-            () -> new ItemDuctBlock(4, pipe(MapColor.COLOR_GRAY)));
-    public static final DeferredBlock<FluidPipeBlock> ELITE_FLUID_PIPE = BLOCKS.register("elite_fluid_pipe",
-            () -> new FluidPipeBlock(4, pipe(MapColor.METAL)));
-    public static final DeferredBlock<ItemDuctBlock> ULTIMATE_ITEM_DUCT = BLOCKS.register("ultimate_item_duct",
-            () -> new ItemDuctBlock(5, pipe(MapColor.COLOR_GRAY)));
-    public static final DeferredBlock<FluidPipeBlock> ULTIMATE_FLUID_PIPE = BLOCKS.register("ultimate_fluid_pipe",
-            () -> new FluidPipeBlock(5, pipe(MapColor.METAL)));
+    /** Every duct, pipe and cable is placed as one of these; up to one of each kind fits in a block. */
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.transport.conduit.BundleBlock> CONDUIT_BUNDLE = BLOCKS.register("conduit_bundle",
+            () -> new com.walnutbeachdigital.joulesmith.transport.conduit.BundleBlock(pipe(MapColor.METAL).dynamicShape()
+                    .pushReaction(net.minecraft.world.level.material.PushReaction.BLOCK)));
 
     private static BlockBehaviour.Properties tank() {
         return BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(2.0f, 6.0f)
