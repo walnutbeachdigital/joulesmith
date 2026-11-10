@@ -56,14 +56,14 @@ def paint(levels, metal):
     return img
 
 
-def outline(levels, mask):
+def outline(levels, mask, all_dark=False):
     """Edge pixels of a shape: lit edges (top/left) dark, shadow edges (bottom/right) outline."""
     for y in range(16):
         for x in range(16):
             if not mask[y][x]:
                 continue
             out = lambda dx, dy: not (0 <= x + dx < 16 and 0 <= y + dy < 16 and mask[y + dy][x + dx])
-            if out(1, 0) or out(0, 1):
+            if out(1, 0) or out(0, 1) or (all_dark and (out(-1, 0) or out(0, -1))):
                 levels[y][x] = 0
             elif out(-1, 0) or out(0, -1):
                 levels[y][x] = min(levels[y][x], 1) if levels[y][x] is not None else 1
@@ -77,109 +77,86 @@ def noise(seed):
 
 # ---------------------------------------------------------------------- items
 def ingot():
-    """A bar lying diagonally, bottom-left to top-right: bright top face, shaded front."""
+    """A bar seen from the front and slightly above: light top face over a shaded front face."""
     lv, mask = blank(), [[False] * 16 for _ in range(16)]
-    for y in range(16):
-        for x in range(16):
-            a, b = x - y, x + y          # a runs along the bar, b across it
-            if not (10 <= b <= 20):
-                continue
-            top = b <= 15
-            span = 9 if top else 10    # top face is shorter: the ingot tapers
-            if -span <= a <= span:
-                mask[y][x] = True
-                if top:
-                    lv[y][x] = 4 if b <= 11 or (b == 13 and -4 <= a <= 2) else 3
-                else:
-                    lv[y][x] = 2 if b <= 18 else 1
-                # end caps read as their own small faces
-                if a == -span and not top:
-                    lv[y][x] = 1
-    return outline(lv, mask)
-
+    rows = {4: (4, 11), 5: (3, 12), 6: (2, 13), 7: (1, 14), 8: (1, 14), 9: (1, 14), 10: (1, 14), 11: (2, 13)}
+    for y, (x0, x1) in rows.items():
+        for x in range(x0, x1 + 1):
+            mask[y][x] = True
+            if y <= 6:                                   # top face
+                lv[y][x] = 4 if (y == 5 and 4 <= x <= 9) else 3
+            elif y == 7:                                 # front edge catches the light
+                lv[y][x] = 4 if x <= 6 else 3
+            else:                                        # front face
+                lv[y][x] = 2 if y <= 9 else 1
+                if y == 8 and 2 <= x <= 4:
+                    lv[y][x] = 3
+    return outline(lv, mask, all_dark=True)
 
 def nugget():
+    """A small rounded drop."""
     lv, mask = blank(), [[False] * 16 for _ in range(16)]
-    blobs = [(6.0, 9.0, 3.4), (10.0, 7.5, 2.6), (9.6, 11.4, 2.3)]
-    for y in range(16):
-        for x in range(16):
-            for cx, cy, r in blobs:
-                d = math.hypot(x - cx, y - cy)
-                if d <= r:
-                    mask[y][x] = True
-                    shade = 3 if (x - cx) + (y - cy) < -0.6 else 2
-                    if (x - cx) + (y - cy) < -1.6:
-                        shade = 4
-                    lv[y][x] = max(lv[y][x] or 0, shade)
-    return outline(lv, mask)
-
+    rows = {5: (7, 8), 6: (6, 9), 7: (5, 10), 8: (5, 10), 9: (5, 10), 10: (6, 9)}
+    for y, (x0, x1) in rows.items():
+        for x in range(x0, x1 + 1):
+            mask[y][x] = True
+            lv[y][x] = 4 if (x == 6 and y in (7, 8)) else (3 if x <= 7 else 2)
+    return outline(lv, mask, all_dark=True)
 
 def dust():
-    """A soft mound with speckles, lit from the top-left."""
+    """A small, smooth cone of powder, lit from the left."""
     lv, mask = blank(), [[False] * 16 for _ in range(16)]
-    n = noise(7)
-    for y in range(16):
+    for y in range(3, 13):
+        half = 0.4 + 5.5 * ((y - 3) / 9.0) ** 0.8
         for x in range(16):
-            t = (y - 4.5) / 9.0                     # 0 at the peak, 1 at the base
-            if 0 <= t <= 1 and y <= 13:
-                half = 1.2 + 6.4 * math.sin(t * math.pi / 2)
-                dx = x - 7.5
-                if abs(dx) <= half:
-                    mask[y][x] = True
-                    side = dx / max(half, 1)
-                    shade = 3 if side < -0.25 else (2 if side < 0.45 else 1)
-                    if n[y][x] > 0.82:
-                        shade = min(4, shade + 1)
-                    elif n[y][x] < 0.14:
-                        shade = max(1, shade - 1)
-                    lv[y][x] = shade
-    return outline(lv, mask)
-
+            dx = x - 7.5
+            if abs(dx) <= half:
+                mask[y][x] = True
+                if dx < -half * 0.35:
+                    lv[y][x] = 4 if y <= 7 else 3
+                elif dx < half * 0.3:
+                    lv[y][x] = 3 if y <= 8 else 2
+                else:
+                    lv[y][x] = 2 if y <= 10 else 1
+    return outline(lv, mask, all_dark=True)
 
 def plate():
-    """A square plate face on: bevelled edges and a diagonal sheen."""
+    """A square plate with a raised rim, a soft diagonal sheen and a rivet in each corner."""
     lv, mask = blank(), [[False] * 16 for _ in range(16)]
-    for y in range(2, 14):
-        for x in range(2, 14):
+    for y in range(1, 15):
+        for x in range(1, 15):
             mask[y][x] = True
             if y == 2 or x == 2:
                 lv[y][x] = 4
             elif y == 13 or x == 13:
-                lv[y][x] = 1
-            elif y == 3 or x == 3:
-                lv[y][x] = 3
-            elif y == 12 or x == 12:
                 lv[y][x] = 2
             else:
                 d = x + y
-                lv[y][x] = 4 if d in (11, 12) or d == 15 else 3 if d < 17 else 2
-    return outline(lv, mask)
-
+                lv[y][x] = 4 if 12 <= d <= 13 else (3 if d < 19 else 2)
+    for rx, ry in ((4, 4), (11, 4), (4, 11), (11, 11)):
+        lv[ry][rx] = 1
+    return outline(lv, mask, all_dark=True)
 
 def gear():
-    """Eight-tooth gear, face on, with a bevelled rim and a round hub hole."""
+    """A chunky eight-tooth gear with a dark hub ring around the axle hole."""
     lv, mask = blank(), [[False] * 16 for _ in range(16)]
     cx = cy = 7.5
     for y in range(16):
         for x in range(16):
             dx, dy = x - cx, y - cy
             r = math.hypot(dx, dy)
-            ang = math.atan2(dy, dx)
-            tooth = math.cos(ang * 8) > 0.15
-            if r <= (7.6 if tooth else 5.6) and r > 1.6:
+            tooth = math.cos(math.atan2(dy, dx) * 8) > -0.3
+            if 1.6 < r <= (7.6 if tooth else 5.8):
                 mask[y][x] = True
-                lit = -(dx + dy) / max(r, 0.01)    # +1 facing the light (top-left)
-                if r > 5.6:
-                    shade = 3 if lit > 0 else 2
-                elif r > 4.4:
-                    shade = 4 if lit > 0.3 else (2 if lit < -0.3 else 3)
-                elif r > 2.8:
-                    shade = 2
+                lit = -(dx + dy) / max(r, 0.01)
+                if r <= 2.7:
+                    shade = 1                            # hub ring
+                elif r <= 3.6:
+                    shade = 2 if lit > 0 else 4          # bevel facing out of the hub
                 else:
-                    shade = 1 if lit > 0 else 3    # hub hole edge is lit from inside
+                    shade = 4 if lit > 0.55 else (3 if lit > -0.45 else 2)
                 lv[y][x] = shade
-    return outline(lv, mask)
-
+    return outline(lv, mask, all_dark=True)
 
 def wire():
     """A coil of wire: a thick wound ring with dark lines between the turns, and a loose end."""
@@ -230,26 +207,35 @@ def raw(seed):
 
 # --------------------------------------------------------------------- blocks
 def storage_block():
-    """Bevelled frame around four riveted panels: reads as a solid metal block and tiles cleanly."""
-    lv = [[2] * 16 for _ in range(16)]
-    for i in range(16):
-        lv[0][i] = lv[i][0] = 3
-        lv[15][i] = lv[i][15] = 1
-    lv[0][15] = lv[15][0] = 2
-    for py in (1, 8):
-        for px in (1, 8):
-            for y in range(py, py + 7):
-                for x in range(px, px + 7):
-                    if y == py or x == px:
-                        lv[y][x] = 4
-                    elif y == py + 6 or x == px + 6:
-                        lv[y][x] = 1
-                    else:
-                        lv[y][x] = 3 if (x - px) + (y - py) < 6 else 2
-            lv[py + 1][px + 1] = 4        # rivet
-            lv[py + 2][px + 2] = 1
-    return lv
+    """Smooth polished metal: soft blotches and a gentle top-left light, tiles without seams."""
+    r = random.Random(42)
+    g = [[r.random() for _ in range(4)] for _ in range(4)]   # 4x4 tileable value noise
 
+    def smooth(x, y):
+        fx, fy = x / 4.0, y / 4.0
+        x0, y0 = int(fx) % 4, int(fy) % 4
+        x1, y1 = (x0 + 1) % 4, (y0 + 1) % 4
+        tx, ty = fx - int(fx), fy - int(fy)
+        tx, ty = tx * tx * (3 - 2 * tx), ty * ty * (3 - 2 * ty)
+        top = g[y0][x0] * (1 - tx) + g[y0][x1] * tx
+        bot = g[y1][x0] * (1 - tx) + g[y1][x1] * tx
+        return top * (1 - ty) + bot * ty
+
+    bayer = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]
+    lv = [[2] * 16 for _ in range(16)]
+    for y in range(16):
+        for x in range(16):
+            # broad diagonal sheen plus soft blotches, dithered between three tones
+            sheen = 0.5 + 0.5 * math.cos((x - y) * math.pi / 8)
+            v = 0.45 * sheen + 0.35 * smooth(x, y) + 0.2 * (1 - (x + y) / 30)
+            t = v * 2.2 + (bayer[y % 4][x % 4] / 16 - 0.5) * 0.55
+            lv[y][x] = 2 + max(0, min(2, int(t)))
+    for i in range(16):
+        lv[0][i] = max(lv[0][i], 3)
+        lv[i][0] = max(lv[i][0], 3)
+        lv[15][i] = min(lv[15][i], 2)
+        lv[i][15] = min(lv[i][15], 2)
+    return lv
 
 def raw_block(seed):
     n = noise(seed)
