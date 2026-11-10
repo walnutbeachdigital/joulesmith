@@ -85,13 +85,32 @@ public abstract class PipeBlock extends BaseEntityBlock {
         return RenderShape.MODEL;
     }
 
+    /**
+     * Shapes by what each side shows (nothing, an arm, or an arm with an attachment plate): 729 at most,
+     * built once and shared by every pipe. Joining shapes is slow, and pipes have tens of thousands of
+     * block states, so building one per state made the game take minutes to start.
+     */
+    private static final VoxelShape[] SHAPES = new VoxelShape[729];
+
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        VoxelShape shape = CORE;
+        int key = 0;
         for (Direction dir : Direction.values()) {
             PipeConnection conn = state.getValue(CONNECTION.get(dir));
-            if (conn != PipeConnection.NONE) shape = Shapes.or(shape, ARMS.get(dir));
-            if (conn == PipeConnection.PUSH || conn == PipeConnection.PULL) shape = Shapes.or(shape, PLATES.get(dir));
+            int side = conn == PipeConnection.NONE ? 0 : conn == PipeConnection.PUSH || conn == PipeConnection.PULL ? 2 : 1;
+            key = key * 3 + side;
+        }
+        VoxelShape shape = SHAPES[key];
+        if (shape == null) {
+            shape = CORE;
+            int k = key;
+            Direction[] dirs = Direction.values();
+            for (int i = dirs.length - 1; i >= 0; i--, k /= 3) {
+                int side = k % 3;
+                if (side >= 1) shape = Shapes.or(shape, ARMS.get(dirs[i]));
+                if (side == 2) shape = Shapes.or(shape, PLATES.get(dirs[i]));
+            }
+            SHAPES[key] = shape = shape.optimize();
         }
         return shape;
     }

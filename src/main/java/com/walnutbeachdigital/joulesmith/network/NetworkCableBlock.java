@@ -22,6 +22,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class NetworkCableBlock extends Block implements NetworkPart {
     public static final MapCodec<NetworkCableBlock> CODEC = simpleCodec(NetworkCableBlock::new);
     public static final Map<Direction, BooleanProperty> CONNECTED = PipeBlock.PROPERTY_BY_DIRECTION;
+    /** Shapes by which sides connect, built once: one per block state was slow to build at startup. */
+    private static final VoxelShape[] SHAPES = new VoxelShape[64];
     private static final VoxelShape CORE = box(6, 6, 6, 10, 10, 10);
     private static final Map<Direction, VoxelShape> ARMS = Map.of(
             Direction.NORTH, box(6, 6, 0, 10, 10, 6), Direction.SOUTH, box(6, 6, 10, 10, 10, 16),
@@ -47,9 +49,13 @@ public class NetworkCableBlock extends Block implements NetworkPart {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        int key = 0;
+        for (Direction dir : Direction.values()) key = key * 2 + (state.getValue(CONNECTED.get(dir)) ? 1 : 0);
+        VoxelShape cached = SHAPES[key];
+        if (cached != null) return cached;
         VoxelShape shape = CORE;
         for (Direction dir : Direction.values()) if (state.getValue(CONNECTED.get(dir))) shape = Shapes.or(shape, ARMS.get(dir));
-        return shape;
+        return SHAPES[key] = shape.optimize();
     }
 
     @Override
