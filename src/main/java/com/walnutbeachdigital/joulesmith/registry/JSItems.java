@@ -43,6 +43,8 @@ public final class JSItems {
     public static final java.util.List<DeferredItem<com.walnutbeachdigital.joulesmith.network.FluidDriveItem>> FLUID_DRIVES = java.util.List.of(
             fluidDrive("basic_fluid_drive", 64_000), fluidDrive("advanced_fluid_drive", 512_000),
             fluidDrive("elite_fluid_drive", 4_096_000), fluidDrive("ultimate_fluid_drive", 32_768_000));
+    public static final DeferredItem<com.walnutbeachdigital.joulesmith.guide.HandbookItem> ENGINEERS_HANDBOOK =
+            ITEMS.registerItem("engineers_handbook", com.walnutbeachdigital.joulesmith.guide.HandbookItem::new);
     public static final DeferredItem<Item> BLANK_PATTERN = ITEMS.registerSimpleItem("blank_pattern");
     public static final DeferredItem<com.walnutbeachdigital.joulesmith.network.PatternItem> PATTERN = register("pattern",
             () -> new com.walnutbeachdigital.joulesmith.network.PatternItem(new Item.Properties()));

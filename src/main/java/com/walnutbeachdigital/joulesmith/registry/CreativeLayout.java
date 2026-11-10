@@ -46,7 +46,7 @@ public final class CreativeLayout {
                     "inventory_sensor", "tank_sensor", "energy_sensor", "time_sensor", "proximity_sensor", "logic_controller",
                     "speed_upgrade", "efficiency_upgrade", "bonus_upgrade", "eject_upgrade", "range_upgrade"),
             Tab.LOGISTICS, List.of(
-                    "wrench", "{tier}upgrade_kit",
+                    "engineers_handbook", "wrench", "{tier}upgrade_kit",
                     "{tier}energy_cable", "{tier}battery", "wireless_transmitter", "wireless_receiver",
                     "{tier}item_duct", "filter_card", "conveyor_belt",
                     "{tier}fluid_pipe", "pump", "advanced_pump", "{tier}fluid_tank",

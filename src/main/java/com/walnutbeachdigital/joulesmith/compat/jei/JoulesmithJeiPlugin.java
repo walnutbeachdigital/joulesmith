@@ -40,22 +40,7 @@ public class JoulesmithJeiPlugin implements IModPlugin {
 
     /** Which block runs each kind of recipe. */
     private static Map<MachineRecipeKind, ItemLike> machines() {
-        return Map.ofEntries(Map.entry(MachineRecipeKind.BIO_REACTING, JSBlocks.BIO_REACTOR.get()),
-
-                Map.entry(MachineRecipeKind.CRUSHING, JSBlocks.CRUSHER.get()),
-                Map.entry(MachineRecipeKind.ALLOY_SMELTING, JSBlocks.ALLOY_SMELTER.get()),
-                Map.entry(MachineRecipeKind.COMPRESSING, JSBlocks.COMPRESSOR.get()),
-                Map.entry(MachineRecipeKind.WIRE_DRAWING, JSBlocks.WIRE_DRAWER.get()),
-                Map.entry(MachineRecipeKind.SAWING, JSBlocks.SAWMILL.get()),
-                Map.entry(MachineRecipeKind.WASHING, JSBlocks.ORE_WASHER.get()),
-                Map.entry(MachineRecipeKind.MIXING, JSBlocks.FLUID_MIXER.get()),
-                Map.entry(MachineRecipeKind.CENTRIFUGING, JSBlocks.CENTRIFUGE.get()),
-                Map.entry(MachineRecipeKind.CIRCUIT_ASSEMBLING, JSBlocks.CIRCUIT_ASSEMBLER.get()),
-                Map.entry(MachineRecipeKind.DISSOLVING, JSBlocks.CHEMICAL_DISSOLVER.get()),
-                Map.entry(MachineRecipeKind.CRYSTALLIZING, JSBlocks.CRYSTALLIZER.get()),
-                Map.entry(MachineRecipeKind.FERTILIZER_MIXING, JSBlocks.FERTILIZER_MIXER.get()),
-                Map.entry(MachineRecipeKind.ENGRAVING, JSBlocks.LASER_ENGRAVER.get()),
-                Map.entry(MachineRecipeKind.REFINING, JSBlocks.PLASMA_REFINERY.get()));
+        return com.walnutbeachdigital.joulesmith.recipe.MachineStations.all();
     }
 
     @Override

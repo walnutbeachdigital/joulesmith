@@ -213,3 +213,23 @@ Joulesmith: Machines || Joulesmith：机器 || Joulesmith: машины || Joule
 Joulesmith: Logistics || Joulesmith：物流 || Joulesmith: логистика || Joulesmith: logística || Joulesmith: Logistik || Joulesmith: logística
 Joulesmith: Gear || Joulesmith：装备 || Joulesmith: снаряжение || Joulesmith: equipo || Joulesmith: Ausrüstung || Joulesmith: equipamento
 Joulesmith network and wireless info || Joulesmith 网络与无线信息 || Сеть и беспроводная связь Joulesmith || Información de red e inalámbrica de Joulesmith || Joulesmith-Netzwerk- und Funkinfo || Informações de rede e sem fio do Joulesmith
+Engineer's Handbook || 工程师手册 || Справочник инженера || Manual del ingeniero || Ingenieurshandbuch || Manual do Engenheiro
+Basic || 基础 || Базовый || Básico || Einfach || Básico
+Reinforced || 强化 || Усиленный || Reforzado || Verstärkt || Reforçado
+Advanced || 高级 || Продвинутый || Avanzado || Fortgeschritten || Avançado
+Elite || 精英 || Элитный || Élite || Elite || Elite
+Ultimate || 终极 || Абсолютный || Definitivo || Ultimativ || Supremo
+Storage Network || 存储网络 || Сеть хранения || Red de almacenamiento || Speichernetzwerk || Rede de Armazenamento
+Mine tin, make power and build your first Basic Circuit. || 开采锡矿，发电，并制作你的第一块基础电路板。 || Добудьте олово, получите энергию и соберите первую базовую схему. || Extrae estaño, genera energía y fabrica tu primer circuito básico. || Baue Zinn ab, erzeuge Strom und baue deinen ersten einfachen Schaltkreis. || Minere estanho, gere energia e construa seu primeiro Circuito Básico.
+Steel, plastic and electrum lead to the Advanced Circuit. || 钢、塑料和琥珀金通向高级电路板。 || Сталь, пластик и электрум ведут к продвинутой схеме. || El acero, el plástico y el electro llevan al circuito avanzado. || Stahl, Plastik und Elektrum führen zum fortgeschrittenen Schaltkreis. || Aço, plástico e electro levam ao Circuito Avançado.
+Build up to the Laser Engraver and etch a Processor. || 一路建造到激光雕刻机，蚀刻出处理器。 || Доберитесь до лазерного гравёра и вытравите процессор. || Avanza hasta el grabador láser y graba un procesador. || Arbeite dich zum Lasergravierer vor und ätze einen Prozessor. || Chegue ao Gravador a Laser e grave um Processador.
+Light a Fission Reactor to make the Quantum Processor. || 启动裂变反应堆，制造量子处理器。 || Запустите реактор деления, чтобы сделать квантовый процессор. || Enciende un reactor de fisión para fabricar el procesador cuántico. || Zünde einen Spaltreaktor, um den Quantenprozessor herzustellen. || Ligue um Reator de Fissão para fazer o Processador Quântico.
+Light the Fusion Core: endless power and plasma. || 点燃聚变核心：无尽的能量与等离子体。 || Зажгите термоядерное ядро: бесконечная энергия и плазма. || Enciende el núcleo de fusión: energía y plasma sin fin. || Zünde den Fusionskern: endlose Energie und Plasma. || Acenda o Núcleo de Fusão: energia e plasma sem fim.
+Store everything in one place and craft on request. || 把一切存放在一处，按需合成。 || Храните всё в одном месте и создавайте по запросу. || Guarda todo en un solo lugar y fabrica bajo demanda. || Lagere alles an einem Ort und stelle auf Anfrage her. || Guarde tudo em um só lugar e fabrique sob demanda.
+Main path || 主线 || Основной путь || Camino principal || Hauptpfad || Caminho principal
+Optional || 可选 || Необязательно || Opcional || Optional || Opcional
+Opens the next chapter || 开启下一章 || Открывает следующую главу || Abre el siguiente capítulo || Öffnet das nächste Kapitel || Abre o próximo capítulo
+Done || 已完成 || Готово || Hecho || Erledigt || Concluído
+Get %s to tick this off || 获得%s即可完成 || Получите %s, чтобы отметить || Consigue %s para completarlo || Besorge %s, um es abzuhaken || Obtenha %s para concluir
+First finish: || 需先完成： || Сначала выполните: || Primero completa: || Zuerst erledigen: || Primeiro conclua:
+Handbook: %s done || 手册：%s 已完成 || Справочник: %s выполнено || Manual: %s hecho || Handbuch: %s erledigt || Manual: %s concluído

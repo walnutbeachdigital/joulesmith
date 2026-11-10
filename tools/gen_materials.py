@@ -1505,36 +1505,43 @@ write(os.path.join(ASSETS, "sounds.json"), {f"machine.{k}": {
     "sounds": [{"name": ev, "type": "event", "volume": vol, "pitch": pitch}]} for k, (ev, vol, pitch, sub) in SOUNDS.items()})
 lang.update({f"subtitles.{MOD}.machine.{k}": sub for k, (ev, vol, pitch, sub) in SOUNDS.items()})
 
-# ---- the Joulesmith Manual: a vanilla written book, crafted from a book and a tin ingot
-PAGES = [
-    "\u00a7lJoulesmith\u00a7r\nA tech mod in five tiers: Basic, Reinforced, Advanced, Elite and Ultimate.\n\nEvery block's tooltip says what it does, and JEI shows every recipe and an info page for each machine.",
-    "\u00a7lGetting started\u00a7r\nMine tin, lead, silver, nickel and uranium. Smelt raw ore for ingots.\n\nBuild a Combustion Generator: it burns furnace fuel for power (FE). Join it to machines with Energy Cables.",
-    "\u00a7lMore from ore\u00a7r\nCrusher: one raw ore makes two dusts.\nOre Washer (tier 2): three.\nChemical Dissolver and Crystallizer (tier 3): four.\nPlasma Refinery (tier 5): five ingots.\n\nSmelt dusts in an Electric Furnace.",
-    "\u00a7lTiers\u00a7r\nA Basic Circuit opens tier 2 and an Advanced Circuit tier 3 (Circuit Assembler). A Processor opens tier 4 and a Quantum Processor tier 5 (Laser Engraver).\n\nUpgrade Kits raise cables, pipes, batteries, crates, bins, tanks and solar panels a tier where they stand.",
-    "\u00a7lMachines\u00a7r\nEach has slide-out tabs: redstone mode, side settings (input, output, both, off) and upgrade slots for Speed, Efficiency, Bonus, Eject and Range cards.\n\nHover the red bar to see FE/t.",
-    "\u00a7lThe Wrench\u00a7r\nRight-click a machine to turn it. Right-click a pipe or cable side to switch it between connected, push, pull and off.\n\nHold it to see each machine face's side setting in colour.",
-    "\u00a7lPipes\u00a7r\nItem Ducts, Fluid Pipes and Energy Cables connect on their own. Set a side to pull to take from an inventory.\n\nPut a Filter Card on a duct side to choose what passes: by item, tag or mod.",
-    "\u00a7lPower\u00a7r\nTier 1: Combustion Generator, Solar Panel.\nTier 2: Biofuel and Geothermal Generators.\nTier 3: Boiler and Steam Turbine, Wind Turbine.\nTier 4: Fission Reactor.\nTier 5: Fusion Core.\n\nStore it in Batteries.",
-    "\u00a7lRubber and plastic\u00a7r\nRubber trees grow in forests and jungles. Tap a log with a Tree Tap for latex; smelt it into rubber.\n\nThe Fluid Mixer makes plastic from Biofuel and latex, or from oil.",
-    "\u00a7lFarming\u00a7r\nPlanters, Harvesters and Tree Farms work the area in front of them. Sprinklers speed growth. Hydroponic Beds grow crops indoors.\n\nThe Mob Grinder stores XP as Liquid XP for the Auto Enchanter.",
-    "\u00a7lAutomation\u00a7r\nBlock Placer, Block Breaker, Autocrafter, Mechanical User, Quarry and Mob Fighter.\n\nSensors give redstone from what they read; a Logic Controller turns readings into signals.",
-    "\u00a7lPowered gear\u00a7r\nThe Power Drill, Chainsaw, Energy Sword and Exo-Suit run on FE instead of durability.\n\nCharge them on a Charging Pad or by carrying an Energy Cell.",
-    "\u00a7lModules\u00a7r\nAt the Modification Table, fit modules to a powered item (two; four or six on Elite and Ultimate Exo-Suits): Fortune, Silk Touch, Range, Magnet, Jetpack, Night Vision, Lifesteal and more.\n\nEach module's tooltip says what it fits.",
-    "\u00a7lFission\u00a7r\nBuild a 3x3x3 shell of Reactor Casing, Glass and Ports with the Fission Reactor in the middle of one face and the very middle empty.\n\nFeed it uranium and water. It never explodes: with no water it shuts down safely.",
-    "\u00a7lFusion\u00a7r\nMake deuterium from water and tritium from deuterium and uranium dust in the Fluid Mixer.\n\nThe Fusion Core needs 500,000 FE to light, then makes 20,000 FE/t and plasma for the Plasma Refinery.",
-    "\u00a7lWireless\u00a7r\nDye a Wireless Transmitter and Receiver the same colour: the Receiver draws power from Transmitters on its channel within 256 blocks.\n\nThe Wireless Terminal opens a storage network from 64 blocks away.",
-    "\u00a7lStorage network\u00a7r\nCable a Network Core (powered), Drive Bays with Item and Fluid Drives, and a Network Terminal together.\n\nImport and Export Buses move things in and out; filters choose what.",
-    "\u00a7lAuto-crafting\u00a7r\nLay out a recipe in a Crafting Terminal and press Encode to record it on a Blank Pattern. Put Patterns in an Auto-Crafting CPU.\n\nMiddle-click an item in a terminal to have it crafted.",
-    "\u00a7lTier 4 and 5 gear\u00a7r\nOmni-Tool, Railgun and Plasma Cannon. Upgrade Exo-Suit pieces to Elite and Ultimate at a Smithing Table; modules and charge carry over.\n\nThe Drone Hub's drones fetch drops and harvest crops."
-]
+# ---- the Engineer's Handbook: a quest tree per tier (guide/HandbookQuests.java), handed to new players;
+# its recipe keeps the old Manual's id so worlds and packs that refer to joulesmith:manual still find it
+write(os.path.join(ASSETS, "models", "item", "engineers_handbook.json"),
+      {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/engineers_handbook"}})
 write(os.path.join(DATA, MOD, "recipe", "manual.json"), {
     "type": "minecraft:crafting_shapeless", "category": "misc",
     "ingredients": [ing("minecraft:book"), ing("#c:ingots/tin")],
-    "result": {"id": "minecraft:written_book", "components": {"minecraft:written_book_content": {
-        "title": "Joulesmith Manual", "author": "Joulesmith", "resolved": True,
-        # each page is a text component written out as JSON
-        "pages": [json.dumps({"text": p}, ensure_ascii=False) for p in PAGES]}}}})
+    "result": {"id": f"{MOD}:engineers_handbook", "count": 1}})
 recipes["manual"] = True
+lang[f"item.{MOD}.engineers_handbook"] = "Engineer's Handbook"
+DESC["engineers_handbook"] = ("Your guide through every tier",
+    "Right-click to open. Each tier is a chapter of quests joined like a circuit: get each item to tick it off. "
+    "Square quests are the main path, round ones are optional, and the gold gear-framed quest opens the next chapter. "
+    "Hover a quest for what it needs and its recipe; drag to look around. New players are given one (see the config).")
+lang[f"desc.{MOD}.engineers_handbook"], lang[f"jei.{MOD}.info.engineers_handbook"] = DESC["engineers_handbook"]
+lang.update({
+    "handbook.joulesmith.title": "Engineer's Handbook",
+    "handbook.joulesmith.chapter.basic": "Basic",
+    "handbook.joulesmith.chapter.reinforced": "Reinforced",
+    "handbook.joulesmith.chapter.advanced": "Advanced",
+    "handbook.joulesmith.chapter.elite": "Elite",
+    "handbook.joulesmith.chapter.ultimate": "Ultimate",
+    "handbook.joulesmith.chapter.network": "Storage Network",
+    "handbook.joulesmith.basic.intro": "Mine tin, make power and build your first Basic Circuit.",
+    "handbook.joulesmith.reinforced.intro": "Steel, plastic and electrum lead to the Advanced Circuit.",
+    "handbook.joulesmith.advanced.intro": "Build up to the Laser Engraver and etch a Processor.",
+    "handbook.joulesmith.elite.intro": "Light a Fission Reactor to make the Quantum Processor.",
+    "handbook.joulesmith.ultimate.intro": "Light the Fusion Core: endless power and plasma.",
+    "handbook.joulesmith.network.intro": "Store everything in one place and craft on request.",
+    "handbook.joulesmith.kind.main": "Main path",
+    "handbook.joulesmith.kind.optional": "Optional",
+    "handbook.joulesmith.kind.key": "Opens the next chapter",
+    "handbook.joulesmith.status.done": "Done",
+    "handbook.joulesmith.status.ready": "Get %s to tick this off",
+    "handbook.joulesmith.status.waiting": "First finish:",
+    "handbook.joulesmith.quest_done": "Handbook: %s done",
+})
 
 # ---- machine casings: one per tier; every machine's recipe takes its tier's casing where it took redstone
 for iid, name in (("basic_casing", "Basic Machine Casing"), ("reinforced_casing", "Reinforced Machine Casing"),

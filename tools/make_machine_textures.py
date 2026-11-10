@@ -3049,6 +3049,92 @@ def bus_textures():
             "item/elite_fluid_drive": fluid_drive(SIGNAL8), "item/ultimate_fluid_drive": fluid_drive(PLASMA8)}
 
 
+def _blend(a, b, t):
+    return tuple(int(a[i] + (b[i] - a[i]) * t) for i in range(3)) + (255,)
+
+
+def handbook_page(trim, seed):
+    """A Handbook chapter's page: a dark blueprint sheet with a fine and a coarse grid in the tier's trim
+    colour and a few solder pads. Tiles seamlessly (128 x 128)."""
+    import random
+    rnd = random.Random(seed)
+    base = rgba("#12161c")
+    line = rgba(trim)
+    img = Image.new("RGBA", (128, 128), base)
+    px = img.load()
+    for y in range(128):
+        for x in range(128):
+            n = rnd.randint(-3, 3)
+            px[x, y] = (base[0] + n, base[1] + n, base[2] + n + 1, 255)
+    for i in range(128):
+        for j in range(0, 128, 8):
+            fine = _blend(base, line, 0.13)
+            px[i, j] = fine
+            px[j, i] = fine
+        for j in range(0, 128, 32):
+            coarse = _blend(base, line, 0.32)
+            px[i, j] = coarse
+            px[j, i] = coarse
+    for _ in range(6):
+        x, y = rnd.randrange(2, 30) * 4 % 128, rnd.randrange(2, 30) * 4 % 128
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                px[(x + dx) % 128, (y + dy) % 128] = _blend(base, line, 0.45 if dx or dy else 0.7)
+    return img
+
+
+def handbook_cover():
+    """The Handbook's sidebar and header: dark brushed steel with rivets at the tile corners."""
+    import random
+    rnd = random.Random(7)
+    img = Image.new("RGBA", (128, 128))
+    px = img.load()
+    rows = [rnd.randint(-4, 4) for _ in range(128)]
+    for y in range(128):
+        for x in range(128):
+            v = 0x22 + rows[y] + rnd.randint(-2, 2)
+            px[x, y] = (v, v + 3, v + 8, 255)
+    for (cx, cy) in ((4, 4), (68, 4), (4, 68), (68, 68)):
+        for dx in range(-1, 2):
+            for dy in range(-1, 2):
+                px[cx + dx, cy + dy] = rgba(STEEL8[5] if dx + dy < 0 else STEEL8[2])
+    return img
+
+
+def handbook_item():
+    """The Engineer's Handbook: a steel-bound book with copper corners and a gear on the cover."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    for y in range(2, 15):
+        for x in range(3, 14):
+            px[x, y] = rgba(STEEL8[3] if x > 4 else STEEL8[1])
+        px[13, y] = rgba(STEEL8[1])
+        px[3, y] = rgba(STEEL8[0])
+    for y in range(3, 14):
+        px[14, y] = rgba("#e8e2d0" if y % 2 else "#cfc8b2")      # page edges
+    for x in range(3, 15):
+        px[x, 14] = rgba(STEEL8[0])
+    for x in range(4, 14):
+        px[x, 2] = rgba(STEEL8[5])
+    for (x, y) in ((12, 2), (13, 2), (13, 3), (12, 13), (13, 13), (13, 12)):
+        px[x, y] = rgba(COPPER8[6])
+    gear = [(8, 5), (9, 5), (7, 6), (10, 6), (6, 7), (11, 7), (6, 8), (11, 8), (7, 9), (10, 9), (8, 10), (9, 10),
+            (8, 4), (9, 4), (5, 7), (5, 8), (12, 7), (12, 8), (8, 11), (9, 11)]
+    for (x, y) in gear:
+        px[x, y] = rgba(COPPER8[5])
+    for (x, y) in ((8, 7), (9, 7), (8, 8), (9, 8)):
+        px[x, y] = rgba(COPPER8[2])
+    return img
+
+
+def handbook_textures():
+    os.makedirs(os.path.join(TEX, "gui", "handbook"), exist_ok=True)
+    return {"item/engineers_handbook": handbook_item(), "gui/handbook/cover": handbook_cover(),
+            "gui/handbook/basic": handbook_page("#b8622a", 1), "gui/handbook/reinforced": handbook_page("#8a94a2", 2),
+            "gui/handbook/advanced": handbook_page("#c9a838", 3), "gui/handbook/elite": handbook_page("#2f74d6", 4),
+            "gui/handbook/ultimate": handbook_page("#8a34d0", 5), "gui/handbook/network": handbook_page("#2aa851", 6)}
+
+
 def main():
     os.makedirs(os.path.join(TEX, "block"), exist_ok=True)
     os.makedirs(os.path.join(TEX, "gui"), exist_ok=True)
@@ -3204,6 +3290,7 @@ def main():
         **tier5_textures(),
         **network_textures(),
         **bus_textures(),
+        **handbook_textures(),
     }
     for name, img in out.items():
         img.save(os.path.join(TEX, name + ".png"))

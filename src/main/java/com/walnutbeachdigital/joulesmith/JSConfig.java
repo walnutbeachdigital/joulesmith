@@ -13,7 +13,7 @@ public final class JSConfig {
     public static final ModConfigSpec.IntValue COMBUSTION, BIOFUEL, GEOTHERMAL, STEAM_FE_PER_MB, WIND_MIN, WIND_MAX, FISSION, FUSION;
     public static final ModConfigSpec.IntValue TOOL_COST, SWORD_COST, JETPACK_COST, GRINDER_DAMAGE, RANCHER_CAP;
     public static final ModConfigSpec.DoubleValue EXO_ABSORB;
-    public static final ModConfigSpec.BooleanValue SOUNDS;
+    public static final ModConfigSpec.BooleanValue SOUNDS, GIVE_HANDBOOK;
 
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
@@ -47,6 +47,10 @@ public final class JSConfig {
         b.comment("Farming").push("farming");
         GRINDER_DAMAGE = b.comment("Damage the Mob Grinder deals per hit").defineInRange("grinderDamage", 8, 1, 1_000);
         RANCHER_CAP = b.comment("Animals the Animal Rancher breeds up to").defineInRange("rancherCap", 16, 2, 256);
+        b.pop();
+
+        b.comment("Engineer's Handbook").push("handbook");
+        GIVE_HANDBOOK = b.comment("Whether new players are handed an Engineer's Handbook").define("giveOnFirstJoin", true);
         b.pop();
         SPEC = b.build();
     }
