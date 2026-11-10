@@ -38,6 +38,7 @@ public class Joulesmith {
         JSRecipes.SERIALIZERS.register(modEventBus);
         modEventBus.addListener(JSCapabilities::register);
         com.walnutbeachdigital.joulesmith.gear.powered.PoweredGearEvents.register();
+        modEventBus.addListener(com.walnutbeachdigital.joulesmith.compat.top.TopCompat::enqueue);
     }
 
     public static ResourceLocation id(String path) {

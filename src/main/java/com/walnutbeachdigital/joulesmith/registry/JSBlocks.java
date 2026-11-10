@@ -271,6 +271,10 @@ public final class JSBlocks {
                 .isViewBlocking((s, l, p) -> false).isSuffocating((s, l, p) -> false);
     }
 
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.transport.conveyor.ConveyorBeltBlock> CONVEYOR_BELT = BLOCKS.register("conveyor_belt",
+            () -> new com.walnutbeachdigital.joulesmith.transport.conveyor.ConveyorBeltBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK)
+                    .strength(1.0f, 3.0f).sound(SoundType.METAL).noOcclusion()));
+
     public static final DeferredBlock<FluidTankBlock> FLUID_TANK = BLOCKS.register("fluid_tank", () -> new FluidTankBlock(16_000, tank()));
     public static final DeferredBlock<FluidTankBlock> REINFORCED_FLUID_TANK = BLOCKS.register("reinforced_fluid_tank",
             () -> new FluidTankBlock(64_000, tank()));

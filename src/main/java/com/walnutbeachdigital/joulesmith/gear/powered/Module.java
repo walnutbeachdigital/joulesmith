@@ -28,6 +28,8 @@ public enum Module implements StringRepresentable {
     DAMAGE(Kind.WEAPON, Enchantments.SHARPNESS, 5),
     LOOTING(Kind.WEAPON, Enchantments.LOOTING, 3),
     FIRE(Kind.WEAPON, Enchantments.FIRE_ASPECT, 2),
+    CHAIN_LIGHTNING(Kind.WEAPON, null, 0),
+    LIFESTEAL(Kind.WEAPON, null, 0),
     // the Exo-Suit, each on its own piece
     NIGHT_VISION(Kind.HELMET, null, 0),
     WATER_BREATHING(Kind.HELMET, null, 0),

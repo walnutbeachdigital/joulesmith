@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RRR",
+    "IGI"
+  ],
+  "key": {
+    "R": {
+      "item": "joulesmith:rubber"
+    },
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "G": {
+      "tag": "c:gears/copper"
+    }
+  },
+  "result": {
+    "id": "joulesmith:conveyor_belt",
+    "count": 8
+  }
+}

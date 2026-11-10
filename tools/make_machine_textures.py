@@ -1839,6 +1839,8 @@ MODULE_ART = {
     "jump_boost": ("armor", ["...#...", "..###..", ".#.#.#.", "...#...", "#######"]),
     "step_assist": ("armor", ["....###", "....#..", "..###..", "..#....", "###...."]),
     "fall_protection": ("armor", ["...#...", "...#...", ".#.#.#.", "..###..", "#######"]),
+    "chain_lightning": ("weapon", ["....##.", "...##..", "..####.", "...##..", "..##..."]),
+    "lifesteal": ("weapon", [".##.##.", "#######", ".#####.", "..###..", "...#..."]),
 }
 
 
@@ -2121,6 +2123,38 @@ def fertilizer_item():
     return img
 
 
+def conveyor_top():
+    """The belt: dark rubber with raised ridges and two steel rails; chevrons point the way it runs (up)."""
+    img = Image.new("RGBA", (16, 16))
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            if x in (0, 15):
+                c = STEEL[5] if x == 0 else STEEL[2]
+            elif x in (1, 14):
+                c = STEEL[3]
+            else:
+                c = RUBBER8[3] if y % 4 == 0 else RUBBER8[2]
+            px[x, y] = rgba(c)
+    for base in (3, 11):                                 # chevrons pointing toward the top edge
+        for i in range(4):
+            for x in (7 - i, 8 + i):
+                px[x, base + i] = rgba(COPPER[4] if i < 2 else COPPER[3])
+    return img
+
+
+def conveyor_side():
+    """The belt's frame: steel with a dark belt edge along the top."""
+    img = Image.new("RGBA", (16, 16))
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            px[x, y] = rgba(RUBBER8[2] if y == 12 else STEEL[4] if y < 15 else STEEL[2])
+    for x in (2, 7, 13):
+        px[x, 13] = rgba(STEEL[6])
+    return img
+
+
 def chemical_dissolver_front(on):
     """A glass vat of yellow acid with a stirrer; it bubbles while dissolving."""
     img = casing3()
@@ -2246,6 +2280,8 @@ def main():
         "block/reinforced_bulk_bin_side": bin_side(STEEL_TRIM),
         "block/reinforced_bulk_bin_front": bin_front(STEEL_TRIM),
         "gui/crate": crate_gui(),
+        "block/conveyor_belt_top": conveyor_top(),
+        "block/conveyor_belt_side": conveyor_side(),
         **{f"block/{n}_front{'_on' if on else ''}": fn(on)
            for n, fn in (("fertilizer_mixer", fertilizer_mixer_front), ("animal_rancher", animal_rancher_front),
                          ("hydroponic_bed", hydroponic_bed_front), ("mob_grinder", mob_grinder_front),

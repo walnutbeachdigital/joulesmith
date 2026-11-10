@@ -45,6 +45,7 @@ public final class PoweredGearEvents {
         NeoForge.EVENT_BUS.addListener(PoweredGearEvents::incomingDamage);
         NeoForge.EVENT_BUS.addListener(PoweredGearEvents::fall);
         NeoForge.EVENT_BUS.addListener(PoweredGearEvents::playerTick);
+        NeoForge.EVENT_BUS.addListener(PoweredGearEvents::afterDamage);
     }
 
     // ---------------------------------------------------------------- tools and weapon
@@ -81,6 +82,43 @@ public final class PoweredGearEvents {
             drop.setPos(player.getX(), player.getY() + 0.5, player.getZ());
             drop.setDeltaMovement(0, 0, 0);
             drop.setNoPickUpDelay();
+        }
+    }
+
+    private static final ThreadLocal<Boolean> CHAINING = ThreadLocal.withInitial(() -> false);
+    private static final int CHAIN_TARGETS = 3, CHAIN_COST = 300;
+    private static final float CHAIN_DAMAGE = 4.0f, CHAIN_RANGE = 5.0f, LIFESTEAL = 0.2f;
+
+    /** Energy Sword modules that act on a hit that landed: Lifesteal heals, Chain Lightning arcs onward. */
+    private static void afterDamage(net.neoforged.neoforge.event.entity.living.LivingDamageEvent.Post event) {
+        if (CHAINING.get() || !(event.getSource().getEntity() instanceof LivingEntity attacker) || attacker.level().isClientSide) return;
+        ItemStack weapon = event.getSource().getWeaponItem();
+        if (weapon == null || !(weapon.getItem() instanceof PoweredItem) || event.getNewDamage() <= 0) return;
+        if (PoweredItem.hasModule(weapon, Module.LIFESTEAL)) attacker.heal(event.getNewDamage() * LIFESTEAL);
+        if (PoweredItem.hasModule(weapon, Module.CHAIN_LIGHTNING) && attacker.level() instanceof net.minecraft.server.level.ServerLevel level) {
+            LivingEntity victim = event.getEntity();
+            var nearby = level.getEntitiesOfClass(LivingEntity.class,
+                    victim.getBoundingBox().inflate(CHAIN_RANGE),
+                    e -> e != victim && e != attacker && e.isAlive() && e instanceof net.minecraft.world.entity.monster.Enemy);
+            CHAINING.set(true);
+            try {
+                int hits = 0;
+                for (LivingEntity next : nearby) {
+                    if (hits >= CHAIN_TARGETS || !PoweredItem.use(weapon, CHAIN_COST, attacker)) break;
+                    next.hurt(level.damageSources().indirectMagic(attacker, attacker), CHAIN_DAMAGE);
+                    spark(level, victim.position().add(0, victim.getBbHeight() / 2, 0), next.position().add(0, next.getBbHeight() / 2, 0));
+                    hits++;
+                }
+            } finally {
+                CHAINING.set(false);
+            }
+        }
+    }
+
+    private static void spark(net.minecraft.server.level.ServerLevel level, net.minecraft.world.phys.Vec3 from, net.minecraft.world.phys.Vec3 to) {
+        for (int i = 0; i <= 8; i++) {
+            var p = from.lerp(to, i / 8.0);
+            level.sendParticles(net.minecraft.core.particles.ParticleTypes.ELECTRIC_SPARK, p.x, p.y, p.z, 2, 0.05, 0.05, 0.05, 0.0);
         }
     }
 

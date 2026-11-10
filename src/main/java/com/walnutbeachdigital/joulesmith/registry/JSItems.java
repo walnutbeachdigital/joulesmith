@@ -124,6 +124,7 @@ public final class JSItems {
         blockItem(JSBlocks.REINFORCED_FLUID_PIPE);
         blockItem(JSBlocks.ADVANCED_ITEM_DUCT);
         blockItem(JSBlocks.ADVANCED_FLUID_PIPE);
+        blockItem(JSBlocks.CONVEYOR_BELT);
         register("fluid_tank", () -> new FluidTankItem(JSBlocks.FLUID_TANK.get(), new Item.Properties()));
         register("reinforced_fluid_tank", () -> new FluidTankItem(JSBlocks.REINFORCED_FLUID_TANK.get(), new Item.Properties()));
         register("advanced_fluid_tank", () -> new FluidTankItem(JSBlocks.ADVANCED_FLUID_TANK.get(), new Item.Properties()));

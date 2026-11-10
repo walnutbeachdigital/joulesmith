@@ -1023,6 +1023,27 @@ lang.update({
     "tooltip.joulesmith.fertilizer": "Works like three bone meal; Hydroponic Beds grow twice as fast with it",
 })
 
+# ---- Conveyor Belt: a 4-pixel-high belt, built facing north (items move toward -z)
+model("conveyor_belt", {"parent": "minecraft:block/block", "textures": {
+    "particle": f"{MOD}:block/conveyor_belt_top", "top": f"{MOD}:block/conveyor_belt_top", "side": f"{MOD}:block/conveyor_belt_side"},
+    "elements": [{"from": [0, 0, 0], "to": [16, 4, 16], "faces": {
+        "up": {"texture": "#top"}, "down": {"texture": "#side", "uv": [0, 0, 16, 16], "cullface": "down"},
+        **{f: {"uv": [0, 12, 16, 16], "texture": "#side", "cullface": f} for f in ("north", "south", "east", "west")}}}]})
+write(os.path.join(ASSETS, "blockstates", "conveyor_belt.json"), {"variants": {
+    f"facing={f}": dict({"model": f"{MOD}:block/conveyor_belt"}, **({"y": r} if r else {})) for f, r in ROTATION.items()}})
+write(os.path.join(ASSETS, "models", "item", "conveyor_belt.json"), {"parent": f"{MOD}:block/conveyor_belt"})
+simple_loot("conveyor_belt")
+tags[("minecraft", "block", "mineable/pickaxe")].append(f"{MOD}:conveyor_belt")
+for (ns, reg, path), values in tags.items():
+    write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+shaped("conveyor_belt", ["RRR", "IGI"], {"R": f"{MOD}:rubber", "I": "#c:ingots/iron", "G": "#c:gears/copper"}, count=8)
+lang.update({
+    f"block.{MOD}.conveyor_belt": "Conveyor Belt",
+    "jade.joulesmith.making": "Making %s FE/t",
+    "config.jade.plugin_joulesmith.machine": "Joulesmith machine progress",
+    "config.jade.plugin_joulesmith.solar_panel": "Joulesmith solar output",
+})
+
 # ---- tier 3 ore processing: Chemical Dissolver (ore + acid -> 1000 mB slurry) and Crystallizer
 # (250 mB slurry -> one crystal); the Crusher turns each crystal into a dust: four per raw ore.
 for m, (src, dust, plate, gear, wire) in METALS.items():
@@ -1098,6 +1119,10 @@ MODULES = {
     "damage": ("Damage Module", "Sharpness V", "weapon", ["#c:gems/quartz", "#c:gems/diamond"]),
     "looting": ("Looting Module", "Looting III", "weapon", ["#c:gems/emerald", "#c:gems/lapis"]),
     "fire": ("Fire Module", "Fire Aspect II", "weapon", ["minecraft:blaze_powder", "minecraft:blaze_powder"]),
+    "chain_lightning": ("Chain Lightning Module", "Each hit arcs to up to 3 nearby monsters (300 FE each)", "weapon",
+                        ["minecraft:lightning_rod", "#c:dusts/redstone"]),
+    "lifesteal": ("Lifesteal Module", "Heals you for a fifth of the damage you deal", "weapon",
+                  ["minecraft:ghast_tear", "minecraft:glistering_melon_slice"]),
     "night_vision": ("Night Vision Module", "See in the dark", "helmet", ["minecraft:golden_carrot"]),
     "water_breathing": ("Water Breathing Module", "Breathe underwater", "helmet", ["minecraft:prismarine_crystals", "minecraft:pufferfish"]),
     "solar": ("Solar Module", "Charges the whole suit in daylight", "helmet", ["minecraft:daylight_detector"]),
