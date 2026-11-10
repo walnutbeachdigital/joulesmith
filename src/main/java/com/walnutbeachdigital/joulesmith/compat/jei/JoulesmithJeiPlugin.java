@@ -7,9 +7,12 @@ import com.walnutbeachdigital.joulesmith.registry.JSItems;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.RecipeTypes;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * JEI support. Crafting, smelting and blasting recipes show up in JEI on their own; this plugin adds
@@ -35,5 +38,11 @@ public class JoulesmithJeiPlugin implements IModPlugin {
             registration.addIngredientInfo(JSBlocks.DEEPSLATE_ORE.get(metal).get(), info);
             registration.addIngredientInfo(JSItems.RAW.get(metal).get(), info);
         }
+    }
+
+    @Override
+    public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        // the Electric Furnace runs every smelting recipe
+        registration.addRecipeCatalyst(new ItemStack(JSBlocks.ELECTRIC_FURNACE.get()), RecipeTypes.SMELTING);
     }
 }

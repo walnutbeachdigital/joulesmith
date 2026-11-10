@@ -29,6 +29,8 @@ public final class JSItems {
     public static final Map<Metal, DeferredItem<Item>> WIRE = new EnumMap<>(Metal.class);
 
     static {
+        blockItem(JSBlocks.ELECTRIC_FURNACE);
+        blockItem(JSBlocks.CREATIVE_POWER_CELL);
         for (Metal metal : Metal.values()) {
             String id = metal.id();
             if (metal.hasOre()) {
@@ -55,7 +57,7 @@ public final class JSItems {
         return item;
     }
 
-    private static void blockItem(DeferredBlock<Block> block) {
+    private static void blockItem(DeferredBlock<? extends Block> block) {
         TAB_ORDER.add(ITEMS.registerSimpleBlockItem(block));
     }
 

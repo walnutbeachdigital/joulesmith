@@ -275,6 +275,72 @@ for m, o in ORES.items():
         f"Mine it with {TOOL_NAME[o['tool']]} pickaxe or better, then smelt or blast the raw {m} into ingots.")
 write(os.path.join(ASSETS, "lang", "en_us.json"), lang)
 
+# -------------------------------------------------------------------- machines
+# Machine blocks share one casing (machine_side/top/bottom) and differ by their front.
+MACHINES = {
+    "electric_furnace": {"name": "Electric Furnace", "front": "electric_furnace_front", "lit": True},
+}
+CREATIVE = {"creative_power_cell": "Creative Power Cell"}
+ROTATION = {"north": 0, "east": 90, "south": 180, "west": 270}
+for mid, info in MACHINES.items():
+    variants = {}
+    for facing, rot in ROTATION.items():
+        for lit in (False, True):
+            model = f"{MOD}:block/{mid}_on" if lit else f"{MOD}:block/{mid}"
+            v = {"model": model}
+            if rot:
+                v["y"] = rot
+            variants[f"facing={facing},lit={'true' if lit else 'false'}"] = v
+    write(os.path.join(ASSETS, "blockstates", f"{mid}.json"), {"variants": variants})
+    for suffix, front in (("", info["front"]), ("_on", info["front"] + "_on")):
+        write(os.path.join(ASSETS, "models", "block", f"{mid}{suffix}.json"), {
+            "parent": "minecraft:block/orientable_with_bottom",
+            "textures": {"top": f"{MOD}:block/machine_top", "bottom": f"{MOD}:block/machine_bottom",
+                         "side": f"{MOD}:block/machine_side", "front": f"{MOD}:block/{front}"}})
+    write(os.path.join(ASSETS, "models", "item", f"{mid}.json"), {"parent": f"{MOD}:block/{mid}"})
+    write(os.path.join(DATA, MOD, "loot_table", "blocks", f"{mid}.json"), {
+        "type": "minecraft:block", "random_sequence": f"{MOD}:blocks/{mid}",
+        "pools": [{"rolls": 1, "bonus_rolls": 0, "entries": [{"type": "minecraft:item", "name": f"{MOD}:{mid}"}],
+                   "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
+    tag("minecraft", "block", "mineable/pickaxe", f"{MOD}:{mid}")
+for cid in CREATIVE:
+    write(os.path.join(ASSETS, "blockstates", f"{cid}.json"), {"variants": {"": {"model": f"{MOD}:block/{cid}"}}})
+    write(os.path.join(ASSETS, "models", "block", f"{cid}.json"),
+          {"parent": "minecraft:block/cube_all", "textures": {"all": f"{MOD}:block/{cid}"}})
+    write(os.path.join(ASSETS, "models", "item", f"{cid}.json"), {"parent": f"{MOD}:block/{cid}"})
+# rewrite the machine tags into their files (the tag files were written above)
+for (ns, reg, path), values in tags.items():
+    write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+write(os.path.join(DATA, MOD, "recipe", "electric_furnace.json"), {
+    "type": "minecraft:crafting_shaped", "category": "misc",
+    "pattern": ["IGI", "GFG", "IRI"],
+    "key": {"I": {"tag": "c:ingots/iron"}, "G": {"tag": "c:gears/copper"},
+            "F": {"item": "minecraft:furnace"}, "R": {"tag": "c:dusts/redstone"}},
+    "result": {"id": f"{MOD}:electric_furnace", "count": 1}})
+recipes["electric_furnace"] = True
+lang.update({f"block.{MOD}.{k}": v["name"] for k, v in MACHINES.items()})
+lang.update({f"block.{MOD}.{k}": v for k, v in CREATIVE.items()})
+lang.update({
+    "gui.joulesmith.energy": "%s / %s FE",
+    "gui.joulesmith.progress": "%s%% done",
+    "gui.joulesmith.click_to_change": "Click to change",
+    "gui.joulesmith.redstone.title": "Redstone control",
+    "gui.joulesmith.redstone.ignored": "Always runs",
+    "gui.joulesmith.redstone.high": "Runs with a redstone signal",
+    "gui.joulesmith.redstone.low": "Runs without a redstone signal",
+    "gui.joulesmith.redstone.never": "Never runs",
+    "gui.joulesmith.sides.title": "Side configuration",
+    "gui.joulesmith.sides.hint": "Left-click: next   Right-click: back",
+    "gui.joulesmith.face.front": "Front", "gui.joulesmith.face.back": "Back",
+    "gui.joulesmith.face.left": "Left", "gui.joulesmith.face.right": "Right",
+    "gui.joulesmith.face.top": "Top", "gui.joulesmith.face.bottom": "Bottom",
+    "gui.joulesmith.side_mode.none": "Off",
+    "gui.joulesmith.side_mode.input": "Input: items can be put in",
+    "gui.joulesmith.side_mode.output": "Output: results can be taken out",
+    "gui.joulesmith.side_mode.both": "Input and output",
+})
+write(os.path.join(ASSETS, "lang", "en_us.json"), lang)
+
 print(f"{len(blocks)} blocks, {len(items)} items, {len(recipes)} recipes, "
       f"{len(tags)} tags, {len(ORES)} ores")
 # Texture list for the art script and for checks.

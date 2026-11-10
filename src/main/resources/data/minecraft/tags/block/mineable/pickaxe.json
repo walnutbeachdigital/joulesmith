@@ -24,6 +24,7 @@
     "joulesmith:steel_block",
     "joulesmith:bronze_block",
     "joulesmith:invar_block",
-    "joulesmith:electrum_block"
+    "joulesmith:electrum_block",
+    "joulesmith:electric_furnace"
   ]
 }
