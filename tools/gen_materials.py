@@ -109,9 +109,23 @@ def layered(base):
     }
 
 
+# Forms that reuse vanilla's own textures, tinted per metal in JoulesmithClient (no pixels copied).
+VANILLA_ITEM_TEX = {"ingot": "minecraft:item/iron_ingot", "nugget": "minecraft:item/iron_nugget",
+                    "raw": "minecraft:item/raw_iron", "dust": "minecraft:item/sugar"}
+VANILLA_BLOCK_TEX = {"storage": "minecraft:block/iron_block", "raw_block": "minecraft:block/raw_iron_block"}
+
+
+def tinted_cube(tex):
+    faces = {s: {"uv": [0, 0, 16, 16], "texture": "#all", "cullface": s, "tintindex": 0} for s in SIDES}
+    return {"parent": "minecraft:block/block", "textures": {"particle": tex, "all": tex},
+            "elements": [{"from": [0, 0, 0], "to": [16, 16, 16], "faces": faces}]}
+
+
 for bid, kind, m in blocks:
     write(os.path.join(ASSETS, "blockstates", f"{bid}.json"), {"variants": {"": {"model": f"{MOD}:block/{bid}"}}})
-    if kind in ("ore", "deepslate_ore"):
+    if kind in VANILLA_BLOCK_TEX:
+        model = tinted_cube(VANILLA_BLOCK_TEX[kind])
+    elif kind in ("ore", "deepslate_ore"):
         model = layered("minecraft:block/stone" if kind == "ore" else "minecraft:block/deepslate")
         model["textures"]["overlay"] = f"{MOD}:block/{bid}_overlay"
     else:
@@ -120,8 +134,9 @@ for bid, kind, m in blocks:
     write(os.path.join(ASSETS, "models", "item", f"{bid}.json"), {"parent": f"{MOD}:block/{bid}"})
 
 for iid, form, m in items:
+    tex = VANILLA_ITEM_TEX.get(form, f"{MOD}:item/{iid}")
     write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
-          {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{iid}"}})
+          {"parent": "minecraft:item/generated", "textures": {"layer0": tex}})
 
 # ----------------------------------------------------------------- loot tables
 for bid, kind, m in blocks:
@@ -272,6 +287,5 @@ print(f"{len(blocks)} blocks, {len(items)} items, {len(recipes)} recipes, "
       f"{len(tags)} tags, {len(ORES)} ores")
 # Texture list for the art script and for checks.
 write(os.path.join(ROOT, "tools", "texture_manifest.json"), {
-    "block": [b for b, k, m in blocks if k not in ("ore", "deepslate_ore")] +
-             [f"{b}_overlay" for b, k, m in blocks if k in ("ore", "deepslate_ore")],
-    "item": [i for i, f, m in items]})
+    "block": [f"{b}_overlay" for b, k, m in blocks if k in ("ore", "deepslate_ore")],
+    "item": [i for i, f, m in items if f not in VANILLA_ITEM_TEX]})
