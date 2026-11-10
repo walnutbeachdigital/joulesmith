@@ -30,11 +30,10 @@ import net.minecraft.server.packs.resources.IoSupplier;
 
 /**
  * A built-in resource pack that makes Joulesmith's vanilla-shaped textures while the game loads.
- * It reads Minecraft's own iron ingot, iron nugget, raw iron, sugar, iron block and raw iron block
- * textures from the player's copy of the game and recolours each one through a metal's five-step
- * gradient, so ingots, nuggets, raw ore, dusts and blocks keep vanilla's shapes with rich,
- * hand-picked colours: light from the top-left, streaky metal grain and a few bright glints.
- * No Mojang texture is shipped inside the mod.
+ * It reads Minecraft's own iron ingot, iron nugget, raw iron, iron block and raw iron block
+ * textures from the player's copy of the game and swaps each of their shades for one step of a
+ * metal's eight-step colour ramp, so ingots, nuggets, raw ore and blocks keep vanilla's shapes with
+ * clean, hand-picked palettes. No Mojang texture is shipped inside the mod.
  */
 public final class MetalTexturePack implements PackResources {
     private static final PackLocationInfo INFO = new PackLocationInfo(
@@ -58,9 +57,6 @@ public final class MetalTexturePack implements PackResources {
             if (m.hasOre()) {
                 add(m, "item/raw_" + id, "item/raw_iron");
                 add(m, "block/raw_" + id + "_block", "block/raw_iron_block");
-            }
-            if (m.hasDust()) {
-                add(m, "item/" + id + "_dust", "item/sugar");
             }
         }
     }
@@ -99,42 +95,26 @@ public final class MetalTexturePack implements PackResources {
         }
         try (InputStream in = vanilla.get(); NativeImage image = NativeImage.read(in)) {
             int w = image.getWidth(), h = image.getHeight();
-            // Darkest and brightest visible pixels, and the shape's bounds.
-            double lo = 255, hi = 0;
-            int x0 = w, x1 = 0, y0 = h, y1 = 0;
+            // Every distinct shade in the vanilla texture, darkest first.
+            java.util.TreeSet<Integer> shades = new java.util.TreeSet<>();
             for (int y = 0; y < h; y++) {
                 for (int x = 0; x < w; x++) {
                     int abgr = image.getPixelRGBA(x, y);
-                    if ((abgr >>> 24) == 0) continue;
-                    double l = luminance(abgr);
-                    lo = Math.min(lo, l);
-                    hi = Math.max(hi, l);
-                    x0 = Math.min(x0, x); x1 = Math.max(x1, x);
-                    y0 = Math.min(y0, y); y1 = Math.max(y1, y);
+                    if ((abgr >>> 24) != 0) shades.add(shade(abgr));
                 }
             }
-            double span = Math.max(1, hi - lo);
-            boolean block = target.getPath().startsWith("textures/block/");
-            double light = block ? 0.08 : 0.26;     // blocks tile, so they get only a gentle sweep
-            int seed = src.metal().ordinal() + 1;
+            java.util.List<Integer> order = new java.util.ArrayList<>(shades);
+            Metal metal = src.metal();
+            int steps = metal.rampSize();
+            // Each vanilla shade becomes one exact ramp colour: a clean palette swap, no blending or noise.
             for (int y = 0; y < h; y++) {
                 for (int x = 0; x < w; x++) {
                     int abgr = image.getPixelRGBA(x, y);
                     int alpha = abgr >>> 24;
                     if (alpha == 0) continue;
-                    double base = (luminance(abgr) - lo) / span;
-                    double v;
-                    if (base < 0.12) {
-                        v = 0;                                              // outline: darkest tone
-                    } else {
-                        // light from the top-left, streaky grain along the rows, a few bright glints
-                        double diag = 1 - ((x - x0) / (double) Math.max(1, x1 - x0) + (y - y0) / (double) Math.max(1, y1 - y0)) / 2;
-                        double streak = 0.6 * hash(x / 3, y, seed + 7) + 0.4 * hash(x, y, seed);
-                        double t = 0.78 * base + light * diag + (streak - 0.5) * 0.24;
-                        v = 0.08 + 0.80 * t;
-                        if (base > 0.6 && hash(x, y, seed + 99) > (block ? 0.99 : 0.93)) v = 1;
-                    }
-                    int rgb = src.metal().rampColor(v);
+                    int i = order.indexOf(shade(abgr));
+                    int step = order.size() == 1 ? steps - 1 : Math.round(i * (steps - 1) / (float) (order.size() - 1));
+                    int rgb = metal.rampStep(step);
                     // NativeImage stores pixels as ABGR
                     image.setPixelRGBA(x, y, alpha << 24 | (rgb & 0xFF) << 16 | (rgb & 0xFF00) | (rgb >> 16 & 0xFF));
                 }
@@ -143,11 +123,9 @@ public final class MetalTexturePack implements PackResources {
         }
     }
 
-    /** Repeatable pseudo-random number in [0, 1] for a pixel, so textures look the same every launch. */
-    private static double hash(int x, int y, int seed) {
-        long n = (x * 374761393L + y * 668265263L + seed * 2147483647L) & 0xFFFFFFFFL;
-        n = ((n ^ (n >>> 13)) * 1274126177L) & 0xFFFFFFFFL;
-        return ((n ^ (n >>> 16)) & 0xFFFF) / 65535.0;
+    /** A pixel's brightness, rounded so identical vanilla shades group together. */
+    private static int shade(int abgr) {
+        return (int) Math.round(luminance(abgr) * 10);
     }
 
     private static double luminance(int abgr) {

@@ -20,19 +20,19 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 TEX = os.path.join(ROOT, "src", "main", "resources", "assets", "joulesmith", "textures")
 
 # outline, dark, mid, light, highlight
-PALETTES = {  # same ramps as Metal.java
-    "iron":     ["#1d2028", "#4b505c", "#8c919c", "#cdd1d8", "#ffffff"],
-    "copper":   ["#4a120a", "#8f2b14", "#d0561f", "#f39a45", "#ffe2a8"],
-    "gold":     ["#5a2c02", "#a76408", "#e7a817", "#fcdf55", "#fffbd0"],
-    "tin":      ["#1e3442", "#3f6878", "#7fa6b0", "#b7d4d8", "#effcfc"],
-    "lead":     ["#08081f", "#161b48", "#2e3a78", "#5866a6", "#a0addd"],
-    "silver":   ["#1b2836", "#45596d", "#8597a9", "#c6d3de", "#ffffff"],
-    "nickel":   ["#3e3020", "#7a6648", "#b49f78", "#dccaa3", "#fff6dc"],
-    "uranium":  ["#0f2a0e", "#25601b", "#47a02f", "#86d855", "#d8ffa8"],
-    "steel":    ["#15181e", "#363d48", "#626c79", "#97a1ad", "#d9e0e8"],
-    "bronze":   ["#4b1f0a", "#8a4418", "#c9802f", "#ecb865", "#fff0c8"],
-    "invar":    ["#2a3332", "#5a6866", "#94a3a0", "#c6d1cf", "#f4f9f8"],
-    "electrum": ["#5a4304", "#a78812", "#dcc033", "#f6e47a", "#fffde0"],
+PALETTES = {  # eight-step ramps, darkest to brightest; same values as Metal.java
+    "iron":      ["#4a4a52", "#5e5f68", "#76777f", "#8d8e96", "#a8a9b0", "#c4c5cb", "#dcdde1", "#f4f4f6"],
+    "copper":    ["#772c15", "#a0511f", "#b8622a", "#ce6e26", "#da7e2a", "#f0a030", "#fcbe2d", "#ffe08a"],
+    "gold":      ["#8a5a12", "#a06d14", "#b8841a", "#cf9c22", "#e3b52e", "#f1cd45", "#fbe36e", "#fff4a8"],
+    "tin":       ["#314f6f", "#476f81", "#517c88", "#6c8998", "#88a2a7", "#90afac", "#a1c6c2", "#bfd8dd"],
+    "lead":      ["#13142f", "#232457", "#2f3061", "#393c61", "#454967", "#575e79", "#727989", "#7d97a6"],
+    "silver":    ["#2a3345", "#3c4859", "#4d5c6a", "#647380", "#758392", "#9fadb4", "#beccd2", "#ffffff"],
+    "nickel":    ["#734c3b", "#866444", "#997857", "#a28960", "#b0a075", "#c7b784", "#e7d498", "#f9f5ab"],
+    "uranium":   ["#1f3d17", "#2c5520", "#3b6e28", "#4c8a31", "#62a63c", "#7fc24c", "#a2db66", "#c8f08e"],
+    "steel":     ["#22262e", "#30353f", "#3e4450", "#4d5461", "#5f6774", "#767e8b", "#939aa6", "#b8bec8"],
+    "bronze":    ["#6a3412", "#82441a", "#9b5622", "#b46a2c", "#ca7f37", "#de9a48", "#eeb764", "#f9d58d"],
+    "invar":     ["#4a666a", "#5c7c7b", "#768885", "#859792", "#a3b1a8", "#c5ccc3", "#d7ded9", "#e1e7e5"],
+    "electrum":  ["#957c3d", "#a19144", "#bca54f", "#c9b255", "#d9c25f", "#e9da75", "#f8f796", "#fbfbbc"],
 }
 
 
@@ -46,7 +46,8 @@ def blank():
 
 
 def paint(levels, metal):
-    pal = [hex_rgba(c) for c in PALETTES[metal]]
+    ramp = [hex_rgba(c) for c in PALETTES[metal]]
+    pal = [ramp[i] for i in (0, 1, 3, 5, 7)]  # shade levels 0..4 -> ramp steps
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     for y in range(16):
         for x in range(16):
@@ -54,6 +55,32 @@ def paint(levels, metal):
             if v is not None:
                 img.putpixel((x, y), pal[max(0, min(4, v))])
     return img
+
+
+def paint8(levels, metal):
+    ramp = [hex_rgba(c) for c in PALETTES[metal]]
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    for y in range(16):
+        for x in range(16):
+            v = levels[y][x]
+            if v is not None:
+                img.putpixel((x, y), ramp[max(0, min(7, v))])
+    return img
+
+
+def edge_light(levels, mask):
+    """Reference-style edges: top-left edges catch the light, bottom-right edges fall to the darkest tones.
+    No full outline."""
+    inside = lambda x, y: 0 <= x < 16 and 0 <= y < 16 and mask[y][x]
+    for y in range(16):
+        for x in range(16):
+            if not mask[y][x]:
+                continue
+            if not inside(x + 1, y) or not inside(x, y + 1):
+                levels[y][x] = 0 if (not inside(x + 1, y + 1)) else 1
+            elif not inside(x - 1, y) or not inside(x, y - 1):
+                levels[y][x] = min(7, levels[y][x] + 2)
+    return levels
 
 
 def outline(levels, mask, all_dark=False):
@@ -116,64 +143,70 @@ def nugget():
     return outline(lv, mask, all_dark=True)
 
 def dust():
-    """A small, smooth cone of powder, lit from the left."""
+    """A rounded pile with a pointed top: speckled grains, lit from the top-left, dark bottom rim."""
+    rows = {3: (7, 8), 4: (6, 9), 5: (5, 10), 6: (4, 11), 7: (3, 12), 8: (2, 13),
+            9: (2, 13), 10: (2, 13), 11: (3, 12), 12: (4, 11), 13: (6, 9)}
     lv, mask = blank(), [[False] * 16 for _ in range(16)]
-    for y in range(3, 13):
-        half = 0.4 + 5.5 * ((y - 3) / 9.0) ** 0.8
-        for x in range(16):
-            dx = x - 7.5
-            if abs(dx) <= half:
-                mask[y][x] = True
-                if dx < -half * 0.35:
-                    lv[y][x] = 4 if y <= 7 else 3
-                elif dx < half * 0.3:
-                    lv[y][x] = 3 if y <= 8 else 2
-                else:
-                    lv[y][x] = 2 if y <= 10 else 1
-    return outline(lv, mask, all_dark=True)
-
-def plate():
-    """A square plate with a raised rim, a soft diagonal sheen and a rivet in each corner."""
-    lv, mask = blank(), [[False] * 16 for _ in range(16)]
-    for y in range(1, 15):
-        for x in range(1, 15):
+    n = noise(11)
+    for y, (x0, x1) in rows.items():
+        for x in range(x0, x1 + 1):
             mask[y][x] = True
-            if y == 2 or x == 2:
-                lv[y][x] = 4
-            elif y == 13 or x == 13:
-                lv[y][x] = 2
-            else:
-                d = x + y
-                lv[y][x] = 4 if 12 <= d <= 13 else (3 if d < 19 else 2)
-    for rx, ry in ((4, 4), (11, 4), (4, 11), (11, 11)):
-        lv[ry][rx] = 1
-    return outline(lv, mask, all_dark=True)
+            light = 1 - ((x - 2) / 11 + (y - 3) / 10) / 2
+            grain = 2 if n[y][x] > 0.8 else (-2 if n[y][x] < 0.2 else 0)
+            lv[y][x] = max(2, min(7, int(2.5 + light * 4.2) + grain))
+    return edge_light(lv, mask)
+
+
+def plate(band_axis="v"):
+    """A square sheet turned about 30 degrees clockwise: light streaks running parallel to its
+    top-left edge, lit from the top-left, darkest along the bottom-right edges."""
+    lv, mask = blank(), [[False] * 16 for _ in range(16)]
+    cx, cy, half = 7.6, 7.6, 4.85
+    c, s_ = math.cos(math.radians(30)), math.sin(math.radians(30))
+    n = noise(5)
+    for y in range(16):
+        for x in range(16):
+            dx, dy = x - cx, y - cy
+            u, v = dx * c + dy * s_, -dx * s_ + dy * c
+            if abs(u) <= half and abs(v) <= half:
+                mask[y][x] = True
+                light = 1 - ((u + half) + (v + half)) / (4 * half)
+                k = u if band_axis == "u" else v
+                band = 1 if (int(k + half) // 2) % 2 == 0 else -1
+                if n[y][x] > 0.85:
+                    band = 0
+                lv[y][x] = max(2, min(7, int(2.5 + light * 4.5) + band))
+    return edge_light(lv, mask)
+
 
 def gear():
-    """A compact six-tooth gear: round body, chunky three-pixel teeth, small axle hole."""
+    """A six-tooth gear turned slightly off-axis: full round body, short wide teeth, small axle hole,
+    lit from the top-left with the darkest tones only along the bottom-right edges."""
     lv, mask = blank(), [[False] * 16 for _ in range(16)]
     cx = cy = 7.5
-    dirs = [math.radians(a) for a in (-90, -30, 30, 90, 150, 210)]   # a tooth points straight up
+    off = math.radians(15)
     for y in range(16):
         for x in range(16):
             dx, dy = x - cx, y - cy
             r = math.hypot(dx, dy)
-            body = r <= 5.1
-            tooth = any(0 < dx * math.cos(t) + dy * math.sin(t) <= 7.4 and
-                        abs(-dx * math.sin(t) + dy * math.cos(t)) <= 2.1 for t in dirs)
-            if (body or tooth) and r > 1.0:
+            tooth = math.cos(6 * (math.atan2(dy, dx) - off)) > -0.15
+            if 1.2 < r <= (6.9 if tooth else 5.3):
                 mask[y][x] = True
-                lit = -(dx * 0.8 + dy) / max(r, 0.01)      # +1 facing the light (top-left)
-                if r <= 2.2:
-                    shade = 3 if lit < 0 else 2            # inside edge of the hole
-                elif lit > 0.55:
-                    shade = 4
-                elif lit > -0.15:
-                    shade = 3
-                else:
-                    shade = 2
-                lv[y][x] = shade
-    return outline(lv, mask, all_dark=True)
+    hole = [(x, y) for y in range(16) for x in range(16) if 0 < math.hypot(x - cx, y - cy) <= 1.2] + [(7, 7), (8, 7), (7, 8), (8, 8)]
+    n = noise(9)
+    for y in range(16):
+        for x in range(16):
+            if not mask[y][x]:
+                continue
+            light = 1 - ((x - 1) + (y - 1)) / 26.0
+            speck = 1 if n[y][x] > 0.75 else (-1 if n[y][x] < 0.2 else 0)
+            lv[y][x] = max(2, min(7, int(2.5 + light * 4.3) + speck))
+    lv = edge_light(lv, mask)
+    for x, y in set(hole):                                         # rim around the hole
+        for nx, ny, val in ((x - 1, y, 1), (x, y - 1, 1), (x + 1, y, 6), (x, y + 1, 6)):
+            if 0 <= nx < 16 and 0 <= ny < 16 and mask[ny][nx] and math.hypot(nx - cx, ny - cy) < 2.6:
+                lv[ny][nx] = val
+    return lv
 
 
 def wire():
@@ -313,8 +346,9 @@ def draw(kind, name):
         if name.startswith("raw_"):
             return paint(raw(seed), m)
         form = name.rsplit("_", 1)[1]
-        return paint({"ingot": ingot, "nugget": nugget, "dust": dust, "plate": plate,
-                      "gear": gear, "wire": wire}[form](), m)
+        if form in ("plate", "gear", "dust"):
+            return paint8({"plate": plate, "gear": gear, "dust": dust}[form](), m)
+        return paint({"ingot": ingot, "nugget": nugget, "dust": dust, "wire": wire}[form](), m)
     if name.endswith("_overlay"):
         return paint(ore_overlay(seed), m)
     if name.startswith("raw_"):

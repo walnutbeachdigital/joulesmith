@@ -110,9 +110,9 @@ def layered(base):
 
 
 # Forms whose textures are made while the game loads, by MetalTexturePack: Minecraft's own iron
-# ingot, iron nugget, raw iron, sugar, iron block and raw iron block, recoloured through each
+# ingot, iron nugget, raw iron, iron block and raw iron block, palette-swapped onto each
 # metal's gradient. They are referenced here but never stored in the repo.
-GENERATED_ITEM_FORMS = {"ingot", "nugget", "raw", "dust"}
+GENERATED_ITEM_FORMS = {"ingot", "nugget", "raw"}
 GENERATED_BLOCK_KINDS = {"storage", "raw_block"}
 
 
