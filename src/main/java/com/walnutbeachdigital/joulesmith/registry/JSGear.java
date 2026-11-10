@@ -77,6 +77,10 @@ public final class JSGear {
             () -> new EnergyCellItem(100_000, 100, new Item.Properties()));
     public static final DeferredItem<EnergyCellItem> REINFORCED_ENERGY_CELL = powered("reinforced_energy_cell",
             () -> new EnergyCellItem(400_000, 250, new Item.Properties()));
+    public static final DeferredItem<EnergyCellItem> ELITE_ENERGY_CELL = powered("elite_energy_cell",
+            () -> new EnergyCellItem(4_000_000, 1_000, new Item.Properties()));
+    public static final DeferredItem<EnergyCellItem> ULTIMATE_ENERGY_CELL = powered("ultimate_energy_cell",
+            () -> new EnergyCellItem(16_000_000, 2_000, new Item.Properties()));
     /** The Advanced Energy Cell (kept as "energy_cell" so existing worlds keep theirs). */
     public static final DeferredItem<EnergyCellItem> ENERGY_CELL = powered("energy_cell",
             () -> new EnergyCellItem(1_000_000, 500, new Item.Properties()));

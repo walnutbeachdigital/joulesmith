@@ -15,7 +15,7 @@ import net.minecraft.world.entity.player.Inventory;
  */
 public class CrateScreen extends AbstractContainerScreen<CrateMenu> {
     private static final ResourceLocation TEXTURE = Joulesmith.id("textures/gui/crate.png");
-    private static final ResourceLocation WIDE = Joulesmith.id("textures/gui/crate_wide.png");
+
     private static final int TEX_W = 256, TEX_H = 512, INVENTORY_V = 180, INVENTORY_H = 96;
 
     public CrateScreen(CrateMenu menu, Inventory inventory, Component title) {
@@ -35,8 +35,11 @@ public class CrateScreen extends AbstractContainerScreen<CrateMenu> {
     @Override
     protected void renderBg(GuiGraphics g, float partialTick, int mouseX, int mouseY) {
         int top = 17 + CrateMenu.shownRows(menu.rows()) * 18;
-        ResourceLocation texture = CrateMenu.columns(menu.rows()) > 9 ? WIDE : TEXTURE;
-        g.blit(texture, leftPos, topPos, 0, 0, imageWidth, top, TEX_W, TEX_H);
-        g.blit(texture, leftPos, topPos + top, 0, INVENTORY_V, imageWidth, INVENTORY_H + 1, TEX_W, TEX_H);
+        int cols = CrateMenu.columns(menu.rows());
+        // wide crates have their own sheet, 512 wide: crate_12, crate_15, crate_18
+        ResourceLocation texture = cols > 9 ? Joulesmith.id("textures/gui/crate_" + cols + ".png") : TEXTURE;
+        int texW = cols > 9 ? 512 : TEX_W;
+        g.blit(texture, leftPos, topPos, 0, 0, imageWidth, top, texW, TEX_H);
+        g.blit(texture, leftPos, topPos + top, 0, INVENTORY_V, imageWidth, INVENTORY_H + 1, texW, TEX_H);
     }
 }

@@ -103,6 +103,7 @@ public final class JSBlocks {
     public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> BIO_REACTOR = processing("bio_reactor", () -> JSBlockEntities.BIO_REACTOR.get());
 
     public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> CHEMICAL_DISSOLVER = processing("chemical_dissolver", () -> JSBlockEntities.CHEMICAL_DISSOLVER.get());
+    public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> LASER_ENGRAVER = processing("laser_engraver", () -> JSBlockEntities.LASER_ENGRAVER.get());
     public static final DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> CRYSTALLIZER = processing("crystallizer", () -> JSBlockEntities.CRYSTALLIZER.get());
 
     // ---- farming
@@ -134,6 +135,10 @@ public final class JSBlocks {
             () -> new com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlock(40, solar()));
     public static final DeferredBlock<com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlock> ADVANCED_SOLAR_PANEL = BLOCKS.register("advanced_solar_panel",
             () -> new com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlock(160, solar()));
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlock> ELITE_SOLAR_PANEL = BLOCKS.register("elite_solar_panel",
+            () -> new com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlock(640, solar()));
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlock> ULTIMATE_SOLAR_PANEL = BLOCKS.register("ultimate_solar_panel",
+            () -> new com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlock(2_560, solar()));
 
     // ---- more farming
     public static final DeferredBlock<com.walnutbeachdigital.joulesmith.farming.sprinkler.SprinklerBlock> SPRINKLER = BLOCKS.register("sprinkler",
@@ -176,6 +181,14 @@ public final class JSBlocks {
             () -> new CrateBlock(12, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).strength(4.0f).sound(SoundType.METAL)));
     public static final DeferredBlock<BinBlock> ADVANCED_BULK_BIN = BLOCKS.register("advanced_bulk_bin",
             () -> new BinBlock(65_536, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).strength(4.0f).sound(SoundType.METAL)));
+    public static final DeferredBlock<CrateBlock> ELITE_CRATE = BLOCKS.register("elite_crate",
+            () -> new CrateBlock(15, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).strength(4.5f).sound(SoundType.METAL)));
+    public static final DeferredBlock<BinBlock> ELITE_BULK_BIN = BLOCKS.register("elite_bulk_bin",
+            () -> new BinBlock(262_144, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).strength(4.5f).sound(SoundType.METAL)));
+    public static final DeferredBlock<CrateBlock> ULTIMATE_CRATE = BLOCKS.register("ultimate_crate",
+            () -> new CrateBlock(18, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).strength(5.0f).sound(SoundType.METAL)));
+    public static final DeferredBlock<BinBlock> ULTIMATE_BULK_BIN = BLOCKS.register("ultimate_bulk_bin",
+            () -> new BinBlock(1_048_576, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).strength(5.0f).sound(SoundType.METAL)));
 
     /** A recipe machine block; its block entity type knows the slots and recipes. */
     private static DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> processing(
@@ -194,6 +207,8 @@ public final class JSBlocks {
     public static final DeferredBlock<EnergyCableBlock> ENERGY_CABLE = cable("energy_cable", 1);
     public static final DeferredBlock<EnergyCableBlock> REINFORCED_ENERGY_CABLE = cable("reinforced_energy_cable", 2);
     public static final DeferredBlock<EnergyCableBlock> ADVANCED_ENERGY_CABLE = cable("advanced_energy_cable", 3);
+    public static final DeferredBlock<EnergyCableBlock> ELITE_ENERGY_CABLE = cable("elite_energy_cable", 4);
+    public static final DeferredBlock<EnergyCableBlock> ULTIMATE_ENERGY_CABLE = cable("ultimate_energy_cable", 5);
 
     private static DeferredBlock<EnergyCableBlock> cable(String name, int tier) {
         return BLOCKS.register(name, () -> new EnergyCableBlock(tier, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE)
@@ -202,6 +217,8 @@ public final class JSBlocks {
 
     public static final DeferredBlock<SimpleMachineBlock<BatteryBlockEntity>> REINFORCED_BATTERY = battery("reinforced_battery", 2);
     public static final DeferredBlock<SimpleMachineBlock<BatteryBlockEntity>> ADVANCED_BATTERY = battery("advanced_battery", 3);
+    public static final DeferredBlock<SimpleMachineBlock<BatteryBlockEntity>> ELITE_BATTERY = battery("elite_battery", 4);
+    public static final DeferredBlock<SimpleMachineBlock<BatteryBlockEntity>> ULTIMATE_BATTERY = battery("ultimate_battery", 5);
 
     private static DeferredBlock<SimpleMachineBlock<BatteryBlockEntity>> battery(String name, int tier) {
         return BLOCKS.register(name, () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.BASIC_BATTERY::get,
@@ -264,6 +281,14 @@ public final class JSBlocks {
             () -> new ItemDuctBlock(3, pipe(MapColor.COLOR_GRAY)));
     public static final DeferredBlock<FluidPipeBlock> ADVANCED_FLUID_PIPE = BLOCKS.register("advanced_fluid_pipe",
             () -> new FluidPipeBlock(3, pipe(MapColor.METAL)));
+    public static final DeferredBlock<ItemDuctBlock> ELITE_ITEM_DUCT = BLOCKS.register("elite_item_duct",
+            () -> new ItemDuctBlock(4, pipe(MapColor.COLOR_GRAY)));
+    public static final DeferredBlock<FluidPipeBlock> ELITE_FLUID_PIPE = BLOCKS.register("elite_fluid_pipe",
+            () -> new FluidPipeBlock(4, pipe(MapColor.METAL)));
+    public static final DeferredBlock<ItemDuctBlock> ULTIMATE_ITEM_DUCT = BLOCKS.register("ultimate_item_duct",
+            () -> new ItemDuctBlock(5, pipe(MapColor.COLOR_GRAY)));
+    public static final DeferredBlock<FluidPipeBlock> ULTIMATE_FLUID_PIPE = BLOCKS.register("ultimate_fluid_pipe",
+            () -> new FluidPipeBlock(5, pipe(MapColor.METAL)));
 
     private static BlockBehaviour.Properties tank() {
         return BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(2.0f, 6.0f)
@@ -280,6 +305,10 @@ public final class JSBlocks {
             () -> new FluidTankBlock(64_000, tank()));
     public static final DeferredBlock<FluidTankBlock> ADVANCED_FLUID_TANK = BLOCKS.register("advanced_fluid_tank",
             () -> new FluidTankBlock(256_000, tank()));
+    public static final DeferredBlock<FluidTankBlock> ELITE_FLUID_TANK = BLOCKS.register("elite_fluid_tank",
+            () -> new FluidTankBlock(1_024_000, tank()));
+    public static final DeferredBlock<FluidTankBlock> ULTIMATE_FLUID_TANK = BLOCKS.register("ultimate_fluid_tank",
+            () -> new FluidTankBlock(4_096_000, tank()));
 
     public static final DeferredBlock<SimpleMachineBlock<PumpBlockEntity>> PUMP = BLOCKS.register("pump",
             () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.PUMP::get, PumpBlockEntity::new));

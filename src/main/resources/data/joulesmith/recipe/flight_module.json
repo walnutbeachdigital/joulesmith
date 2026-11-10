@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "joulesmith:jetpack_module"
+    },
+    {
+      "item": "joulesmith:quantum_processor"
+    },
+    {
+      "item": "minecraft:elytra"
+    }
+  ],
+  "result": {
+    "id": "joulesmith:flight_module"
+  }
+}

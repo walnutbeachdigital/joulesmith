@@ -48,6 +48,11 @@ public final class JSItems {
     public static final DeferredItem<Item> BASIC_CASING = ITEMS.registerSimpleItem("basic_casing");
     public static final DeferredItem<Item> REINFORCED_CASING = ITEMS.registerSimpleItem("reinforced_casing");
     public static final DeferredItem<Item> ADVANCED_CASING = ITEMS.registerSimpleItem("advanced_casing");
+    public static final DeferredItem<Item> ELITE_CASING = ITEMS.registerSimpleItem("elite_casing");
+    public static final DeferredItem<Item> ULTIMATE_CASING = ITEMS.registerSimpleItem("ultimate_casing");
+    /** The tier 4 and 5 gate parts, from the Laser Engraver. */
+    public static final DeferredItem<Item> PROCESSOR = ITEMS.registerSimpleItem("processor");
+    public static final DeferredItem<Item> QUANTUM_PROCESSOR = ITEMS.registerSimpleItem("quantum_processor");
     public static final DeferredItem<Item> ADVANCED_CIRCUIT = ITEMS.registerSimpleItem("advanced_circuit");
     public static final DeferredItem<Item> PLASTIC_SHEET = ITEMS.registerSimpleItem("plastic_sheet");
     public static final DeferredItem<com.walnutbeachdigital.joulesmith.farming.FertilizerItem> FERTILIZER = ITEMS.register("fertilizer",
@@ -66,11 +71,15 @@ public final class JSItems {
         blockItem(JSBlocks.BASIC_BATTERY);
         blockItem(JSBlocks.REINFORCED_BATTERY);
         blockItem(JSBlocks.ADVANCED_BATTERY);
+        blockItem(JSBlocks.ELITE_BATTERY);
+        blockItem(JSBlocks.ULTIMATE_BATTERY);
         blockItem(JSBlocks.BOILER);
         blockItem(JSBlocks.STEAM_TURBINE);
         blockItem(JSBlocks.SOLAR_PANEL);
         blockItem(JSBlocks.REINFORCED_SOLAR_PANEL);
         blockItem(JSBlocks.ADVANCED_SOLAR_PANEL);
+        blockItem(JSBlocks.ELITE_SOLAR_PANEL);
+        blockItem(JSBlocks.ULTIMATE_SOLAR_PANEL);
         blockItem(JSBlocks.GEOTHERMAL_GENERATOR);
         blockItem(JSBlocks.WIND_TURBINE);
         JSBlocks.SENSORS.values().forEach(JSItems::blockItem);
@@ -86,6 +95,8 @@ public final class JSItems {
         blockItem(JSBlocks.ENERGY_CABLE);
         blockItem(JSBlocks.REINFORCED_ENERGY_CABLE);
         blockItem(JSBlocks.ADVANCED_ENERGY_CABLE);
+        blockItem(JSBlocks.ELITE_ENERGY_CABLE);
+        blockItem(JSBlocks.ULTIMATE_ENERGY_CABLE);
         blockItem(JSBlocks.ELECTRIC_FURNACE);
         blockItem(JSBlocks.CRUSHER);
         blockItem(JSBlocks.ALLOY_SMELTER);
@@ -98,6 +109,7 @@ public final class JSItems {
         blockItem(JSBlocks.CIRCUIT_ASSEMBLER);
         blockItem(JSBlocks.CHEMICAL_DISSOLVER);
         blockItem(JSBlocks.CRYSTALLIZER);
+        blockItem(JSBlocks.LASER_ENGRAVER);
         blockItem(JSBlocks.PLANTER);
         blockItem(JSBlocks.HARVESTER);
         blockItem(JSBlocks.TREE_FARM);
@@ -127,6 +139,10 @@ public final class JSItems {
         TAB_ORDER.add(BASIC_CASING);
         TAB_ORDER.add(REINFORCED_CASING);
         TAB_ORDER.add(ADVANCED_CASING);
+        TAB_ORDER.add(ELITE_CASING);
+        TAB_ORDER.add(ULTIMATE_CASING);
+        TAB_ORDER.add(PROCESSOR);
+        TAB_ORDER.add(QUANTUM_PROCESSOR);
         TAB_ORDER.add(BASIC_CIRCUIT);
         TAB_ORDER.add(ADVANCED_CIRCUIT);
         TAB_ORDER.add(PLASTIC_SHEET);
@@ -138,16 +154,28 @@ public final class JSItems {
         blockItem(JSBlocks.REINFORCED_FLUID_PIPE);
         blockItem(JSBlocks.ADVANCED_ITEM_DUCT);
         blockItem(JSBlocks.ADVANCED_FLUID_PIPE);
+        blockItem(JSBlocks.ELITE_ITEM_DUCT);
+        blockItem(JSBlocks.ELITE_FLUID_PIPE);
+        blockItem(JSBlocks.ULTIMATE_ITEM_DUCT);
+        blockItem(JSBlocks.ULTIMATE_FLUID_PIPE);
         blockItem(JSBlocks.CONVEYOR_BELT);
         register("fluid_tank", () -> new FluidTankItem(JSBlocks.FLUID_TANK.get(), new Item.Properties()));
         register("reinforced_fluid_tank", () -> new FluidTankItem(JSBlocks.REINFORCED_FLUID_TANK.get(), new Item.Properties()));
         register("advanced_fluid_tank", () -> new FluidTankItem(JSBlocks.ADVANCED_FLUID_TANK.get(), new Item.Properties()));
+        register("elite_fluid_tank", () -> new FluidTankItem(JSBlocks.ELITE_FLUID_TANK.get(), new Item.Properties()));
+        register("ultimate_fluid_tank", () -> new FluidTankItem(JSBlocks.ULTIMATE_FLUID_TANK.get(), new Item.Properties()));
         register("basic_crate", () -> new CrateItem(JSBlocks.BASIC_CRATE.get(), new Item.Properties().stacksTo(1)));
         register("reinforced_crate", () -> new CrateItem(JSBlocks.REINFORCED_CRATE.get(), new Item.Properties().stacksTo(1)));
         register("basic_bulk_bin", () -> new BinItem(JSBlocks.BASIC_BULK_BIN.get(), new Item.Properties().stacksTo(1)));
         register("reinforced_bulk_bin", () -> new BinItem(JSBlocks.REINFORCED_BULK_BIN.get(), new Item.Properties().stacksTo(1)));
         register("advanced_crate", () -> new CrateItem(JSBlocks.ADVANCED_CRATE.get(), new Item.Properties().stacksTo(1)));
         register("advanced_bulk_bin", () -> new BinItem(JSBlocks.ADVANCED_BULK_BIN.get(), new Item.Properties().stacksTo(1)));
+        register("elite_crate", () -> new CrateItem(JSBlocks.ELITE_CRATE.get(), new Item.Properties().stacksTo(1)));
+        register("elite_bulk_bin", () -> new BinItem(JSBlocks.ELITE_BULK_BIN.get(), new Item.Properties().stacksTo(1)));
+        register("ultimate_crate", () -> new CrateItem(JSBlocks.ULTIMATE_CRATE.get(), new Item.Properties().stacksTo(1)));
+        register("ultimate_bulk_bin", () -> new BinItem(JSBlocks.ULTIMATE_BULK_BIN.get(), new Item.Properties().stacksTo(1)));
+        register("elite_upgrade_kit", () -> new com.walnutbeachdigital.joulesmith.item.UpgradeKitItem(4, new Item.Properties()));
+        register("ultimate_upgrade_kit", () -> new com.walnutbeachdigital.joulesmith.item.UpgradeKitItem(5, new Item.Properties()));
         register("reinforced_upgrade_kit", () -> new com.walnutbeachdigital.joulesmith.item.UpgradeKitItem(2, new Item.Properties()));
         register("advanced_upgrade_kit", () -> new com.walnutbeachdigital.joulesmith.item.UpgradeKitItem(3, new Item.Properties()));
         blockItem(JSBlocks.CHARGING_PAD);

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "DDD",
+    "WWW",
+    "DDD"
+  ],
+  "key": {
+    "D": {
+      "item": "joulesmith:plastic_sheet"
+    },
+    "W": {
+      "tag": "c:wires/silver"
+    }
+  },
+  "result": {
+    "id": "joulesmith:elite_energy_cable",
+    "count": 6
+  }
+}

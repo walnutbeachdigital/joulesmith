@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PGP",
+    "GTG",
+    "PGP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:ingots/netherite"
+    },
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "T": {
+      "item": "joulesmith:elite_fluid_tank"
+    }
+  },
+  "result": {
+    "id": "joulesmith:ultimate_fluid_tank",
+    "count": 1
+  }
+}

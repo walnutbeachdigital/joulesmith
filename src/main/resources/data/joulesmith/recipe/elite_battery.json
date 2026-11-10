@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "BRB",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/silver"
+    },
+    "C": {
+      "item": "joulesmith:processor"
+    },
+    "B": {
+      "item": "joulesmith:advanced_battery"
+    },
+    "R": {
+      "tag": "c:storage_blocks/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:elite_battery",
+    "count": 1
+  }
+}

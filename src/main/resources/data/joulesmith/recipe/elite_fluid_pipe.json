@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "DDD",
+    "DPD",
+    "DDD"
+  ],
+  "key": {
+    "D": {
+      "item": "joulesmith:advanced_fluid_pipe"
+    },
+    "P": {
+      "tag": "c:plates/silver"
+    }
+  },
+  "result": {
+    "id": "joulesmith:elite_fluid_pipe",
+    "count": 8
+  }
+}

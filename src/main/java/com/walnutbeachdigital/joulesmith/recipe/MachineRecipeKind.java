@@ -23,7 +23,8 @@ public enum MachineRecipeKind {
     BIO_REACTING("bio_reacting", 800, 40),
     DISSOLVING("dissolving", 4000, 160),
     CRYSTALLIZING("crystallizing", 2400, 120),
-    FERTILIZER_MIXING("fertilizer_mixing", 1600, 80);
+    FERTILIZER_MIXING("fertilizer_mixing", 1600, 80),
+    ENGRAVING("engraving", 20000, 200);
 
     private final String id;
     private final int defaultEnergy;

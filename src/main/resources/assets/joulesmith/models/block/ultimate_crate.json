@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "joulesmith:block/ultimate_crate_side",
+    "top": "joulesmith:block/ultimate_crate_top",
+    "bottom": "joulesmith:block/ultimate_crate_top"
+  }
+}

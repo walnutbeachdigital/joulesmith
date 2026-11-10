@@ -35,6 +35,7 @@ public enum Module implements StringRepresentable {
     WATER_BREATHING(Kind.HELMET, null, 0),
     SOLAR(Kind.HELMET, null, 0),
     JETPACK(Kind.CHESTPLATE, null, 0),
+    FLIGHT(Kind.CHESTPLATE, null, 0),
     SWIFTNESS(Kind.LEGGINGS, null, 0),
     STEP_ASSIST(Kind.LEGGINGS, null, 0),
     JUMP_BOOST(Kind.BOOTS, null, 0),
@@ -68,6 +69,7 @@ public enum Module implements StringRepresentable {
 
     /** Modules that can't be fitted together. */
     public boolean conflicts(Module other) {
-        return (this == SILK_TOUCH && other == FORTUNE) || (this == FORTUNE && other == SILK_TOUCH) || (this == other && this != RANGE);   // a second Range module widens to 5x5
+        return (this == SILK_TOUCH && other == FORTUNE) || (this == FORTUNE && other == SILK_TOUCH)
+                || (this == JETPACK && other == FLIGHT) || (this == FLIGHT && other == JETPACK) || (this == other && this != RANGE);   // a second Range module widens to 5x5
     }
 }

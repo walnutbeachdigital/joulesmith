@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "DDD",
+    "DPD",
+    "DDD"
+  ],
+  "key": {
+    "D": {
+      "item": "joulesmith:elite_fluid_pipe"
+    },
+    "P": {
+      "tag": "c:ingots/netherite"
+    }
+  },
+  "result": {
+    "id": "joulesmith:ultimate_fluid_pipe",
+    "count": 8
+  }
+}

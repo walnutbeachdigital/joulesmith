@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P P",
+    " C ",
+    "P P"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/silver"
+    },
+    "C": {
+      "item": "joulesmith:processor"
+    }
+  },
+  "result": {
+    "id": "joulesmith:elite_upgrade_kit",
+    "count": 4
+  }
+}

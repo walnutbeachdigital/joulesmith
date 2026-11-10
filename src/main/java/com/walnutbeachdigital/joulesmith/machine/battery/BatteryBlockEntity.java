@@ -19,7 +19,8 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
  */
 public class BatteryBlockEntity extends MachineBlockEntity {
     /** Capacity and transfer per tick for tiers 1 (Basic), 2 (Reinforced) and 3 (Advanced). */
-    private static final int[] CAPACITY = {100_000, 1_000_000, 10_000_000}, RATE = {200, 1_000, 5_000};
+    private static final int[] CAPACITY = {100_000, 1_000_000, 10_000_000, 100_000_000, 1_000_000_000},
+            RATE = {200, 1_000, 5_000, 25_000, 125_000};
 
     private final int rate;
 

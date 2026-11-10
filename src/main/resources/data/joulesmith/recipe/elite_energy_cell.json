@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "WBW",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/silver"
+    },
+    "C": {
+      "item": "joulesmith:processor"
+    },
+    "W": {
+      "tag": "c:wires/silver"
+    },
+    "B": {
+      "item": "joulesmith:energy_cell"
+    }
+  },
+  "result": {
+    "id": "joulesmith:elite_energy_cell",
+    "count": 1
+  }
+}

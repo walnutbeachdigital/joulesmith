@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CCC",
+    "CPC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "joulesmith:elite_energy_cable"
+    },
+    "P": {
+      "item": "joulesmith:quantum_processor"
+    }
+  },
+  "result": {
+    "id": "joulesmith:ultimate_energy_cable",
+    "count": 8
+  }
+}

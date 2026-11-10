@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PDP",
+    "SBS",
+    "PDP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/silver"
+    },
+    "D": {
+      "tag": "c:gems/diamond"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "B": {
+      "item": "joulesmith:advanced_casing"
+    }
+  },
+  "result": {
+    "id": "joulesmith:elite_casing",
+    "count": 1
+  }
+}

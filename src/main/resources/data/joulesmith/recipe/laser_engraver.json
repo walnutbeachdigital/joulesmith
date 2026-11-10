@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PDP",
+    "CXC",
+    "PRP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/silver"
+    },
+    "D": {
+      "tag": "c:gems/diamond"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    },
+    "X": {
+      "item": "joulesmith:elite_casing"
+    },
+    "R": {
+      "tag": "c:storage_blocks/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:laser_engraver",
+    "count": 1
+  }
+}

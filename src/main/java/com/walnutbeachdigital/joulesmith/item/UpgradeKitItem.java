@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 /**
  * Upgrades a cable, duct, pipe, battery, crate, bulk bin, tank or pump to the next tier where it stands,
  * keeping everything in it and its settings. The Reinforced kit takes tier 1 to 2, the Advanced kit 2 to 3
- * (and a Pump to an Advanced Pump).
+ * (and a Pump to an Advanced Pump), the Elite kit 3 to 4 and the Ultimate kit 4 to 5.
  */
 public class UpgradeKitItem extends Item {
     private final int tier;
@@ -42,14 +42,22 @@ public class UpgradeKitItem extends Item {
     private Map<Block, Block> upgrades() {
         if (upgrades == null) {
             List<List<Supplier<? extends Block>>> chains = List.of(
-                    List.of(JSBlocks.ENERGY_CABLE, JSBlocks.REINFORCED_ENERGY_CABLE, JSBlocks.ADVANCED_ENERGY_CABLE),
-                    List.of(JSBlocks.ITEM_DUCT, JSBlocks.REINFORCED_ITEM_DUCT, JSBlocks.ADVANCED_ITEM_DUCT),
-                    List.of(JSBlocks.FLUID_PIPE, JSBlocks.REINFORCED_FLUID_PIPE, JSBlocks.ADVANCED_FLUID_PIPE),
-                    List.of(JSBlocks.BASIC_BATTERY, JSBlocks.REINFORCED_BATTERY, JSBlocks.ADVANCED_BATTERY),
-                    List.of(JSBlocks.BASIC_CRATE, JSBlocks.REINFORCED_CRATE, JSBlocks.ADVANCED_CRATE),
-                    List.of(JSBlocks.BASIC_BULK_BIN, JSBlocks.REINFORCED_BULK_BIN, JSBlocks.ADVANCED_BULK_BIN),
-                    List.of(JSBlocks.FLUID_TANK, JSBlocks.REINFORCED_FLUID_TANK, JSBlocks.ADVANCED_FLUID_TANK),
-                    List.of(JSBlocks.SOLAR_PANEL, JSBlocks.REINFORCED_SOLAR_PANEL, JSBlocks.ADVANCED_SOLAR_PANEL));
+                    List.of(JSBlocks.ENERGY_CABLE, JSBlocks.REINFORCED_ENERGY_CABLE, JSBlocks.ADVANCED_ENERGY_CABLE,
+                            JSBlocks.ELITE_ENERGY_CABLE, JSBlocks.ULTIMATE_ENERGY_CABLE),
+                    List.of(JSBlocks.ITEM_DUCT, JSBlocks.REINFORCED_ITEM_DUCT, JSBlocks.ADVANCED_ITEM_DUCT,
+                            JSBlocks.ELITE_ITEM_DUCT, JSBlocks.ULTIMATE_ITEM_DUCT),
+                    List.of(JSBlocks.FLUID_PIPE, JSBlocks.REINFORCED_FLUID_PIPE, JSBlocks.ADVANCED_FLUID_PIPE,
+                            JSBlocks.ELITE_FLUID_PIPE, JSBlocks.ULTIMATE_FLUID_PIPE),
+                    List.of(JSBlocks.BASIC_BATTERY, JSBlocks.REINFORCED_BATTERY, JSBlocks.ADVANCED_BATTERY,
+                            JSBlocks.ELITE_BATTERY, JSBlocks.ULTIMATE_BATTERY),
+                    List.of(JSBlocks.BASIC_CRATE, JSBlocks.REINFORCED_CRATE, JSBlocks.ADVANCED_CRATE,
+                            JSBlocks.ELITE_CRATE, JSBlocks.ULTIMATE_CRATE),
+                    List.of(JSBlocks.BASIC_BULK_BIN, JSBlocks.REINFORCED_BULK_BIN, JSBlocks.ADVANCED_BULK_BIN,
+                            JSBlocks.ELITE_BULK_BIN, JSBlocks.ULTIMATE_BULK_BIN),
+                    List.of(JSBlocks.FLUID_TANK, JSBlocks.REINFORCED_FLUID_TANK, JSBlocks.ADVANCED_FLUID_TANK,
+                            JSBlocks.ELITE_FLUID_TANK, JSBlocks.ULTIMATE_FLUID_TANK),
+                    List.of(JSBlocks.SOLAR_PANEL, JSBlocks.REINFORCED_SOLAR_PANEL, JSBlocks.ADVANCED_SOLAR_PANEL,
+                            JSBlocks.ELITE_SOLAR_PANEL, JSBlocks.ULTIMATE_SOLAR_PANEL));
             Map<Block, Block> map = new java.util.HashMap<>();
             for (var chain : chains) map.put(chain.get(tier - 2).get(), chain.get(tier - 1).get());
             if (tier == 3) map.put(JSBlocks.PUMP.get(), JSBlocks.ADVANCED_PUMP.get());

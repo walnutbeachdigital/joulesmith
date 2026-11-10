@@ -170,7 +170,7 @@
       "conditions": {
         "items": [
           {
-            "items": "joulesmith:swiftness_module"
+            "items": "joulesmith:flight_module"
           }
         ]
       }
@@ -180,7 +180,7 @@
       "conditions": {
         "items": [
           {
-            "items": "joulesmith:jump_boost_module"
+            "items": "joulesmith:swiftness_module"
           }
         ]
       }
@@ -190,12 +190,22 @@
       "conditions": {
         "items": [
           {
-            "items": "joulesmith:step_assist_module"
+            "items": "joulesmith:jump_boost_module"
           }
         ]
       }
     },
     "has_0_18": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:step_assist_module"
+          }
+        ]
+      }
+    },
+    "has_0_19": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -226,7 +236,8 @@
       "has_0_15",
       "has_0_16",
       "has_0_17",
-      "has_0_18"
+      "has_0_18",
+      "has_0_19"
     ]
   ],
   "parent": "joulesmith:drill"

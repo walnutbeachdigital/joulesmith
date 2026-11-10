@@ -287,6 +287,9 @@ MACHINES = {
     "basic_battery": {"name": "Basic Battery", "front": "basic_battery_front"},
     "reinforced_battery": {"name": "Reinforced Battery", "front": "reinforced_battery_front"},
     "advanced_battery": {"name": "Advanced Battery", "front": "advanced_battery_front"},
+    "elite_battery": {"name": "Elite Battery", "front": "elite_battery_front"},
+    "ultimate_battery": {"name": "Ultimate Battery", "front": "ultimate_battery_front"},
+    "laser_engraver": {"name": "Laser Engraver", "front": "laser_engraver_front"},
     "boiler": {"name": "Boiler", "front": "boiler_front"},
     "block_placer": {"name": "Block Placer", "front": "block_placer_front"},
     "block_breaker": {"name": "Block Breaker", "front": "block_breaker_front"},
@@ -359,7 +362,8 @@ for (ns, reg, path), values in tags.items():
 SIDE_ROT = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 270},
             "up": {"x": 270}, "down": {"x": 90}}
 CABLES = {"energy_cable": "Energy Cable", "reinforced_energy_cable": "Reinforced Energy Cable",
-          "advanced_energy_cable": "Advanced Energy Cable"}
+          "advanced_energy_cable": "Advanced Energy Cable", "elite_energy_cable": "Elite Energy Cable",
+          "ultimate_energy_cable": "Ultimate Energy Cable"}
 for cid in CABLES:
     cable_tex = f"{MOD}:block/{cid}"
     write(os.path.join(ASSETS, "models", "block", f"{cid}_core.json"), {
@@ -419,7 +423,9 @@ model("pipe_pull", {"parent": "minecraft:block/block", "textures": {"particle": 
       "elements": [arm(3, 5), {"from": [4, 4, 0], "to": [12, 12, 3], "faces": attach_faces(8, 3)}]})
 
 PIPES = {"item_duct": "Item Duct", "reinforced_item_duct": "Reinforced Item Duct", "advanced_item_duct": "Advanced Item Duct",
-         "fluid_pipe": "Fluid Pipe", "reinforced_fluid_pipe": "Reinforced Fluid Pipe", "advanced_fluid_pipe": "Advanced Fluid Pipe"}
+         "fluid_pipe": "Fluid Pipe", "reinforced_fluid_pipe": "Reinforced Fluid Pipe", "advanced_fluid_pipe": "Advanced Fluid Pipe",
+         "elite_item_duct": "Elite Item Duct", "ultimate_item_duct": "Ultimate Item Duct",
+         "elite_fluid_pipe": "Elite Fluid Pipe", "ultimate_fluid_pipe": "Ultimate Fluid Pipe"}
 SIDE_ROT = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 270},
             "up": {"x": 270}, "down": {"x": 90}}
 
@@ -453,7 +459,7 @@ for pid in PIPES:
     tags[("minecraft", "block", "mineable/pickaxe")].append(f"{MOD}:{pid}")
 
 # ---- fluid tank: frame and glass (cut out so the fluid drawn inside shows); keeps its fluid when broken
-for tid in ("fluid_tank", "reinforced_fluid_tank", "advanced_fluid_tank"):
+for tid in ("fluid_tank", "reinforced_fluid_tank", "advanced_fluid_tank", "elite_fluid_tank", "ultimate_fluid_tank"):
     write(os.path.join(ASSETS, "blockstates", f"{tid}.json"), {"variants": {"": {"model": f"{MOD}:block/{tid}"}}})
     model(tid, {"parent": "minecraft:block/cube_column", "render_type": "minecraft:cutout",
           "textures": {"side": f"{MOD}:block/{tid}_side", "end": f"{MOD}:block/{tid}_top"}})
@@ -829,13 +835,15 @@ for iid, name, item_tag, pattern, key in (
 
 # ---- storage: Crates and Bulk Bins keep what they hold when broken
 STORAGE = {"basic_crate": "Crate", "reinforced_crate": "Reinforced Crate", "advanced_crate": "Advanced Crate",
-           "basic_bulk_bin": "Bulk Bin", "reinforced_bulk_bin": "Reinforced Bulk Bin", "advanced_bulk_bin": "Advanced Bulk Bin"}
-for bid in ("basic_crate", "reinforced_crate", "advanced_crate"):
+           "basic_bulk_bin": "Bulk Bin", "reinforced_bulk_bin": "Reinforced Bulk Bin", "advanced_bulk_bin": "Advanced Bulk Bin",
+           "elite_crate": "Elite Crate", "ultimate_crate": "Ultimate Crate",
+           "elite_bulk_bin": "Elite Bulk Bin", "ultimate_bulk_bin": "Ultimate Bulk Bin"}
+for bid in ("basic_crate", "reinforced_crate", "advanced_crate", "elite_crate", "ultimate_crate"):
     write(os.path.join(ASSETS, "blockstates", f"{bid}.json"), {"variants": {"": {"model": f"{MOD}:block/{bid}"}}})
     model(bid, {"parent": "minecraft:block/cube_bottom_top", "textures": {
         "side": f"{MOD}:block/{bid}_side", "top": f"{MOD}:block/{bid}_top", "bottom": f"{MOD}:block/{bid}_top"}})
     simple_loot(bid, [{"function": "minecraft:copy_components", "source": "block_entity", "include": ["minecraft:container"]}])
-for bid in ("basic_bulk_bin", "reinforced_bulk_bin", "advanced_bulk_bin"):
+for bid in ("basic_bulk_bin", "reinforced_bulk_bin", "advanced_bulk_bin", "elite_bulk_bin", "ultimate_bulk_bin"):
     write(os.path.join(ASSETS, "blockstates", f"{bid}.json"), {"variants": {
         f"facing={f}": dict({"model": f"{MOD}:block/{bid}"}, **({"y": r} if r else {})) for f, r in ROTATION.items()}})
     model(bid, {"parent": "minecraft:block/orientable", "textures": {
@@ -964,7 +972,8 @@ lang.update({
 })
 
 # ---- solar panels (a 6-pixel-high slab) and the other generators' recipes
-SOLAR = {"solar_panel": "Solar Panel", "reinforced_solar_panel": "Reinforced Solar Panel", "advanced_solar_panel": "Advanced Solar Panel"}
+SOLAR = {"solar_panel": "Solar Panel", "reinforced_solar_panel": "Reinforced Solar Panel", "advanced_solar_panel": "Advanced Solar Panel",
+         "elite_solar_panel": "Elite Solar Panel", "ultimate_solar_panel": "Ultimate Solar Panel"}
 for sid, name in SOLAR.items():
     model(sid, {"parent": "minecraft:block/block", "textures": {
         "particle": f"{MOD}:block/{sid}_top", "top": f"{MOD}:block/{sid}_top", "side": f"{MOD}:block/{sid}_side",
@@ -1159,13 +1168,16 @@ MODULES = {
     "night_vision": ("Night Vision Module", "See in the dark", "helmet", ["minecraft:golden_carrot"]),
     "water_breathing": ("Water Breathing Module", "Breathe underwater", "helmet", ["minecraft:prismarine_crystals", "minecraft:pufferfish"]),
     "solar": ("Solar Module", "Charges the whole suit in daylight", "helmet", ["minecraft:daylight_detector"]),
-    "jetpack": ("Jetpack Module", "Fly as in creative, using power while flying", "chestplate",
+    "jetpack": ("Jetpack Module", "Hold jump to climb slowly; no fall damage while airborne. Uses power in the air", "chestplate",
                 ["minecraft:phantom_membrane", "minecraft:phantom_membrane", "minecraft:firework_rocket"]),
+    "flight": ("Flight Module", "Fly as in creative, using power while flying (replaces the Jetpack)", "chestplate",
+               [f"{MOD}:jetpack_module", f"{MOD}:quantum_processor", "minecraft:elytra"]),
     "swiftness": ("Swiftness Module", "Run 35% faster", "leggings", ["minecraft:sugar", "minecraft:sugar"]),
     "jump_boost": ("Jump Boost Module", "Jump about two blocks high", "boots", ["minecraft:rabbit_foot"]),
     "step_assist": ("Step Assist Module", "Walk straight up full blocks", "leggings", ["#minecraft:stairs", "minecraft:piston"]),
     "fall_protection": ("Fall Protection Module", "No fall damage while charged", "boots", ["minecraft:slime_ball", "minecraft:feather"]),
 }
+# the Flight module is a tier 5 part: its own recipe below takes the place of the Blank Module one
 FITS = {"tool": "Fits: Power Drill, Chainsaw", "weapon": "Fits: Energy Sword", "tool_or_weapon": "Fits: Power Drill, Chainsaw, Energy Sword",
         "helmet": "Fits: Exo-Suit Helmet", "chestplate": "Fits: Exo-Suit Chestplate", "leggings": "Fits: Exo-Suit Leggings",
         "boots": "Fits: Exo-Suit Boots"}
@@ -1554,6 +1566,95 @@ shaped("hydroponic_bed", ["GLG", "CTC", "PXP"], {"G": "#c:glass_blocks", "L": "m
 casing_count += 9
 print(f"{casing_count} machine recipes take a casing")
 
+# ---- tiers 4 and 5: the Laser Engraver and its Processors, Elite (signal blue) and Ultimate (plasma violet) parts
+lang.update({"jei.joulesmith.engraving": "Engraving", f"block.{MOD}.elite_fluid_tank": "Elite Fluid Tank",
+             f"block.{MOD}.ultimate_fluid_tank": "Ultimate Fluid Tank"})
+machine("engraving", "processor", [(f"{MOD}:advanced_circuit", 1), ("#c:gems/diamond", 1)], [(f"{MOD}:processor", 1, 1)], 20000, 200)
+machine("engraving", "processor_from_emerald", [(f"{MOD}:advanced_circuit", 1), ("#c:gems/emerald", 2)], [(f"{MOD}:processor", 1, 1)], 20000, 200)
+machine("engraving", "quantum_processor", [(f"{MOD}:processor", 2), ("minecraft:nether_star", 1)], [(f"{MOD}:quantum_processor", 2, 1)], 200000, 400)
+machine("engraving", "quantum_processor_from_echo", [(f"{MOD}:processor", 1), ("minecraft:echo_shard", 4)], [(f"{MOD}:quantum_processor", 1, 1)], 200000, 400)
+shaped("laser_engraver", ["PDP", "CXC", "PRP"], {"P": "#c:plates/silver", "D": "#c:gems/diamond", "C": f"{MOD}:advanced_circuit",
+                                               "X": f"{MOD}:elite_casing", "R": "#c:storage_blocks/redstone"})
+for iid, name in (("elite_casing", "Elite Machine Casing"), ("ultimate_casing", "Ultimate Machine Casing"),
+                  ("processor", "Processor"), ("quantum_processor", "Quantum Processor"),
+                  ("elite_energy_cell", "Elite Energy Cell"), ("ultimate_energy_cell", "Ultimate Energy Cell"),
+                  ("elite_upgrade_kit", "Elite Upgrade Kit"), ("ultimate_upgrade_kit", "Ultimate Upgrade Kit")):
+    write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
+          {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{iid}"}})
+    lang[f"item.{MOD}.{iid}"] = name
+P4, P5 = f"{MOD}:processor", f"{MOD}:quantum_processor"
+shaped("elite_casing", ["PDP", "SBS", "PDP"], {"P": "#c:plates/silver", "D": "#c:gems/diamond", "S": "#c:ingots/steel",
+                                               "B": f"{MOD}:advanced_casing"})
+shaped("ultimate_casing", ["NQN", "OBO", "NQN"], {"N": "#c:ingots/netherite", "Q": P5, "O": "#c:obsidians",
+                                                  "B": f"{MOD}:elite_casing"})
+shaped("elite_upgrade_kit", ["P P", " C ", "P P"], {"P": "#c:plates/silver", "C": P4}, count=4)
+shaped("ultimate_upgrade_kit", ["N N", " C ", "N N"], {"N": "#c:ingots/netherite", "C": P5}, count=8)
+shaped("elite_energy_cell", ["PCP", "WBW", "PCP"], {"P": "#c:plates/silver", "C": P4, "W": "#c:wires/silver", "B": f"{MOD}:energy_cell"})
+shaped("ultimate_energy_cell", ["NCN", "WBW", "NCN"], {"N": "#c:ingots/netherite", "C": P5, "W": "#c:wires/electrum",
+                                                       "B": f"{MOD}:elite_energy_cell"})
+shaped("elite_energy_cable", ["DDD", "WWW", "DDD"], {"D": f"{MOD}:plastic_sheet", "W": "#c:wires/silver"}, count=6)
+shaped("ultimate_energy_cable", ["CCC", "CPC", "CCC"], {"C": f"{MOD}:elite_energy_cable", "P": P5}, count=8)
+shaped("elite_item_duct", ["DDD", "DPD", "DDD"], {"D": f"{MOD}:advanced_item_duct", "P": "#c:plates/silver"}, count=8)
+shaped("ultimate_item_duct", ["DDD", "DPD", "DDD"], {"D": f"{MOD}:elite_item_duct", "P": "#c:ingots/netherite"}, count=8)
+shaped("elite_fluid_pipe", ["DDD", "DPD", "DDD"], {"D": f"{MOD}:advanced_fluid_pipe", "P": "#c:plates/silver"}, count=8)
+shaped("ultimate_fluid_pipe", ["DDD", "DPD", "DDD"], {"D": f"{MOD}:elite_fluid_pipe", "P": "#c:ingots/netherite"}, count=8)
+for prev, tier, mat, part in (("advanced", "elite", "#c:plates/silver", P4), ("elite", "ultimate", "#c:ingots/netherite", P5)):
+    shaped(f"{tier}_battery", ["PCP", "BRB", "PCP"], {"P": mat, "C": part, "B": f"{MOD}:{prev}_battery", "R": "#c:storage_blocks/redstone"})
+    shaped(f"{tier}_crate", ["PCP", "CBC", "PCP"], {"P": mat, "C": part, "B": f"{MOD}:{prev}_crate"})
+    shaped(f"{tier}_bulk_bin", ["PCP", "CBC", "PCP"], {"P": mat, "C": part, "B": f"{MOD}:{prev}_bulk_bin"})
+    shaped(f"{tier}_fluid_tank", ["PGP", "GTG", "PGP"], {"P": mat, "G": "#c:glass_blocks", "T": f"{MOD}:{prev}_fluid_tank"})
+    shaped(f"{tier}_solar_panel", ["PSP", "SCS", "PSP"], {"P": mat, "S": f"{MOD}:{prev}_solar_panel", "C": part})
+write(os.path.join(DATA, MOD, "recipe", "flight_module.json"), {
+    "type": "minecraft:crafting_shapeless", "category": "misc",
+    "ingredients": [ing(f"{MOD}:jetpack_module"), ing(P5), ing("minecraft:elytra")], "result": {"id": f"{MOD}:flight_module"}})
+write(os.path.join(DATA, "curios", "tags", "item", "belt.json"), {"replace": False, "values": [
+    f"{MOD}:basic_energy_cell", f"{MOD}:reinforced_energy_cell", f"{MOD}:energy_cell",
+    f"{MOD}:elite_energy_cell", f"{MOD}:ultimate_energy_cell"]})
+lang.update({
+    "tooltip.joulesmith.upgrade_kit.4": "Use on an Advanced cable, duct, pipe, battery, crate, bin, tank or solar panel to make it Elite",
+    "tooltip.joulesmith.upgrade_kit.5": "Use on an Elite cable, duct, pipe, battery, crate, bin, tank or solar panel to make it Ultimate",
+})
+CABLE_INFO = "Connects on its own to anything that stores or uses power. Use a Wrench on a side to set it to push, pull or off."
+DUCT_INFO = "Pulls from inventories set to pull with a Wrench and delivers to the rest. Fit a Filter Card to a side to choose what passes."
+PIPE_INFO = "Moves fluids between tanks and machines. Use a Wrench on a side to set it to push, pull or off."
+TANK_INFO = "Stores one fluid and keeps it when broken. Tanks stacked on top of each other act as one tank."
+CRATE_INFO = "A big chest that keeps everything in it when you break it."
+BIN_INFO = ("Holds a lot of one kind of item. Right-click the front with an item to put it in (empty hand: every matching item "
+            "you carry); left-click to take a stack out, sneak for one.")
+BATTERY_INFO = "Stores power. Set each side to take power in or give it out with the side settings tab or a Wrench."
+SOLAR_INFO = "Makes power from daylight under open sky: {} FE/t at noon, less at dawn, dusk and in rain, none at night."
+T45_DESC = {
+    "laser_engraver": ("Etches Processors", "Engraves an Advanced Circuit and a diamond (or two emeralds) into a Processor, the part every tier 4 block needs. Two Processors and a Nether Star make two Quantum Processors for tier 5."),
+    "processor": ("Opens tier 4", "Etched in the Laser Engraver from an Advanced Circuit and a diamond."),
+    "quantum_processor": ("Opens tier 5", "Etched in the Laser Engraver from Processors and a Nether Star, or a Processor and four Echo Shards."),
+    "elite_casing": ("The frame of every tier 4 machine", "Every tier 4 machine is built on one."),
+    "ultimate_casing": ("The frame of every tier 5 machine", "Every tier 5 machine is built on one."),
+    "elite_energy_cell": ("Holds 4,000,000 FE", "Charges powered gear in your inventory (or belt slot with Curios), 1,000 FE/t."),
+    "ultimate_energy_cell": ("Holds 16,000,000 FE", "Charges powered gear in your inventory (or belt slot with Curios), 2,000 FE/t."),
+    "elite_energy_cable": ("Carries 50,000 FE/t", CABLE_INFO),
+    "ultimate_energy_cable": ("Carries 250,000 FE/t", CABLE_INFO),
+    "elite_item_duct": ("Moves 32 items every half second", DUCT_INFO),
+    "ultimate_item_duct": ("Moves 64 items every half second", DUCT_INFO),
+    "elite_fluid_pipe": ("Carries 6,400 mB/t", PIPE_INFO),
+    "ultimate_fluid_pipe": ("Carries 25,600 mB/t", PIPE_INFO),
+    "elite_fluid_tank": ("Holds 1,024,000 mB", TANK_INFO),
+    "ultimate_fluid_tank": ("Holds 4,096,000 mB", TANK_INFO),
+    "elite_crate": ("135 slots; keeps its items when broken", CRATE_INFO),
+    "ultimate_crate": ("162 slots; keeps its items when broken", CRATE_INFO),
+    "elite_bulk_bin": ("Holds 262,144 of one item", BIN_INFO),
+    "ultimate_bulk_bin": ("Holds 1,048,576 of one item", BIN_INFO),
+    "elite_battery": ("Stores 100,000,000 FE", BATTERY_INFO),
+    "ultimate_battery": ("Stores 1,000,000,000 FE", BATTERY_INFO),
+    "elite_solar_panel": ("640 FE/t in full sun", SOLAR_INFO.format(640)),
+    "ultimate_solar_panel": ("2,560 FE/t in full sun", SOLAR_INFO.format("2,560")),
+}
+DESC.update(T45_DESC)
+for iid, (short, info) in T45_DESC.items():
+    lang[f"desc.{MOD}.{iid}"] = short
+    lang[f"jei.{MOD}.info.{iid}"] = info
+for (ns, reg, path), values in tags.items():
+    write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+
 # ---- advancements: a guided path through the tiers (data/joulesmith/advancement)
 ADV = [
     # id, parent, icon, items needed (all of them; a "#" tag or a list means any one), frame, title, description
@@ -1580,6 +1681,9 @@ ADV = [
     ("exo_suit", "drill", "exo_chestplate", [f"{MOD}:exo_helmet", f"{MOD}:exo_chestplate", f"{MOD}:exo_leggings", f"{MOD}:exo_boots"],
      "challenge", "Suited Up", "Have all four Exo-Suit pieces"),
     ("solar", "advanced", "advanced_solar_panel", [f"{MOD}:advanced_solar_panel"], "goal", "Bright Future", "Make an Advanced Solar Panel"),
+    ("elite", "advanced", "processor", [f"{MOD}:processor"], "goal", "Etched in Stone", "Engrave a Processor: tier 4 begins"),
+    ("quantum", "elite", "quantum_processor", [f"{MOD}:quantum_processor"], "challenge", "Quantum Leap", "Engrave a Quantum Processor: tier 5 begins"),
+    ("flight", "quantum", "flight_module", [f"{MOD}:flight_module"], "challenge", "Lift Off", "Make a Flight Module"),
 ]
 for aid, parent, icon, needs, frame, title, desc in ADV:
     criteria = {}

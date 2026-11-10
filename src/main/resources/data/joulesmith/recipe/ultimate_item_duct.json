@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "DDD",
+    "DPD",
+    "DDD"
+  ],
+  "key": {
+    "D": {
+      "item": "joulesmith:elite_item_duct"
+    },
+    "P": {
+      "tag": "c:ingots/netherite"
+    }
+  },
+  "result": {
+    "id": "joulesmith:ultimate_item_duct",
+    "count": 8
+  }
+}

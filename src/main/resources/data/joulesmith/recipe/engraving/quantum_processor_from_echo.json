@@ -1,0 +1,19 @@
+{
+  "type": "joulesmith:engraving",
+  "inputs": [
+    {
+      "item": "joulesmith:processor"
+    },
+    {
+      "item": "minecraft:echo_shard",
+      "count": 4
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:quantum_processor"
+    }
+  ],
+  "energy": 200000,
+  "time": 400
+}

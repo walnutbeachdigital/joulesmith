@@ -1090,7 +1090,7 @@ def bin_front(trim):
 def crate_gui(cols=9):
     """The Crate screen sheet (256x512): a panel top with nine rows of slots at the top, and the
     player-inventory part of the panel starting at v=180, to draw under however many rows a crate has."""
-    img = Image.new("RGBA", (256, 512), (0, 0, 0, 0))
+    img = Image.new("RGBA", (256 if cols == 9 else 512, 512), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     W = 16 + cols * 18
     BG, EDGE, DARK = (198, 198, 198, 255), (0, 0, 0, 255), (85, 85, 85, 255)
@@ -1714,6 +1714,7 @@ MODULE_ART = {
     "water_breathing": ("armor", [".#...#.", "#.#.#.#", ".#...#.", "...#...", "..#.#.."]),
     "solar": ("armor", ["#..#..#", ".#.#.#.", "..###..", ".#.#.#.", "#..#..#"]),
     "jetpack": ("armor", ["...#...", "..###..", ".#####.", "..#.#..", ".#...#."]),
+    "flight": ("armor", ["#.....#", "##...##", ".#####.", "..###..", "...#..."]),
     "swiftness": ("armor", ["####...", ".......", "######.", ".......", "####..."]),
     "jump_boost": ("armor", ["...#...", "..###..", ".#.#.#.", "...#...", "#######"]),
     "step_assist": ("armor", ["....###", "....#..", "..###..", "..#....", "###...."]),
@@ -2318,6 +2319,94 @@ def casing_item(face):
     return img
 
 
+# ------------------------------------------------------------------ tiers 4 and 5 (signal blue, plasma violet)
+SIGNAL_TRIM = ["#0d2a5a", "#16428a", "#1f5fbf", "#3a86e8", "#6fb0f6", "#b8dcff"]
+PLASMA_TRIM = ["#2e0b4a", "#4d1478", "#7322ad", "#9a3ee0", "#c27cf4", "#ecc8ff"]
+SIGNAL8 = ramp8("#2f74d6")
+PLASMA8 = ramp8("#8a34d0")
+
+
+def casing4():
+    return casing(STEEL, SIGNAL_TRIM)
+
+
+def casing5():
+    return casing(EXO_STEEL, PLASMA_TRIM)
+
+
+EXO_STEEL = ["#161a20", "#232830", "#313842", "#404854", "#505a67", "#66717f", "#86919e", "#aeb7c2"]
+
+
+def laser_engraver_front(on):
+    """A dark engraving bed under a gantry; a red beam and a hot spot on the wafer while it works."""
+    img = casing4()
+    px = img.load()
+    window(img, 3, 3, 12, 12)
+    for y in range(3, 13):
+        for x in range(3, 13):
+            px[x, y] = rgba("#121419")
+    for x in range(3, 13):                               # the gantry rail
+        px[x, 4] = rgba(STEEL8[6] if x < 9 else STEEL8[4])
+        px[x, 5] = rgba(STEEL8[2])
+    for (x, y) in ((7, 5), (8, 5), (7, 6), (8, 6)):     # the laser head
+        px[x, y] = rgba(SIGNAL_TRIM[4] if x == 7 else SIGNAL_TRIM[2])
+    for x in range(4, 12):                               # the wafer
+        px[x, 11] = rgba("#9aa6b4" if x < 8 else "#6c7884")
+        px[x, 10] = rgba("#c8d2dc" if x < 8 else "#8c98a6")
+    if on:
+        for y in range(7, 10):
+            px[7, y] = rgba("#ff5a4a" if y < 9 else "#ffb0a0")
+        px[7, 10] = rgba("#fff2c8")
+        px[6, 10] = px[8, 10] = rgba("#ff8a5a")
+    for x in range(3, 13):
+        px[x, 12] = rgba(SIGNAL_TRIM[2])
+    return img
+
+
+def processor_item():
+    return circuit_item("#1a2a52", ramp8("#7aa8e0"), "#9ac8f0", True)
+
+
+def quantum_processor_item():
+    img = circuit_item("#2a1240", ramp8("#b070f0"), "#e0b0ff", True)
+    px = img.load()
+    for (x, y) in ((7, 6), (8, 7), (7, 8), (6, 7)):      # a glowing core in the chip
+        px[x, y] = rgba(PLASMA8[7] if (x, y) == (7, 6) else PLASMA8[6])
+    return img
+
+
+def tier45_textures():
+    duct_window = ["#0c0d12", "#1b1d26", "#2a2d3a", "#4a5066", "#9aa3c0"]
+    out = {
+        "block/laser_engraver_front": laser_engraver_front(False),
+        "block/laser_engraver_front_on": laser_engraver_front(True),
+        "item/processor": processor_item(),
+        "item/quantum_processor": quantum_processor_item(),
+    }
+    for tier, trim, trim8, case, sheath in (
+            ("elite", SIGNAL_TRIM, SIGNAL8, casing4, ["#0e1a30", "#162642", "#203658", "#2c4870"]),
+            ("ultimate", PLASMA_TRIM, PLASMA8, casing5, ["#1a0c28", "#28123c", "#381a52", "#4a246a"])):
+        out.update({
+            f"block/{tier}_energy_cable": cable_texture(trim, sheath, trim),
+            f"block/{tier}_item_duct": pipe_texture(LEAD, trim, duct_window),
+            f"block/{tier}_fluid_pipe": pipe_texture(TIN, trim, GLASS),
+            f"block/{tier}_battery_front": battery_front(False, trim),
+            f"block/{tier}_battery_front_on": battery_front(True, trim),
+            f"block/{tier}_crate_side": crate_side(trim),
+            f"block/{tier}_crate_top": crate_top(trim),
+            f"block/{tier}_bulk_bin_side": bin_side(trim),
+            f"block/{tier}_bulk_bin_front": bin_front(trim),
+            f"block/{tier}_fluid_tank_side": tank_side(trim),
+            f"block/{tier}_fluid_tank_top": tank_top(trim),
+            f"block/{tier}_solar_panel_top": solar_top(trim),
+            f"block/{tier}_solar_panel_side": case(),
+            f"item/{tier}_casing": casing_item(case),
+            f"item/{tier}_energy_cell": energy_cell_item(trim8),
+            f"item/{tier}_upgrade_kit": upgrade_kit_item(trim8),
+        })
+    return out
+
+
 def main():
     os.makedirs(os.path.join(TEX, "block"), exist_ok=True)
     os.makedirs(os.path.join(TEX, "gui"), exist_ok=True)
@@ -2424,7 +2513,7 @@ def main():
         "block/solar_panel_side": casing(),
         "block/reinforced_solar_panel_side": casing2(),
         "block/advanced_solar_panel_side": casing3(),
-        "gui/crate_wide": crate_gui(12),
+        **{f"gui/crate_{c}": crate_gui(c) for c in (12, 15, 18)},
         "block/advanced_crate_side": crate_side(ELECTRUM_TRIM),
         "block/advanced_crate_top": crate_top(ELECTRUM_TRIM),
         "block/advanced_bulk_bin_side": bin_side(ELECTRUM_TRIM),
@@ -2465,6 +2554,7 @@ def main():
         "block/modification_table_side": modification_table_side(False),
         "block/modification_table_front": modification_table_side(True),
         "gui/modification_table": modification_table_gui(),
+        **tier45_textures(),
     }
     for name, img in out.items():
         img.save(os.path.join(TEX, name + ".png"))

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "BRB",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:ingots/netherite"
+    },
+    "C": {
+      "item": "joulesmith:quantum_processor"
+    },
+    "B": {
+      "item": "joulesmith:elite_battery"
+    },
+    "R": {
+      "tag": "c:storage_blocks/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:ultimate_battery",
+    "count": 1
+  }
+}

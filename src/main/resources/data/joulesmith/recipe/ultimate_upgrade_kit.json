@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "N N",
+    " C ",
+    "N N"
+  ],
+  "key": {
+    "N": {
+      "tag": "c:ingots/netherite"
+    },
+    "C": {
+      "item": "joulesmith:quantum_processor"
+    }
+  },
+  "result": {
+    "id": "joulesmith:ultimate_upgrade_kit",
+    "count": 8
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "CBC",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:ingots/netherite"
+    },
+    "C": {
+      "item": "joulesmith:quantum_processor"
+    },
+    "B": {
+      "item": "joulesmith:elite_crate"
+    }
+  },
+  "result": {
+    "id": "joulesmith:ultimate_crate",
+    "count": 1
+  }
+}

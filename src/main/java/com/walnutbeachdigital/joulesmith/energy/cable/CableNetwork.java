@@ -21,7 +21,7 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 public final class CableNetwork {
     /** FE per tick into or out of the network at each connection, by cable tier (1 Basic, 2 Reinforced, 3 Advanced). */
     public static int rateFor(int tier) {
-        return tier >= 3 ? 10_000 : tier == 2 ? 2_000 : 500;
+        return tier >= 5 ? 250_000 : tier == 4 ? 50_000 : tier == 3 ? 10_000 : tier == 2 ? 2_000 : 500;
     }
 
     /** The network's rate: its weakest cable's. */

@@ -38,6 +38,8 @@ public final class PoweredGearEvents {
     private static final ResourceLocation JUMP = Joulesmith.id("exo_jump_boost");
     private static final ResourceLocation STEP = Joulesmith.id("exo_step_assist");
     private static final ResourceLocation JETPACK = Joulesmith.id("exo_jetpack");
+    /** FE per tick the Jetpack uses while you're in the air. */
+    private static final int JETPACK_THRUST_COST = 30;
 
     public static void register() {
         NeoForge.EVENT_BUS.addListener(PoweredGearEvents::blockDrops);
@@ -188,11 +190,27 @@ public final class PoweredGearEvents {
         modifier(player, Attributes.STEP_HEIGHT, STEP, active(legs, Module.STEP_ASSIST, player, false),
                 0.5, AttributeModifier.Operation.ADD_VALUE);
 
-        boolean jetpack = chest != null && PoweredItem.hasModule(chest, Module.JETPACK) && PoweredItem.has(chest, com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.JETPACK_COST), player);
-        if (jetpack && server && player.getAbilities().flying && !player.getAbilities().instabuild) {
+        // Flight (tier 5 module): creative-style flight while charged, using power while flying
+        boolean flight = chest != null && PoweredItem.hasModule(chest, Module.FLIGHT)
+                && PoweredItem.has(chest, com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.JETPACK_COST), player);
+        if (flight && server && player.getAbilities().flying && !player.getAbilities().instabuild) {
             PoweredItem.use(chest, com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.JETPACK_COST), player);
         }
-        modifier(player, NeoForgeMod.CREATIVE_FLIGHT, JETPACK, jetpack, 1.0, AttributeModifier.Operation.ADD_VALUE);
+        modifier(player, NeoForgeMod.CREATIVE_FLIGHT, JETPACK, flight, 1.0, AttributeModifier.Operation.ADD_VALUE);
+
+        // Jetpack (tier 3 module): hold jump to climb slowly; falls are cushioned. Power is used while airborne.
+        boolean jetpack = !flight && chest != null && PoweredItem.hasModule(chest, Module.JETPACK)
+                && PoweredItem.has(chest, JETPACK_THRUST_COST, player);
+        if (jetpack && !player.onGround() && !player.getAbilities().flying) {
+            if (server) {
+                player.fallDistance = 0;
+                if (player instanceof net.minecraft.server.level.ServerPlayer sp) NoFlyKick.reset(sp);
+                if (player.level().getGameTime() % 2 == 0) PoweredItem.use(chest, JETPACK_THRUST_COST * 2, player);
+            } else if (JetpackInput.thrusting(player)) {
+                var v = player.getDeltaMovement();
+                player.setDeltaMovement(v.x, Math.min(v.y + 0.12, 0.3), v.z);
+            }
+        }
     }
 
     private static ItemStack exo(Player player, EquipmentSlot slot) {

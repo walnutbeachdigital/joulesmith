@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NCN",
+    "WBW",
+    "NCN"
+  ],
+  "key": {
+    "N": {
+      "tag": "c:ingots/netherite"
+    },
+    "C": {
+      "item": "joulesmith:quantum_processor"
+    },
+    "W": {
+      "tag": "c:wires/electrum"
+    },
+    "B": {
+      "item": "joulesmith:elite_energy_cell"
+    }
+  },
+  "result": {
+    "id": "joulesmith:ultimate_energy_cell",
+    "count": 1
+  }
+}

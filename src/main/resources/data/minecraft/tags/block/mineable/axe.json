@@ -8,6 +8,10 @@
     "joulesmith:advanced_crate",
     "joulesmith:basic_bulk_bin",
     "joulesmith:reinforced_bulk_bin",
-    "joulesmith:advanced_bulk_bin"
+    "joulesmith:advanced_bulk_bin",
+    "joulesmith:elite_crate",
+    "joulesmith:ultimate_crate",
+    "joulesmith:elite_bulk_bin",
+    "joulesmith:ultimate_bulk_bin"
   ]
 }

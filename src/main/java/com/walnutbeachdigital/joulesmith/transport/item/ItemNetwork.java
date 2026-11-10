@@ -36,7 +36,7 @@ public final class ItemNetwork extends PipeNetwork {
     }
 
     public static int itemsPerMove(int tier) {
-        return tier >= 3 ? 16 : tier == 2 ? 4 : 1;
+        return tier >= 5 ? 64 : tier == 4 ? 32 : tier == 3 ? 16 : tier == 2 ? 4 : 1;
     }
 
     @Override

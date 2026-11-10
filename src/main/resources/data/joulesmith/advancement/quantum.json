@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "joulesmith:quantum_processor"
+    },
+    "title": {
+      "translate": "advancement.joulesmith.quantum"
+    },
+    "description": {
+      "translate": "advancement.joulesmith.quantum.desc"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:quantum_processor"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "parent": "joulesmith:elite"
+}

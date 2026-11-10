@@ -59,7 +59,8 @@ public final class JSBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BatteryBlockEntity>> BASIC_BATTERY =
             BLOCK_ENTITIES.register("basic_battery", () -> BlockEntityType.Builder
                     .of((pos, state) -> new BatteryBlockEntity(pos, state, batteryTier(state)),
-                            JSBlocks.BASIC_BATTERY.get(), JSBlocks.REINFORCED_BATTERY.get(), JSBlocks.ADVANCED_BATTERY.get()).build(null));
+                            JSBlocks.BASIC_BATTERY.get(), JSBlocks.REINFORCED_BATTERY.get(), JSBlocks.ADVANCED_BATTERY.get(),
+                            JSBlocks.ELITE_BATTERY.get(), JSBlocks.ULTIMATE_BATTERY.get()).build(null));
 
     private static int batteryTier(net.minecraft.world.level.block.state.BlockState state) {
         return state.is(JSBlocks.ADVANCED_BATTERY.get()) ? 3 : state.is(JSBlocks.REINFORCED_BATTERY.get()) ? 2 : 1;
@@ -112,22 +113,22 @@ public final class JSBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnergyCableBlockEntity>> ENERGY_CABLE =
             BLOCK_ENTITIES.register("energy_cable", () -> BlockEntityType.Builder
                     .of(EnergyCableBlockEntity::new, JSBlocks.ENERGY_CABLE.get(), JSBlocks.REINFORCED_ENERGY_CABLE.get(),
-                            JSBlocks.ADVANCED_ENERGY_CABLE.get()).build(null));
+                            JSBlocks.ADVANCED_ENERGY_CABLE.get(), JSBlocks.ELITE_ENERGY_CABLE.get(), JSBlocks.ULTIMATE_ENERGY_CABLE.get()).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ItemDuctBlockEntity>> ITEM_DUCT =
             BLOCK_ENTITIES.register("item_duct", () -> BlockEntityType.Builder
                     .of(ItemDuctBlockEntity::new, JSBlocks.ITEM_DUCT.get(), JSBlocks.REINFORCED_ITEM_DUCT.get(),
-                            JSBlocks.ADVANCED_ITEM_DUCT.get()).build(null));
+                            JSBlocks.ADVANCED_ITEM_DUCT.get(), JSBlocks.ELITE_ITEM_DUCT.get(), JSBlocks.ULTIMATE_ITEM_DUCT.get()).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidPipeBlockEntity>> FLUID_PIPE =
             BLOCK_ENTITIES.register("fluid_pipe", () -> BlockEntityType.Builder
                     .of(FluidPipeBlockEntity::new, JSBlocks.FLUID_PIPE.get(), JSBlocks.REINFORCED_FLUID_PIPE.get(),
-                            JSBlocks.ADVANCED_FLUID_PIPE.get()).build(null));
+                            JSBlocks.ADVANCED_FLUID_PIPE.get(), JSBlocks.ELITE_FLUID_PIPE.get(), JSBlocks.ULTIMATE_FLUID_PIPE.get()).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidTankBlockEntity>> FLUID_TANK =
             BLOCK_ENTITIES.register("fluid_tank", () -> BlockEntityType.Builder
                     .of(FluidTankBlockEntity::new, JSBlocks.FLUID_TANK.get(), JSBlocks.REINFORCED_FLUID_TANK.get(),
-                            JSBlocks.ADVANCED_FLUID_TANK.get()).build(null));
+                            JSBlocks.ADVANCED_FLUID_TANK.get(), JSBlocks.ELITE_FLUID_TANK.get(), JSBlocks.ULTIMATE_FLUID_TANK.get()).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PumpBlockEntity>> PUMP =
             BLOCK_ENTITIES.register("pump", () -> BlockEntityType.Builder
@@ -151,6 +152,9 @@ public final class JSBlockEntities {
             processing("chemical_dissolver", JSBlocks.CHEMICAL_DISSOLVER, ProcessingMachineBlockEntity.FLUID_MIXER, MachineRecipeKind.DISSOLVING, 30, 116);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> CRYSTALLIZER =
             processing("crystallizer", JSBlocks.CRYSTALLIZER, ProcessingMachineBlockEntity.CRYSTALLIZER, MachineRecipeKind.CRYSTALLIZING, 30, -1);
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>> LASER_ENGRAVER =
+            processing("laser_engraver", JSBlocks.LASER_ENGRAVER, ProcessingMachineBlockEntity.TWO_TO_ONE, MachineRecipeKind.ENGRAVING);
 
     // farming
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PlanterBlockEntity>> PLANTER =
@@ -176,7 +180,8 @@ public final class JSBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlockEntity>> SOLAR_PANEL =
             BLOCK_ENTITIES.register("solar_panel", () -> BlockEntityType.Builder
                     .of(com.walnutbeachdigital.joulesmith.energy.solar.SolarPanelBlockEntity::new, JSBlocks.SOLAR_PANEL.get(),
-                            JSBlocks.REINFORCED_SOLAR_PANEL.get(), JSBlocks.ADVANCED_SOLAR_PANEL.get()).build(null));
+                            JSBlocks.REINFORCED_SOLAR_PANEL.get(), JSBlocks.ADVANCED_SOLAR_PANEL.get(),
+                            JSBlocks.ELITE_SOLAR_PANEL.get(), JSBlocks.ULTIMATE_SOLAR_PANEL.get()).build(null));
 
     // more farming
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.farming.sprinkler.SprinklerBlockEntity>> SPRINKLER =
@@ -200,15 +205,15 @@ public final class JSBlockEntities {
     // storage
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrateBlockEntity>> CRATE =
             BLOCK_ENTITIES.register("crate", () -> BlockEntityType.Builder
-                    .of(CrateBlockEntity::new, JSBlocks.BASIC_CRATE.get(), JSBlocks.REINFORCED_CRATE.get(), JSBlocks.ADVANCED_CRATE.get()).build(null));
+                    .of(CrateBlockEntity::new, JSBlocks.BASIC_CRATE.get(), JSBlocks.REINFORCED_CRATE.get(), JSBlocks.ADVANCED_CRATE.get(), JSBlocks.ELITE_CRATE.get(), JSBlocks.ULTIMATE_CRATE.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BinBlockEntity>> BULK_BIN =
             BLOCK_ENTITIES.register("bulk_bin", () -> BlockEntityType.Builder
-                    .of(BinBlockEntity::new, JSBlocks.BASIC_BULK_BIN.get(), JSBlocks.REINFORCED_BULK_BIN.get(), JSBlocks.ADVANCED_BULK_BIN.get()).build(null));
+                    .of(BinBlockEntity::new, JSBlocks.BASIC_BULK_BIN.get(), JSBlocks.REINFORCED_BULK_BIN.get(), JSBlocks.ADVANCED_BULK_BIN.get(), JSBlocks.ELITE_BULK_BIN.get(), JSBlocks.ULTIMATE_BULK_BIN.get()).build(null));
 
     /** Every recipe machine's type, for registering their capabilities together. */
     public static List<DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>>> processingMachines() {
         return List.of(CRUSHER, ALLOY_SMELTER, COMPRESSOR, WIRE_DRAWER, SAWMILL, ORE_WASHER, FLUID_MIXER, CENTRIFUGE,
-                CIRCUIT_ASSEMBLER, BIO_REACTOR, CHEMICAL_DISSOLVER, CRYSTALLIZER, FERTILIZER_MIXER);
+                CIRCUIT_ASSEMBLER, BIO_REACTOR, CHEMICAL_DISSOLVER, CRYSTALLIZER, FERTILIZER_MIXER, LASER_ENGRAVER);
     }
 
     /** A recipe machine's block entity type: its block, its slot layout and the recipes it runs. */

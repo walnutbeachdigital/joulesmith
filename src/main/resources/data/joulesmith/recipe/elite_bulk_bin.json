@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "CBC",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/silver"
+    },
+    "C": {
+      "item": "joulesmith:processor"
+    },
+    "B": {
+      "item": "joulesmith:advanced_bulk_bin"
+    }
+  },
+  "result": {
+    "id": "joulesmith:elite_bulk_bin",
+    "count": 1
+  }
+}

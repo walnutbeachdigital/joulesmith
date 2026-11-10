@@ -1,0 +1,19 @@
+{
+  "type": "joulesmith:engraving",
+  "inputs": [
+    {
+      "item": "joulesmith:advanced_circuit"
+    },
+    {
+      "tag": "c:gems/emerald",
+      "count": 2
+    }
+  ],
+  "results": [
+    {
+      "id": "joulesmith:processor"
+    }
+  ],
+  "energy": 20000,
+  "time": 200
+}

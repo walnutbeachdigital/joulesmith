@@ -51,7 +51,7 @@ public final class FluidNetwork extends PipeNetwork {
     }
 
     public static int mbPerTick(int tier) {
-        return tier >= 3 ? 1_600 : tier == 2 ? 400 : 100;
+        return tier >= 5 ? 25_600 : tier == 4 ? 6_400 : tier == 3 ? 1_600 : tier == 2 ? 400 : 100;
     }
 
     public IFluidHandler intake() {

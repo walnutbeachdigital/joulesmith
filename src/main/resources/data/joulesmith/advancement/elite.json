@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "joulesmith:processor"
+    },
+    "title": {
+      "translate": "advancement.joulesmith.elite"
+    },
+    "description": {
+      "translate": "advancement.joulesmith.elite.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:processor"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "parent": "joulesmith:advanced"
+}

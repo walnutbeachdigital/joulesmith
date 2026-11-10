@@ -39,9 +39,10 @@ public class CrateMenu extends AbstractContainerMenu {
         for (int c = 0; c < 9; c++) addSlot(new Slot(inventory, c, inv + c * 18, invY + 58));
     }
 
-    /** Crates bigger than nine rows are shown twelve slots wide, so the screen stays short. */
+    /** Crates bigger than nine rows are shown nine rows tall and wider instead (12, 15 or 18 slots), so
+     * the screen stays short. */
     public static int columns(int rows) {
-        return rows > 9 ? 12 : 9;
+        return rows > 9 ? rows : 9;
     }
 
     /** How many rows of slots the screen shows. */
