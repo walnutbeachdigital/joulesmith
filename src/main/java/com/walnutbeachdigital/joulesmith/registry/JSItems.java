@@ -101,6 +101,7 @@ public final class JSItems {
         blockItem(JSBlocks.DRIVE_BAY);
         blockItem(JSBlocks.NETWORK_TERMINAL);
         blockItem(JSBlocks.NETWORK_CABLE);
+        blockItem(JSBlocks.CRAFTING_TERMINAL);
         blockItem(JSBlocks.IMPORT_BUS);
         blockItem(JSBlocks.EXPORT_BUS);
         blockItem(JSBlocks.WIND_TURBINE);

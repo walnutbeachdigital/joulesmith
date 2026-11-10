@@ -32,11 +32,15 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
     private int scroll;
     private List<BinContents> view = List.of();
 
+    private static final ResourceLocation CRAFTING_TEXTURE = Joulesmith.id("textures/gui/crafting_terminal.png");
+    private final int rows;
+
     public TerminalScreen(TerminalMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
+        rows = menu.rows();
         imageWidth = 195;
-        imageHeight = 222;
-        inventoryLabelY = TerminalMenu.INVENTORY_Y - 11;
+        imageHeight = menu.inventoryY() + 82;
+        inventoryLabelY = menu.inventoryY() - 11;
     }
 
     @Override
@@ -65,13 +69,13 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
     }
 
     private int maxScroll() {
-        return Math.max(0, (view.size() + TerminalMenu.COLUMNS - 1) / TerminalMenu.COLUMNS - TerminalMenu.ROWS);
+        return Math.max(0, (view.size() + TerminalMenu.COLUMNS - 1) / TerminalMenu.COLUMNS - rows);
     }
 
     /** The grid cell under the mouse, or -1. */
     private int cellAt(double mx, double my) {
         int x = (int) mx - leftPos - TerminalMenu.GRID_X, y = (int) my - topPos - TerminalMenu.GRID_Y;
-        if (x < 0 || y < 0 || x >= TerminalMenu.COLUMNS * 18 || y >= TerminalMenu.ROWS * 18) return -1;
+        if (x < 0 || y < 0 || x >= TerminalMenu.COLUMNS * 18 || y >= rows * 18) return -1;
         return (y / 18 + scroll) * TerminalMenu.COLUMNS + x / 18;
     }
 
@@ -79,7 +83,7 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         refresh();
         super.render(g, mouseX, mouseY, partialTick);
-        for (int i = 0; i < TerminalMenu.COLUMNS * TerminalMenu.ROWS; i++) {
+        for (int i = 0; i < TerminalMenu.COLUMNS * rows; i++) {
             int index = scroll * TerminalMenu.COLUMNS + i;
             if (index >= view.size()) break;
             BinContents c = view.get(index);
@@ -106,7 +110,7 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
         }
         if (!menu.online()) {
             Component off = Component.translatable("gui.joulesmith.terminal.offline");
-            g.drawString(font, off, leftPos + 8 + (TerminalMenu.COLUMNS * 18 - font.width(off)) / 2, topPos + 68, 0xFF5555, true);
+            g.drawString(font, off, leftPos + 8 + (TerminalMenu.COLUMNS * 18 - font.width(off)) / 2, topPos + TerminalMenu.GRID_Y + rows * 9 - 4, 0xFF5555, true);
         }
         renderTooltip(g, mouseX, mouseY);
     }
@@ -119,10 +123,11 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
 
     @Override
     protected void renderBg(GuiGraphics g, float partialTick, int mouseX, int mouseY) {
-        g.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-        int max = maxScroll(), track = TerminalMenu.ROWS * 18 - 15;
+        ResourceLocation texture = rows == TerminalMenu.ROWS ? TEXTURE : CRAFTING_TEXTURE;
+        g.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        int max = maxScroll(), track = rows * 18 - 15;
         int knob = max == 0 ? 0 : track * scroll / max;
-        g.blit(TEXTURE, leftPos + 175, topPos + TerminalMenu.GRID_Y + knob, max == 0 ? 244 : 232, 0, 12, 15);
+        g.blit(texture, leftPos + 175, topPos + TerminalMenu.GRID_Y + knob, max == 0 ? 244 : 232, 0, 12, 15);
     }
 
     @Override

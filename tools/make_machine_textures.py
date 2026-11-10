@@ -2911,8 +2911,55 @@ def bus_front(export):
     return img
 
 
+def crafting_terminal_front():
+    """The terminal's screen above a small crafting grid."""
+    img = network_terminal_front()
+    px = img.load()
+    for y in range(8, 12):
+        for x in range(3, 10):
+            px[x, y] = rgba("#0b1a14")
+    for i in range(9):
+        x, y = 4 + (i % 3) * 2, 8 + (i // 3) * 1
+        px[x, y + (i // 3)] = rgba(WOOD8[5] if i % 2 else WOOD8[3])
+    return img
+
+
+def crafting_terminal_gui():
+    """A 9x4 item grid with its scroll track, a 3x3 crafting grid with an arrow and a big result slot,
+    then the player's inventory; scroll knobs at u 232/244."""
+    img, d = panel(195, 248)
+    d.rectangle([98, 3, 187, 15], fill=(0, 0, 0, 255))
+    d.rectangle([99, 4, 186, 14], fill=(30, 30, 34, 255))
+    for row in range(4):
+        for col in range(9):
+            gui_slot(d, 7 + col * 18, 17 + row * 18)
+    d.rectangle([174, 17, 187, 17 + 72 - 1], fill=(139, 139, 139, 255))
+    d.line([174, 17, 186, 17], fill=(55, 55, 55, 255)); d.line([174, 17, 174, 88], fill=(55, 55, 55, 255))
+    for row in range(3):
+        for col in range(3):
+            gui_slot(d, 25 + col * 18, 95 + row * 18)
+    for x in range(88, 108):                                  # arrow
+        for y in range(118, 122):
+            img.putpixel((x, y), (139, 139, 139, 255))
+    for i in range(6):
+        for y in range(114 + i, 126 - i):
+            img.putpixel((108 + i, y), (139, 139, 139, 255))
+    gui_slot(d, 115, 109, 26)
+    for row in range(3):
+        for col in range(9):
+            gui_slot(d, 7 + col * 18, 165 + row * 18)
+    for col in range(9):
+        gui_slot(d, 7 + col * 18, 223)
+    for u, lit in ((232, True), (244, False)):
+        d.rectangle([u, 0, u + 11, 14], fill=(198, 198, 198, 255) if lit else (160, 160, 160, 255))
+        d.line([u, 0, u + 10, 0], fill=(255, 255, 255, 255)); d.line([u, 0, u, 13], fill=(255, 255, 255, 255))
+        d.line([u + 1, 14, u + 11, 14], fill=(85, 85, 85, 255)); d.line([u + 11, 1, u + 11, 14], fill=(85, 85, 85, 255))
+    return img
+
+
 def bus_textures():
-    return {"block/import_bus_front": bus_front(False), "block/export_bus_front": bus_front(True)}
+    return {"block/import_bus_front": bus_front(False), "block/export_bus_front": bus_front(True),
+            "block/crafting_terminal_front": crafting_terminal_front(), "gui/crafting_terminal": crafting_terminal_gui()}
 
 
 def main():

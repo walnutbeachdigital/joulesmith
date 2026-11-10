@@ -27,7 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /** The storage network's blocks that face you: the Network Core, the Drive Bay and the Network Terminal. */
 public class NetworkBlock extends BaseEntityBlock implements NetworkPart {
-    public enum Kind { CORE, BAY, TERMINAL }
+    public enum Kind { CORE, BAY, TERMINAL, CRAFTING_TERMINAL }
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     private final Kind kind;
@@ -65,7 +65,7 @@ public class NetworkBlock extends BaseEntityBlock implements NetworkPart {
         return switch (kind) {
             case CORE -> new NetworkCoreBlockEntity(pos, state);
             case BAY -> new DriveBayBlockEntity(pos, state);
-            case TERMINAL -> null;
+            case TERMINAL, CRAFTING_TERMINAL -> null;
         };
     }
 
@@ -87,6 +87,8 @@ public class NetworkBlock extends BaseEntityBlock implements NetworkPart {
             }
             case TERMINAL -> player.openMenu(new SimpleMenuProvider((id, inv, p) -> new TerminalMenu(id, inv, pos),
                     Component.translatable("block.joulesmith.network_terminal")), buf -> buf.writeBlockPos(pos));
+            case CRAFTING_TERMINAL -> player.openMenu(new SimpleMenuProvider((id, inv, p) -> new CraftingTerminalMenu(id, inv, pos),
+                    Component.translatable("block.joulesmith.crafting_terminal")), buf -> buf.writeBlockPos(pos));
             case CORE -> {
                 if (level.getBlockEntity(pos) instanceof NetworkCoreBlockEntity core) {
                     Network net = Network.scan(level, pos);

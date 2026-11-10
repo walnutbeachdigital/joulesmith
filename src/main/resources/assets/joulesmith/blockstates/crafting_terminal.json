@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "joulesmith:block/crafting_terminal"
+    },
+    "facing=east": {
+      "model": "joulesmith:block/crafting_terminal",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "joulesmith:block/crafting_terminal",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "joulesmith:block/crafting_terminal",
+      "y": 270
+    }
+  }
+}

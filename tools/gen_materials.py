@@ -1884,7 +1884,8 @@ for iid, (short, info) in H_DESC.items():
 lang["tooltip.joulesmith.plasma_cannon"] = "Hold to charge, release to fire (25,000 FE)"
 
 # ---- the storage network: Network Core, Drive Bay, Network Terminal, Network Cable and Item Drives
-for bid, name in (("network_core", "Network Core"), ("drive_bay", "Drive Bay"), ("network_terminal", "Network Terminal")):
+for bid, name in (("network_core", "Network Core"), ("drive_bay", "Drive Bay"), ("network_terminal", "Network Terminal"),
+                  ("crafting_terminal", "Crafting Terminal")):
     model(bid, {"parent": "minecraft:block/orientable", "textures": {
         "front": f"{MOD}:block/{bid}_front", "side": f"{MOD}:block/network_side", "top": f"{MOD}:block/network_side"}})
     write(os.path.join(ASSETS, "blockstates", f"{bid}.json"), {"variants": {
@@ -1970,6 +1971,11 @@ for bid, name in (("import_bus", "Import Bus"), ("export_bus", "Export Bus")):
     simple_loot(bid)
     tag("minecraft", "block", "mineable/pickaxe", f"{MOD}:{bid}")
     lang[f"block.{MOD}.{bid}"] = name
+shaped("crafting_terminal", ["T", "C"], {"T": f"{MOD}:network_terminal", "C": "minecraft:crafting_table"})
+DESC["crafting_terminal"] = ("A Network Terminal with a crafting grid", "Craft straight from the network: after each craft the "
+                             "grid tops itself up from the network, so shift-clicking the result crafts a stack at a time. Shift-click "
+                             "grid slots to put them back; what's left in the grid goes back when you close it.")
+lang[f"desc.{MOD}.crafting_terminal"], lang[f"jei.{MOD}.info.crafting_terminal"] = DESC["crafting_terminal"]
 shaped("import_bus", [" N ", "PHP"], {"N": f"{MOD}:network_cable", "P": "#c:plates/steel", "H": "minecraft:hopper"})
 shaped("export_bus", [" N ", "PDP"], {"N": f"{MOD}:network_cable", "P": "#c:plates/steel", "D": "minecraft:dropper"})
 BUS = " Use a Filter Card on it to fit one; sneak and use an empty hand to take it back. Moves up to 16 items twice a second."

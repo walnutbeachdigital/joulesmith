@@ -25,10 +25,13 @@ import net.neoforged.neoforge.network.PacketDistributor;
  */
 public class TerminalMenu extends AbstractContainerMenu {
     public static final int GRID_X = 8, GRID_Y = 18, COLUMNS = 9, ROWS = 6, INVENTORY_Y = 140;
+    /** The Crafting Terminal's layout: a shorter grid, the crafting grid, then the inventory. */
+    public static final int CRAFTING_ROWS = 4, CRAFTING_INVENTORY_Y = 166;
     public static final int TAKE_STACK = 0, TAKE_HALF = 1, TAKE_TO_INVENTORY = 2, INSERT_ALL = 3, INSERT_ONE = 4;
 
     private final BlockPos pos;
-    private final Player player;
+    protected final Player player;
+    private final int rows, inventoryY;
     private final ContainerLevelAccess access;
     /** Client side: what the server last sent. */
     private List<BinContents> shown = List.of();
@@ -42,14 +45,28 @@ public class TerminalMenu extends AbstractContainerMenu {
     }
 
     public TerminalMenu(int id, Inventory inventory, BlockPos pos) {
-        super(JSMenus.TERMINAL.get(), id);
+        this(JSMenus.TERMINAL.get(), id, inventory, pos, ROWS, INVENTORY_Y);
+    }
+
+    protected TerminalMenu(net.minecraft.world.inventory.MenuType<?> type, int id, Inventory inventory, BlockPos pos, int rows, int inventoryY) {
+        super(type, id);
         this.pos = pos;
+        this.rows = rows;
+        this.inventoryY = inventoryY;
         this.player = inventory.player;
         this.access = ContainerLevelAccess.create(inventory.player.level(), pos);
         for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col + row * 9 + 9, 8 + col * 18, INVENTORY_Y + row * 18));
+            for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col + row * 9 + 9, 8 + col * 18, inventoryY + row * 18));
         }
-        for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col, 8 + col * 18, INVENTORY_Y + 58));
+        for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col, 8 + col * 18, inventoryY + 58));
+    }
+
+    public int rows() {
+        return rows;
+    }
+
+    public int inventoryY() {
+        return inventoryY;
     }
 
     public List<BinContents> shown() {
@@ -65,7 +82,7 @@ public class TerminalMenu extends AbstractContainerMenu {
         this.online = online;
     }
 
-    private Network network() {
+    protected Network network() {
         return Network.scan(player.level(), pos);
     }
 
@@ -114,9 +131,13 @@ public class TerminalMenu extends AbstractContainerMenu {
             }
             default -> { }
         }
-        lastSent = null;                                 // send the new contents straight away
+        resend();
+    }
+
+    /** Sends the grid's contents again at the next update. */
+    protected void resend() {
+        lastSent = null;
         ticks = 0;
-        broadcastChanges();
     }
 
     @Override
@@ -131,6 +152,10 @@ public class TerminalMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player p) {
-        return stillValid(access, p, JSBlocks.NETWORK_TERMINAL.get());
+        return stillValid(access, p, block());
+    }
+
+    protected net.minecraft.world.level.block.Block block() {
+        return JSBlocks.NETWORK_TERMINAL.get();
     }
 }
