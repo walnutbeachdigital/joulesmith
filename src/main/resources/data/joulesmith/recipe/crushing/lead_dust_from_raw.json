@@ -1,0 +1,12 @@
+{
+  "type": "joulesmith:crushing",
+  "ingredient": {
+    "tag": "c:raw_materials/lead"
+  },
+  "result": {
+    "id": "joulesmith:lead_dust",
+    "count": 2
+  },
+  "energy": 2000,
+  "time": 100
+}

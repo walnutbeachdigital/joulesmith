@@ -1,0 +1,12 @@
+{
+  "type": "joulesmith:crushing",
+  "ingredient": {
+    "tag": "c:gravels"
+  },
+  "result": {
+    "id": "minecraft:sand",
+    "count": 1
+  },
+  "energy": 1200,
+  "time": 60
+}

@@ -278,7 +278,10 @@ write(os.path.join(ASSETS, "lang", "en_us.json"), lang)
 # -------------------------------------------------------------------- machines
 # Machine blocks share one casing (machine_side/top/bottom) and differ by their front.
 MACHINES = {
-    "electric_furnace": {"name": "Electric Furnace", "front": "electric_furnace_front", "lit": True},
+    "combustion_generator": {"name": "Combustion Generator", "front": "combustion_generator_front"},
+    "basic_battery": {"name": "Basic Battery", "front": "basic_battery_front"},
+    "electric_furnace": {"name": "Electric Furnace", "front": "electric_furnace_front"},
+    "crusher": {"name": "Crusher", "front": "crusher_front"},
 }
 CREATIVE = {"creative_power_cell": "Creative Power Cell"}
 ROTATION = {"north": 0, "east": 90, "south": 180, "west": 270}
@@ -311,15 +314,75 @@ for cid in CREATIVE:
 # rewrite the machine tags into their files (the tag files were written above)
 for (ns, reg, path), values in tags.items():
     write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
-write(os.path.join(DATA, MOD, "recipe", "electric_furnace.json"), {
-    "type": "minecraft:crafting_shaped", "category": "misc",
-    "pattern": ["IGI", "GFG", "IRI"],
-    "key": {"I": {"tag": "c:ingots/iron"}, "G": {"tag": "c:gears/copper"},
-            "F": {"item": "minecraft:furnace"}, "R": {"tag": "c:dusts/redstone"}},
-    "result": {"id": f"{MOD}:electric_furnace", "count": 1}})
-recipes["electric_furnace"] = True
+# ---- energy cable: a core plus an arm per connected side (multipart)
+SIDE_ROT = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 270},
+            "up": {"x": 270}, "down": {"x": 90}}
+cable_tex = f"{MOD}:block/energy_cable"
+write(os.path.join(ASSETS, "models", "block", "energy_cable_core.json"), {
+    "parent": "minecraft:block/block", "textures": {"particle": cable_tex, "cable": cable_tex},
+    "elements": [{"from": [6, 6, 6], "to": [10, 10, 10],
+                  "faces": {f: {"texture": "#cable"} for f in SIDES}}]})
+write(os.path.join(ASSETS, "models", "block", "energy_cable_arm.json"), {
+    "parent": "minecraft:block/block", "textures": {"particle": cable_tex, "cable": cable_tex},
+    "elements": [{"from": [6, 6, 0], "to": [10, 10, 6],
+                  "faces": {f: {"texture": "#cable"} for f in ("east", "west", "up", "down", "north")}}]})
+write(os.path.join(ASSETS, "blockstates", "energy_cable.json"), {"multipart":
+    [{"apply": {"model": f"{MOD}:block/energy_cable_core"}}] +
+    [{"when": {side: "true"}, "apply": {"model": f"{MOD}:block/energy_cable_arm", **rot}} for side, rot in SIDE_ROT.items()]})
+write(os.path.join(ASSETS, "models", "item", "energy_cable.json"), {
+    "parent": "minecraft:block/block", "textures": {"particle": cable_tex, "cable": cable_tex},
+    "elements": [{"from": [0, 6, 6], "to": [16, 10, 10], "faces": {f: {"texture": "#cable"} for f in SIDES}}]})
+write(os.path.join(DATA, MOD, "loot_table", "blocks", "energy_cable.json"), {
+    "type": "minecraft:block", "random_sequence": f"{MOD}:blocks/energy_cable",
+    "pools": [{"rolls": 1, "bonus_rolls": 0, "entries": [{"type": "minecraft:item", "name": f"{MOD}:energy_cable"}],
+               "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
+tags[("minecraft", "block", "mineable/pickaxe")].append(f"{MOD}:energy_cable")
+write(os.path.join(DATA, "minecraft", "tags", "block", "mineable/pickaxe.json"),
+      {"replace": False, "values": tags[("minecraft", "block", "mineable/pickaxe")]})
+
+# ---- crafting recipes for the machines
+def shaped(name, pattern, key, count=1):
+    write(os.path.join(DATA, MOD, "recipe", f"{name}.json"), {
+        "type": "minecraft:crafting_shaped", "category": "misc", "pattern": pattern,
+        "key": {k: ({"item": v} if ":" in v and not v.startswith("#") else {"tag": v[1:]}) for k, v in key.items()},
+        "result": {"id": f"{MOD}:{name}", "count": count}})
+    recipes[name] = True
+
+shaped("electric_furnace", ["IGI", "GFG", "IRI"],
+       {"I": "#c:ingots/iron", "G": "#c:gears/copper", "F": "minecraft:furnace", "R": "#c:dusts/redstone"})
+shaped("combustion_generator", ["III", "GFG", "IRI"],
+       {"I": "#c:ingots/iron", "G": "#c:gears/copper", "F": "minecraft:furnace", "R": "#c:dusts/redstone"})
+shaped("basic_battery", ["ILI", "LRL", "ILI"],
+       {"I": "#c:ingots/iron", "L": "#c:ingots/lead", "R": "#c:storage_blocks/redstone"})
+shaped("crusher", ["IGI", "FPF", "IRI"],
+       {"I": "#c:ingots/iron", "G": "#c:gears/copper", "F": "minecraft:flint", "P": "minecraft:piston", "R": "#c:dusts/redstone"})
+shaped("energy_cable", ["CRC"], {"C": "#c:ingots/copper", "R": "#c:dusts/redstone"}, count=6)
+
+# ---- crushing recipes (Crusher)
+def crushing(name, ingredient, result, count=1, energy=2000, time=100):
+    write(os.path.join(DATA, MOD, "recipe", "crushing", f"{name}.json"), {
+        "type": f"{MOD}:crushing", "ingredient": ing(ingredient),
+        "result": {"id": result, "count": count}, "energy": energy, "time": time})
+    recipes["crushing/" + name] = True
+
+DUST = lambda m: f"{MOD}:{m}_dust"
+for m, (src, dust, plate, gear, wire) in METALS.items():
+    if not dust:
+        continue
+    crushing(f"{m}_dust_from_ingot", f"#c:ingots/{m}", DUST(m), 1, 1600, 80)
+    if src == "ore" or m in ("iron", "copper", "gold"):
+        crushing(f"{m}_dust_from_raw", f"#c:raw_materials/{m}", DUST(m), 2)
+        crushing(f"{m}_dust_from_ore", f"#c:ores/{m}", DUST(m), 2, 3000, 150)
+crushing("gravel_from_cobblestone", "#c:cobblestones/normal", "minecraft:gravel", 1, 1200, 60)
+crushing("sand_from_gravel", "#c:gravels", "minecraft:sand", 1, 1200, 60)
 lang.update({f"block.{MOD}.{k}": v["name"] for k, v in MACHINES.items()})
 lang.update({f"block.{MOD}.{k}": v for k, v in CREATIVE.items()})
+lang[f"block.{MOD}.energy_cable"] = "Energy Cable"
+lang.update({
+    "jei.joulesmith.crushing": "Crushing",
+    "jei.joulesmith.energy": "%s FE",
+    "gui.joulesmith.burn_time": "Burning: %s s left",
+})
 lang.update({
     "gui.joulesmith.energy": "%s / %s FE",
     "gui.joulesmith.progress": "%s%% done",

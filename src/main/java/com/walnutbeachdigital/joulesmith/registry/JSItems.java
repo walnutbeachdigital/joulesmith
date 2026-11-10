@@ -29,7 +29,11 @@ public final class JSItems {
     public static final Map<Metal, DeferredItem<Item>> WIRE = new EnumMap<>(Metal.class);
 
     static {
+        blockItem(JSBlocks.COMBUSTION_GENERATOR);
+        blockItem(JSBlocks.BASIC_BATTERY);
+        blockItem(JSBlocks.ENERGY_CABLE);
         blockItem(JSBlocks.ELECTRIC_FURNACE);
+        blockItem(JSBlocks.CRUSHER);
         blockItem(JSBlocks.CREATIVE_POWER_CELL);
         for (Metal metal : Metal.values()) {
             String id = metal.id();

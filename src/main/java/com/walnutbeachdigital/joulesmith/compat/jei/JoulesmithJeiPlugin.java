@@ -9,10 +9,13 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
+import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
+import com.walnutbeachdigital.joulesmith.registry.JSRecipes;
 
 /**
  * JEI support. Crafting, smelting and blasting recipes show up in JEI on their own; this plugin adds
@@ -29,7 +32,16 @@ public class JoulesmithJeiPlugin implements IModPlugin {
     }
 
     @Override
+    public void registerCategories(IRecipeCategoryRegistration registration) {
+        registration.addRecipeCategories(new CrushingCategory(registration.getJeiHelpers().getGuiHelper()));
+    }
+
+    @Override
     public void registerRecipes(IRecipeRegistration registration) {
+        if (Minecraft.getInstance().level != null) {
+            registration.addRecipes(CrushingCategory.TYPE,
+                    Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(JSRecipes.CRUSHING.get()));
+        }
         // Where each ore generates, shown on the ore blocks and the raw ore.
         for (Metal metal : Metal.values()) {
             if (!metal.hasOre()) continue;
@@ -44,5 +56,7 @@ public class JoulesmithJeiPlugin implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         // the Electric Furnace runs every smelting recipe
         registration.addRecipeCatalyst(new ItemStack(JSBlocks.ELECTRIC_FURNACE.get()), RecipeTypes.SMELTING);
+        registration.addRecipeCatalyst(new ItemStack(JSBlocks.CRUSHER.get()), CrushingCategory.TYPE);
+        registration.addRecipeCatalyst(new ItemStack(JSBlocks.COMBUSTION_GENERATOR.get()), RecipeTypes.FUELING);
     }
 }

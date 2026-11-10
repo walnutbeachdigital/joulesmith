@@ -26,6 +26,7 @@ public class MachineMenu extends AbstractContainerMenu {
     private final MachineBlockEntity machine;     // only on the server
     private final ContainerData data;
     private final List<SlotDef> slotDefs;
+    private final MachineBlockEntity.ProgressStyle progressStyle;
 
     /** Server side: wraps the real machine. */
     public MachineMenu(int id, Inventory inventory, MachineBlockEntity machine) {
@@ -45,6 +46,7 @@ public class MachineMenu extends AbstractContainerMenu {
             throw new IllegalStateException("No Joulesmith machine at " + pos);
         }
         this.slotDefs = be.slotDefs();
+        this.progressStyle = be.progressStyle();
         IItemHandler handler = items != null ? items : new ItemStackHandler(slotDefs.size());
         this.data = data != null ? data : new SimpleContainerData(MachineBlockEntity.VALUES * 2);
         for (int i = 0; i < slotDefs.size(); i++) {
@@ -73,6 +75,10 @@ public class MachineMenu extends AbstractContainerMenu {
 
     public List<SlotDef> slotDefs() {
         return slotDefs;
+    }
+
+    public MachineBlockEntity.ProgressStyle progressStyle() {
+        return progressStyle;
     }
 
     /** A machine value, rebuilt from the two 16-bit halves it is synced in. */

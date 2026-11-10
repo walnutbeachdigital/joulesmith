@@ -1,0 +1,12 @@
+{
+  "type": "joulesmith:crushing",
+  "ingredient": {
+    "tag": "c:raw_materials/uranium"
+  },
+  "result": {
+    "id": "joulesmith:uranium_dust",
+    "count": 2
+  },
+  "energy": 2000,
+  "time": 100
+}

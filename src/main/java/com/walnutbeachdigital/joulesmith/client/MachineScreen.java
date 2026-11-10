@@ -34,6 +34,8 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
     private static final int BIG_U = 176, BIG_V = 18;           // 26x26
     private static final int ARROW_U = 176, ARROW_V = 44;       // 24x17 empty, full below it
     private static final int BAR_U = 202, BAR_V = 0;            // 16x50 frame, 14x48 fill to its right
+    private static final int FLAME_U = 176, FLAME_V = 78;       // 14x14 unlit, lit to its right
+    private static final int FLAME_X = 81, FLAME_Y = 35;
 
     private static final int BAR_X = 8, BAR_Y = 17, ARROW_X = 79, ARROW_Y = 35;
     private static final int TAB = 24, SIDE_PANEL = 62;
@@ -74,12 +76,23 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
         if (filled > 0) {
             g.blit(TEXTURE, x + BAR_X + 1, y + BAR_Y + 1 + 48 - filled, BAR_U + 16, BAR_V + 1 + 48 - filled, 14, filled);
         }
-        // progress arrow, filling left to right
-        g.blit(TEXTURE, x + ARROW_X, y + ARROW_Y, ARROW_U, ARROW_V, 24, 17);
         int progress = menu.value(2), max = menu.value(3);
-        if (max > 0 && progress > 0) {
-            int w = Math.min(24, (int) Math.ceil(24.0 * progress / max));
-            g.blit(TEXTURE, x + ARROW_X, y + ARROW_Y, ARROW_U, ARROW_V + 17, w, 17);
+        switch (menu.progressStyle()) {
+            case ARROW -> {                                       // fills left to right
+                g.blit(TEXTURE, x + ARROW_X, y + ARROW_Y, ARROW_U, ARROW_V, 24, 17);
+                if (max > 0 && progress > 0) {
+                    int w = Math.min(24, (int) Math.ceil(24.0 * progress / max));
+                    g.blit(TEXTURE, x + ARROW_X, y + ARROW_Y, ARROW_U, ARROW_V + 17, w, 17);
+                }
+            }
+            case FLAME -> {                                       // burns down as the fuel runs out
+                g.blit(TEXTURE, x + FLAME_X, y + FLAME_Y, FLAME_U, FLAME_V, 14, 14);
+                if (max > 0 && progress > 0) {
+                    int h = Math.max(1, (int) Math.ceil(14.0 * progress / max));
+                    g.blit(TEXTURE, x + FLAME_X, y + FLAME_Y + 14 - h, FLAME_U + 14, FLAME_V + 14 - h, 14, h);
+                }
+            }
+            case NONE -> { }
         }
         drawTabs(g, x + imageWidth, y);
     }
@@ -187,8 +200,12 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
         List<Component> tip = new ArrayList<>();
         if (rx >= BAR_X && rx < BAR_X + 16 && ry >= BAR_Y && ry < BAR_Y + 50) {
             tip.add(Component.translatable("gui.joulesmith.energy", String.format("%,d", menu.value(0)), String.format("%,d", menu.value(1))));
-        } else if (rx >= ARROW_X && rx < ARROW_X + 24 && ry >= ARROW_Y && ry < ARROW_Y + 17 && menu.value(3) > 0) {
+        } else if (menu.progressStyle() == MachineBlockEntity.ProgressStyle.ARROW
+                && rx >= ARROW_X && rx < ARROW_X + 24 && ry >= ARROW_Y && ry < ARROW_Y + 17 && menu.value(3) > 0) {
             tip.add(Component.translatable("gui.joulesmith.progress", menu.value(2) * 100 / menu.value(3)));
+        } else if (menu.progressStyle() == MachineBlockEntity.ProgressStyle.FLAME
+                && rx >= FLAME_X && rx < FLAME_X + 14 && ry >= FLAME_Y && ry < FLAME_Y + 14) {
+            tip.add(Component.translatable("gui.joulesmith.burn_time", (menu.value(2) + 19) / 20));
         } else if (inRedTab(rx, ry)) {
             RedstoneMode mode = menu.redstoneMode();
             tip.add(Component.translatable("gui.joulesmith.redstone.title"));

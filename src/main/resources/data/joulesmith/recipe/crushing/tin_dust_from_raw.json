@@ -1,0 +1,12 @@
+{
+  "type": "joulesmith:crushing",
+  "ingredient": {
+    "tag": "c:raw_materials/tin"
+  },
+  "result": {
+    "id": "joulesmith:tin_dust",
+    "count": 2
+  },
+  "energy": 2000,
+  "time": 100
+}

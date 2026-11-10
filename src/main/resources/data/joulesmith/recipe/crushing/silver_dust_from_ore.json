@@ -1,0 +1,12 @@
+{
+  "type": "joulesmith:crushing",
+  "ingredient": {
+    "tag": "c:ores/silver"
+  },
+  "result": {
+    "id": "joulesmith:silver_dust",
+    "count": 2
+  },
+  "energy": 3000,
+  "time": 150
+}

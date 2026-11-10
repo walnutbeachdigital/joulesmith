@@ -25,6 +25,10 @@
     "joulesmith:bronze_block",
     "joulesmith:invar_block",
     "joulesmith:electrum_block",
-    "joulesmith:electric_furnace"
+    "joulesmith:combustion_generator",
+    "joulesmith:basic_battery",
+    "joulesmith:electric_furnace",
+    "joulesmith:crusher",
+    "joulesmith:energy_cable"
   ]
 }

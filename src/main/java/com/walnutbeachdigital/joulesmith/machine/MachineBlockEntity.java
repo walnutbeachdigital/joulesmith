@@ -21,32 +21,43 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 /**
- * The shared base for every Joulesmith processing machine: an FE store, an inventory with input and output
- * slots, per-face item settings, a redstone mode and a progress bar. A machine only says what it can make
+ * The shared base for every Joulesmith machine: an FE store, an inventory with input and output slots,
+ * per-face settings, a redstone mode and a progress bar. A processing machine only says what it can make
  * from its inputs ({@link #findProcess()}); the base runs it, spends the energy and moves the items.
+ * Generators and batteries override {@link #work} instead.
  */
 public abstract class MachineBlockEntity extends BlockEntity implements MenuProvider {
 
     /** One run of a machine: what it makes, how long it takes and the energy it uses each tick. */
     public record Process(ItemStack result, int ticks, int energyPerTick, int inputCount) {}
 
+    /** How the screen shows progress: an arrow (processing), a flame (burning fuel), or nothing. */
+    public enum ProgressStyle { ARROW, FLAME, NONE }
+
     protected final JSEnergyStorage energy;
     protected final ItemStackHandler items;
     private final List<SlotDef> slots;
     private final SideMode[] sides = new SideMode[MachineFace.values().length];
     private RedstoneMode redstone = RedstoneMode.IGNORED;
-    private int progress;
-    private int maxProgress;
+    protected int progress;
+    protected int maxProgress;
 
     protected MachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state,
                                  List<SlotDef> slots, int capacity, int maxInput) {
+        this(type, pos, state, slots, capacity, maxInput, 0);
+    }
+
+    protected MachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state,
+                                 List<SlotDef> slots, int capacity, int maxInput, int maxOutput) {
         super(type, pos, state);
         this.slots = slots;
-        this.energy = new JSEnergyStorage(capacity, maxInput, 0, this::setChanged);
+        this.energy = new JSEnergyStorage(capacity, maxInput, maxOutput, this::setChanged);
         this.items = new ItemStackHandler(slots.size()) {
             @Override
             protected void onContentsChanged(int slot) {
@@ -65,10 +76,23 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     // ------------------------------------------------------------------ what each machine decides
 
     /** What the machine can make right now from its inputs, or null if nothing. */
-    protected abstract Process findProcess();
+    protected Process findProcess() {
+        return null;
+    }
 
     /** Whether an item may go into an input slot at all (used by hoppers, pipes and shift-click). */
-    protected abstract boolean isValidInput(ItemStack stack);
+    protected boolean isValidInput(ItemStack stack) {
+        return true;
+    }
+
+    public ProgressStyle progressStyle() {
+        return ProgressStyle.ARROW;
+    }
+
+    /** Sets a face's starting setting; call from a constructor to change the defaults. */
+    protected void setDefaultSide(MachineFace face, SideMode mode) {
+        sides[face.ordinal()] = mode;
+    }
 
     // ------------------------------------------------------------------ running
 
@@ -77,8 +101,19 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     }
 
     private void tick(Level level, BlockPos pos, BlockState state) {
+        boolean running = work(level, pos, redstone.allows(level.hasNeighborSignal(pos)));
+        if (state.getValue(MachineBlock.LIT) != running) {
+            level.setBlock(pos, state.setValue(MachineBlock.LIT, running), 3);
+        }
+    }
+
+    /**
+     * One tick of work. Returns whether the machine is running (lights its front). {@code allowed} is
+     * whether its redstone setting lets it run right now. By default: run {@link #findProcess()}.
+     */
+    protected boolean work(Level level, BlockPos pos, boolean allowed) {
         boolean running = false;
-        Process process = redstone.allows(level.hasNeighborSignal(pos)) ? findProcess() : null;
+        Process process = allowed ? findProcess() : null;
         if (process != null && outputFits(process.result())) {
             maxProgress = process.ticks();
             if (energy.getEnergyStored() >= process.energyPerTick()) {
@@ -94,9 +129,24 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
             progress = 0;
             setChanged();
         }
-        if (state.getValue(MachineBlock.LIT) != running) {
-            level.setBlock(pos, state.setValue(MachineBlock.LIT, running), 3);
+        return running;
+    }
+
+    /** Sends up to {@code max} FE in total to neighbours on faces set to give out. Returns how much went. */
+    protected int pushEnergy(Level level, BlockPos pos, int max) {
+        int sent = 0;
+        for (Direction dir : Direction.values()) {
+            if (sent >= max || energy.getEnergyStored() == 0) break;
+            if (!sideMode(MachineFace.of(facing(), dir)).gives()) continue;
+            IEnergyStorage target = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos.relative(dir), dir.getOpposite());
+            if (target != null && target.canReceive()) {
+                int offered = Math.min(max - sent, energy.getEnergyStored());
+                int taken = target.receiveEnergy(offered, false);
+                energy.consume(taken);
+                sent += taken;
+            }
         }
+        return sent;
     }
 
     /** Uses the inputs and puts the result into the output slots. */
@@ -140,7 +190,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         return sides[face.ordinal()];
     }
 
-    private Direction facing() {
+    protected Direction facing() {
         return getBlockState().getValue(MachineBlock.FACING);
     }
 
@@ -152,6 +202,11 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     }
 
     public JSEnergyStorage energy() {
+        return energy;
+    }
+
+    /** What cables see on a face. By default the whole store, on every face. */
+    public IEnergyStorage energyHandler(Direction side) {
         return energy;
     }
 

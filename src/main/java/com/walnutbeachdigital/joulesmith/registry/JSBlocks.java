@@ -6,7 +6,12 @@ import java.util.Map;
 import com.walnutbeachdigital.joulesmith.Joulesmith;
 import com.walnutbeachdigital.joulesmith.material.Metal;
 
+import com.walnutbeachdigital.joulesmith.energy.cable.EnergyCableBlock;
 import com.walnutbeachdigital.joulesmith.machine.MachineBlock;
+import com.walnutbeachdigital.joulesmith.machine.SimpleMachineBlock;
+import com.walnutbeachdigital.joulesmith.machine.battery.BatteryBlockEntity;
+import com.walnutbeachdigital.joulesmith.machine.crusher.CrusherBlockEntity;
+import com.walnutbeachdigital.joulesmith.machine.generator.CombustionGeneratorBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.creative.CreativePowerCellBlock;
 import com.walnutbeachdigital.joulesmith.machine.furnace.ElectricFurnaceBlock;
 
@@ -52,6 +57,20 @@ public final class JSBlocks {
 
     public static final DeferredBlock<ElectricFurnaceBlock> ELECTRIC_FURNACE = BLOCKS.register("electric_furnace",
             () -> new ElectricFurnaceBlock(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 13 : 0)));
+
+    public static final DeferredBlock<SimpleMachineBlock<CrusherBlockEntity>> CRUSHER = BLOCKS.register("crusher",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.CRUSHER::get, CrusherBlockEntity::new));
+
+    public static final DeferredBlock<SimpleMachineBlock<CombustionGeneratorBlockEntity>> COMBUSTION_GENERATOR = BLOCKS.register("combustion_generator",
+            () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 13 : 0),
+                    JSBlockEntities.COMBUSTION_GENERATOR::get, CombustionGeneratorBlockEntity::new));
+
+    public static final DeferredBlock<SimpleMachineBlock<BatteryBlockEntity>> BASIC_BATTERY = BLOCKS.register("basic_battery",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.BASIC_BATTERY::get, BatteryBlockEntity::new));
+
+    public static final DeferredBlock<EnergyCableBlock> ENERGY_CABLE = BLOCKS.register("energy_cable",
+            () -> new EnergyCableBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.5f)
+                    .sound(SoundType.WOOL).noOcclusion()));
 
     public static final DeferredBlock<CreativePowerCellBlock> CREATIVE_POWER_CELL = BLOCKS.register("creative_power_cell",
             () -> new CreativePowerCellBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE)

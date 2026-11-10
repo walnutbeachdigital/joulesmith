@@ -9,6 +9,7 @@ import com.walnutbeachdigital.joulesmith.registry.JSCapabilities;
 import com.walnutbeachdigital.joulesmith.registry.JSCreativeTabs;
 import com.walnutbeachdigital.joulesmith.registry.JSItems;
 import com.walnutbeachdigital.joulesmith.registry.JSMenus;
+import com.walnutbeachdigital.joulesmith.registry.JSRecipes;
 
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -26,6 +27,8 @@ public class Joulesmith {
         JSCreativeTabs.TABS.register(modEventBus);
         JSBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         JSMenus.MENUS.register(modEventBus);
+        JSRecipes.TYPES.register(modEventBus);
+        JSRecipes.SERIALIZERS.register(modEventBus);
         modEventBus.addListener(JSCapabilities::register);
     }
 

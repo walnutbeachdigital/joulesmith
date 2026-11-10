@@ -1,0 +1,12 @@
+{
+  "type": "joulesmith:crushing",
+  "ingredient": {
+    "tag": "c:ores/copper"
+  },
+  "result": {
+    "id": "joulesmith:copper_dust",
+    "count": 2
+  },
+  "energy": 3000,
+  "time": 150
+}

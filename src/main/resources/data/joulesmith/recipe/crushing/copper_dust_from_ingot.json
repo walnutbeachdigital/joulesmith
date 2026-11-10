@@ -1,0 +1,12 @@
+{
+  "type": "joulesmith:crushing",
+  "ingredient": {
+    "tag": "c:ingots/copper"
+  },
+  "result": {
+    "id": "joulesmith:copper_dust",
+    "count": 1
+  },
+  "energy": 1600,
+  "time": 80
+}

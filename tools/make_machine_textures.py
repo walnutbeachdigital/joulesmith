@@ -135,6 +135,104 @@ def creative_cell():
     return img
 
 
+GREEN = ["#0f2a12", "#1d4d22", "#2e7a33", "#43a547", "#6bd06a", "#a8f29a", "#e2ffd8"]
+
+
+def window(img, x0, y0, x1, y1):
+    """A recessed window frame: dark top-left lip, light bottom-right lip."""
+    px = img.load()
+    for y in range(y0 - 1, y1 + 2):
+        for x in range(x0 - 1, x1 + 2):
+            if y in (y0 - 1, y1 + 1) or x in (x0 - 1, x1 + 1):
+                px[x, y] = rgba(STEEL[1] if (y == y0 - 1 or x == x0 - 1) else STEEL[6])
+
+
+def generator_front(on):
+    """A round combustion chamber with a porthole: embers when idle, fire when burning."""
+    img = casing()
+    px = img.load()
+    cx, cy = 7.5, 7.0
+    for y in range(16):
+        for x in range(16):
+            r = ((x - cx) ** 2 + (y - cy) ** 2) ** 0.5
+            if 3.6 < r <= 4.6:
+                px[x, y] = rgba(STEEL[1] if (x + y) < 15 else STEEL[6])      # rim
+            elif r <= 3.6:
+                if on:
+                    heat = 1 - r / 3.6 * 0.6 + (y - cy) / 12
+                    px[x, y] = rgba(FIRE[min(6, max(2, int(heat * 6.5)))])
+                else:
+                    px[x, y] = rgba(FIRE[1] if (x * 3 + y) % 5 == 0 else FIRE[0])
+    for x in range(5, 11):                                        # vent slot under the chamber
+        px[x, 13] = rgba(STEEL[0])
+    return img
+
+
+def battery_front(on):
+    """Four charge bars in a window: dark when empty, glowing green when charged."""
+    img = casing()
+    px = img.load()
+    window(img, 4, 3, 11, 12)
+    for y in range(3, 13):
+        for x in range(4, 12):
+            px[x, y] = rgba("#14161a")
+    for i, bx in enumerate((5, 7, 9)):
+        for y in range(4, 12):
+            lit = on
+            c = GREEN[5] if (lit and y < 6) else GREEN[4] if lit else STEEL[1]
+            if lit and x == bx:
+                c = GREEN[6] if y == 4 else c
+            px[bx, y] = rgba(c)
+            px[bx + 1, y] = rgba(GREEN[3] if lit else STEEL[0])
+    # terminals on top
+    for x in (5, 10):
+        px[x, 2] = rgba("#e8a03a")
+    return img
+
+
+def crusher_front(on):
+    """Two toothed grinding wheels behind a window; brighter, with sparks, while running."""
+    img = casing()
+    px = img.load()
+    window(img, 3, 4, 12, 11)
+    for y in range(4, 12):
+        for x in range(3, 13):
+            px[x, y] = rgba("#16181c")
+    import math
+    for wx, spin in ((5.5, 1), (9.5, -1)):
+        for y in range(4, 12):
+            for x in range(3, 13):
+                dx, dy = x - wx, y - 7.5
+                r = math.hypot(dx, dy)
+                ang = math.atan2(dy, dx) * spin + (0.4 if on else 0)
+                tooth = math.cos(ang * 6) > 0.1
+                if r <= (2.9 if tooth else 2.1):
+                    lit = -(dx + dy) / max(r, 0.1)
+                    c = STEEL[1] if r < 0.8 else STEEL[6] if lit > 0.5 else STEEL[4] if lit > -0.3 else STEEL[2]
+                    px[x, y] = rgba(c)
+    if on:
+        for x, y in ((7, 5), (8, 10), (7, 9)):
+            px[x, y] = rgba(FIRE[5])
+    for x in range(5, 11):
+        px[x, 13] = rgba(COPPER[3] if on else COPPER[1])
+    return img
+
+
+def energy_cable():
+    """Braided bare copper, the tier 1 conductor."""
+    img = Image.new("RGBA", (16, 16))
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            braid = (x + y) % 4 < 2
+            other = (x - y) % 4 < 2
+            c = COPPER[4] if braid and other else COPPER[3] if braid or other else COPPER[2]
+            if (x + 2 * y) % 7 == 0:
+                c = COPPER[5]
+            px[x, y] = rgba(c)
+    return img
+
+
 # ------------------------------------------------------------------ screen
 def gui():
     W, H = 176, 166
@@ -202,6 +300,17 @@ def gui():
         for y in range(48):
             stripe = (y % 4 == 0)
             img.putpixel((bx + 17 + x, by + 1 + y), (*(tuple(max(0, v - 25) for v in c) if stripe else c), 255))
+    # flame, unlit and lit (14x14 each)
+    flame = ["......##......", ".....####.....", "....######....", "...#######....", "...########...",
+             "..##########..", "..##########..", ".############.", ".############.", "##############",
+             "##############", ".############.", "..##########..", "...########..."]
+    fire = [(255, 236, 140), (255, 196, 64), (247, 130, 30), (214, 70, 20)]
+    for j, row in enumerate(flame):
+        for i, ch in enumerate(row):
+            if ch == "#":
+                img.putpixel((176 + i, 78 + j), (120, 120, 120, 255))
+                c = fire[0] if j > 9 and 4 <= i <= 9 else fire[1] if j > 6 else fire[2] if j > 3 else fire[3]
+                img.putpixel((190 + i, 78 + j), (*c, 255))
     return img
 
 
@@ -215,6 +324,13 @@ def main():
         "block/electric_furnace_front": furnace_front(False),
         "block/electric_furnace_front_on": furnace_front(True),
         "block/creative_power_cell": creative_cell(),
+        "block/combustion_generator_front": generator_front(False),
+        "block/combustion_generator_front_on": generator_front(True),
+        "block/basic_battery_front": battery_front(False),
+        "block/basic_battery_front_on": battery_front(True),
+        "block/crusher_front": crusher_front(False),
+        "block/crusher_front_on": crusher_front(True),
+        "block/energy_cable": energy_cable(),
         "gui/machine": gui(),
     }
     for name, img in out.items():
