@@ -83,7 +83,7 @@ public class AnimalRancherBlockEntity extends MachineBlockEntity {
                 }
             }
         }
-        if (animals.size() < CAP) did |= breed(animals);
+        if (animals.size() < com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.RANCHER_CAP)) did |= breed(animals);
         collect(level, area);
         if (did) setChanged();
         return did;

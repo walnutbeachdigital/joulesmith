@@ -32,7 +32,8 @@ public class WindTurbineBlockEntity extends MachineBlockEntity {
     /** FE/t at this spot right now. */
     private int rate(Level level, BlockPos pos) {
         float height = Mth.clamp((pos.getY() - LOW) / (float) (HIGH - LOW), 0f, 1f);
-        float base = MIN + (MAX - MIN) * height;
+        int min = com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.WIND_MIN), max = com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.WIND_MAX);
+        float base = min + (max - min) * height;
         int open = 0, total = 0;
         for (int dx = -2; dx <= 2; dx++) {
             for (int dy = -1; dy <= 2; dy++) {

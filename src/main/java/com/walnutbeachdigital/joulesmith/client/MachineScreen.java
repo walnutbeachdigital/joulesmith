@@ -279,6 +279,9 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
         List<Component> tip = new ArrayList<>();
         if (menu.value(1) > 0 && rx >= BAR_X && rx < BAR_X + 16 && ry >= BAR_Y && ry < BAR_Y + 50) {
             tip.add(Component.translatable("gui.joulesmith.energy", String.format("%,d", menu.value(0)), String.format("%,d", menu.value(1))));
+            int made = menu.value(MachineBlockEntity.MADE), used = menu.value(MachineBlockEntity.USED);
+            if (made > 0) tip.add(Component.translatable("gui.joulesmith.energy.making", String.format("%,d", made)).withStyle(net.minecraft.ChatFormatting.GREEN));
+            if (used > 0) tip.add(Component.translatable("gui.joulesmith.energy.using", String.format("%,d", used)).withStyle(net.minecraft.ChatFormatting.GRAY));
         } else if (tankAt(rx, ry) >= 0) {
             int t = tankAt(rx, ry);
             FluidStack fluid = menu.fluid(t);

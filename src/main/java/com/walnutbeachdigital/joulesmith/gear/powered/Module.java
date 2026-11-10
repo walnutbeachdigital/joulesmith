@@ -36,8 +36,8 @@ public enum Module implements StringRepresentable {
     SOLAR(Kind.HELMET, null, 0),
     JETPACK(Kind.CHESTPLATE, null, 0),
     SWIFTNESS(Kind.LEGGINGS, null, 0),
-    JUMP_BOOST(Kind.LEGGINGS, null, 0),
-    STEP_ASSIST(Kind.BOOTS, null, 0),
+    STEP_ASSIST(Kind.LEGGINGS, null, 0),
+    JUMP_BOOST(Kind.BOOTS, null, 0),
     FALL_PROTECTION(Kind.BOOTS, null, 0);
 
     /** What a module can be fitted to. */

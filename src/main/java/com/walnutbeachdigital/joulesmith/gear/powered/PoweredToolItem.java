@@ -36,7 +36,8 @@ public abstract class PoweredToolItem extends Item implements PoweredItem {
 
     /** The FE one block costs. */
     public static int cost(ItemStack stack) {
-        return PoweredItem.hasModule(stack, Module.SPEED) ? COST * 3 / 2 : COST;
+        int cost = com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.TOOL_COST);
+        return PoweredItem.hasModule(stack, Module.SPEED) ? cost * 3 / 2 : cost;
     }
 
     protected static boolean charged(ItemStack stack) {

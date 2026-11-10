@@ -45,7 +45,7 @@ public class CombustionGeneratorBlockEntity extends MachineBlockEntity {
         }
         if (progress > 0) {
             progress--;
-            energy.generate(GENERATION);
+            energy.generate(com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.COMBUSTION));
             burning = true;
             setChanged();
         }

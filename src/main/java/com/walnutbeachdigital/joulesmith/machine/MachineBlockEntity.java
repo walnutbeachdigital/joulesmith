@@ -169,6 +169,11 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         }
         wasPowered = powered;
         boolean running = work(level, pos, allowed);
+        if (level.getGameTime() % 20 == 0) {
+            long[] sample = energy.sample();
+            madePerTick = (int) (sample[0] / 20);
+            usedPerTick = (int) (sample[1] / 20);
+        }
         if (allowed && level.getGameTime() % EJECT_INTERVAL == 0 && upgrades(UpgradeCardItem.Type.EJECT) > 0) {
             eject(level, pos);
         }
@@ -186,8 +191,10 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         Process process = allowed ? findProcess() : null;
         if (process != null && outputFits(process)) {
             int speed = upgrades(UpgradeCardItem.Type.SPEED), saving = upgrades(UpgradeCardItem.Type.EFFICIENCY);
-            int ticks = Math.max(1, (int) Math.ceil(process.ticks() / (1 + 0.5 * speed)));
-            double total = (double) process.energyPerTick() * process.ticks() * (1 + 0.25 * speed) * Math.max(0.4, 1 - 0.2 * saving);
+            double configSpeed = com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.MACHINE_SPEED);
+            int ticks = Math.max(1, (int) Math.ceil(process.ticks() / (1 + 0.5 * speed) / configSpeed));
+            double total = (double) process.energyPerTick() * process.ticks() * (1 + 0.25 * speed) * Math.max(0.4, 1 - 0.2 * saving)
+                    * com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.MACHINE_ENERGY);
             int perTick = Math.max(1, (int) Math.ceil(total / ticks));
             maxProgress = ticks;
             if (energy.getEnergyStored() >= perTick) {
@@ -463,7 +470,9 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
      * Values the screen shows: 0 energy, 1 capacity, 2 progress, 3 max progress, 4 redstone mode,
      * 5 face settings, then for each of up to two tanks: fluid (registry id), amount, capacity.
      */
-    public static final int MAX_TANKS = 2, VALUES = 6 + 3 * MAX_TANKS;
+    /** 0-5 energy, progress, redstone, sides; then 3 per tank; then FE/t made and used (averaged over a second). */
+    public static final int MAX_TANKS = 2, VALUES = 6 + 3 * MAX_TANKS + 2, MADE = 6 + 3 * MAX_TANKS, USED = MADE + 1;
+    private int madePerTick, usedPerTick;
 
     public int value(int index) {
         return switch (index) {
@@ -472,6 +481,8 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
             case 2 -> progress;
             case 3 -> maxProgress;
             case 4 -> redstone.ordinal();
+            case MADE -> madePerTick;
+            case USED -> usedPerTick;
             case 5 -> {
                 int packed = 0;
                 for (int f = 0; f < sides.length; f++) packed |= sides[f].ordinal() << (f * 2);

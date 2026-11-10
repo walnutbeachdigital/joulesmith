@@ -38,6 +38,7 @@ public class Joulesmith {
         JSRecipes.SERIALIZERS.register(modEventBus);
         modEventBus.addListener(JSCapabilities::register);
         com.walnutbeachdigital.joulesmith.gear.powered.PoweredGearEvents.register();
+        modContainer.registerConfig(net.neoforged.fml.config.ModConfig.Type.COMMON, JSConfig.SPEC);
         modEventBus.addListener(com.walnutbeachdigital.joulesmith.compat.top.TopCompat::enqueue);
     }
 

@@ -45,9 +45,9 @@ public class BiofuelGeneratorBlockEntity extends MachineBlockEntity {
     @Override
     protected boolean work(Level level, BlockPos pos, boolean allowed) {
         boolean burning = false;
-        if (allowed && tank.getFluidAmount() >= MB_PER_TICK && energy.getEnergyStored() + GENERATION <= energy.getMaxEnergyStored()) {
+        if (allowed && tank.getFluidAmount() >= MB_PER_TICK && energy.getEnergyStored() + com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.BIOFUEL) <= energy.getMaxEnergyStored()) {
             tank.drain(MB_PER_TICK, IFluidHandler.FluidAction.EXECUTE);
-            energy.generate(GENERATION);
+            energy.generate(com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.BIOFUEL));
             burning = true;
         }
         pushEnergy(level, pos, OUTPUT);

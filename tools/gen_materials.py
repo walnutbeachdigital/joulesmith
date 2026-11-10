@@ -1043,6 +1043,8 @@ shaped("conveyor_belt", ["RRR", "IGI"], {"R": f"{MOD}:rubber", "I": "#c:ingots/i
 lang.update({
     f"block.{MOD}.conveyor_belt": "Conveyor Belt",
     "jade.joulesmith.making": "Making %s FE/t",
+    "gui.joulesmith.energy.making": "Making %s FE/t",
+    "gui.joulesmith.energy.using": "Using %s FE/t",
     "config.jade.plugin_joulesmith.machine": "Joulesmith machine progress",
     "config.jade.plugin_joulesmith.solar_panel": "Joulesmith solar output",
 })
@@ -1132,8 +1134,8 @@ MODULES = {
     "jetpack": ("Jetpack Module", "Fly as in creative, using power while flying", "chestplate",
                 ["minecraft:phantom_membrane", "minecraft:phantom_membrane", "minecraft:firework_rocket"]),
     "swiftness": ("Swiftness Module", "Run 35% faster", "leggings", ["minecraft:sugar", "minecraft:sugar"]),
-    "jump_boost": ("Jump Boost Module", "Jump about two blocks high", "leggings", ["minecraft:rabbit_foot"]),
-    "step_assist": ("Step Assist Module", "Walk straight up full blocks", "boots", ["#minecraft:stairs", "minecraft:piston"]),
+    "jump_boost": ("Jump Boost Module", "Jump about two blocks high", "boots", ["minecraft:rabbit_foot"]),
+    "step_assist": ("Step Assist Module", "Walk straight up full blocks", "leggings", ["#minecraft:stairs", "minecraft:piston"]),
     "fall_protection": ("Fall Protection Module", "No fall damage while charged", "boots", ["minecraft:slime_ball", "minecraft:feather"]),
 }
 FITS = {"tool": "Fits: Power Drill, Chainsaw", "weapon": "Fits: Energy Sword", "tool_or_weapon": "Fits: Power Drill, Chainsaw, Energy Sword",

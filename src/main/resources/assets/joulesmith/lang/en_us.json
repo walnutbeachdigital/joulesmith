@@ -198,6 +198,8 @@
   "tooltip.joulesmith.fertilizer": "Works like three bone meal; Hydroponic Beds grow twice as fast with it",
   "block.joulesmith.conveyor_belt": "Conveyor Belt",
   "jade.joulesmith.making": "Making %s FE/t",
+  "gui.joulesmith.energy.making": "Making %s FE/t",
+  "gui.joulesmith.energy.using": "Using %s FE/t",
   "config.jade.plugin_joulesmith.machine": "Joulesmith machine progress",
   "config.jade.plugin_joulesmith.solar_panel": "Joulesmith solar output",
   "fluid_type.joulesmith.iron_slurry": "Iron Slurry",

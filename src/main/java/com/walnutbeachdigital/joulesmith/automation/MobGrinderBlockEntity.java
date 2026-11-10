@@ -81,7 +81,7 @@ public class MobGrinderBlockEntity extends MachineBlockEntity {
         DamageSource source = level.damageSources().playerAttack(player);
         for (Mob mob : level.getEntitiesOfClass(Mob.class, area, MobGrinderBlockEntity::target)) {
             if (energy.getEnergyStored() < ENERGY_PER_HIT) break;
-            if (mob.hurt(source, DAMAGE)) {
+            if (mob.hurt(source, com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.GRINDER_DAMAGE))) {
                 energy.consume(ENERGY_PER_HIT);
                 hit = true;
             }

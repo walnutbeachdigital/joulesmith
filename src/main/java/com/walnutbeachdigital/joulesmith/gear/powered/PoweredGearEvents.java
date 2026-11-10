@@ -132,7 +132,7 @@ public final class PoweredGearEvents {
         for (EquipmentSlot slot : ARMOR) {
             ItemStack piece = entity.getItemBySlot(slot);
             if (!(piece.getItem() instanceof ExoArmorItem)) continue;
-            float share = amount * ExoArmorItem.ABSORB;
+            float share = (float) (amount * com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.EXO_ABSORB));
             int cost = (int) Math.ceil(share * ExoArmorItem.FE_PER_POINT);
             if (PoweredItem.use(piece, cost, entity)) absorbed += share;
         }
@@ -178,14 +178,14 @@ public final class PoweredGearEvents {
         }
         modifier(player, Attributes.MOVEMENT_SPEED, SWIFTNESS, active(legs, Module.SWIFTNESS, player, server && player.isSprinting()),
                 0.35, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-        modifier(player, Attributes.JUMP_STRENGTH, JUMP, active(legs, Module.JUMP_BOOST, player, false),
+        modifier(player, Attributes.JUMP_STRENGTH, JUMP, active(feet, Module.JUMP_BOOST, player, false),
                 0.17, AttributeModifier.Operation.ADD_VALUE);
-        modifier(player, Attributes.STEP_HEIGHT, STEP, active(feet, Module.STEP_ASSIST, player, false),
+        modifier(player, Attributes.STEP_HEIGHT, STEP, active(legs, Module.STEP_ASSIST, player, false),
                 0.5, AttributeModifier.Operation.ADD_VALUE);
 
-        boolean jetpack = chest != null && PoweredItem.hasModule(chest, Module.JETPACK) && PoweredItem.has(chest, JETPACK_COST, player);
+        boolean jetpack = chest != null && PoweredItem.hasModule(chest, Module.JETPACK) && PoweredItem.has(chest, com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.JETPACK_COST), player);
         if (jetpack && server && player.getAbilities().flying && !player.getAbilities().instabuild) {
-            PoweredItem.use(chest, JETPACK_COST, player);
+            PoweredItem.use(chest, com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.JETPACK_COST), player);
         }
         modifier(player, NeoForgeMod.CREATIVE_FLIGHT, JETPACK, jetpack, 1.0, AttributeModifier.Operation.ADD_VALUE);
     }

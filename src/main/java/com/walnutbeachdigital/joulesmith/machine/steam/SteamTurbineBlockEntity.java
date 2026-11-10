@@ -44,11 +44,11 @@ public class SteamTurbineBlockEntity extends MachineBlockEntity {
 
     @Override
     protected boolean work(Level level, BlockPos pos, boolean allowed) {
-        int room = (energy.getMaxEnergyStored() - energy.getEnergyStored()) / FE_PER_MB;
+        int room = (energy.getMaxEnergyStored() - energy.getEnergyStored()) / com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.STEAM_FE_PER_MB);
         int used = allowed ? Math.min(MAX_STEAM, Math.min(steam.getFluidAmount(), room)) : 0;
         if (used > 0) {
             steam.drain(used, IFluidHandler.FluidAction.EXECUTE);
-            energy.generate(used * FE_PER_MB);
+            energy.generate(used * com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.STEAM_FE_PER_MB));
         }
         pushEnergy(level, pos, OUTPUT);
         return used > 0;

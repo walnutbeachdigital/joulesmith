@@ -41,7 +41,7 @@ public class EnergySwordItem extends Item implements PoweredItem {
     public float getAttackDamageBonus(Entity target, float damage, DamageSource source) {
         ItemStack stack = source.getWeaponItem();
         if (stack == null || !(stack.getItem() instanceof EnergySwordItem)) return 0;
-        if (!PoweredItem.has(stack, COST, source.getEntity() instanceof LivingEntity l ? l : null)) {
+        if (!PoweredItem.has(stack, com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.SWORD_COST), source.getEntity() instanceof LivingEntity l ? l : null)) {
             return 1.0f - damage;                                        // empty: a bare-handed hit
         }
         return MAX_BONUS * PoweredItem.energy(stack) / capacity();
@@ -49,7 +49,7 @@ public class EnergySwordItem extends Item implements PoweredItem {
 
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        PoweredItem.use(stack, COST, attacker);
+        PoweredItem.use(stack, com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.SWORD_COST), attacker);
         return true;
     }
 

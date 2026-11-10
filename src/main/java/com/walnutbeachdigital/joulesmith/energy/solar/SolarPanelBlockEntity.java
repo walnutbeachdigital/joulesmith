@@ -39,7 +39,7 @@ public class SolarPanelBlockEntity extends BlockEntity {
     public static int output(Level level, BlockPos pos, int rate) {
         if (!level.dimensionType().hasSkyLight() || !level.canSeeSky(pos.above())) return 0;
         int light = level.getBrightness(LightLayer.SKY, pos.above()) - level.getSkyDarken();
-        return Math.max(0, rate * light / 15);
+        return (int) Math.max(0, rate * com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.SOLAR) * light / 15);
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, SolarPanelBlockEntity panel) {

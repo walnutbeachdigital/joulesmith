@@ -60,18 +60,18 @@ public class GeothermalGeneratorBlockEntity extends MachineBlockEntity {
                 total += 5;
             }
         }
-        return Math.min(GENERATION, total);
+        return Math.min(com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.GEOTHERMAL), total);
     }
 
     @Override
     protected boolean work(Level level, BlockPos pos, boolean allowed) {
         if (heat < 0 || level.getGameTime() % 20 == 0) heat = surroundingHeat(level, pos);
         boolean running = false;
-        if (allowed && energy.getEnergyStored() + GENERATION <= energy.getMaxEnergyStored()) {
+        if (allowed && energy.getEnergyStored() + com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.GEOTHERMAL) <= energy.getMaxEnergyStored()) {
             int made = heat;
-            if (made < GENERATION && tank.getFluidAmount() >= 1) {
+            if (made < com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.GEOTHERMAL) && tank.getFluidAmount() >= 1) {
                 tank.drain(1, IFluidHandler.FluidAction.EXECUTE);
-                made = GENERATION;
+                made = com.walnutbeachdigital.joulesmith.JSConfig.get(com.walnutbeachdigital.joulesmith.JSConfig.GEOTHERMAL);
             }
             if (made > 0) {
                 energy.generate(made);

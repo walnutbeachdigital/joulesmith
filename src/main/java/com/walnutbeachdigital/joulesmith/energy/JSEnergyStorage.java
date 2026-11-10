@@ -20,6 +20,7 @@ public class JSEnergyStorage extends EnergyStorage {
         int added = Math.min(amount, capacity - energy);
         if (added > 0) {
             energy += added;
+            made += added;
             onChange.run();
         }
         return added;
@@ -30,9 +31,20 @@ public class JSEnergyStorage extends EnergyStorage {
         int removed = Math.min(amount, energy);
         if (removed > 0) {
             energy -= removed;
+            used += removed;
             onChange.run();
         }
         return removed;
+    }
+
+    /** FE made and used since the last {@link #sample}, for the FE/t shown on the energy bar. */
+    private long made, used;
+
+    /** Returns {made, used} since the last call and starts counting again. */
+    public long[] sample() {
+        long[] out = {made, used};
+        made = used = 0;
+        return out;
     }
 
     public void setEnergy(int amount) {
