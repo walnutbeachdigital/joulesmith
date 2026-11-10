@@ -208,3 +208,7 @@ Wireless Transmitter || 无线发射器 || Беспроводной переда
 Works like three bone meal; Hydroponic Beds grow twice as fast with it || 效果相当于三份骨粉；水培床使用它时生长速度翻倍 || Действует как три костной муки; гидропонные грядки растят вдвое быстрее || Funciona como tres polvos de hueso; los lechos hidropónicos crecen el doble de rápido con él || Wirkt wie drei Knochenmehl; Hydrokulturbeete wachsen damit doppelt so schnell || Funciona como três farinhas de osso; canteiros hidropônicos crescem duas vezes mais rápido com ele
 Wrench || 扳手 || Гаечный ключ || Llave inglesa || Schraubenschlüssel || Chave inglesa
 You need a Blank Pattern in your inventory || 你的物品栏中需要有空白样板 || В инвентаре нужен пустой шаблон || Necesitas un patrón en blanco en tu inventario || Du brauchst ein leeres Muster im Inventar || Você precisa de um padrão em branco no inventário
+Joulesmith: Materials || Joulesmith：材料 || Joulesmith: материалы || Joulesmith: materiales || Joulesmith: Materialien || Joulesmith: materiais
+Joulesmith: Machines || Joulesmith：机器 || Joulesmith: машины || Joulesmith: máquinas || Joulesmith: Maschinen || Joulesmith: máquinas
+Joulesmith: Logistics || Joulesmith：物流 || Joulesmith: логистика || Joulesmith: logística || Joulesmith: Logistik || Joulesmith: logística
+Joulesmith: Gear || Joulesmith：装备 || Joulesmith: снаряжение || Joulesmith: equipo || Joulesmith: Ausrüstung || Joulesmith: equipamento

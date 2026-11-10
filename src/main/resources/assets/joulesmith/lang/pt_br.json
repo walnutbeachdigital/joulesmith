@@ -1,5 +1,8 @@
 {
-  "itemGroup.joulesmith": "Joulesmith",
+  "itemGroup.joulesmith": "Joulesmith: materiais",
+  "itemGroup.joulesmith.machines": "Joulesmith: m\u00e1quinas",
+  "itemGroup.joulesmith.logistics": "Joulesmith: log\u00edstica",
+  "itemGroup.joulesmith.gear": "Joulesmith: equipamento",
   "block.joulesmith.tin_ore": "Min\u00e9rio de estanho",
   "block.joulesmith.deepslate_tin_ore": "Min\u00e9rio de estanho de ard\u00f3sia profunda",
   "block.joulesmith.raw_tin_block": "Bloco de estanho bruto",

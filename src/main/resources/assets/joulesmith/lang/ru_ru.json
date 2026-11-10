@@ -1,5 +1,8 @@
 {
-  "itemGroup.joulesmith": "Joulesmith",
+  "itemGroup.joulesmith": "Joulesmith: \u043c\u0430\u0442\u0435\u0440\u0438\u0430\u043b\u044b",
+  "itemGroup.joulesmith.machines": "Joulesmith: \u043c\u0430\u0448\u0438\u043d\u044b",
+  "itemGroup.joulesmith.logistics": "Joulesmith: \u043b\u043e\u0433\u0438\u0441\u0442\u0438\u043a\u0430",
+  "itemGroup.joulesmith.gear": "Joulesmith: \u0441\u043d\u0430\u0440\u044f\u0436\u0435\u043d\u0438\u0435",
   "block.joulesmith.tin_ore": "\u0420\u0443\u0434\u0430 \u043e\u043b\u043e\u0432\u0430",
   "block.joulesmith.deepslate_tin_ore": "\u0413\u043b\u0443\u0431\u0438\u043d\u043d\u0430\u044f \u0440\u0443\u0434\u0430 \u043e\u043b\u043e\u0432\u0430",
   "block.joulesmith.raw_tin_block": "\u0411\u043b\u043e\u043a \u0440\u0443\u0434\u043d\u043e\u0433\u043e \u043e\u043b\u043e\u0432\u0430",

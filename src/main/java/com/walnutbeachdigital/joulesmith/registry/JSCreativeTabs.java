@@ -14,13 +14,25 @@ public final class JSCreativeTabs {
     public static final DeferredRegister<CreativeModeTab> TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Joulesmith.MODID);
 
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN = TABS.register("main",
-            () -> CreativeModeTab.builder()
-                    .title(Component.translatable("itemGroup.joulesmith"))
-                    .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
-                    .icon(() -> JSItems.INGOT.get(Metal.TIN).get().getDefaultInstance())
-                    .displayItems((params, output) -> JSItems.TAB_ORDER.forEach(item -> output.accept(item.get())))
-                    .build());
+    /** Materials keeps the old "main" id so it stays where players had it. */
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN = tab("main", "itemGroup.joulesmith",
+            CreativeLayout.Tab.MATERIALS, () -> JSItems.INGOT.get(Metal.TIN).get().getDefaultInstance(), CreativeModeTabs.SPAWN_EGGS);
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MACHINES = tab("machines", "itemGroup.joulesmith.machines",
+            CreativeLayout.Tab.MACHINES, () -> JSBlocks.CRUSHER.get().asItem().getDefaultInstance(), MAIN.getKey());
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> LOGISTICS = tab("logistics", "itemGroup.joulesmith.logistics",
+            CreativeLayout.Tab.LOGISTICS, () -> JSBlocks.ITEM_DUCT.get().asItem().getDefaultInstance(), MACHINES.getKey());
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> GEAR = tab("gear", "itemGroup.joulesmith.gear",
+            CreativeLayout.Tab.GEAR, () -> JSGear.POWER_DRILL.get().getDefaultInstance(), LOGISTICS.getKey());
+
+    private static DeferredHolder<CreativeModeTab, CreativeModeTab> tab(String id, String title, CreativeLayout.Tab layout,
+            java.util.function.Supplier<net.minecraft.world.item.ItemStack> icon, net.minecraft.resources.ResourceKey<CreativeModeTab> after) {
+        return TABS.register(id, () -> CreativeModeTab.builder()
+                .title(Component.translatable(title))
+                .withTabsBefore(after)
+                .icon(icon)
+                .displayItems((params, output) -> CreativeLayout.items(layout).forEach(output::accept))
+                .build());
+    }
 
     private JSCreativeTabs() {}
 }

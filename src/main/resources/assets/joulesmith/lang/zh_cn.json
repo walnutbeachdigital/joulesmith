@@ -1,5 +1,8 @@
 {
-  "itemGroup.joulesmith": "Joulesmith",
+  "itemGroup.joulesmith": "Joulesmith\uff1a\u6750\u6599",
+  "itemGroup.joulesmith.machines": "Joulesmith\uff1a\u673a\u5668",
+  "itemGroup.joulesmith.logistics": "Joulesmith\uff1a\u7269\u6d41",
+  "itemGroup.joulesmith.gear": "Joulesmith\uff1a\u88c5\u5907",
   "block.joulesmith.tin_ore": "\u9521\u77ff\u77f3",
   "block.joulesmith.deepslate_tin_ore": "\u6df1\u5c42\u9521\u77ff\u77f3",
   "block.joulesmith.raw_tin_block": "\u7c97\u9521\u5757",

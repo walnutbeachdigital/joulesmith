@@ -99,6 +99,17 @@ public class JoulesmithJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(JSBlocks.ELECTRIC_FURNACE.get()), RecipeTypes.SMELTING);
         registration.addRecipeCatalyst(new ItemStack(JSBlocks.COMBUSTION_GENERATOR.get()), RecipeTypes.FUELING);
         machines().forEach((kind, block) -> registration.addRecipeCatalyst(new ItemStack(block), MachineRecipeCategory.typeOf(kind)));
+        // blocks that craft vanilla recipes
+        registration.addRecipeCatalyst(new ItemStack(JSBlocks.CRAFTING_TERMINAL.get()), RecipeTypes.CRAFTING);
+        registration.addRecipeCatalyst(new ItemStack(JSBlocks.AUTOCRAFTER.get()), RecipeTypes.CRAFTING);
+        registration.addRecipeCatalyst(new ItemStack(JSBlocks.CRAFTING_CPU.get()), RecipeTypes.CRAFTING);
+    }
+
+    /** An empty Pattern is only ever made by encoding one; JEI needn't list it (the Blank Pattern is listed). */
+    @Override
+    public void onRuntimeAvailable(mezz.jei.api.runtime.IJeiRuntime runtime) {
+        runtime.getIngredientManager().removeIngredientsAtRuntime(mezz.jei.api.constants.VanillaTypes.ITEM_STACK,
+                java.util.List.of(new ItemStack(JSItems.PATTERN.get())));
     }
 
     @Override

@@ -1,5 +1,8 @@
 {
-  "itemGroup.joulesmith": "Joulesmith",
+  "itemGroup.joulesmith": "Joulesmith: Materialien",
+  "itemGroup.joulesmith.machines": "Joulesmith: Maschinen",
+  "itemGroup.joulesmith.logistics": "Joulesmith: Logistik",
+  "itemGroup.joulesmith.gear": "Joulesmith: Ausr\u00fcstung",
   "block.joulesmith.tin_ore": "Zinnerz",
   "block.joulesmith.deepslate_tin_ore": "Tiefenschiefer-Zinnerz",
   "block.joulesmith.raw_tin_block": "Rohzinnblock",

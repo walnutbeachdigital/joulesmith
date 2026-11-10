@@ -1,5 +1,8 @@
 {
-  "itemGroup.joulesmith": "Joulesmith",
+  "itemGroup.joulesmith": "Joulesmith: Materials",
+  "itemGroup.joulesmith.machines": "Joulesmith: Machines",
+  "itemGroup.joulesmith.logistics": "Joulesmith: Logistics",
+  "itemGroup.joulesmith.gear": "Joulesmith: Gear",
   "block.joulesmith.tin_ore": "Tin Ore",
   "block.joulesmith.deepslate_tin_ore": "Deepslate Tin Ore",
   "block.joulesmith.raw_tin_block": "Block of Raw Tin",

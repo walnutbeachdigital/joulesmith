@@ -265,7 +265,8 @@ for m, o in ORES.items():
         "features": f"{MOD}:ore_{m}", "step": "underground_ores"})
 
 # ------------------------------------------------------------------------ lang
-lang = {"itemGroup.joulesmith": "Joulesmith"}
+lang = {"itemGroup.joulesmith": "Joulesmith: Materials", "itemGroup.joulesmith.machines": "Joulesmith: Machines",
+        "itemGroup.joulesmith.logistics": "Joulesmith: Logistics", "itemGroup.joulesmith.gear": "Joulesmith: Gear"}
 for bid, kind, m in blocks:
     lang[f"block.{MOD}.{bid}"] = {
         "ore": f"{title(m)} Ore", "deepslate_ore": f"Deepslate {title(m)} Ore",
