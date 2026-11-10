@@ -120,6 +120,8 @@
     "joulesmith:crafting_cpu",
     "joulesmith:network_cable",
     "joulesmith:import_bus",
-    "joulesmith:export_bus"
+    "joulesmith:export_bus",
+    "joulesmith:fluid_import_bus",
+    "joulesmith:fluid_export_bus"
   ]
 }

@@ -1,0 +1,7 @@
+{
+  "parent": "joulesmith:block/network_bus",
+  "textures": {
+    "front": "joulesmith:block/fluid_import_bus_front",
+    "side": "joulesmith:block/network_side"
+  }
+}

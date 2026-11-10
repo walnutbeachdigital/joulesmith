@@ -20,6 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 /**
  * The Network Terminal: a 9x6 grid of everything on the network, sorted by count, with a search box (type
@@ -30,7 +31,12 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
     private static final ResourceLocation TEXTURE = Joulesmith.id("textures/gui/network_terminal.png");
     private EditBox search;
     private int scroll;
-    private List<BinContents> view = List.of();
+    /** One cell of the grid: an item (count) or a fluid (mB). */
+    private record Entry(ItemStack item, FluidStack fluid, int count) {
+        String name() { return fluid.isEmpty() ? item.getHoverName().getString() : fluid.getHoverName().getString(); }
+    }
+
+    private List<Entry> view = List.of();
 
     private static final ResourceLocation CRAFTING_TEXTURE = Joulesmith.id("textures/gui/crafting_terminal.png");
     private final int rows;
@@ -71,15 +77,18 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
         for (ItemStack c : menu.craftable()) {                     // things patterns can make, shown even when none are stored
             if (all.stream().noneMatch(b -> ItemStack.isSameItemSameComponents(b.item(), c))) all.add(new BinContents(c, 0));
         }
-        List<BinContents> list = new ArrayList<>();
-        for (BinContents c : all) {
-            if (q.isEmpty()) list.add(c);
-            else if (q.startsWith("@")) {
-                if (net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(c.item().getItem()).getNamespace().contains(q.substring(1))) list.add(c);
-            } else if (c.item().getHoverName().getString().toLowerCase(Locale.ROOT).contains(q)) list.add(c);
+        List<Entry> entries = new ArrayList<>();
+        for (BinContents c : all) entries.add(new Entry(c.item(), FluidStack.EMPTY, c.count()));
+        for (FluidStack f : menu.fluids()) entries.add(new Entry(ItemStack.EMPTY, f, f.getAmount()));
+        List<Entry> list = new ArrayList<>();
+        for (Entry e : entries) {
+            String mod = e.fluid().isEmpty() ? net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(e.item().getItem()).getNamespace()
+                    : net.minecraft.core.registries.BuiltInRegistries.FLUID.getKey(e.fluid().getFluid()).getNamespace();
+            if (q.isEmpty() || (q.startsWith("@") ? mod.contains(q.substring(1)) : e.name().toLowerCase(Locale.ROOT).contains(q))) list.add(e);
         }
-        list.sort(Comparator.comparingInt(BinContents::count).reversed()
-                .thenComparing(c -> c.item().getHoverName().getString()));
+        // items by count, then fluids by amount
+        list.sort(Comparator.<Entry>comparingInt(e -> e.fluid().isEmpty() ? 0 : 1)
+                .thenComparing(Comparator.comparingInt(Entry::count).reversed()).thenComparing(Entry::name));
         view = list;
         scroll = Math.max(0, Math.min(scroll, maxScroll()));
     }
@@ -102,10 +111,16 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
         for (int i = 0; i < TerminalMenu.COLUMNS * rows; i++) {
             int index = scroll * TerminalMenu.COLUMNS + i;
             if (index >= view.size()) break;
-            BinContents c = view.get(index);
+            Entry c = view.get(index);
             int x = leftPos + TerminalMenu.GRID_X + (i % TerminalMenu.COLUMNS) * 18, y = topPos + TerminalMenu.GRID_Y + (i / TerminalMenu.COLUMNS) * 18;
-            g.renderItem(c.item(), x, y);
-            String n = c.count() == 0 ? Component.translatable("gui.joulesmith.terminal.craft").getString() : shortCount(c.count());
+            String n;
+            if (c.fluid().isEmpty()) {
+                g.renderItem(c.item(), x, y);
+                n = c.count() == 0 ? Component.translatable("gui.joulesmith.terminal.craft").getString() : shortCount(c.count());
+            } else {
+                drawFluid(g, c.fluid(), x, y);
+                n = shortCount(c.count() / 1000) + "B";
+            }
             g.pose().pushPose();
             g.pose().translate(x + 16, y + 12, 200);
             g.pose().scale(0.5f, 0.5f, 1);
@@ -117,11 +132,18 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
             int i = cell - scroll * TerminalMenu.COLUMNS;
             int x = leftPos + TerminalMenu.GRID_X + (i % TerminalMenu.COLUMNS) * 18, y = topPos + TerminalMenu.GRID_Y + (i / TerminalMenu.COLUMNS) * 18;
             g.fill(x, y, x + 16, y + 16, 0x80FFFFFF);
-            if (cell < view.size() && menu.getCarried().isEmpty()) {
-                BinContents c = view.get(cell);
-                List<Component> tip = new ArrayList<>(getTooltipFromContainerItem(c.item()));
-                tip.add(Component.translatable("gui.joulesmith.terminal.stored", String.format("%,d", c.count())).withStyle(ChatFormatting.GRAY));
-                if (craftable(c.item())) tip.add(Component.translatable("gui.joulesmith.terminal.craft_hint").withStyle(ChatFormatting.AQUA));
+            if (cell < view.size() && (menu.getCarried().isEmpty() || !view.get(cell).fluid().isEmpty())) {
+                Entry c = view.get(cell);
+                List<Component> tip = new ArrayList<>();
+                if (c.fluid().isEmpty()) {
+                    tip.addAll(getTooltipFromContainerItem(c.item()));
+                    tip.add(Component.translatable("gui.joulesmith.terminal.stored", String.format("%,d", c.count())).withStyle(ChatFormatting.GRAY));
+                    if (craftable(c.item())) tip.add(Component.translatable("gui.joulesmith.terminal.craft_hint").withStyle(ChatFormatting.AQUA));
+                } else {
+                    tip.add(c.fluid().getHoverName());
+                    tip.add(Component.translatable("gui.joulesmith.terminal.stored_fluid", String.format("%,d", c.count())).withStyle(ChatFormatting.GRAY));
+                    tip.add(Component.translatable("gui.joulesmith.terminal.fill_hint").withStyle(ChatFormatting.AQUA));
+                }
                 g.renderComponentTooltip(font, tip, mouseX, mouseY);
             }
         }
@@ -130,6 +152,14 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
             g.drawString(font, off, leftPos + 8 + (TerminalMenu.COLUMNS * 18 - font.width(off)) / 2, topPos + TerminalMenu.GRID_Y + rows * 9 - 4, 0xFF5555, true);
         }
         renderTooltip(g, mouseX, mouseY);
+    }
+
+    private static void drawFluid(GuiGraphics g, FluidStack fluid, int x, int y) {
+        var ext = net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions.of(fluid.getFluid());
+        var sprite = net.minecraft.client.Minecraft.getInstance().getTextureAtlas(net.minecraft.world.inventory.InventoryMenu.BLOCK_ATLAS)
+                .apply(ext.getStillTexture(fluid));
+        int color = ext.getTintColor(fluid);
+        g.blit(x, y, 0, 16, 16, sprite, (color >> 16 & 255) / 255f, (color >> 8 & 255) / 255f, (color & 255) / 255f, 1f);
     }
 
     private static String shortCount(int n) {
@@ -160,11 +190,15 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
             ItemStack carried = menu.getCarried();
             int action;
             ItemStack like = ItemStack.EMPTY;
-            if (!carried.isEmpty()) {
+            FluidStack fluid = FluidStack.EMPTY;
+            if (!carried.isEmpty() && cell < view.size() && !view.get(cell).fluid().isEmpty()) {
+                fluid = view.get(cell).fluid();                     // a container held over a fluid: fill it
+                action = TerminalMenu.FILL;
+            } else if (!carried.isEmpty()) {
                 action = button == 0 ? TerminalMenu.INSERT_ALL : TerminalMenu.INSERT_ONE;
             } else {
-                if (cell >= view.size()) return true;
-                BinContents c = view.get(cell);
+                if (cell >= view.size() || !view.get(cell).fluid().isEmpty()) return true;
+                Entry c = view.get(cell);
                 like = c.item();
                 if (craftable(like) && (Screen.hasControlDown() || c.count() == 0)) {
                     action = Screen.hasShiftDown() ? TerminalMenu.CRAFT_STACK : TerminalMenu.CRAFT_ONE;
@@ -172,7 +206,7 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
                     action = Screen.hasShiftDown() ? TerminalMenu.TAKE_TO_INVENTORY : button == 0 ? TerminalMenu.TAKE_STACK : TerminalMenu.TAKE_HALF;
                 }
             }
-            PacketDistributor.sendToServer(new TerminalPayloads.Action(menu.containerId, like, action));
+            PacketDistributor.sendToServer(new TerminalPayloads.Action(menu.containerId, like, fluid, action));
             return true;
         }
         return super.mouseClicked(mx, my, button);

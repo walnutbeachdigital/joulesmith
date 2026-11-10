@@ -46,18 +46,28 @@ public class BusBlock extends BaseEntityBlock implements NetworkPart {
             Direction.DOWN, Shapes.or(box(3, 0, 3, 13, 3, 13), box(5, 3, 5, 11, 8, 11)),
             Direction.UP, Shapes.or(box(3, 13, 3, 13, 16, 13), box(5, 8, 5, 11, 13, 11)));
 
-    private final boolean export;
+    private final boolean export, fluid;
     private final MapCodec<BusBlock> codec;
 
     public BusBlock(boolean export, Properties properties) {
+        this(export, false, properties);
+    }
+
+    /** {@code fluid}: a Fluid Import or Export Bus, moving fluids instead of items. */
+    public BusBlock(boolean export, boolean fluid, Properties properties) {
         super(properties);
         this.export = export;
-        this.codec = simpleCodec(p -> new BusBlock(export, p));
+        this.fluid = fluid;
+        this.codec = simpleCodec(p -> new BusBlock(export, fluid, p));
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
     public boolean export() {
         return export;
+    }
+
+    public boolean fluid() {
+        return fluid;
     }
 
     @Override

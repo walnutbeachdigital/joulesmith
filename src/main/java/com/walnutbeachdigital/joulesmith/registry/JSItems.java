@@ -40,6 +40,9 @@ public final class JSItems {
     public static final java.util.List<DeferredItem<com.walnutbeachdigital.joulesmith.network.DriveItem>> ITEM_DRIVES = java.util.List.of(
             drive("basic_item_drive", 4_096), drive("advanced_item_drive", 32_768),
             drive("elite_item_drive", 262_144), drive("ultimate_item_drive", 2_097_152));
+    public static final java.util.List<DeferredItem<com.walnutbeachdigital.joulesmith.network.FluidDriveItem>> FLUID_DRIVES = java.util.List.of(
+            fluidDrive("basic_fluid_drive", 64_000), fluidDrive("advanced_fluid_drive", 512_000),
+            fluidDrive("elite_fluid_drive", 4_096_000), fluidDrive("ultimate_fluid_drive", 32_768_000));
     public static final DeferredItem<Item> BLANK_PATTERN = ITEMS.registerSimpleItem("blank_pattern");
     public static final DeferredItem<com.walnutbeachdigital.joulesmith.network.PatternItem> PATTERN = register("pattern",
             () -> new com.walnutbeachdigital.joulesmith.network.PatternItem(new Item.Properties()));
@@ -108,6 +111,8 @@ public final class JSItems {
         blockItem(JSBlocks.CRAFTING_CPU);
         blockItem(JSBlocks.IMPORT_BUS);
         blockItem(JSBlocks.EXPORT_BUS);
+        blockItem(JSBlocks.FLUID_IMPORT_BUS);
+        blockItem(JSBlocks.FLUID_EXPORT_BUS);
         blockItem(JSBlocks.WIND_TURBINE);
         JSBlocks.SENSORS.values().forEach(JSItems::blockItem);
         blockItem(JSBlocks.LOGIC_CONTROLLER);
@@ -245,6 +250,10 @@ public final class JSItems {
 
     private static DeferredItem<com.walnutbeachdigital.joulesmith.network.DriveItem> drive(String name, int capacity) {
         return register(name, () -> new com.walnutbeachdigital.joulesmith.network.DriveItem(capacity, new Item.Properties()));
+    }
+
+    private static DeferredItem<com.walnutbeachdigital.joulesmith.network.FluidDriveItem> fluidDrive(String name, int capacity) {
+        return register(name, () -> new com.walnutbeachdigital.joulesmith.network.FluidDriveItem(capacity, new Item.Properties()));
     }
 
     private static DeferredItem<Item> item(String name) {

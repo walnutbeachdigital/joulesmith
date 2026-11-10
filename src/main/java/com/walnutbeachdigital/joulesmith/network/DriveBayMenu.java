@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 /** The Drive Bay's screen: vanilla's one-row chest, but its nine slots only take Item Drives, one each. */
 public class DriveBayMenu extends ChestMenu {
     public DriveBayMenu(int id, Inventory inventory, Container drives) {
-        this(id, inventory, drives, stack -> stack.getItem() instanceof DriveItem);
+        this(id, inventory, drives, DriveBayBlockEntity::isDrive);
     }
 
     /** The same for any nine single-item slots that take only what {@code allowed} accepts (the CPU's patterns too). */

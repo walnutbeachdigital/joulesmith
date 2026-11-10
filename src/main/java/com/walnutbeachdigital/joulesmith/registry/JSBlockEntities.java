@@ -204,7 +204,8 @@ public final class JSBlockEntities {
                     .of(com.walnutbeachdigital.joulesmith.network.CraftingCpuBlockEntity::new, JSBlocks.CRAFTING_CPU.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.network.BusBlockEntity>> BUS =
             BLOCK_ENTITIES.register("bus", () -> BlockEntityType.Builder
-                    .of(com.walnutbeachdigital.joulesmith.network.BusBlockEntity::new, JSBlocks.IMPORT_BUS.get(), JSBlocks.EXPORT_BUS.get()).build(null));
+                    .of(com.walnutbeachdigital.joulesmith.network.BusBlockEntity::new, JSBlocks.IMPORT_BUS.get(), JSBlocks.EXPORT_BUS.get(),
+                            JSBlocks.FLUID_IMPORT_BUS.get(), JSBlocks.FLUID_EXPORT_BUS.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.network.DriveBayBlockEntity>> DRIVE_BAY =
             BLOCK_ENTITIES.register("drive_bay", () -> BlockEntityType.Builder
                     .of(com.walnutbeachdigital.joulesmith.network.DriveBayBlockEntity::new, JSBlocks.DRIVE_BAY.get()).build(null));

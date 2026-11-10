@@ -17,6 +17,9 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 /**
  * The Network Terminal's screen: everything on the network in a searchable grid above the player's
@@ -28,7 +31,7 @@ public class TerminalMenu extends AbstractContainerMenu {
     /** The Crafting Terminal's layout: a shorter grid, the crafting grid, then the inventory. */
     public static final int CRAFTING_ROWS = 4, CRAFTING_INVENTORY_Y = 166;
     public static final int TAKE_STACK = 0, TAKE_HALF = 1, TAKE_TO_INVENTORY = 2, INSERT_ALL = 3, INSERT_ONE = 4,
-            CRAFT_ONE = 5, CRAFT_STACK = 6, ENCODE = 7;
+            CRAFT_ONE = 5, CRAFT_STACK = 6, ENCODE = 7, FILL = 8;
 
     private final BlockPos pos;
     protected final Player player;
@@ -37,6 +40,8 @@ public class TerminalMenu extends AbstractContainerMenu {
     /** Client side: what the server last sent. */
     private List<BinContents> shown = List.of();
     private List<ItemStack> craftable = List.of();
+    private List<FluidStack> fluids = List.of();
+    private int lastFluidHash;
     private boolean online;
     private List<BinContents> lastSent;
     private boolean lastOnline;
@@ -94,7 +99,12 @@ public class TerminalMenu extends AbstractContainerMenu {
         return craftable;
     }
 
-    void receive(List<BinContents> contents, List<ItemStack> craftable, boolean online) {
+    public List<FluidStack> fluids() {
+        return fluids;
+    }
+
+    void receive(List<BinContents> contents, List<ItemStack> craftable, List<FluidStack> fluids, boolean online) {
+        this.fluids = fluids;
         this.shown = contents;
         this.craftable = craftable;
         this.online = online;
@@ -111,17 +121,21 @@ public class TerminalMenu extends AbstractContainerMenu {
         Network net = network();
         List<BinContents> now = net.contents();
         List<ItemStack> canMake = net.craftable();
+        List<FluidStack> liquids = net.fluids();
+        int fluidHash = 1;
+        for (FluidStack f : liquids) fluidHash = fluidHash * 31 + FluidStack.hashFluidAndComponents(f) * 7 + f.getAmount();
         boolean on = net.online();
-        if (!now.equals(lastSent) || on != lastOnline || canMake.size() != lastCraftable) {
+        if (!now.equals(lastSent) || on != lastOnline || canMake.size() != lastCraftable || fluidHash != lastFluidHash) {
             lastSent = now;
             lastOnline = on;
             lastCraftable = canMake.size();
-            PacketDistributor.sendToPlayer(sp, new TerminalPayloads.Contents(containerId, new ArrayList<>(now), canMake, on));
+            lastFluidHash = fluidHash;
+            PacketDistributor.sendToPlayer(sp, new TerminalPayloads.Contents(containerId, new ArrayList<>(now), canMake, liquids, on));
         }
     }
 
     /** A click on the grid (or on the grid with an item held), from the client. */
-    void act(ServerPlayer sp, ItemStack like, int action) {
+    void act(ServerPlayer sp, ItemStack like, FluidStack fluid, int action) {
         Network net = network();
         if (!net.online()) return;
         ItemStack carried = getCarried();
@@ -143,7 +157,10 @@ public class TerminalMenu extends AbstractContainerMenu {
                     if (!back.isEmpty()) sp.drop(back, false);
                 }
             }
-            case INSERT_ALL -> setCarried(net.insert(carried, false));
+            case INSERT_ALL -> {
+                if (!pour(sp, net)) setCarried(net.insert(carried, false));
+            }
+            case FILL -> fill(sp, net, fluid);
             case CRAFT_ONE, CRAFT_STACK -> {
                 if (like.isEmpty()) return;
                 int per = net.patterns().stream().filter(p -> ItemStack.isSameItemSameComponents(p.output(), like))
@@ -159,6 +176,47 @@ public class TerminalMenu extends AbstractContainerMenu {
             default -> { }
         }
         resend();
+    }
+
+    /** Empties one fluid container from the cursor into the network. False if it isn't one, or nothing went in. */
+    private boolean pour(ServerPlayer sp, Network net) {
+        ItemStack carried = getCarried();
+        if (carried.isEmpty() || FluidUtil.getFluidContained(carried).isEmpty()) return false;
+        var handler = FluidUtil.getFluidHandler(carried.copyWithCount(1)).orElse(null);
+        if (handler == null) return false;
+        FluidStack inside = handler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
+        int room = net.insertFluid(inside, true);
+        if (room <= 0) return false;
+        FluidStack out = handler.drain(inside.copyWithAmount(room), IFluidHandler.FluidAction.EXECUTE);
+        if (out.isEmpty()) return false;
+        net.insertFluid(out, false);
+        swapOne(sp, handler.getContainer());
+        return true;
+    }
+
+    /** Fills one fluid container on the cursor from the network with {@code fluid}. */
+    private void fill(ServerPlayer sp, Network net, FluidStack fluid) {
+        ItemStack carried = getCarried();
+        if (carried.isEmpty() || fluid.isEmpty()) return;
+        var handler = FluidUtil.getFluidHandler(carried.copyWithCount(1)).orElse(null);
+        if (handler == null) return;
+        int can = handler.fill(fluid.copyWithAmount(Integer.MAX_VALUE), IFluidHandler.FluidAction.SIMULATE);
+        FluidStack got = net.extractFluid(fluid, can, true);
+        if (got.isEmpty() || handler.fill(got, IFluidHandler.FluidAction.SIMULATE) < got.getAmount()) return;   // buckets want a full 1,000
+        got = net.extractFluid(fluid, got.getAmount(), false);
+        handler.fill(got, IFluidHandler.FluidAction.EXECUTE);
+        swapOne(sp, handler.getContainer());
+    }
+
+    /** Replaces one item on the cursor with {@code result} (the rest of the stack stays on the cursor). */
+    private void swapOne(ServerPlayer sp, ItemStack result) {
+        ItemStack carried = getCarried();
+        if (carried.getCount() <= 1) {
+            setCarried(result);
+        } else {
+            carried.shrink(1);
+            if (!sp.getInventory().add(result)) sp.drop(result, false);
+        }
     }
 
     /** Records the crafting grid on a Blank Pattern (the Crafting Terminal does this). */

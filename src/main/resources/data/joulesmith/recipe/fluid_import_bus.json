@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "B",
+    "T"
+  ],
+  "key": {
+    "B": {
+      "item": "joulesmith:import_bus"
+    },
+    "T": {
+      "item": "minecraft:bucket"
+    }
+  },
+  "result": {
+    "id": "joulesmith:fluid_import_bus",
+    "count": 1
+  }
+}

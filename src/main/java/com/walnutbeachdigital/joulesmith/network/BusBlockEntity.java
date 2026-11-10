@@ -14,6 +14,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 /**
@@ -22,7 +25,7 @@ import net.neoforged.neoforge.items.ItemHandlerHelper;
  * names from the network into that inventory (with no filter it sends nothing).
  */
 public class BusBlockEntity extends BlockEntity {
-    public static final int INTERVAL = 10, PER_OPERATION = 16;
+    public static final int INTERVAL = 10, PER_OPERATION = 16, FLUID_PER_OPERATION = 1_000;
     private ItemStack filter = ItemStack.EMPTY;
 
     public BusBlockEntity(BlockPos pos, BlockState state) {
@@ -45,6 +48,15 @@ public class BusBlockEntity extends BlockEntity {
     public static void serverTick(Level level, BlockPos pos, BlockState state, BusBlockEntity bus) {
         if (level.getGameTime() % INTERVAL != Math.floorMod(pos.hashCode(), INTERVAL)) return;
         Direction facing = state.getValue(BusBlock.FACING);
+        if (state.getBlock() instanceof BusBlock b && b.fluid()) {
+            IFluidHandler tank = level.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(facing), facing.getOpposite());
+            if (tank == null) return;
+            Network net = Network.scan(level, pos);
+            if (!net.online()) return;
+            if (b.export()) bus.exportFluid(net, tank);
+            else bus.importFluid(net, tank);
+            return;
+        }
         IItemHandler target = level.getCapability(Capabilities.ItemHandler.BLOCK, pos.relative(facing), facing.getOpposite());
         if (target == null) return;
         Network net = Network.scan(level, pos);
@@ -85,6 +97,41 @@ public class BusBlockEntity extends BlockEntity {
             ItemStack back = ItemHandlerHelper.insertItem(target, got, false);
             if (!back.isEmpty()) net.insert(back, false);
             left -= got.getCount() - back.getCount();
+        }
+    }
+
+    /** The fluids the filter names: whatever its items (buckets, tanks) hold. */
+    private java.util.List<FluidStack> filterFluids() {
+        java.util.List<FluidStack> out = new java.util.ArrayList<>();
+        for (ItemStack s : contents().items()) FluidUtil.getFluidContained(s).ifPresent(out::add);
+        return out;
+    }
+
+    private boolean fluidAllowed(FluidStack fluid) {
+        if (filter.isEmpty()) return true;
+        boolean listed = filterFluids().stream().anyMatch(f -> FluidStack.isSameFluidSameComponents(f, fluid));
+        return listed != contents().blacklist();
+    }
+
+    private void importFluid(Network net, IFluidHandler tank) {
+        FluidStack peek = tank.drain(FLUID_PER_OPERATION, IFluidHandler.FluidAction.SIMULATE);
+        if (peek.isEmpty() || !fluidAllowed(peek)) return;
+        int can = net.insertFluid(peek, true);
+        if (can <= 0) return;
+        FluidStack got = tank.drain(peek.copyWithAmount(can), IFluidHandler.FluidAction.EXECUTE);
+        net.insertFluid(got, false);
+    }
+
+    private void exportFluid(Network net, IFluidHandler tank) {
+        if (filter.isEmpty()) return;
+        for (FluidStack stored : net.fluids()) {
+            if (!fluidAllowed(stored)) continue;
+            int can = tank.fill(stored.copyWithAmount(Math.min(FLUID_PER_OPERATION, stored.getAmount())), IFluidHandler.FluidAction.SIMULATE);
+            if (can <= 0) continue;
+            FluidStack got = net.extractFluid(stored, can, false);
+            int filled = tank.fill(got, IFluidHandler.FluidAction.EXECUTE);
+            if (filled < got.getAmount()) net.insertFluid(got.copyWithAmount(got.getAmount() - filled), false);
+            return;
         }
     }
 

@@ -52,5 +52,10 @@ public final class JSDataComponents {
             COMPONENTS.registerComponentType("link", b -> b.persistent(net.minecraft.core.GlobalPos.CODEC)
                     .networkSynchronized(net.minecraft.core.GlobalPos.STREAM_CODEC));
 
+    /** What a Fluid Drive holds. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<com.walnutbeachdigital.joulesmith.network.FluidDriveItem.Contents>> FLUID_DRIVE =
+            COMPONENTS.registerComponentType("fluid_drive", b -> b.persistent(com.walnutbeachdigital.joulesmith.network.FluidDriveItem.Contents.CODEC)
+                    .networkSynchronized(com.walnutbeachdigital.joulesmith.network.FluidDriveItem.Contents.STREAM_CODEC));
+
     private JSDataComponents() {}
 }

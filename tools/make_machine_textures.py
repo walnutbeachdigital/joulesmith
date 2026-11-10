@@ -3011,12 +3011,42 @@ def wireless_terminal_item():
     return img
 
 
+def fluid_drive(trim8):
+    """A Fluid Drive: the item drive's cartridge with a blue droplet window."""
+    img = item_drive(trim8)
+    px = img.load()
+    drop = {9: (7, 8), 10: (6, 9), 11: (6, 9), 12: (7, 8)}
+    for y, (a, b) in drop.items():
+        for x in range(a, b + 1):
+            px[x, y - 1] = rgba(WATER[3] if x < 8 else WATER[1])
+    px[7, 8] = rgba(WATER[4])
+    return img
+
+
+def fluid_bus_front(export):
+    """The fluid bus's face: the item bus's arrows in water blue (Import) or teal (Export) with a droplet."""
+    img = bus_front(export)
+    px = img.load()
+    colour = ["#5fe0d0", "#1f9a8c"] if export else ["#9fd4ff", "#3f76e4"]
+    for y in range(3, 13):
+        for x in range(3, 13):
+            p = px[x, y]
+            if p[:3] not in ((16, 20, 26),):
+                px[x, y] = rgba(colour[0] if x < 8 else colour[1])
+    for (x, y) in ((11, 4), (10, 5), (11, 5), (12, 5), (11, 6)):
+        px[x, y] = rgba("#e6f6fb")
+    return img
+
+
 def bus_textures():
     return {"block/import_bus_front": bus_front(False), "block/export_bus_front": bus_front(True),
             "block/crafting_terminal_front": crafting_terminal_front(), "gui/crafting_terminal": crafting_terminal_gui(),
             "block/crafting_cpu_front": crafting_cpu_front(),
             "item/blank_pattern": pattern_item(True), "item/pattern": pattern_item(False),
-            "item/wireless_terminal": wireless_terminal_item()}
+            "item/wireless_terminal": wireless_terminal_item(),
+            "block/fluid_import_bus_front": fluid_bus_front(False), "block/fluid_export_bus_front": fluid_bus_front(True),
+            "item/basic_fluid_drive": fluid_drive(COPPER8), "item/advanced_fluid_drive": fluid_drive(ELECTRUM8),
+            "item/elite_fluid_drive": fluid_drive(SIGNAL8), "item/ultimate_fluid_drive": fluid_drive(PLASMA8)}
 
 
 def main():

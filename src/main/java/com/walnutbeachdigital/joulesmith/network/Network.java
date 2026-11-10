@@ -124,6 +124,62 @@ public final class Network {
         return net.minecraft.network.chat.Component.translatable(cpus.isEmpty() ? "message.joulesmith.craft.no_cpu" : "message.joulesmith.craft.busy");
     }
 
+    /** Every fluid on the network and how much, merged across drives. */
+    public List<net.neoforged.neoforge.fluids.FluidStack> fluids() {
+        List<net.neoforged.neoforge.fluids.FluidStack> all = new ArrayList<>();
+        if (!online()) return all;
+        for (DriveBayBlockEntity bay : bays) {
+            for (ItemStack drive : bay.fluidDrives()) {
+                for (var f : FluidDriveItem.contents(drive)) {
+                    int i = FluidDriveItem.indexOf(all, f);
+                    if (i < 0) all.add(f.copy());
+                    else all.set(i, f.copyWithAmount((int) Math.min(Integer.MAX_VALUE, (long) all.get(i).getAmount() + f.getAmount())));
+                }
+            }
+        }
+        return all;
+    }
+
+    /** Stores up to {@code fluid}'s amount; returns how much went in. */
+    public int insertFluid(net.neoforged.neoforge.fluids.FluidStack fluid, boolean simulate) {
+        if (fluid.isEmpty() || !online()) return 0;
+        int left = fluid.getAmount();
+        for (int pass = 0; pass < 2 && left > 0; pass++) {
+            for (DriveBayBlockEntity bay : bays) {
+                for (ItemStack drive : bay.fluidDrives()) {
+                    boolean has = FluidDriveItem.indexOf(FluidDriveItem.contents(drive), fluid) >= 0;
+                    if (has != (pass == 0)) continue;
+                    int moved = FluidDriveItem.insert(drive, fluid, left, simulate);
+                    if (moved > 0) {
+                        left -= moved;
+                        if (!simulate) bay.changed();
+                    }
+                    if (left <= 0) break;
+                }
+                if (left <= 0) break;
+            }
+        }
+        return fluid.getAmount() - left;
+    }
+
+    /** Takes up to {@code amount} mB of {@code like}; returns what came out. */
+    public net.neoforged.neoforge.fluids.FluidStack extractFluid(net.neoforged.neoforge.fluids.FluidStack like, int amount, boolean simulate) {
+        if (like.isEmpty() || amount <= 0 || !online()) return net.neoforged.neoforge.fluids.FluidStack.EMPTY;
+        int got = 0;
+        for (DriveBayBlockEntity bay : bays) {
+            for (ItemStack drive : bay.fluidDrives()) {
+                int moved = FluidDriveItem.extract(drive, like, amount - got, simulate);
+                if (moved > 0) {
+                    got += moved;
+                    if (!simulate) bay.changed();
+                }
+                if (got >= amount) break;
+            }
+            if (got >= amount) break;
+        }
+        return got == 0 ? net.neoforged.neoforge.fluids.FluidStack.EMPTY : like.copyWithAmount(got);
+    }
+
     /** Stores what it can of {@code stack}; returns what's left over. */
     public ItemStack insert(ItemStack stack, boolean simulate) {
         if (stack.isEmpty() || !online()) return stack;

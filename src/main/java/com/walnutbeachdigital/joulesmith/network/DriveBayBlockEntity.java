@@ -16,12 +16,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-/** A Drive Bay: nine slots for Item Drives, whose contents join the network it's on. */
+/** A Drive Bay: nine slots for Item and Fluid Drives, whose contents join the network it's on. */
 public class DriveBayBlockEntity extends BlockEntity {
     public static final int SLOTS = 9;
 
     private final SimpleContainer drives = new SimpleContainer(SLOTS) {
-        @Override public boolean canPlaceItem(int slot, ItemStack stack) { return stack.getItem() instanceof DriveItem; }
+        @Override public boolean canPlaceItem(int slot, ItemStack stack) { return isDrive(stack); }
         @Override public int getMaxStackSize() { return 1; }
         @Override public void setChanged() { super.setChanged(); DriveBayBlockEntity.this.setChanged(); }
     };
@@ -42,6 +42,20 @@ public class DriveBayBlockEntity extends BlockEntity {
             if (s.getItem() instanceof DriveItem) list.add(s);
         }
         return list;
+    }
+
+    /** The Fluid Drives in it. */
+    public List<ItemStack> fluidDrives() {
+        List<ItemStack> list = new ArrayList<>();
+        for (int i = 0; i < SLOTS; i++) {
+            ItemStack s = drives.getItem(i);
+            if (s.getItem() instanceof FluidDriveItem) list.add(s);
+        }
+        return list;
+    }
+
+    public static boolean isDrive(ItemStack stack) {
+        return stack.getItem() instanceof DriveItem || stack.getItem() instanceof FluidDriveItem;
     }
 
     void changed() {

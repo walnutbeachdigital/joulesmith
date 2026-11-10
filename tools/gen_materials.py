@@ -1963,7 +1963,8 @@ model("network_bus", {"parent": "minecraft:block/block", "textures": {"particle"
                         north={"texture": "#front", "cullface": "north"}, south={"texture": "#side"})},
                    {"from": [5, 5, 3], "to": [11, 11, 8], "faces": {f: {"texture": "#side", "uv": [5, 5, 11, 10]}
                                                                     for f in ("east", "west", "up", "down", "south")}}]})
-for bid, name in (("import_bus", "Import Bus"), ("export_bus", "Export Bus")):
+for bid, name in (("import_bus", "Import Bus"), ("export_bus", "Export Bus"),
+                  ("fluid_import_bus", "Fluid Import Bus"), ("fluid_export_bus", "Fluid Export Bus")):
     model(bid, {"parent": f"{MOD}:block/network_bus", "textures": {"front": f"{MOD}:block/{bid}_front", "side": f"{MOD}:block/network_side"}})
     write(os.path.join(ASSETS, "blockstates", f"{bid}.json"), {"variants": {
         f"facing={side}": dict({"model": f"{MOD}:block/{bid}"}, **rot) for side, rot in SIDE_ROT.items()}})
@@ -2033,6 +2034,30 @@ lang.update({
 })
 shaped("import_bus", [" N ", "PHP"], {"N": f"{MOD}:network_cable", "P": "#c:plates/steel", "H": "minecraft:hopper"})
 shaped("export_bus", [" N ", "PDP"], {"N": f"{MOD}:network_cable", "P": "#c:plates/steel", "D": "minecraft:dropper"})
+shaped("fluid_import_bus", ["B", "T"], {"B": f"{MOD}:import_bus", "T": "minecraft:bucket"})
+shaped("fluid_export_bus", ["B", "T"], {"B": f"{MOD}:export_bus", "T": "minecraft:bucket"})
+FLUID_DRIVES = {"basic_fluid_drive": ("Basic Fluid Drive", 64_000), "advanced_fluid_drive": ("Advanced Fluid Drive", 512_000),
+                "elite_fluid_drive": ("Elite Fluid Drive", 4_096_000), "ultimate_fluid_drive": ("Ultimate Fluid Drive", 32_768_000)}
+for (iid, (name, cap)), item_drive in zip(FLUID_DRIVES.items(), ("basic_item_drive", "advanced_item_drive", "elite_item_drive", "ultimate_item_drive")):
+    write(os.path.join(ASSETS, "models", "item", f"{iid}.json"), {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{iid}"}})
+    lang[f"item.{MOD}.{iid}"] = name
+    write(os.path.join(DATA, MOD, "recipe", f"{iid}.json"), {"type": "minecraft:crafting_shapeless", "category": "misc",
+          "ingredients": [ing(f"{MOD}:{item_drive}"), ing("minecraft:bucket")], "result": {"id": f"{MOD}:{iid}"}})
+    recipes[iid] = True
+    DESC[iid] = (f"Holds {cap:,} mB of up to 9 fluids", "Goes in a Drive Bay. Keeps what it holds when taken out. In a terminal, "
+                 "click a fluid with a bucket or tank on the cursor to fill it; click the grid with a full one to pour it in.")
+    lang[f"desc.{MOD}.{iid}"], lang[f"jei.{MOD}.info.{iid}"] = DESC[iid]
+FBUS = (" Moves up to 1,000 mB twice a second. Use a Filter Card holding buckets (or tanks) of fluids to choose which; sneak "
+        "and use an empty hand to take it back.")
+for iid, short, info in (("fluid_import_bus", "Pulls fluids into the network", "Place it against a tank and cable it to a network: "
+                          "it pulls fluid out of the tank into Fluid Drives (only fluids its filter allows, if it has one)." + FBUS),
+                         ("fluid_export_bus", "Sends fluids out of the network", "Place it against a tank and cable it to a network: "
+                          "it fills the tank with the fluids its filter names. Without a filter it sends nothing." + FBUS)):
+    DESC[iid] = (short, info)
+    lang[f"desc.{MOD}.{iid}"], lang[f"jei.{MOD}.info.{iid}"] = short, info
+lang.update({"tooltip.joulesmith.drive.fluid": "%s / %s mB",
+             "gui.joulesmith.terminal.stored_fluid": "Stored: %s mB",
+             "gui.joulesmith.terminal.fill_hint": "Click with a bucket or tank on the cursor to fill it"})
 BUS = " Use a Filter Card on it to fit one; sneak and use an empty hand to take it back. Moves up to 16 items twice a second."
 B_DESC = {"import_bus": ("Pulls items into the network", "Place it against an inventory and cable it to a network: it pulls items "
                          "out of the inventory into the network (only those its filter lets through, if it has one)." + BUS),
