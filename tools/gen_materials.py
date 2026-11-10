@@ -286,6 +286,14 @@ MACHINES = {
     "reinforced_battery": {"name": "Reinforced Battery", "front": "reinforced_battery_front"},
     "advanced_battery": {"name": "Advanced Battery", "front": "advanced_battery_front"},
     "boiler": {"name": "Boiler", "front": "boiler_front"},
+    "block_placer": {"name": "Block Placer", "front": "block_placer_front"},
+    "block_breaker": {"name": "Block Breaker", "front": "block_breaker_front"},
+    "autocrafter": {"name": "Autocrafter", "front": "autocrafter_front"},
+    "fluid_placer": {"name": "Fluid Placer", "front": "fluid_placer_front"},
+    "fluid_drain": {"name": "Fluid Drain", "front": "fluid_drain_front"},
+    "mechanical_user": {"name": "Mechanical User", "front": "mechanical_user_front"},
+    "quarry": {"name": "Quarry", "front": "quarry_front"},
+    "mob_fighter": {"name": "Mob Fighter", "front": "mob_fighter_front"},
     "steam_turbine": {"name": "Steam Turbine", "front": "steam_turbine_front"},
     "electric_furnace": {"name": "Electric Furnace", "front": "electric_furnace_front"},
     "crusher": {"name": "Crusher", "front": "crusher_front"},
@@ -849,6 +857,19 @@ for iid in ("advanced_circuit", "plastic_sheet"):
 lang.update({f"item.{MOD}.advanced_circuit": "Advanced Circuit", f"item.{MOD}.plastic_sheet": "Plastic Sheet"})
 for (ns, reg, path), values in tags.items():
     write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+
+# ---- automation (tiers 1 to 3)
+IRON, RED, CU_GEAR = "#c:ingots/iron", "#c:dusts/redstone", "#c:gears/copper"
+shaped("block_placer", ["IDI", "GPG", "IRI"], {"I": IRON, "D": "minecraft:dispenser", "G": CU_GEAR, "P": "minecraft:piston", "R": RED})
+shaped("block_breaker", ["IAI", "GPG", "IRI"], {"I": IRON, "A": "minecraft:iron_pickaxe", "G": CU_GEAR, "P": "minecraft:piston", "R": RED})
+T2 = {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit", "G": "#c:gears/bronze", "R": RED}
+shaped("autocrafter", ["PCP", "GTG", "PRP"], dict(T2, T="minecraft:crafter"))
+shaped("fluid_placer", ["PCP", "GDG", "PBP"], dict(T2, D="minecraft:dispenser", B="minecraft:bucket"))
+shaped("fluid_drain", ["PCP", "GMG", "PBP"], dict(T2, M=f"{MOD}:pump", B="minecraft:bucket"))
+T3 = {"P": "#c:plates/steel", "C": f"{MOD}:advanced_circuit", "G": "#c:gears/steel", "R": RED}
+shaped("mechanical_user", ["PCP", "GDG", "PRP"], dict(T3, P="#c:plates/invar", D="minecraft:dispenser"))
+shaped("quarry", ["PCP", "GAG", "PBP"], dict(T3, A="minecraft:diamond_pickaxe", B="#c:storage_blocks/steel"))
+shaped("mob_fighter", ["PCP", "GSG", "PRP"], dict(T3, S="minecraft:diamond_sword"))
 
 # ---- the new machines, upgrade cards and sawdust
 shaped("alloy_smelter", ["IGI", "BFB", "IRI"],

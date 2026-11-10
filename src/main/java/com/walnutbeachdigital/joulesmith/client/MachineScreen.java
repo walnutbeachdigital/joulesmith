@@ -61,6 +61,15 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         super.render(g, mouseX, mouseY, partialTick);
+        // ghost (pattern) slots: their items drawn faded, so they read as "wanted", not "held"
+        g.pose().pushPose();
+        g.pose().translate(0, 0, 300);
+        for (SlotDef def : menu.slotDefs()) {
+            if (def.role() == SlotRole.GHOST) {
+                g.fill(leftPos + def.x(), topPos + def.y(), leftPos + def.x() + 16, topPos + def.y() + 16, 0x888B8B8B);
+            }
+        }
+        g.pose().popPose();
         renderTooltip(g, mouseX, mouseY);
         List<Component> tip = tooltipAt(mouseX - leftPos, mouseY - topPos);
         if (!tip.isEmpty()) g.renderComponentTooltip(font, tip, mouseX, mouseY);

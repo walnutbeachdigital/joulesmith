@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "joulesmith:blocks/block_breaker",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "joulesmith:block_breaker"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

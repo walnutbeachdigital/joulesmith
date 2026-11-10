@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "GDG",
+    "PRP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/invar"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    },
+    "G": {
+      "tag": "c:gears/steel"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "D": {
+      "item": "minecraft:dispenser"
+    }
+  },
+  "result": {
+    "id": "joulesmith:mechanical_user",
+    "count": 1
+  }
+}

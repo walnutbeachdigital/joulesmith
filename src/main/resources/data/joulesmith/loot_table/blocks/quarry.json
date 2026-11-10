@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "joulesmith:blocks/quarry",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "joulesmith:quarry"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "IDI",
+    "GPG",
+    "IRI"
+  ],
+  "key": {
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "D": {
+      "item": "minecraft:dispenser"
+    },
+    "G": {
+      "tag": "c:gears/copper"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:block_placer",
+    "count": 1
+  }
+}

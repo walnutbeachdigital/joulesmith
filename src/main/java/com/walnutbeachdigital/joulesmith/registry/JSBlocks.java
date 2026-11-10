@@ -6,6 +6,13 @@ import java.util.Map;
 import com.walnutbeachdigital.joulesmith.Joulesmith;
 import com.walnutbeachdigital.joulesmith.material.Metal;
 
+import com.walnutbeachdigital.joulesmith.automation.AutocrafterBlockEntity;
+import com.walnutbeachdigital.joulesmith.automation.BlockBreakerBlockEntity;
+import com.walnutbeachdigital.joulesmith.automation.BlockPlacerBlockEntity;
+import com.walnutbeachdigital.joulesmith.automation.FluidPlacerBlockEntity;
+import com.walnutbeachdigital.joulesmith.automation.MechanicalUserBlockEntity;
+import com.walnutbeachdigital.joulesmith.automation.MobFighterBlockEntity;
+import com.walnutbeachdigital.joulesmith.automation.QuarryBlockEntity;
 import com.walnutbeachdigital.joulesmith.energy.cable.EnergyCableBlock;
 import com.walnutbeachdigital.joulesmith.machine.MachineBlock;
 import com.walnutbeachdigital.joulesmith.machine.SimpleMachineBlock;
@@ -156,6 +163,25 @@ public final class JSBlocks {
         return BLOCKS.register(name, () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.BASIC_BATTERY::get,
                 (p, s) -> new BatteryBlockEntity(p, s, tier)));
     }
+
+
+    // ---- automation
+    public static final DeferredBlock<SimpleMachineBlock<BlockPlacerBlockEntity>> BLOCK_PLACER = BLOCKS.register("block_placer",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.BLOCK_PLACER::get, BlockPlacerBlockEntity::new));
+    public static final DeferredBlock<SimpleMachineBlock<BlockBreakerBlockEntity>> BLOCK_BREAKER = BLOCKS.register("block_breaker",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.BLOCK_BREAKER::get, BlockBreakerBlockEntity::new));
+    public static final DeferredBlock<SimpleMachineBlock<AutocrafterBlockEntity>> AUTOCRAFTER = BLOCKS.register("autocrafter",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.AUTOCRAFTER::get, AutocrafterBlockEntity::new));
+    public static final DeferredBlock<SimpleMachineBlock<FluidPlacerBlockEntity>> FLUID_PLACER = BLOCKS.register("fluid_placer",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.FLUID_PLACER::get, (p, s) -> new FluidPlacerBlockEntity(p, s, false)));
+    public static final DeferredBlock<SimpleMachineBlock<FluidPlacerBlockEntity>> FLUID_DRAIN = BLOCKS.register("fluid_drain",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.FLUID_DRAIN::get, (p, s) -> new FluidPlacerBlockEntity(p, s, true)));
+    public static final DeferredBlock<SimpleMachineBlock<MechanicalUserBlockEntity>> MECHANICAL_USER = BLOCKS.register("mechanical_user",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.MECHANICAL_USER::get, MechanicalUserBlockEntity::new));
+    public static final DeferredBlock<SimpleMachineBlock<QuarryBlockEntity>> QUARRY = BLOCKS.register("quarry",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.QUARRY::get, QuarryBlockEntity::new));
+    public static final DeferredBlock<SimpleMachineBlock<MobFighterBlockEntity>> MOB_FIGHTER = BLOCKS.register("mob_fighter",
+            () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.MOB_FIGHTER::get, MobFighterBlockEntity::new));
 
     // ---- steam (tier 3)
     public static final DeferredBlock<SimpleMachineBlock<BoilerBlockEntity>> BOILER = BLOCKS.register("boiler",

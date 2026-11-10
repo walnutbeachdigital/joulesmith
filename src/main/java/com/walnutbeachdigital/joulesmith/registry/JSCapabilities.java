@@ -20,6 +20,16 @@ public final class JSCapabilities {
         machine(event, JSBlockEntities.BASIC_BATTERY.get());
         machine(event, JSBlockEntities.PUMP.get());
         machine(event, JSBlockEntities.STEAM_TURBINE.get());
+        machine(event, JSBlockEntities.BLOCK_PLACER.get());
+        machine(event, JSBlockEntities.BLOCK_BREAKER.get());
+        machine(event, JSBlockEntities.AUTOCRAFTER.get());
+        machine(event, JSBlockEntities.FLUID_PLACER.get());
+        machine(event, JSBlockEntities.FLUID_DRAIN.get());
+        machine(event, JSBlockEntities.MECHANICAL_USER.get());
+        machine(event, JSBlockEntities.QUARRY.get());
+        machine(event, JSBlockEntities.MOB_FIGHTER.get());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.FLUID_PLACER.get(), (m, side) -> m.fluidHandler(side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.FLUID_DRAIN.get(), (m, side) -> m.fluidHandler(side));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.STEAM_TURBINE.get(), (t, side) -> t.fluidHandler(side));
         // the Boiler holds no power, so cables don't connect to it
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, JSBlockEntities.BOILER.get(), (b, side) -> b.itemHandler(side));

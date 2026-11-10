@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "GSG",
+    "PRP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    },
+    "G": {
+      "tag": "c:gears/steel"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "S": {
+      "item": "minecraft:diamond_sword"
+    }
+  },
+  "result": {
+    "id": "joulesmith:mob_fighter",
+    "count": 1
+  }
+}

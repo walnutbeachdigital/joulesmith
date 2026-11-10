@@ -1445,6 +1445,114 @@ def advanced_circuit_item():
     return img
 
 
+# ------------------------------------------------------------------ automation fronts
+def _dark_window(img, x0, y0, x1, y1):
+    window(img, x0, y0, x1, y1)
+    px = img.load()
+    for y in range(y0, y1 + 1):
+        for x in range(x0, x1 + 1):
+            px[x, y] = rgba("#16181c")
+    return px
+
+
+def block_placer_front(on):
+    """A piston-style pusher plate in the window; it slides forward while placing."""
+    img = casing()
+    px = _dark_window(img, 3, 3, 12, 12)
+    d = 1 if on else 0
+    for y in range(4, 12):
+        for x in range(4, 12):
+            if x in (4, 11) or y in (4, 11):
+                px[x, y] = rgba(PLANK[3] if y == 4 or x == 4 else PLANK[1])
+            elif 6 <= x <= 9 and 6 <= y <= 9:
+                px[x, y] = rgba(STEEL[6 - d] if (x + y) < 15 else STEEL[4 - d])
+    return img
+
+
+def block_breaker_front(on):
+    """A pick head in the window, swung down while breaking."""
+    img = casing()
+    px = _dark_window(img, 3, 3, 12, 12)
+    head = [(4, 5), (5, 4), (6, 4), (7, 4), (8, 4), (9, 4), (10, 5), (11, 6)] if not on else [(4, 7), (5, 6), (6, 5), (7, 5), (8, 5), (9, 6), (10, 7), (11, 8)]
+    for i, (x, y) in enumerate(head):
+        px[x, y] = rgba(STEEL[6] if i < 4 else STEEL[4])
+        px[x, y + 1] = rgba(STEEL[3])
+    for y in range(6 if not on else 7, 12):
+        px[7, y] = rgba(PLANK[3])
+        px[8, y] = rgba(PLANK[1])
+    return img
+
+
+def autocrafter_front(on):
+    """A 3x3 crafting grid; the middle square glows while crafting."""
+    img = casing2()
+    px = _dark_window(img, 3, 3, 12, 12)
+    for gy in range(3):
+        for gx in range(3):
+            lit = on and gx == 1 and gy == 1
+            for y in range(4 + gy * 3, 6 + gy * 3):
+                for x in range(4 + gx * 3, 6 + gx * 3):
+                    px[x, y] = rgba((COPPER[4] if lit else PLANK[3]) if (x + y) % 3 else (COPPER[3] if lit else PLANK[2]))
+    return img
+
+
+def fluid_placer_front(on, drain=False):
+    """A round nozzle (Placer) or a grated intake (Drain); blue while moving fluid."""
+    import math
+    img = casing2()
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            r = math.hypot(x - 7.5, y - 7.5)
+            if 3.4 < r <= 4.4:
+                px[x, y] = rgba(STEEL[1] if (x + y) < 15 else STEEL[6])
+            elif r <= 3.4:
+                if drain and (x + y) % 2 == 0:
+                    px[x, y] = rgba(STEEL[4])
+                else:
+                    px[x, y] = rgba((WATER[3] if r < 1.5 else WATER[2]) if on else "#16181c")
+    return img
+
+
+def mechanical_user_front(on):
+    """A jointed arm reaching out of the window, its grip glowing while it works."""
+    img = casing3()
+    px = _dark_window(img, 3, 3, 12, 12)
+    for i in range(6):
+        px[4 + i, 10 - i // 2] = rgba(STEEL[5])
+        px[4 + i, 11 - i // 2] = rgba(STEEL[3])
+    for x, y in ((10, 6), (11, 5), (11, 7)):
+        px[x, y] = rgba(ELECTRUM_TRIM[4] if on else STEEL[4])
+    return img
+
+
+def quarry_front(on):
+    """A drill bit pointing down out of the window, its tip glowing while it mines."""
+    img = casing3()
+    px = _dark_window(img, 3, 3, 12, 12)
+    for y in range(4, 12):
+        half = max(0, 3 - (y - 4) // 2)
+        for x in range(8 - half - 1, 8 + half + 1):
+            spiral = (x + y + (1 if on else 0)) % 3 == 0
+            px[x, y] = rgba(STEEL[6] if spiral else STEEL[4])
+    px[7, 12] = rgba(FIRE[5] if on else STEEL[2])
+    px[8, 12] = rgba(FIRE[4] if on else STEEL[1])
+    return img
+
+
+def mob_fighter_front(on):
+    """A sword blade across the window, red-tinted while fighting."""
+    img = casing3()
+    px = _dark_window(img, 3, 3, 12, 12)
+    for i in range(7):
+        x, y = 4 + i, 11 - i
+        px[x, y] = rgba(STEEL[7] if not on else "#ffb0a8")
+        px[x + 1, y] = rgba(STEEL[5] if not on else "#e05a4a")
+    for x, y in ((4, 9), (6, 11), (5, 10)):
+        px[x, y] = rgba(ELECTRUM_TRIM[3])
+    return img
+
+
 # ------------------------------------------------------------------ screen
 LIGHT = (255, 255, 255, 255)
 
@@ -1572,6 +1680,13 @@ def main():
         "block/steam_turbine_front_on": turbine_front(True),
         "item/plastic_sheet": plastic_sheet_item(),
         "item/advanced_circuit": advanced_circuit_item(),
+        **{f"block/{name}_front{'_on' if on else ''}": fn(on)
+           for name, fn in (("block_placer", block_placer_front), ("block_breaker", block_breaker_front),
+                            ("autocrafter", autocrafter_front), ("fluid_placer", fluid_placer_front),
+                            ("fluid_drain", lambda on: fluid_placer_front(on, True)),
+                            ("mechanical_user", mechanical_user_front), ("quarry", quarry_front),
+                            ("mob_fighter", mob_fighter_front))
+           for on in (False, True)},
         "block/item_duct": pipe_texture(LEAD, COPPER, ["#0c0d12", "#1b1d26", "#2a2d3a", "#4a5066", "#9aa3c0"]),
         "block/reinforced_item_duct": pipe_texture(LEAD, STEEL_TRIM, ["#0c0d12", "#1b1d26", "#2a2d3a", "#4a5066", "#9aa3c0"]),
         "block/fluid_pipe": pipe_texture(TIN, COPPER, GLASS),

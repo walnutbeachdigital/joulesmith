@@ -1,6 +1,13 @@
 package com.walnutbeachdigital.joulesmith.registry;
 
 import com.walnutbeachdigital.joulesmith.Joulesmith;
+import com.walnutbeachdigital.joulesmith.automation.AutocrafterBlockEntity;
+import com.walnutbeachdigital.joulesmith.automation.BlockBreakerBlockEntity;
+import com.walnutbeachdigital.joulesmith.automation.BlockPlacerBlockEntity;
+import com.walnutbeachdigital.joulesmith.automation.FluidPlacerBlockEntity;
+import com.walnutbeachdigital.joulesmith.automation.MechanicalUserBlockEntity;
+import com.walnutbeachdigital.joulesmith.automation.MobFighterBlockEntity;
+import com.walnutbeachdigital.joulesmith.automation.QuarryBlockEntity;
 import com.walnutbeachdigital.joulesmith.energy.cable.EnergyCableBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.battery.BatteryBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.steam.BoilerBlockEntity;
@@ -55,6 +62,24 @@ public final class JSBlockEntities {
     private static int batteryTier(net.minecraft.world.level.block.state.BlockState state) {
         return state.is(JSBlocks.ADVANCED_BATTERY.get()) ? 3 : state.is(JSBlocks.REINFORCED_BATTERY.get()) ? 2 : 1;
     }
+
+    // automation
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BlockPlacerBlockEntity>> BLOCK_PLACER =
+            BLOCK_ENTITIES.register("block_placer", () -> BlockEntityType.Builder.of(BlockPlacerBlockEntity::new, JSBlocks.BLOCK_PLACER.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BlockBreakerBlockEntity>> BLOCK_BREAKER =
+            BLOCK_ENTITIES.register("block_breaker", () -> BlockEntityType.Builder.of(BlockBreakerBlockEntity::new, JSBlocks.BLOCK_BREAKER.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AutocrafterBlockEntity>> AUTOCRAFTER =
+            BLOCK_ENTITIES.register("autocrafter", () -> BlockEntityType.Builder.of(AutocrafterBlockEntity::new, JSBlocks.AUTOCRAFTER.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidPlacerBlockEntity>> FLUID_PLACER =
+            BLOCK_ENTITIES.register("fluid_placer", () -> BlockEntityType.Builder.of((p, s) -> new FluidPlacerBlockEntity(p, s, false), JSBlocks.FLUID_PLACER.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidPlacerBlockEntity>> FLUID_DRAIN =
+            BLOCK_ENTITIES.register("fluid_drain", () -> BlockEntityType.Builder.of((p, s) -> new FluidPlacerBlockEntity(p, s, true), JSBlocks.FLUID_DRAIN.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MechanicalUserBlockEntity>> MECHANICAL_USER =
+            BLOCK_ENTITIES.register("mechanical_user", () -> BlockEntityType.Builder.of(MechanicalUserBlockEntity::new, JSBlocks.MECHANICAL_USER.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<QuarryBlockEntity>> QUARRY =
+            BLOCK_ENTITIES.register("quarry", () -> BlockEntityType.Builder.of(QuarryBlockEntity::new, JSBlocks.QUARRY.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MobFighterBlockEntity>> MOB_FIGHTER =
+            BLOCK_ENTITIES.register("mob_fighter", () -> BlockEntityType.Builder.of(MobFighterBlockEntity::new, JSBlocks.MOB_FIGHTER.get()).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BoilerBlockEntity>> BOILER =
             BLOCK_ENTITIES.register("boiler", () -> BlockEntityType.Builder

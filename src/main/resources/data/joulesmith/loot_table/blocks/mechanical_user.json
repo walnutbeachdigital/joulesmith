@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "joulesmith:blocks/mechanical_user",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "joulesmith:mechanical_user"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

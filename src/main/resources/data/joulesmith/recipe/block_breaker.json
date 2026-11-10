@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "IAI",
+    "GPG",
+    "IRI"
+  ],
+  "key": {
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "A": {
+      "item": "minecraft:iron_pickaxe"
+    },
+    "G": {
+      "tag": "c:gears/copper"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:block_breaker",
+    "count": 1
+  }
+}

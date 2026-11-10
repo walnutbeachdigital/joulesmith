@@ -55,6 +55,14 @@ public final class JSItems {
         blockItem(JSBlocks.ADVANCED_BATTERY);
         blockItem(JSBlocks.BOILER);
         blockItem(JSBlocks.STEAM_TURBINE);
+        blockItem(JSBlocks.BLOCK_PLACER);
+        blockItem(JSBlocks.BLOCK_BREAKER);
+        blockItem(JSBlocks.AUTOCRAFTER);
+        blockItem(JSBlocks.FLUID_PLACER);
+        blockItem(JSBlocks.FLUID_DRAIN);
+        blockItem(JSBlocks.MECHANICAL_USER);
+        blockItem(JSBlocks.QUARRY);
+        blockItem(JSBlocks.MOB_FIGHTER);
         blockItem(JSBlocks.ENERGY_CABLE);
         blockItem(JSBlocks.REINFORCED_ENERGY_CABLE);
         blockItem(JSBlocks.ADVANCED_ENERGY_CABLE);

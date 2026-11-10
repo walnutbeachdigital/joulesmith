@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "GTG",
+    "PRP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "joulesmith:basic_circuit"
+    },
+    "G": {
+      "tag": "c:gears/bronze"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "T": {
+      "item": "minecraft:crafter"
+    }
+  },
+  "result": {
+    "id": "joulesmith:autocrafter",
+    "count": 1
+  }
+}

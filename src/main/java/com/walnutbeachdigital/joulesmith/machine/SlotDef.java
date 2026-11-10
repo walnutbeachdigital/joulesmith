@@ -7,4 +7,5 @@ public record SlotDef(int x, int y, SlotRole role, boolean big) {
     /** A small output slot, for byproducts. */
     public static SlotDef byproduct(int x, int y) { return new SlotDef(x, y, SlotRole.OUTPUT, false); }
     public static SlotDef upgrade(int x, int y) { return new SlotDef(x, y, SlotRole.UPGRADE, false); }
+    public static SlotDef ghost(int x, int y) { return new SlotDef(x, y, SlotRole.GHOST, false); }
 }

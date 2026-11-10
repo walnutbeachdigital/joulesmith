@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "GDG",
+    "PBP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "joulesmith:basic_circuit"
+    },
+    "G": {
+      "tag": "c:gears/bronze"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "D": {
+      "item": "minecraft:dispenser"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    }
+  },
+  "result": {
+    "id": "joulesmith:fluid_placer",
+    "count": 1
+  }
+}

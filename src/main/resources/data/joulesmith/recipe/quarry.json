@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "GAG",
+    "PBP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    },
+    "G": {
+      "tag": "c:gears/steel"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "A": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "B": {
+      "tag": "c:storage_blocks/steel"
+    }
+  },
+  "result": {
+    "id": "joulesmith:quarry",
+    "count": 1
+  }
+}

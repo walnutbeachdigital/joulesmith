@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "GMG",
+    "PBP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "joulesmith:basic_circuit"
+    },
+    "G": {
+      "tag": "c:gears/bronze"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "M": {
+      "item": "joulesmith:pump"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    }
+  },
+  "result": {
+    "id": "joulesmith:fluid_drain",
+    "count": 1
+  }
+}

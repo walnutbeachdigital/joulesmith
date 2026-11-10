@@ -15,12 +15,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
@@ -34,6 +36,7 @@ public class MachineMenu extends AbstractContainerMenu {
     private final List<SlotDef> slotDefs;
     private final MachineBlockEntity.ProgressStyle progressStyle;
     private final int[] tankXs;
+    private final IItemHandler handler;
     private final ResourceLocation recipeCategory;
 
     /** Server side: wraps the real machine. */
@@ -57,14 +60,19 @@ public class MachineMenu extends AbstractContainerMenu {
         this.progressStyle = be.progressStyle();
         this.tankXs = be.tanks().stream().mapToInt(MachineBlockEntity.TankDef::x).toArray();
         this.recipeCategory = be.recipeCategory();
-        IItemHandler handler = items != null ? items : be.items();     // the client copy follows the same slot rules
+        this.handler = items != null ? items : be.items();     // the client copy follows the same slot rules
         this.data = data != null ? data : new SimpleContainerData(MachineBlockEntity.VALUES * 2);
         for (int i = 0; i < slotDefs.size(); i++) {
             SlotDef def = slotDefs.get(i);
             addSlot(new SlotItemHandler(handler, i, def.x(), def.y()) {
                 @Override
                 public boolean mayPlace(ItemStack stack) {
-                    return def.role() != SlotRole.OUTPUT && super.mayPlace(stack);
+                    return def.role() != SlotRole.OUTPUT && def.role() != SlotRole.GHOST && super.mayPlace(stack);
+                }
+
+                @Override
+                public boolean mayPickup(Player player) {
+                    return def.role() != SlotRole.GHOST && super.mayPickup(player);
                 }
             });
         }
@@ -127,6 +135,19 @@ public class MachineMenu extends AbstractContainerMenu {
 
     public SideMode sideMode(MachineFace face) {
         return SideMode.values()[(value(5) >> (face.ordinal() * 2)) & 3];
+    }
+
+    /** Ghost slots: clicking with an item sets a copy of it; clicking with an empty hand clears it. */
+    @Override
+    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+        if (slotId >= 0 && slotId < slotDefs.size() && slotDefs.get(slotId).role() == SlotRole.GHOST) {
+            if ((clickType == ClickType.PICKUP || clickType == ClickType.QUICK_MOVE) && handler instanceof IItemHandlerModifiable modifiable) {
+                ItemStack carried = getCarried();
+                modifiable.setStackInSlot(slotId, carried.isEmpty() ? ItemStack.EMPTY : carried.copyWithCount(1));
+            }
+            return;
+        }
+        super.clicked(slotId, button, clickType, player);
     }
 
     @Override

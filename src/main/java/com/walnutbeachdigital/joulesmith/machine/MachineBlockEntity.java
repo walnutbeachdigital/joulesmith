@@ -111,12 +111,14 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
                     case OUTPUT -> true;
                     case INPUT -> isValidInput(stack);
                     case UPGRADE -> stack.getItem() instanceof UpgradeCardItem;
+                    case GHOST -> true;
                 };
             }
 
             @Override
             public int getSlotLimit(int slot) {
-                return MachineBlockEntity.this.slots.get(slot).role() == SlotRole.UPGRADE ? 1 : super.getSlotLimit(slot);
+                SlotRole role = MachineBlockEntity.this.slots.get(slot).role();
+                return role == SlotRole.UPGRADE || role == SlotRole.GHOST ? 1 : super.getSlotLimit(slot);
             }
         };
         Arrays.fill(sides, SideMode.BOTH);
@@ -506,6 +508,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     public void dropContents() {
         if (level == null) return;
         for (int i = 0; i < items.getSlots(); i++) {
+            if (slots.get(i).role() == SlotRole.GHOST) continue;            // pattern copies, not real items
             Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), items.getStackInSlot(i));
         }
     }
