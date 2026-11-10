@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " B ",
+    "SRS",
+    " R "
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "B": {
+      "tag": "c:storage_blocks/steel"
+    },
+    "R": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "result": {
+    "id": "joulesmith:steel_excavator",
+    "count": 1
+  }
+}

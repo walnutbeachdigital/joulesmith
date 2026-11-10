@@ -3,6 +3,7 @@ package com.walnutbeachdigital.joulesmith.registry;
 import com.walnutbeachdigital.joulesmith.Joulesmith;
 import com.walnutbeachdigital.joulesmith.item.filter.FilterMenu;
 import com.walnutbeachdigital.joulesmith.machine.MachineMenu;
+import com.walnutbeachdigital.joulesmith.storage.crate.CrateMenu;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
@@ -19,6 +20,9 @@ public final class JSMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<FilterMenu>> FILTER =
             MENUS.register("filter", () -> IMenuTypeExtension.create(FilterMenu::new));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<CrateMenu>> CRATE =
+            MENUS.register("crate", () -> IMenuTypeExtension.create(CrateMenu::new));
 
     private JSMenus() {}
 }

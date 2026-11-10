@@ -14,6 +14,8 @@ import com.walnutbeachdigital.joulesmith.recipe.MachineRecipeKind;
 import com.walnutbeachdigital.joulesmith.machine.generator.CombustionGeneratorBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.furnace.ElectricFurnaceBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.pump.PumpBlockEntity;
+import com.walnutbeachdigital.joulesmith.storage.bin.BinBlockEntity;
+import com.walnutbeachdigital.joulesmith.storage.crate.CrateBlockEntity;
 import com.walnutbeachdigital.joulesmith.storage.tank.FluidTankBlockEntity;
 import com.walnutbeachdigital.joulesmith.transport.fluid.FluidPipeBlockEntity;
 import com.walnutbeachdigital.joulesmith.transport.item.ItemDuctBlockEntity;
@@ -104,6 +106,14 @@ public final class JSBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BiofuelGeneratorBlockEntity>> BIOFUEL_GENERATOR =
             BLOCK_ENTITIES.register("biofuel_generator", () -> BlockEntityType.Builder
                     .of(BiofuelGeneratorBlockEntity::new, JSBlocks.BIOFUEL_GENERATOR.get()).build(null));
+
+    // storage
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrateBlockEntity>> CRATE =
+            BLOCK_ENTITIES.register("crate", () -> BlockEntityType.Builder
+                    .of(CrateBlockEntity::new, JSBlocks.BASIC_CRATE.get(), JSBlocks.REINFORCED_CRATE.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BinBlockEntity>> BULK_BIN =
+            BLOCK_ENTITIES.register("bulk_bin", () -> BlockEntityType.Builder
+                    .of(BinBlockEntity::new, JSBlocks.BASIC_BULK_BIN.get(), JSBlocks.REINFORCED_BULK_BIN.get()).build(null));
 
     /** Every recipe machine's type, for registering their capabilities together. */
     public static List<DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessingMachineBlockEntity>>> processingMachines() {

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TPT",
+    "PBP",
+    "TPT"
+  ],
+  "key": {
+    "T": {
+      "tag": "c:ingots/tin"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "B": {
+      "tag": "c:barrels/wooden"
+    }
+  },
+  "result": {
+    "id": "joulesmith:basic_bulk_bin",
+    "count": 1
+  }
+}

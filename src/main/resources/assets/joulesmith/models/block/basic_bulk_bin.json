@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "joulesmith:block/basic_bulk_bin_front",
+    "side": "joulesmith:block/basic_bulk_bin_side",
+    "top": "joulesmith:block/basic_bulk_bin_side"
+  }
+}

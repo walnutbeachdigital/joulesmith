@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "joulesmith:block/reinforced_bulk_bin"
+    },
+    "facing=east": {
+      "model": "joulesmith:block/reinforced_bulk_bin",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "joulesmith:block/reinforced_bulk_bin",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "joulesmith:block/reinforced_bulk_bin",
+      "y": 270
+    }
+  }
+}

@@ -20,6 +20,8 @@ import com.walnutbeachdigital.joulesmith.machine.generator.CombustionGeneratorBl
 import com.walnutbeachdigital.joulesmith.machine.creative.CreativePowerCellBlock;
 import com.walnutbeachdigital.joulesmith.machine.furnace.ElectricFurnaceBlock;
 import com.walnutbeachdigital.joulesmith.machine.pump.PumpBlockEntity;
+import com.walnutbeachdigital.joulesmith.storage.bin.BinBlock;
+import com.walnutbeachdigital.joulesmith.storage.crate.CrateBlock;
 import com.walnutbeachdigital.joulesmith.storage.tank.FluidTankBlock;
 import com.walnutbeachdigital.joulesmith.transport.fluid.FluidPipeBlock;
 import com.walnutbeachdigital.joulesmith.transport.item.ItemDuctBlock;
@@ -111,6 +113,16 @@ public final class JSBlocks {
             () -> new SaplingBlock(RUBBER_TREE, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SAPLING)));
     public static final DeferredBlock<Block> RUBBER_PLANKS = BLOCKS.registerSimpleBlock("rubber_planks",
             BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS));
+
+    // ---- storage
+    public static final DeferredBlock<CrateBlock> BASIC_CRATE = BLOCKS.register("basic_crate",
+            () -> new CrateBlock(6, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).strength(2.5f)));
+    public static final DeferredBlock<CrateBlock> REINFORCED_CRATE = BLOCKS.register("reinforced_crate",
+            () -> new CrateBlock(9, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).strength(3.5f).sound(SoundType.METAL)));
+    public static final DeferredBlock<BinBlock> BASIC_BULK_BIN = BLOCKS.register("basic_bulk_bin",
+            () -> new BinBlock(4_096, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).strength(2.5f)));
+    public static final DeferredBlock<BinBlock> REINFORCED_BULK_BIN = BLOCKS.register("reinforced_bulk_bin",
+            () -> new BinBlock(16_384, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).strength(3.5f).sound(SoundType.METAL)));
 
     /** A recipe machine block; its block entity type knows the slots and recipes. */
     private static DeferredBlock<SimpleMachineBlock<ProcessingMachineBlockEntity>> processing(

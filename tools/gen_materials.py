@@ -749,6 +749,65 @@ for iid in ("latex", "rubber", "tree_tap", "range_upgrade"):
 for (ns, reg, path), values in tags.items():
     write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
 
+# ---- material gear: copper, bronze and steel tools and armor (textures made in game from vanilla's iron
+# ones), the steel Hammer and Excavator, and enchanting / repair tags
+GEAR_METALS = {"copper": "Copper", "bronze": "Bronze", "steel": "Steel"}
+TOOLS = {"sword": ("swords", ["X", "X", "S"]), "pickaxe": ("pickaxes", ["XXX", " S ", " S "]),
+         "axe": ("axes", ["XX", "XS", " S"]), "shovel": ("shovels", ["X", "S", "S"]), "hoe": ("hoes", ["XX", " S", " S"])}
+ARMOR = {"helmet": ("head_armor", ["XXX", "X X"]), "chestplate": ("chest_armor", ["X X", "XXX", "XXX"]),
+         "leggings": ("leg_armor", ["XXX", "X X", "X X"]), "boots": ("foot_armor", ["X X", "X X"])}
+gear_generated = []
+for metal, mname in GEAR_METALS.items():
+    for piece, (item_tag, pattern) in {**TOOLS, **ARMOR}.items():
+        iid = f"{metal}_{piece}"
+        handheld = piece in TOOLS
+        write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
+              {"parent": "minecraft:item/handheld" if handheld else "minecraft:item/generated",
+               "textures": {"layer0": f"{MOD}:item/{iid}"}})
+        gear_generated.append(f"item/{iid}")
+        key = {"X": f"#c:ingots/{metal}"}
+        if handheld:
+            key["S"] = "#c:rods/wooden"
+        shaped(iid, pattern, key)
+        tag("minecraft", "item", item_tag, f"{MOD}:{iid}")
+        lang[f"item.{MOD}.{iid}"] = f"{mname} {piece.title()}"
+    gear_generated += [f"models/armor/{metal}_layer_1", f"models/armor/{metal}_layer_2"]
+for iid, name, item_tag, pattern, key in (
+        ("steel_hammer", "Steel Hammer", "pickaxes", ["SBS", "SRS", " R "],
+         {"S": "#c:ingots/steel", "B": "#c:storage_blocks/steel", "R": "#c:rods/wooden"}),
+        ("steel_excavator", "Steel Excavator", "shovels", [" B ", "SRS", " R "],
+         {"S": "#c:ingots/steel", "B": "#c:storage_blocks/steel", "R": "#c:rods/wooden"})):
+    write(os.path.join(ASSETS, "models", "item", f"{iid}.json"),
+          {"parent": "minecraft:item/handheld", "textures": {"layer0": f"{MOD}:item/{iid}"}})
+    shaped(iid, pattern, key)
+    tag("minecraft", "item", item_tag, f"{MOD}:{iid}")
+    lang[f"item.{MOD}.{iid}"] = name
+
+# ---- storage: Crates and Bulk Bins keep what they hold when broken
+STORAGE = {"basic_crate": "Crate", "reinforced_crate": "Reinforced Crate",
+           "basic_bulk_bin": "Bulk Bin", "reinforced_bulk_bin": "Reinforced Bulk Bin"}
+for bid in ("basic_crate", "reinforced_crate"):
+    write(os.path.join(ASSETS, "blockstates", f"{bid}.json"), {"variants": {"": {"model": f"{MOD}:block/{bid}"}}})
+    model(bid, {"parent": "minecraft:block/cube_bottom_top", "textures": {
+        "side": f"{MOD}:block/{bid}_side", "top": f"{MOD}:block/{bid}_top", "bottom": f"{MOD}:block/{bid}_top"}})
+    simple_loot(bid, [{"function": "minecraft:copy_components", "source": "block_entity", "include": ["minecraft:container"]}])
+for bid in ("basic_bulk_bin", "reinforced_bulk_bin"):
+    write(os.path.join(ASSETS, "blockstates", f"{bid}.json"), {"variants": {
+        f"facing={f}": dict({"model": f"{MOD}:block/{bid}"}, **({"y": r} if r else {})) for f, r in ROTATION.items()}})
+    model(bid, {"parent": "minecraft:block/orientable", "textures": {
+        "front": f"{MOD}:block/{bid}_front", "side": f"{MOD}:block/{bid}_side", "top": f"{MOD}:block/{bid}_side"}})
+    simple_loot(bid, [{"function": "minecraft:copy_components", "source": "block_entity", "include": [f"{MOD}:bin"]}])
+for bid, name in STORAGE.items():
+    write(os.path.join(ASSETS, "models", "item", f"{bid}.json"), {"parent": f"{MOD}:block/{bid}"})
+    tag("minecraft", "block", "mineable/axe", f"{MOD}:{bid}")
+    lang[f"block.{MOD}.{bid}"] = name
+shaped("basic_crate", ["TPT", "PCP", "TPT"], {"T": "#c:ingots/tin", "P": "#minecraft:planks", "C": "#c:chests/wooden"})
+shaped("reinforced_crate", ["SPS", "PCP", "SPS"], {"S": "#c:ingots/steel", "P": "#c:plates/steel", "C": "#c:chests/wooden"})
+shaped("basic_bulk_bin", ["TPT", "PBP", "TPT"], {"T": "#c:ingots/tin", "P": "#minecraft:planks", "B": "#c:barrels/wooden"})
+shaped("reinforced_bulk_bin", ["SPS", "PBP", "SPS"], {"S": "#c:ingots/steel", "P": "#c:plates/steel", "B": "#c:barrels/wooden"})
+for (ns, reg, path), values in tags.items():
+    write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+
 # ---- the new machines, upgrade cards and sawdust
 shaped("alloy_smelter", ["IGI", "BFB", "IRI"],
        {"I": "#c:ingots/iron", "G": "#c:gears/copper", "B": "minecraft:bricks", "F": "minecraft:furnace", "R": "#c:dusts/redstone"})
@@ -780,6 +839,12 @@ lang.update({
     **{f"block.{MOD}.{b}": n for b, n in RUBBER.items()},
     "jei.joulesmith.bio_reacting": "Bio Reacting",
     "tooltip.joulesmith.tree_tap": "Use on a rubber log's latex spot",
+    "tooltip.joulesmith.area_tool": "Breaks 3x3; sneak to break one block",
+    "tooltip.joulesmith.crate.slots": "%s of %s slots used",
+    "tooltip.joulesmith.crate.more": "...and %s more",
+    "tooltip.joulesmith.bin.empty": "Empty (holds %s of one item)",
+    "tooltip.joulesmith.bin.holds": "%s: %s / %s",
+    "tooltip.joulesmith.bin.use": "Right-click: put in. Left-click: take a stack (sneak: one)",
     "tooltip.joulesmith.upgrade.range": "Farm machines: each card widens the area (5x5, 9x9, 13x13)",
     **{f"block.{MOD}.{f}": n for f, n in FLUIDS.items()},
     **{f"fluid_type.{MOD}.{f}": n for f, n in FLUIDS.items()},
@@ -867,5 +932,5 @@ write(os.path.join(ROOT, "tools", "texture_manifest.json"), {
     "block": [f"{b}_overlay" for b, k, m in blocks if k in ("ore", "deepslate_ore")] +
              [b for b, k, m in blocks if k == "storage"],
     "item": [i for i, f, m in items if f not in GENERATED_ITEM_FORMS],
-    "generated": [f"block/{b}" for b, k, m in blocks if k in GENERATED_BLOCK_KINDS] +
+    "generated": gear_generated + [f"block/{b}" for b, k, m in blocks if k in GENERATED_BLOCK_KINDS] +
                  [f"item/{i}" for i, f, m in items if f in GENERATED_ITEM_FORMS]})

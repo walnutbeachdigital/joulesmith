@@ -1019,6 +1019,171 @@ def biofuel_generator_front(on):
     return img
 
 
+# ------------------------------------------------------------------ gear and storage
+STEEL_METAL = ["#22262e", "#30353f", "#3e4450", "#4d5461", "#5f6774", "#767e8b", "#939aa6", "#b8bec8"]
+HANDLE = ["#28180a", "#493012", "#6a4a20", "#896630"]
+
+
+def _outline(px, filled):
+    for (x, y) in list(filled):
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            q = (x + dx, y + dy)
+            if 0 <= q[0] < 16 and 0 <= q[1] < 16 and q not in filled:
+                px[q] = rgba("#14161a")
+
+
+def _handle(px, filled, x0, y0, n):
+    """A diagonal wooden handle running down-left from (x0, y0) for n pixels."""
+    for i in range(n):
+        x, y = x0 - i, y0 + i
+        px[x, y] = rgba(HANDLE[3] if i % 3 else HANDLE[2])
+        filled.add((x, y))
+        if x + 1 < 16:
+            px[x + 1, y] = rgba(HANDLE[1])
+            filled.add((x + 1, y))
+
+
+def hammer_item():
+    """A heavy steel sledge head set square across the top of a long handle."""
+    import math
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    filled = set()
+    _handle(px, filled, 9, 6, 9)
+    cx, cy = 11.0, 4.5
+    for y in range(16):
+        for x in range(16):
+            along = ((x - cx) - (y - cy)) / math.sqrt(2)     # along the handle
+            across = ((x - cx) + (y - cy)) / math.sqrt(2)    # the head's length
+            if abs(along) <= 2.0 and abs(across) <= 4.6:
+                face = abs(across) > 3.6                     # the striking faces at each end
+                c = STEEL_METAL[7] if along < -0.8 else STEEL_METAL[5] if along < 0.8 else STEEL_METAL[3]
+                if face:
+                    c = STEEL_METAL[6] if along < 0 else STEEL_METAL[4]
+                px[x, y] = rgba(c)
+                filled.add((x, y))
+    _outline(px, filled)
+    return img
+
+
+def excavator_item():
+    """A broad steel spade on a long handle."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    filled = set()
+    _handle(px, filled, 8, 7, 8)
+    for y in range(0, 9):
+        for x in range(7, 16):
+            # a rounded spade, lying corner to corner, top-right
+            dx, dy = x - 11.5, y - 3.5
+            if (dx - dy) ** 2 / 30 + (dx + dy) ** 2 / 12 <= 1:
+                lit = -(dx + dy)
+                px[x, y] = rgba(STEEL_METAL[7] if lit > 2 else STEEL_METAL[6] if lit > 0 else STEEL_METAL[5] if lit > -2 else STEEL_METAL[3])
+                filled.add((x, y))
+    _outline(px, filled)
+    return img
+
+
+PLANK = ["#4a3218", "#6a4824", "#8a6232", "#a87c42", "#c49656"]
+
+
+def crate_side(trim):
+    """Planks in a metal frame with corner plates in the tier colour."""
+    img = Image.new("RGBA", (16, 16))
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            board = y // 4
+            c = PLANK[1] if y % 4 == 3 else PLANK[3] if (x + board * 3) % 7 else PLANK[2]
+            px[x, y] = rgba(c)
+    for i in range(16):
+        for a, b in ((i, 0), (i, 15), (0, i), (15, i)):
+            px[a, b] = rgba(STEEL[5] if a == 0 or b == 0 else STEEL[2])
+    for i in range(1, 15):                                     # cross brace
+        px[i, i] = rgba(PLANK[4])
+        if i + 1 < 15:
+            px[i + 1, i] = rgba(PLANK[1])
+    for cx, cy in ((1, 1), (13, 1), (1, 13), (13, 13)):
+        for dx in range(2):
+            for dy in range(2):
+                px[cx + dx, cy + dy] = rgba(trim[3] if dx == 0 and dy == 0 else trim[1])
+    return img
+
+
+def crate_top(trim):
+    img = crate_side(trim)
+    px = img.load()
+    for x in range(5, 11):                                    # a handle
+        px[x, 7] = rgba(STEEL[5])
+        px[x, 8] = rgba(STEEL[2])
+    return img
+
+
+def bin_side(trim):
+    img = casing(STEEL, trim)
+    px = img.load()
+    for y in (5, 10):
+        for x in range(3, 13):
+            px[x, y] = rgba(STEEL[2])
+    return img
+
+
+def bin_front(trim):
+    """A recessed label panel where the bin shows its item and count."""
+    img = casing(STEEL, trim)
+    px = img.load()
+    for y in range(2, 14):
+        for x in range(2, 14):
+            edge_dark = x == 2 or y == 2
+            edge_light = x == 13 or y == 13
+            px[x, y] = rgba(STEEL[1] if edge_dark else STEEL[6] if edge_light else "#2a2d33")
+    return img
+
+
+def crate_gui():
+    """The Crate screen sheet (256x512): a panel top with nine rows of slots at the top, and the
+    player-inventory part of the panel starting at v=180, to draw under however many rows a crate has."""
+    img = Image.new("RGBA", (256, 512), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    W = 176
+    BG, EDGE, DARK = (198, 198, 198, 255), (0, 0, 0, 255), (85, 85, 85, 255)
+
+    def panel(y0, y1, top, bottom):
+        d.rectangle([1, y0, W - 2, y1], fill=BG)
+        d.line([0, y0 + (2 if top else 0), 0, y1 - (2 if bottom else 0)], fill=EDGE)
+        d.line([W - 1, y0 + (3 if top else 0), W - 1, y1 - (3 if bottom else 0)], fill=EDGE)
+        d.line([1, y0 + (2 if top else 0), 1, y1], fill=LIGHT)
+        d.line([2, y0 + (3 if top else 0), 2, y1 - (5 if bottom else 0)], fill=LIGHT)
+        d.line([W - 2, y0 + (4 if top else 0), W - 2, y1 - (3 if bottom else 0)], fill=DARK)
+        d.line([W - 3, y0 + (4 if top else 0), W - 3, y1 - (4 if bottom else 0)], fill=DARK)
+        if top:
+            d.line([2, y0, W - 4, y0], fill=EDGE)
+            d.line([2, y0 + 1, W - 4, y0 + 1], fill=LIGHT)
+            d.line([3, y0 + 2, W - 5, y0 + 2], fill=LIGHT)
+            img.putpixel((1, y0 + 1), EDGE)
+            img.putpixel((W - 3, y0 + 1), EDGE)
+            img.putpixel((W - 2, y0 + 2), EDGE)
+        if bottom:
+            d.line([3, y1, W - 3, y1], fill=EDGE)
+            d.line([4, y1 - 1, W - 3, y1 - 1], fill=DARK)
+            d.line([4, y1 - 2, W - 3, y1 - 2], fill=DARK)
+            img.putpixel((1, y1 - 2), EDGE)
+            img.putpixel((2, y1 - 1), EDGE)
+            img.putpixel((W - 2, y1 - 2), EDGE)
+
+    panel(0, 179, True, False)
+    for r in range(9):
+        for c in range(9):
+            gui_slot(d, 7 + c * 18, 17 + r * 18)
+    panel(180, 276, False, True)
+    for r in range(3):
+        for c in range(9):
+            gui_slot(d, 7 + c * 18, 180 + 14 + r * 18)
+    for c in range(9):
+        gui_slot(d, 7 + c * 18, 180 + 72)
+    return img
+
+
 # ------------------------------------------------------------------ screen
 LIGHT = (255, 255, 255, 255)
 
@@ -1164,6 +1329,17 @@ def main():
         "item/latex": latex_item(),
         "item/rubber": rubber_item(),
         "item/tree_tap": tree_tap_item(),
+        "item/steel_hammer": hammer_item(),
+        "item/steel_excavator": excavator_item(),
+        "block/basic_crate_side": crate_side(COPPER),
+        "block/basic_crate_top": crate_top(COPPER),
+        "block/reinforced_crate_side": crate_side(STEEL_TRIM),
+        "block/reinforced_crate_top": crate_top(STEEL_TRIM),
+        "block/basic_bulk_bin_side": bin_side(COPPER),
+        "block/basic_bulk_bin_front": bin_front(COPPER),
+        "block/reinforced_bulk_bin_side": bin_side(STEEL_TRIM),
+        "block/reinforced_bulk_bin_front": bin_front(STEEL_TRIM),
+        "gui/crate": crate_gui(),
         **{f"block/{name}_front{'_on' if on else ''}": fn(on)
            for name, fn in (("planter", planter_front), ("harvester", harvester_front), ("tree_farm", tree_farm_front),
                             ("bio_reactor", bio_reactor_front), ("biofuel_generator", biofuel_generator_front))

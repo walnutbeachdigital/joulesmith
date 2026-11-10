@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "joulesmith:copper_shovel",
+    "joulesmith:bronze_shovel",
+    "joulesmith:steel_shovel",
+    "joulesmith:steel_excavator"
+  ]
+}

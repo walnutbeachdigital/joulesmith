@@ -12,6 +12,8 @@ import com.walnutbeachdigital.joulesmith.item.UpgradeCardItem;
 import com.walnutbeachdigital.joulesmith.item.WrenchItem;
 import com.walnutbeachdigital.joulesmith.item.filter.FilterCardItem;
 import com.walnutbeachdigital.joulesmith.material.Metal;
+import com.walnutbeachdigital.joulesmith.storage.bin.BinItem;
+import com.walnutbeachdigital.joulesmith.storage.crate.CrateItem;
 import com.walnutbeachdigital.joulesmith.storage.tank.FluidTankItem;
 
 import net.minecraft.world.item.Item;
@@ -81,6 +83,10 @@ public final class JSItems {
         blockItem(JSBlocks.FLUID_PIPE);
         blockItem(JSBlocks.REINFORCED_FLUID_PIPE);
         register("fluid_tank", () -> new FluidTankItem(JSBlocks.FLUID_TANK.get(), new Item.Properties()));
+        register("basic_crate", () -> new CrateItem(JSBlocks.BASIC_CRATE.get(), new Item.Properties().stacksTo(1)));
+        register("reinforced_crate", () -> new CrateItem(JSBlocks.REINFORCED_CRATE.get(), new Item.Properties().stacksTo(1)));
+        register("basic_bulk_bin", () -> new BinItem(JSBlocks.BASIC_BULK_BIN.get(), new Item.Properties().stacksTo(1)));
+        register("reinforced_bulk_bin", () -> new BinItem(JSBlocks.REINFORCED_BULK_BIN.get(), new Item.Properties().stacksTo(1)));
         blockItem(JSBlocks.CREATIVE_POWER_CELL);
         for (Metal metal : Metal.values()) {
             String id = metal.id();

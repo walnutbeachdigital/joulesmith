@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "X X",
+    "X X"
+  ],
+  "key": {
+    "X": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "result": {
+    "id": "joulesmith:steel_boots",
+    "count": 1
+  }
+}

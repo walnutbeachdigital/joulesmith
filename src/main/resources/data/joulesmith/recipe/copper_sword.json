@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "X",
+    "X",
+    "S"
+  ],
+  "key": {
+    "X": {
+      "tag": "c:ingots/copper"
+    },
+    "S": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "result": {
+    "id": "joulesmith:copper_sword",
+    "count": 1
+  }
+}

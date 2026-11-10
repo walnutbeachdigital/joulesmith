@@ -2,6 +2,10 @@
   "replace": false,
   "values": [
     "joulesmith:rubber_log",
-    "joulesmith:rubber_planks"
+    "joulesmith:rubber_planks",
+    "joulesmith:basic_crate",
+    "joulesmith:reinforced_crate",
+    "joulesmith:basic_bulk_bin",
+    "joulesmith:reinforced_bulk_bin"
   ]
 }

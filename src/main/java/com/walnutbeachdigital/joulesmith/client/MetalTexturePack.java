@@ -41,7 +41,8 @@ public final class MetalTexturePack implements PackResources {
             Joulesmith.MODID + "_metal_textures", Component.literal("Joulesmith metal textures"),
             PackSource.BUILT_IN, java.util.Optional.empty());
 
-    private record Source(Metal metal, ResourceLocation vanilla) {}
+    /** {@code metalOnly}: recolour only the grey (metal) pixels and keep coloured ones, like a tool's wooden handle. */
+    private record Source(Metal metal, ResourceLocation vanilla, boolean metalOnly) {}
 
     /** Joulesmith texture path -> the vanilla texture and metal it is made from. */
     private static final Map<ResourceLocation, Source> TEXTURES = new LinkedHashMap<>();
@@ -59,11 +60,25 @@ public final class MetalTexturePack implements PackResources {
                 add(m, "block/raw_" + id + "_block", "block/raw_iron_block");
             }
         }
+        // copper, bronze and steel gear: vanilla's iron tools and armor in each metal's colours
+        for (Metal m : new Metal[] {Metal.COPPER, Metal.BRONZE, Metal.STEEL}) {
+            String id = m.id();
+            for (String piece : new String[] {"sword", "pickaxe", "axe", "shovel", "hoe", "helmet", "chestplate", "leggings", "boots"}) {
+                addMetal(m, "item/" + id + "_" + piece, "item/iron_" + piece);
+            }
+            addMetal(m, "models/armor/" + id + "_layer_1", "models/armor/iron_layer_1");
+            addMetal(m, "models/armor/" + id + "_layer_2", "models/armor/iron_layer_2");
+        }
+    }
+
+    private static void addMetal(Metal metal, String path, String vanillaPath) {
+        TEXTURES.put(Joulesmith.id("textures/" + path + ".png"),
+                new Source(metal, ResourceLocation.withDefaultNamespace("textures/" + vanillaPath + ".png"), true));
     }
 
     private static void add(Metal metal, String path, String vanillaPath) {
         TEXTURES.put(Joulesmith.id("textures/" + path + ".png"),
-                new Source(metal, ResourceLocation.withDefaultNamespace("textures/" + vanillaPath + ".png")));
+                new Source(metal, ResourceLocation.withDefaultNamespace("textures/" + vanillaPath + ".png"), false));
     }
 
     /** Adds this pack, always on and hidden from the resource pack screen. */
@@ -100,7 +115,7 @@ public final class MetalTexturePack implements PackResources {
             for (int y = 0; y < h; y++) {
                 for (int x = 0; x < w; x++) {
                     int abgr = image.getPixelRGBA(x, y);
-                    if ((abgr >>> 24) != 0) shades.add(shade(abgr));
+                    if ((abgr >>> 24) != 0 && recolour(src, abgr)) shades.add(shade(abgr));
                 }
             }
             java.util.List<Integer> order = new java.util.ArrayList<>(shades);
@@ -110,7 +125,7 @@ public final class MetalTexturePack implements PackResources {
             for (int y = 0; y < h; y++) {
                 for (int x = 0; x < w; x++) {
                     int abgr = image.getPixelRGBA(x, y);
-                    ranks[y * w + x] = (abgr >>> 24) == 0 ? -1 : order.indexOf(shade(abgr));
+                    ranks[y * w + x] = (abgr >>> 24) == 0 || !recolour(src, abgr) ? -1 : order.indexOf(shade(abgr));
                 }
             }
             // Each vanilla shade becomes one exact ramp colour: a clean palette swap, no blending or noise.
@@ -120,6 +135,7 @@ public final class MetalTexturePack implements PackResources {
                     int alpha = abgr >>> 24;
                     if (alpha == 0) continue;
                     int i = ranks[y * w + x];
+                    if (i < 0) continue;                                  // a kept pixel (e.g. the handle)
                     int step = order.size() == 1 ? steps - 1 : Math.round(i * (steps - 1) / (float) (order.size() - 1));
                     int rgb = metal.rampStep(step);
                     // NativeImage stores pixels as ABGR
@@ -128,6 +144,14 @@ public final class MetalTexturePack implements PackResources {
             }
             return image.asByteArray();
         }
+    }
+
+    /** Whether a pixel takes the metal's colours: every pixel, or for gear only the grey ones. */
+    private static boolean recolour(Source src, int abgr) {
+        if (!src.metalOnly()) return true;
+        int r = abgr & 0xFF, g = abgr >> 8 & 0xFF, b = abgr >> 16 & 0xFF;
+        int max = Math.max(r, Math.max(g, b)), min = Math.min(r, Math.min(g, b));
+        return max == 0 || (max - min) / (float) max < 0.18f;
     }
 
     /** A pixel's brightness, rounded so identical vanilla shades group together. */

@@ -19,6 +19,8 @@ public final class JSCapabilities {
         machine(event, JSBlockEntities.COMBUSTION_GENERATOR.get());
         machine(event, JSBlockEntities.BASIC_BATTERY.get());
         machine(event, JSBlockEntities.PUMP.get());
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, JSBlockEntities.CRATE.get(), (crate, side) -> crate.items());
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, JSBlockEntities.BULK_BIN.get(), (bin, side) -> bin.handler);
         machine(event, JSBlockEntities.PLANTER.get());
         machine(event, JSBlockEntities.HARVESTER.get());
         machine(event, JSBlockEntities.TREE_FARM.get());

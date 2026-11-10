@@ -1,5 +1,7 @@
 package com.walnutbeachdigital.joulesmith;
 
+import com.walnutbeachdigital.joulesmith.client.BinRenderer;
+import com.walnutbeachdigital.joulesmith.client.CrateScreen;
 import com.walnutbeachdigital.joulesmith.client.FilterScreen;
 import com.walnutbeachdigital.joulesmith.client.FluidTankRenderer;
 import com.walnutbeachdigital.joulesmith.client.MachineScreen;
@@ -57,11 +59,13 @@ public class JoulesmithClient {
 
     private static void renderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(JSBlockEntities.FLUID_TANK.get(), FluidTankRenderer::new);
+        event.registerBlockEntityRenderer(JSBlockEntities.BULK_BIN.get(), BinRenderer::new);
     }
 
     private static void screens(RegisterMenuScreensEvent event) {
         event.register(JSMenus.MACHINE.get(), MachineScreen::new);
         event.register(JSMenus.FILTER.get(), FilterScreen::new);
+        event.register(JSMenus.CRATE.get(), CrateScreen::new);
     }
 
     /** Adds the built-in pack that colours vanilla-shaped metal textures through each metal's gradient. */

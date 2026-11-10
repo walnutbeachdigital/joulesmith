@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "X",
+    "S",
+    "S"
+  ],
+  "key": {
+    "X": {
+      "tag": "c:ingots/bronze"
+    },
+    "S": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "result": {
+    "id": "joulesmith:bronze_shovel",
+    "count": 1
+  }
+}

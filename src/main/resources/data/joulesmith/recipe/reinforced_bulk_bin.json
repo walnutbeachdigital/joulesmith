@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SPS",
+    "PBP",
+    "SPS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "B": {
+      "tag": "c:barrels/wooden"
+    }
+  },
+  "result": {
+    "id": "joulesmith:reinforced_bulk_bin",
+    "count": 1
+  }
+}

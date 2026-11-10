@@ -2,6 +2,7 @@ package com.walnutbeachdigital.joulesmith.registry;
 
 import com.walnutbeachdigital.joulesmith.Joulesmith;
 import com.walnutbeachdigital.joulesmith.item.filter.FilterContents;
+import com.walnutbeachdigital.joulesmith.storage.bin.BinContents;
 
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -18,6 +19,9 @@ public final class JSDataComponents {
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleFluidContent>> FLUID =
             COMPONENTS.registerComponentType("fluid", b -> b.persistent(SimpleFluidContent.CODEC).networkSynchronized(SimpleFluidContent.STREAM_CODEC));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<BinContents>> BIN =
+            COMPONENTS.registerComponentType("bin", b -> b.persistent(BinContents.CODEC).networkSynchronized(BinContents.STREAM_CODEC));
 
     private JSDataComponents() {}
 }

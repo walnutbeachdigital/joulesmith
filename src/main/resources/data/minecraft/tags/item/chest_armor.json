@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "joulesmith:copper_chestplate",
+    "joulesmith:bronze_chestplate",
+    "joulesmith:steel_chestplate"
+  ]
+}
