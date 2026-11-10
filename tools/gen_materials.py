@@ -261,6 +261,11 @@ for bid, kind, m in blocks:
         "raw_block": f"Block of Raw {title(m)}", "storage": f"Block of {title(m)}"}[kind]
 for iid, form, m in items:
     lang[f"item.{MOD}.{iid}"] = f"Raw {title(m)}" if form == "raw" else title(iid)
+TOOL_NAME = {"stone": "a stone", "iron": "an iron"}
+for m, o in ORES.items():
+    lang[f"jei.{MOD}.info.ore.{m}"] = (
+        f"Found in the Overworld between Y {o['min_y']} and Y {o['max_y']}. "
+        f"Mine it with {TOOL_NAME[o['tool']]} pickaxe or better, then smelt or blast the raw {m} into ingots.")
 write(os.path.join(ASSETS, "lang", "en_us.json"), lang)
 
 print(f"{len(blocks)} blocks, {len(items)} items, {len(recipes)} recipes, "

@@ -85,5 +85,10 @@
   "item.joulesmith.electrum_dust": "Electrum Dust",
   "item.joulesmith.electrum_plate": "Electrum Plate",
   "item.joulesmith.electrum_gear": "Electrum Gear",
-  "item.joulesmith.electrum_wire": "Electrum Wire"
+  "item.joulesmith.electrum_wire": "Electrum Wire",
+  "jei.joulesmith.info.ore.tin": "Found in the Overworld between Y -16 and Y 96. Mine it with a stone pickaxe or better, then smelt or blast the raw tin into ingots.",
+  "jei.joulesmith.info.ore.lead": "Found in the Overworld between Y -48 and Y 32. Mine it with an iron pickaxe or better, then smelt or blast the raw lead into ingots.",
+  "jei.joulesmith.info.ore.silver": "Found in the Overworld between Y -64 and Y 32. Mine it with an iron pickaxe or better, then smelt or blast the raw silver into ingots.",
+  "jei.joulesmith.info.ore.nickel": "Found in the Overworld between Y -32 and Y 48. Mine it with an iron pickaxe or better, then smelt or blast the raw nickel into ingots.",
+  "jei.joulesmith.info.ore.uranium": "Found in the Overworld between Y -64 and Y -8. Mine it with an iron pickaxe or better, then smelt or blast the raw uranium into ingots."
 }
