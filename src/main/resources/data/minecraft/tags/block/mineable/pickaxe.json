@@ -112,6 +112,10 @@
     "joulesmith:reactor_glass",
     "joulesmith:reactor_port",
     "joulesmith:wireless_transmitter",
-    "joulesmith:wireless_receiver"
+    "joulesmith:wireless_receiver",
+    "joulesmith:network_core",
+    "joulesmith:drive_bay",
+    "joulesmith:network_terminal",
+    "joulesmith:network_cable"
   ]
 }

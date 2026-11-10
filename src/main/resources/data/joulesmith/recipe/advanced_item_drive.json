@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "DRD",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "item": "joulesmith:plastic_sheet"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    },
+    "D": {
+      "item": "joulesmith:basic_item_drive"
+    },
+    "R": {
+      "tag": "c:storage_blocks/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:advanced_item_drive",
+    "count": 1
+  }
+}

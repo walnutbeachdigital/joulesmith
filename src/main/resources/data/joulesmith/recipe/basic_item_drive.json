@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "CRC",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "item": "joulesmith:plastic_sheet"
+    },
+    "C": {
+      "item": "joulesmith:basic_circuit"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:basic_item_drive",
+    "count": 1
+  }
+}

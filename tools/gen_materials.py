@@ -1883,6 +1883,78 @@ for iid, (short, info) in H_DESC.items():
     lang[f"jei.{MOD}.info.{iid}"] = info
 lang["tooltip.joulesmith.plasma_cannon"] = "Hold to charge, release to fire (25,000 FE)"
 
+# ---- the storage network: Network Core, Drive Bay, Network Terminal, Network Cable and Item Drives
+for bid, name in (("network_core", "Network Core"), ("drive_bay", "Drive Bay"), ("network_terminal", "Network Terminal")):
+    model(bid, {"parent": "minecraft:block/orientable", "textures": {
+        "front": f"{MOD}:block/{bid}_front", "side": f"{MOD}:block/network_side", "top": f"{MOD}:block/network_side"}})
+    write(os.path.join(ASSETS, "blockstates", f"{bid}.json"), {"variants": {
+        f"facing={f}": dict({"model": f"{MOD}:block/{bid}"}, **({"y": r} if r else {})) for f, r in ROTATION.items()}})
+    write(os.path.join(ASSETS, "models", "item", f"{bid}.json"), {"parent": f"{MOD}:block/{bid}"})
+    simple_loot(bid)
+    tag("minecraft", "block", "mineable/pickaxe", f"{MOD}:{bid}")
+    lang[f"block.{MOD}.{bid}"] = name
+NC = f"{MOD}:block/network_cable"
+model("network_cable_core", {"parent": "minecraft:block/block", "textures": {"particle": NC, "cable": NC},
+      "elements": [{"from": [6, 6, 6], "to": [10, 10, 10], "faces": {f: {"texture": "#cable"} for f in SIDES}}]})
+model("network_cable_arm", {"parent": "minecraft:block/block", "textures": {"particle": NC, "cable": NC},
+      "elements": [{"from": [6, 6, 0], "to": [10, 10, 6], "faces": {f: {"texture": "#cable"} for f in ("east", "west", "up", "down", "north")}}]})
+write(os.path.join(ASSETS, "blockstates", "network_cable.json"), {"multipart":
+    [{"apply": {"model": f"{MOD}:block/network_cable_core"}}] +
+    [{"when": {side: "true"}, "apply": {"model": f"{MOD}:block/network_cable_arm", **rot}} for side, rot in SIDE_ROT.items()]})
+write(os.path.join(ASSETS, "models", "item", "network_cable.json"), {"parent": "minecraft:block/block", "textures": {"particle": NC, "cable": NC},
+      "elements": [{"from": [0, 6, 6], "to": [16, 10, 10], "faces": {f: {"texture": "#cable"} for f in SIDES}}]})
+simple_loot("network_cable")
+tag("minecraft", "block", "mineable/pickaxe", f"{MOD}:network_cable")
+lang[f"block.{MOD}.network_cable"] = "Network Cable"
+DRIVES = {"basic_item_drive": ("Basic Item Drive", 4_096), "advanced_item_drive": ("Advanced Item Drive", 32_768),
+          "elite_item_drive": ("Elite Item Drive", 262_144), "ultimate_item_drive": ("Ultimate Item Drive", 2_097_152)}
+for iid, (name, cap) in DRIVES.items():
+    write(os.path.join(ASSETS, "models", "item", f"{iid}.json"), {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{iid}"}})
+    lang[f"item.{MOD}.{iid}"] = name
+shaped("network_cable", ["PGP"], {"P": f"{MOD}:plastic_sheet", "G": "#c:wires/gold"}, count=8)
+shaped("network_core", ["PCP", "EXE", "PRP"], {"P": "#c:plates/electrum", "C": f"{MOD}:advanced_circuit", "E": "minecraft:ender_pearl",
+                                             "X": f"{MOD}:advanced_casing", "R": "#c:storage_blocks/redstone"})
+shaped("drive_bay", ["PCP", "N N", "PXP"], {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit", "N": f"{MOD}:network_cable",
+                                          "X": f"{MOD}:reinforced_casing"})
+shaped("network_terminal", ["PGP", "CXC", "PNP"], {"P": "#c:plates/steel", "G": "#c:glass_panes", "C": f"{MOD}:basic_circuit",
+                                                 "X": f"{MOD}:reinforced_casing", "N": f"{MOD}:network_cable"})
+shaped("basic_item_drive", ["PCP", "CRC", "PCP"], {"P": f"{MOD}:plastic_sheet", "C": f"{MOD}:basic_circuit", "R": "#c:dusts/redstone"})
+shaped("advanced_item_drive", ["PCP", "DRD", "PCP"], {"P": f"{MOD}:plastic_sheet", "C": f"{MOD}:advanced_circuit",
+                                                    "D": f"{MOD}:basic_item_drive", "R": "#c:storage_blocks/redstone"})
+shaped("elite_item_drive", ["PCP", "DRD", "PCP"], {"P": "#c:plates/silver", "C": f"{MOD}:processor",
+                                                 "D": f"{MOD}:advanced_item_drive", "R": "#c:gems/diamond"})
+shaped("ultimate_item_drive", ["PCP", "DRD", "PCP"], {"P": "#c:ingots/netherite", "C": f"{MOD}:quantum_processor",
+                                                    "D": f"{MOD}:elite_item_drive", "R": "minecraft:nether_star"})
+NET_INFO = ("Network Cable joins the network's blocks. A network needs exactly one powered Network Core; Drive Bays hold the "
+            "Item Drives where everything is kept, and a Network Terminal shows it all.")
+N_DESC = {
+    "network_core": ("The heart of a storage network", "One per network. It runs on 10 FE/t plus 5 FE/t per Drive Bay; without power "
+                     "the network goes offline (nothing is lost). Right-click it to check the network. " + NET_INFO),
+    "drive_bay": ("Holds nine Item Drives", "Its drives' contents join the network it's on. Drives keep their contents when taken out. " + NET_INFO),
+    "network_terminal": ("See and reach everything on the network", "Click an item to take a stack (right-click: half; shift-click: "
+                         "straight to your inventory); click with an item held to store it (right-click: one); shift-click your own "
+                         "items to store them. Type in the box to search, or \"@mod\" to search by mod. " + NET_INFO),
+    "network_cable": ("Joins storage network blocks", NET_INFO),
+    **{iid: (f"Holds {cap:,} items of up to 63 kinds", "Goes in a Drive Bay. Keeps what it holds when taken out.")
+       for iid, (name, cap) in DRIVES.items()},
+}
+DESC.update(N_DESC)
+for iid, (short, info) in N_DESC.items():
+    lang[f"desc.{MOD}.{iid}"] = short
+    lang[f"jei.{MOD}.info.{iid}"] = info
+lang.update({
+    "tooltip.joulesmith.drive.items": "%s / %s items",
+    "tooltip.joulesmith.drive.types": "%s / %s kinds",
+    "gui.joulesmith.terminal.search": "Search",
+    "gui.joulesmith.terminal.stored": "Stored: %s",
+    "gui.joulesmith.terminal.offline": "Network offline",
+    "message.joulesmith.network.online": "Network online: %s blocks, %s Drive Bays",
+    "message.joulesmith.network.unpowered": "Network has no power (%s blocks, %s Drive Bays)",
+    "message.joulesmith.network.cores": "A network needs exactly one Network Core (%s blocks, %s Drive Bays)",
+})
+for (ns, reg, path), values in tags.items():
+    write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+
 # ---- advancements: a guided path through the tiers (data/joulesmith/advancement)
 ADV = [
     # id, parent, icon, items needed (all of them; a "#" tag or a list means any one), frame, title, description
@@ -1916,6 +1988,7 @@ ADV = [
     ("elite_exo", "exo_suit", "elite_exo_chestplate", [f"{MOD}:elite_exo_chestplate"], "goal", "Suit Upgrade", "Upgrade an Exo-Suit piece to Elite"),
     ("fusion", "quantum", "fusion_core", [f"{MOD}:fusion_core"], "challenge", "Star Power", "Build a Fusion Core"),
     ("drones", "quantum", "drone_hub", [f"{MOD}:drone_hub"], "task", "Eyes in the Sky", "Build a Drone Hub"),
+    ("network", "advanced", "network_terminal", [f"{MOD}:network_terminal"], "goal", "Everything in Its Place", "Make a Network Terminal"),
     ("flight", "quantum", "flight_module", [f"{MOD}:flight_module"], "challenge", "Lift Off", "Make a Flight Module"),
 ]
 for aid, parent, icon, needs, frame, title, desc in ADV:

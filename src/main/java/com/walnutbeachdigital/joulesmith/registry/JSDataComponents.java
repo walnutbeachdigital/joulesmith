@@ -37,5 +37,10 @@ public final class JSDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<Module>>> MODULES =
             COMPONENTS.registerComponentType("modules", b -> b.persistent(Module.CODEC.listOf()).networkSynchronized(Module.STREAM_CODEC.apply(ByteBufCodecs.list())));
 
+    /** What an Item Drive holds. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<com.walnutbeachdigital.joulesmith.storage.bin.BinContents>>> DRIVE =
+            COMPONENTS.registerComponentType("drive", b -> b.persistent(com.walnutbeachdigital.joulesmith.storage.bin.BinContents.CODEC.listOf())
+                    .networkSynchronized(com.walnutbeachdigital.joulesmith.storage.bin.BinContents.STREAM_CODEC.apply(ByteBufCodecs.list())));
+
     private JSDataComponents() {}
 }

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PGP",
+    "CXC",
+    "PNP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "C": {
+      "item": "joulesmith:basic_circuit"
+    },
+    "X": {
+      "item": "joulesmith:reinforced_casing"
+    },
+    "N": {
+      "item": "joulesmith:network_cable"
+    }
+  },
+  "result": {
+    "id": "joulesmith:network_terminal",
+    "count": 1
+  }
+}

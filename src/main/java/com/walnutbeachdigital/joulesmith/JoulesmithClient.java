@@ -73,6 +73,7 @@ public class JoulesmithClient {
         event.register(JSMenus.MACHINE.get(), MachineScreen::new);
         event.register(JSMenus.FILTER.get(), FilterScreen::new);
         event.register(JSMenus.CRATE.get(), CrateScreen::new);
+        event.register(JSMenus.TERMINAL.get(), com.walnutbeachdigital.joulesmith.client.TerminalScreen::new);
         event.register(JSMenus.LOGIC.get(), LogicScreen::new);
         event.register(JSMenus.MODIFICATION_TABLE.get(), com.walnutbeachdigital.joulesmith.client.ModificationTableScreen::new);
     }

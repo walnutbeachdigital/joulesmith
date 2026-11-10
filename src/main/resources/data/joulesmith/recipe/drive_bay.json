@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "N N",
+    "PXP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "joulesmith:basic_circuit"
+    },
+    "N": {
+      "item": "joulesmith:network_cable"
+    },
+    "X": {
+      "item": "joulesmith:reinforced_casing"
+    }
+  },
+  "result": {
+    "id": "joulesmith:drive_bay",
+    "count": 1
+  }
+}

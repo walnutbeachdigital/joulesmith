@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "EXE",
+    "PRP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/electrum"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "X": {
+      "item": "joulesmith:advanced_casing"
+    },
+    "R": {
+      "tag": "c:storage_blocks/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:network_core",
+    "count": 1
+  }
+}

@@ -196,6 +196,13 @@ public final class JSBlockEntities {
             BLOCK_ENTITIES.register("drone_hub", () -> BlockEntityType.Builder
                     .of(com.walnutbeachdigital.joulesmith.automation.DroneHubBlockEntity::new, JSBlocks.DRONE_HUB.get()).build(null));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.network.NetworkCoreBlockEntity>> NETWORK_CORE =
+            BLOCK_ENTITIES.register("network_core", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.network.NetworkCoreBlockEntity::new, JSBlocks.NETWORK_CORE.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.network.DriveBayBlockEntity>> DRIVE_BAY =
+            BLOCK_ENTITIES.register("drive_bay", () -> BlockEntityType.Builder
+                    .of(com.walnutbeachdigital.joulesmith.network.DriveBayBlockEntity::new, JSBlocks.DRIVE_BAY.get()).build(null));
+
     // more generators
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.walnutbeachdigital.joulesmith.machine.generator.GeothermalGeneratorBlockEntity>> GEOTHERMAL_GENERATOR =
             BLOCK_ENTITIES.register("geothermal_generator", () -> BlockEntityType.Builder

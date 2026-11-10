@@ -22,6 +22,9 @@ public final class JSMenus {
     public static final DeferredHolder<MenuType<?>, MenuType<FilterMenu>> FILTER =
             MENUS.register("filter", () -> IMenuTypeExtension.create(FilterMenu::new));
 
+    public static final DeferredHolder<MenuType<?>, MenuType<com.walnutbeachdigital.joulesmith.network.TerminalMenu>> TERMINAL =
+            MENUS.register("network_terminal", () -> IMenuTypeExtension.create(com.walnutbeachdigital.joulesmith.network.TerminalMenu::new));
+
     public static final DeferredHolder<MenuType<?>, MenuType<CrateMenu>> CRATE =
             MENUS.register("crate", () -> IMenuTypeExtension.create(CrateMenu::new));
 

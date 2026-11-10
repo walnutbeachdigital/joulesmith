@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PGP"
+  ],
+  "key": {
+    "P": {
+      "item": "joulesmith:plastic_sheet"
+    },
+    "G": {
+      "tag": "c:wires/gold"
+    }
+  },
+  "result": {
+    "id": "joulesmith:network_cable",
+    "count": 8
+  }
+}

@@ -2751,6 +2751,149 @@ def tier5_textures():
             "item/drone": drone_item(), "item/plasma_cannon": plasma_cannon_item()}
 
 
+# ------------------------------------------------------------------ the storage network
+NET_GREEN = ["#06200f", "#0b3a1c", "#11592b", "#1a7f3c", "#2aa851", "#5fd47c", "#a8f0b8"]
+
+
+def network_side():
+    return casing(STEEL, SIGNAL_TRIM)
+
+
+def network_core_front(on):
+    """A dark glass orb of light in a ring; it glows green when the network is powered."""
+    img = casing4()
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            r = math.hypot(x - 7.5, y - 7.5)
+            if 4.3 <= r < 5.3:
+                px[x, y] = rgba(SIGNAL_TRIM[4] if x + y < 15 else SIGNAL_TRIM[1])
+            elif r < 4.3:
+                px[x, y] = rgba(NET_GREEN[5 if r < 1.5 else 4 if r < 3 else 3] if on else ("#18222c" if r < 3 else "#101820"))
+    return img
+
+
+def drive_bay_front():
+    """Nine drive slots in three rows, each with a little status light."""
+    img = casing4()
+    px = img.load()
+    for row in range(3):
+        y0 = 3 + row * 4
+        for col in range(3):
+            x0 = 3 + col * 4
+            for x in range(x0, x0 + 3):
+                px[x, y0] = rgba("#0c1016"); px[x, y0 + 1] = rgba("#0c1016")
+                px[x, y0 + 2] = rgba(STEEL8[6])
+            px[x0 + 2, y0] = rgba(NET_GREEN[5])
+    return img
+
+
+def network_terminal_front():
+    """A screen with item icons in a grid and a search bar."""
+    img = casing4()
+    px = img.load()
+    window(img, 2, 2, 13, 12)
+    for y in range(2, 13):
+        for x in range(2, 14):
+            px[x, y] = rgba("#0b1a14")
+    for x in range(3, 13):
+        px[x, 3] = rgba(NET_GREEN[2])
+    colours = ["#d0a040", "#7fc0ff", "#e05050", "#a0e070", "#c080ff", "#f0f0f0"]
+    for i in range(9):
+        x, y = 3 + (i % 3) * 3 + 1, 5 + (i // 3) * 2
+        px[x, y] = rgba(colours[i % len(colours)])
+        px[x + 1, y] = rgba(colours[(i + 2) % len(colours)])
+    for x in range(10, 13):
+        for y in range(5, 11):
+            px[x, y] = rgba(NET_GREEN[1] if y != 6 else NET_GREEN[4])
+    return img
+
+
+def network_cable():
+    """A cable texture: a dark sheath with a green data line."""
+    img = Image.new("RGBA", (16, 16))
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            c = "#1a1f26" if (x + y) % 6 else "#232a33"
+            if x in (7, 8):
+                c = NET_GREEN[4] if x == 7 else NET_GREEN[2]
+            if x in (5, 10):
+                c = SIGNAL_TRIM[2]
+            px[x, y] = rgba(c)
+    return img
+
+
+def item_drive(trim8):
+    """A storage drive: a dark cartridge with a tier-coloured label and a green activity light."""
+    body = _mask({y: (3, 12) for y in range(2, 15)})
+    img = _parts((body, EXO8, 2, 7))
+    px = img.load()
+    for y in range(4, 9):
+        for x in range(5, 11):
+            px[x, y] = rgba(trim8[6] if y == 4 else trim8[4] if x < 9 else trim8[3])
+    for x in range(5, 11, 2):                           # contacts
+        px[x, 13] = rgba(ELECTRUM8[6]); px[x, 14] = rgba(ELECTRUM8[3])
+    px[10, 11] = rgba(NET_GREEN[5])
+    for x in range(5, 9):
+        px[x, 11] = rgba(EXO8[1])
+    return img
+
+
+def panel(W, H):
+    """A blank vanilla-style panel W x H on a 256x256 sheet."""
+    img = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    BG, LT, DK, EDGE = (198, 198, 198, 255), (255, 255, 255, 255), (85, 85, 85, 255), (0, 0, 0, 255)
+    d.rectangle([1, 1, W - 2, H - 2], fill=BG)
+    d.line([2, 0, W - 4, 0], fill=EDGE); d.line([0, 2, 0, H - 4], fill=EDGE)
+    d.line([3, H - 1, W - 3, H - 1], fill=EDGE); d.line([W - 1, 3, W - 1, H - 3], fill=EDGE)
+    for p in ((1, 1), (W - 3, 1), (W - 2, 2), (1, H - 3), (2, H - 2), (W - 2, H - 3), (W - 3, H - 2)):
+        img.putpixel(p, EDGE)
+    d.line([2, 1, W - 4, 1], fill=LT); d.line([1, 2, 1, H - 4], fill=LT)
+    d.line([3, 2, W - 5, 2], fill=LT); d.line([2, 3, 2, H - 5], fill=LT)
+    d.line([4, H - 2, W - 3, H - 2], fill=DK); d.line([W - 2, 4, W - 2, H - 3], fill=DK)
+    d.line([4, H - 3, W - 3, H - 3], fill=DK); d.line([W - 3, 4, W - 3, H - 4], fill=DK)
+    return img, d
+
+
+def network_terminal_gui():
+    """The terminal: a search bar, a 9x6 grid with a scroll track, then the player's inventory; scroll knobs at u 232/244."""
+    img, d = panel(195, 222)
+    d.rectangle([98, 3, 187, 15], fill=(0, 0, 0, 255))                # search bar
+    d.rectangle([99, 4, 186, 14], fill=(30, 30, 34, 255))
+    for row in range(6):
+        for col in range(9):
+            gui_slot(d, 7 + col * 18, 17 + row * 18)
+    d.rectangle([174, 17, 187, 17 + 108 - 1], fill=(139, 139, 139, 255))   # scroll track
+    d.line([174, 17, 186, 17], fill=(55, 55, 55, 255)); d.line([174, 17, 174, 124], fill=(55, 55, 55, 255))
+    for row in range(3):
+        for col in range(9):
+            gui_slot(d, 7 + col * 18, 139 + row * 18)
+    for col in range(9):
+        gui_slot(d, 7 + col * 18, 197)
+    for u, lit in ((232, True), (244, False)):                       # scroll knobs
+        d.rectangle([u, 0, u + 11, 14], fill=(198, 198, 198, 255) if lit else (160, 160, 160, 255))
+        d.line([u, 0, u + 10, 0], fill=(255, 255, 255, 255)); d.line([u, 0, u, 13], fill=(255, 255, 255, 255))
+        d.line([u + 1, 14, u + 11, 14], fill=(85, 85, 85, 255)); d.line([u + 11, 1, u + 11, 14], fill=(85, 85, 85, 255))
+    return img
+
+
+def network_textures():
+    return {
+        "block/network_side": network_side(),
+        "block/network_core_front": network_core_front(True),
+        "block/drive_bay_front": drive_bay_front(),
+        "block/network_terminal_front": network_terminal_front(),
+        "block/network_cable": network_cable(),
+        "gui/network_terminal": network_terminal_gui(),
+        "item/basic_item_drive": item_drive(COPPER8),
+        "item/advanced_item_drive": item_drive(ELECTRUM8),
+        "item/elite_item_drive": item_drive(SIGNAL8),
+        "item/ultimate_item_drive": item_drive(PLASMA8),
+    }
+
+
 def main():
     os.makedirs(os.path.join(TEX, "block"), exist_ok=True)
     os.makedirs(os.path.join(TEX, "gui"), exist_ok=True)
@@ -2904,6 +3047,7 @@ def main():
         **tier4_gear_textures(),
         **duplicator_textures(),
         **tier5_textures(),
+        **network_textures(),
     }
     for name, img in out.items():
         img.save(os.path.join(TEX, name + ".png"))

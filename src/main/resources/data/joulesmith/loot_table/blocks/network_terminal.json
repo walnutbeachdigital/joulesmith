@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "joulesmith:blocks/network_terminal",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "joulesmith:network_terminal"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

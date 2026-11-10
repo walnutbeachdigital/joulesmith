@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "DRD",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:ingots/netherite"
+    },
+    "C": {
+      "item": "joulesmith:quantum_processor"
+    },
+    "D": {
+      "item": "joulesmith:elite_item_drive"
+    },
+    "R": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "result": {
+    "id": "joulesmith:ultimate_item_drive",
+    "count": 1
+  }
+}

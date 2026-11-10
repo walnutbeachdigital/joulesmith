@@ -149,6 +149,17 @@ public final class JSBlocks {
             BLOCKS.register("drone_hub", () -> new SimpleMachineBlock<>(machine(),
                     JSBlockEntities.DRONE_HUB::get, com.walnutbeachdigital.joulesmith.automation.DroneHubBlockEntity::new));
 
+    // ---- the storage network
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.network.NetworkBlock> NETWORK_CORE = BLOCKS.register("network_core",
+            () -> new com.walnutbeachdigital.joulesmith.network.NetworkBlock(com.walnutbeachdigital.joulesmith.network.NetworkBlock.Kind.CORE, machine()));
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.network.NetworkBlock> DRIVE_BAY = BLOCKS.register("drive_bay",
+            () -> new com.walnutbeachdigital.joulesmith.network.NetworkBlock(com.walnutbeachdigital.joulesmith.network.NetworkBlock.Kind.BAY, machine()));
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.network.NetworkBlock> NETWORK_TERMINAL = BLOCKS.register("network_terminal",
+            () -> new com.walnutbeachdigital.joulesmith.network.NetworkBlock(com.walnutbeachdigital.joulesmith.network.NetworkBlock.Kind.TERMINAL, machine()));
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.network.NetworkCableBlock> NETWORK_CABLE = BLOCKS.register("network_cable",
+            () -> new com.walnutbeachdigital.joulesmith.network.NetworkCableBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL)
+                    .strength(0.5f).sound(SoundType.METAL).noOcclusion()));
+
     // ---- more generators
     public static final DeferredBlock<SimpleMachineBlock<com.walnutbeachdigital.joulesmith.machine.generator.GeothermalGeneratorBlockEntity>> GEOTHERMAL_GENERATOR =
             BLOCKS.register("geothermal_generator", () -> new SimpleMachineBlock<>(machine().lightLevel(state -> state.getValue(MachineBlock.LIT) ? 12 : 0),

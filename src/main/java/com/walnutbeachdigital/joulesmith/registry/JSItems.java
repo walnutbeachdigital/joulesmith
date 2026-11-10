@@ -37,6 +37,9 @@ public final class JSItems {
     public static final Map<Metal, DeferredItem<Item>> WIRE = new EnumMap<>(Metal.class);
 
     public static final DeferredItem<WrenchItem> WRENCH = register("wrench", () -> new WrenchItem(new Item.Properties().stacksTo(1)));
+    public static final java.util.List<DeferredItem<com.walnutbeachdigital.joulesmith.network.DriveItem>> ITEM_DRIVES = java.util.List.of(
+            drive("basic_item_drive", 4_096), drive("advanced_item_drive", 32_768),
+            drive("elite_item_drive", 262_144), drive("ultimate_item_drive", 2_097_152));
     public static final DeferredItem<Item> DRONE = register("drone", () -> new Item(new Item.Properties().stacksTo(4)));
     public static final DeferredItem<com.walnutbeachdigital.joulesmith.automation.MobImprintItem> MOB_IMPRINT = register("mob_imprint",
             () -> new com.walnutbeachdigital.joulesmith.automation.MobImprintItem(new Item.Properties()));
@@ -94,6 +97,10 @@ public final class JSItems {
         blockItem(JSBlocks.FUSION_CORE);
         blockItem(JSBlocks.PLASMA_REFINERY);
         blockItem(JSBlocks.DRONE_HUB);
+        blockItem(JSBlocks.NETWORK_CORE);
+        blockItem(JSBlocks.DRIVE_BAY);
+        blockItem(JSBlocks.NETWORK_TERMINAL);
+        blockItem(JSBlocks.NETWORK_CABLE);
         blockItem(JSBlocks.WIND_TURBINE);
         JSBlocks.SENSORS.values().forEach(JSItems::blockItem);
         blockItem(JSBlocks.LOGIC_CONTROLLER);
@@ -227,6 +234,10 @@ public final class JSItems {
         DeferredItem<I> item = ITEMS.register(name, factory);
         TAB_ORDER.add(item);
         return item;
+    }
+
+    private static DeferredItem<com.walnutbeachdigital.joulesmith.network.DriveItem> drive(String name, int capacity) {
+        return register(name, () -> new com.walnutbeachdigital.joulesmith.network.DriveItem(capacity, new Item.Properties()));
     }
 
     private static DeferredItem<Item> item(String name) {

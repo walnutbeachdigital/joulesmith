@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "joulesmith:network_terminal"
+    },
+    "title": {
+      "translate": "advancement.joulesmith.network"
+    },
+    "description": {
+      "translate": "advancement.joulesmith.network.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:network_terminal"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "parent": "joulesmith:advanced"
+}

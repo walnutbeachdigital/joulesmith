@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "DRD",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/silver"
+    },
+    "C": {
+      "item": "joulesmith:processor"
+    },
+    "D": {
+      "item": "joulesmith:advanced_item_drive"
+    },
+    "R": {
+      "tag": "c:gems/diamond"
+    }
+  },
+  "result": {
+    "id": "joulesmith:elite_item_drive",
+    "count": 1
+  }
+}
