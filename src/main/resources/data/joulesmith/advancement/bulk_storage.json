@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "joulesmith:reinforced_crate"
+    },
+    "title": {
+      "translate": "advancement.joulesmith.bulk_storage"
+    },
+    "description": {
+      "translate": "advancement.joulesmith.bulk_storage.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:reinforced_crate"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "parent": "joulesmith:circuit"
+}

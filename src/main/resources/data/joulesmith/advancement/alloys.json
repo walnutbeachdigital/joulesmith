@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "id": "joulesmith:alloy_smelter"
+    },
+    "title": {
+      "translate": "advancement.joulesmith.alloys"
+    },
+    "description": {
+      "translate": "advancement.joulesmith.alloys.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_0_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:ingots/bronze"
+          }
+        ]
+      }
+    },
+    "has_0_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:ingots/steel"
+          }
+        ]
+      }
+    },
+    "has_0_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:ingots/invar"
+          }
+        ]
+      }
+    },
+    "has_0_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:ingots/electrum"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0_0",
+      "has_0_1",
+      "has_0_2",
+      "has_0_3"
+    ]
+  ],
+  "parent": "joulesmith:crusher"
+}

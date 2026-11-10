@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "joulesmith:power_drill"
+    },
+    "title": {
+      "translate": "advancement.joulesmith.drill"
+    },
+    "description": {
+      "translate": "advancement.joulesmith.drill.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:power_drill"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "parent": "joulesmith:advanced"
+}

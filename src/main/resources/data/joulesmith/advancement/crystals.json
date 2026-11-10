@@ -1,0 +1,112 @@
+{
+  "display": {
+    "icon": {
+      "id": "joulesmith:iron_crystal"
+    },
+    "title": {
+      "translate": "advancement.joulesmith.crystals"
+    },
+    "description": {
+      "translate": "advancement.joulesmith.crystals.desc"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_0_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:iron_crystal"
+          }
+        ]
+      }
+    },
+    "has_0_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:gold_crystal"
+          }
+        ]
+      }
+    },
+    "has_0_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:copper_crystal"
+          }
+        ]
+      }
+    },
+    "has_0_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:tin_crystal"
+          }
+        ]
+      }
+    },
+    "has_0_4": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:lead_crystal"
+          }
+        ]
+      }
+    },
+    "has_0_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:silver_crystal"
+          }
+        ]
+      }
+    },
+    "has_0_6": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:nickel_crystal"
+          }
+        ]
+      }
+    },
+    "has_0_7": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:uranium_crystal"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0_0",
+      "has_0_1",
+      "has_0_2",
+      "has_0_3",
+      "has_0_4",
+      "has_0_5",
+      "has_0_6",
+      "has_0_7"
+    ]
+  ],
+  "parent": "joulesmith:advanced"
+}

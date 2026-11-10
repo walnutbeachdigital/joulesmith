@@ -1356,6 +1356,63 @@ lang.update({
     "gui.joulesmith.side_mode.output": "Output: results can be taken out",
     "gui.joulesmith.side_mode.both": "Input and output",
 })
+# ---- advancements: a guided path through the tiers (data/joulesmith/advancement)
+ADV = [
+    # id, parent, icon, items needed (all of them; a "#" tag or a list means any one), frame, title, description
+    ("root", None, "wrench", ["#c:raw_materials/tin", "#c:ingots/tin"], "task", "Joulesmith", "Find tin, the start of everything electric"),
+    ("first_power", "root", "combustion_generator", [f"{MOD}:combustion_generator"], "task", "Spark of Industry", "Make a Combustion Generator"),
+    ("crusher", "first_power", "crusher", [f"{MOD}:crusher"], "task", "Twice the Ore", "Make a Crusher: two dusts from every ore"),
+    ("alloys", "crusher", "alloy_smelter", [["#c:ingots/bronze", "#c:ingots/steel", "#c:ingots/invar", "#c:ingots/electrum"]], "task",
+     "Better Together", "Smelt an alloy in the Alloy Smelter"),
+    ("ducts", "first_power", "item_duct", [f"{MOD}:item_duct"], "task", "Plumbing for Items", "Make an Item Duct"),
+    ("rubber", "first_power", "rubber", [f"{MOD}:rubber"], "task", "Bouncing Back", "Turn rubber tree latex into rubber"),
+    ("circuit", "alloys", "basic_circuit", [f"{MOD}:basic_circuit"], "goal", "Board Meeting", "Make a Basic Circuit: tier 2 begins"),
+    ("washer", "circuit", "ore_washer", [f"{MOD}:ore_washer"], "task", "Wash and Repeat", "Make an Ore Washer: three dusts from every ore"),
+    ("bulk_storage", "circuit", "reinforced_crate", [f"{MOD}:reinforced_crate"], "task", "Room to Spare", "Make a Reinforced Crate"),
+    ("biofuel", "circuit", "biofuel_generator", [f"{MOD}:biofuel_generator"], "task", "Grown Power", "Make a Biofuel Generator"),
+    ("advanced", "circuit", "advanced_circuit", [f"{MOD}:advanced_circuit"], "goal", "Advanced Placement", "Make an Advanced Circuit: tier 3 begins"),
+    ("crystals", "advanced", "iron_crystal", [[f"{MOD}:{m}_crystal" for m in ("iron", "gold", "copper", "tin", "lead", "silver", "nickel", "uranium")]],
+     "challenge", "Four Times the Ore", "Grow a crystal in the Crystallizer"),
+    ("steam", "advanced", "steam_turbine", [f"{MOD}:steam_turbine"], "task", "Full Steam Ahead", "Make a Steam Turbine"),
+    ("logic", "advanced", "logic_controller", [f"{MOD}:logic_controller"], "task", "If This, Then That", "Make a Logic Controller"),
+    ("quarry", "advanced", "quarry", [f"{MOD}:quarry"], "task", "Hole Lot of Work", "Make a Quarry"),
+    ("grinder", "advanced", "mob_grinder", [f"{MOD}:mob_grinder"], "task", "Experienced", "Make a Mob Grinder"),
+    ("drill", "advanced", "power_drill", [f"{MOD}:power_drill"], "task", "Bore Necessities", "Make a Power Drill"),
+    ("module", "drill", "speed_module", [[f"{MOD}:{m}_module" for m in MODULES]], "task", "Customised", "Make a module for the Modification Table"),
+    ("exo_suit", "drill", "exo_chestplate", [f"{MOD}:exo_helmet", f"{MOD}:exo_chestplate", f"{MOD}:exo_leggings", f"{MOD}:exo_boots"],
+     "challenge", "Suited Up", "Have all four Exo-Suit pieces"),
+    ("solar", "advanced", "advanced_solar_panel", [f"{MOD}:advanced_solar_panel"], "goal", "Bright Future", "Make an Advanced Solar Panel"),
+]
+for aid, parent, icon, needs, frame, title, desc in ADV:
+    criteria = {}
+    for i, need in enumerate(needs):
+        def pred(n):
+            return {"items": n} if not n.startswith("#") else {"items": n}
+        if isinstance(need, list):
+            cond = [{"items": n} for n in need]
+            for j, c in enumerate(cond):
+                criteria[f"has_{i}_{j}"] = {"trigger": "minecraft:inventory_changed", "conditions": {"items": [c]}}
+        else:
+            criteria[f"has_{i}"] = {"trigger": "minecraft:inventory_changed", "conditions": {"items": [pred(need)]}}
+    # one requirement group per needed item; a list or the root's options are alternatives within a group
+    reqs = []
+    for i, need in enumerate(needs):
+        group = [k for k in criteria if k == f"has_{i}" or k.startswith(f"has_{i}_")]
+        reqs.append(group)
+    if aid == "root":
+        reqs = [[k for k in criteria]]                     # either tin item will do
+    adv = {"display": {"icon": {"id": f"{MOD}:{icon}"}, "title": {"translate": f"advancement.{MOD}.{aid}"},
+                       "description": {"translate": f"advancement.{MOD}.{aid}.desc"}, "frame": frame,
+                       "show_toast": True, "announce_to_chat": aid != "root", "hidden": False},
+           "criteria": criteria, "requirements": reqs}
+    if parent:
+        adv["parent"] = f"{MOD}:{parent}"
+    else:
+        adv["display"]["background"] = "minecraft:textures/block/smooth_stone.png"
+    write(os.path.join(DATA, MOD, "advancement", f"{aid}.json"), adv)
+    lang[f"advancement.{MOD}.{aid}"] = title
+    lang[f"advancement.{MOD}.{aid}.desc"] = desc
+
 write(os.path.join(ASSETS, "lang", "en_us.json"), lang)
 
 print(f"{len(blocks)} blocks, {len(items)} items, {len(recipes)} recipes, "

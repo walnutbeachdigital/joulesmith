@@ -1,0 +1,233 @@
+{
+  "display": {
+    "icon": {
+      "id": "joulesmith:speed_module"
+    },
+    "title": {
+      "translate": "advancement.joulesmith.module"
+    },
+    "description": {
+      "translate": "advancement.joulesmith.module.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_0_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:speed_module"
+          }
+        ]
+      }
+    },
+    "has_0_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:range_module"
+          }
+        ]
+      }
+    },
+    "has_0_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:silk_touch_module"
+          }
+        ]
+      }
+    },
+    "has_0_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:fortune_module"
+          }
+        ]
+      }
+    },
+    "has_0_4": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:auto_smelt_module"
+          }
+        ]
+      }
+    },
+    "has_0_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:magnet_module"
+          }
+        ]
+      }
+    },
+    "has_0_6": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:damage_module"
+          }
+        ]
+      }
+    },
+    "has_0_7": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:looting_module"
+          }
+        ]
+      }
+    },
+    "has_0_8": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:fire_module"
+          }
+        ]
+      }
+    },
+    "has_0_9": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:chain_lightning_module"
+          }
+        ]
+      }
+    },
+    "has_0_10": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:lifesteal_module"
+          }
+        ]
+      }
+    },
+    "has_0_11": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:night_vision_module"
+          }
+        ]
+      }
+    },
+    "has_0_12": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:water_breathing_module"
+          }
+        ]
+      }
+    },
+    "has_0_13": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:solar_module"
+          }
+        ]
+      }
+    },
+    "has_0_14": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:jetpack_module"
+          }
+        ]
+      }
+    },
+    "has_0_15": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:swiftness_module"
+          }
+        ]
+      }
+    },
+    "has_0_16": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:jump_boost_module"
+          }
+        ]
+      }
+    },
+    "has_0_17": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:step_assist_module"
+          }
+        ]
+      }
+    },
+    "has_0_18": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "joulesmith:fall_protection_module"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0_0",
+      "has_0_1",
+      "has_0_2",
+      "has_0_3",
+      "has_0_4",
+      "has_0_5",
+      "has_0_6",
+      "has_0_7",
+      "has_0_8",
+      "has_0_9",
+      "has_0_10",
+      "has_0_11",
+      "has_0_12",
+      "has_0_13",
+      "has_0_14",
+      "has_0_15",
+      "has_0_16",
+      "has_0_17",
+      "has_0_18"
+    ]
+  ],
+  "parent": "joulesmith:drill"
+}
