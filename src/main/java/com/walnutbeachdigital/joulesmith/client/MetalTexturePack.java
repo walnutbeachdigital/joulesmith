@@ -46,9 +46,13 @@ public final class MetalTexturePack implements PackResources {
      * become. {@code metalOnly}: recolour only the grey (metal) pixels and keep coloured ones, like a
      * tool's wooden handle.
      */
-    private record Source(int[] ramp, ResourceLocation vanilla, boolean metalOnly, boolean byBrightness) {
+    private record Source(int[] ramp, ResourceLocation vanilla, boolean metalOnly, boolean byBrightness, int[] otherRamp) {
         Source(int[] ramp, ResourceLocation vanilla, boolean metalOnly) {
-            this(ramp, vanilla, metalOnly, false);
+            this(ramp, vanilla, metalOnly, false, null);
+        }
+
+        Source(int[] ramp, ResourceLocation vanilla, boolean metalOnly, boolean byBrightness) {
+            this(ramp, vanilla, metalOnly, byBrightness, null);
         }
     }
 
@@ -93,6 +97,9 @@ public final class MetalTexturePack implements PackResources {
         addRamp(RUBBER_END, "block/rubber_log_top", "block/oak_log_top");
         addRamp(RUBBER_PLANKS, "block/rubber_planks", "block/oak_planks");
         addRamp(RUBBER_LEAVES, "block/rubber_leaves", "block/oak_leaves");
+        // the sapling in two parts: birch's leaves in rubber greens, its stem in rubber bark
+        TEXTURES.put(Joulesmith.id("textures/block/rubber_sapling.png"), new Source(RUBBER_LEAVES,
+                ResourceLocation.withDefaultNamespace("textures/block/birch_sapling.png"), false, true, RUBBER_BARK));
     }
 
     private static void addRamp(int[] ramp, String path, String vanillaPath) {
@@ -132,6 +139,7 @@ public final class MetalTexturePack implements PackResources {
 
     private byte[] make(ResourceLocation target) throws IOException {
         Source src = TEXTURES.get(target);
+        if (src.otherRamp() != null) return makeTwoTone(src);
         IoSupplier<InputStream> vanilla = Minecraft.getInstance().getVanillaPackResources()
                 .getResource(PackType.CLIENT_RESOURCES, src.vanilla());
         if (vanilla == null) {
@@ -188,6 +196,55 @@ public final class MetalTexturePack implements PackResources {
             }
             return image.asByteArray();
         }
+    }
+
+    /**
+     * Two parts recoloured separately: green pixels (leaves) onto {@code ramp}, the rest (the stem) onto
+     * {@code otherRamp}, each spread over its ramp by brightness within its own part.
+     */
+    private byte[] makeTwoTone(Source src) throws IOException {
+        IoSupplier<InputStream> vanilla = Minecraft.getInstance().getVanillaPackResources()
+                .getResource(PackType.CLIENT_RESOURCES, src.vanilla());
+        if (vanilla == null) throw new IOException("Missing vanilla texture " + src.vanilla());
+        try (InputStream in = vanilla.get(); NativeImage image = NativeImage.read(in)) {
+            int w = image.getWidth(), h = image.getHeight();
+            double[] lo = {Double.MAX_VALUE, Double.MAX_VALUE}, hi = {-1, -1};
+            for (int y = 0; y < h; y++) {
+                for (int x = 0; x < w; x++) {
+                    int abgr = image.getPixelRGBA(x, y);
+                    if ((abgr >>> 24) == 0) continue;
+                    int part = green(abgr) ? 0 : 1;
+                    lo[part] = Math.min(lo[part], luminance(abgr));
+                    hi[part] = Math.max(hi[part], luminance(abgr));
+                }
+            }
+            for (int y = 0; y < h; y++) {
+                for (int x = 0; x < w; x++) {
+                    int abgr = image.getPixelRGBA(x, y);
+                    int alpha = abgr >>> 24;
+                    if (alpha == 0) continue;
+                    int part = green(abgr) ? 0 : 1;
+                    int[] ramp = part == 0 ? src.ramp() : src.otherRamp();
+                    int step = (int) Math.round((luminance(abgr) - lo[part]) / Math.max(1e-6, hi[part] - lo[part]) * (ramp.length - 1));
+                    int rgb = ramp[step];
+                    image.setPixelRGBA(x, y, alpha << 24 | (rgb & 0xFF) << 16 | (rgb & 0xFF00) | (rgb >> 16 & 0xFF));
+                }
+            }
+            return image.asByteArray();
+        }
+    }
+
+    /** Whether a pixel is a leafy green: coloured enough, with a hue between yellow-green and cyan. */
+    private static boolean green(int abgr) {
+        float r = (abgr & 0xFF) / 255f, g = (abgr >> 8 & 0xFF) / 255f, b = (abgr >> 16 & 0xFF) / 255f;
+        float max = Math.max(r, Math.max(g, b)), min = Math.min(r, Math.min(g, b));
+        if (max == 0 || (max - min) / max <= 0.15f) return false;
+        float d = max - min, hue;
+        if (max == r) hue = ((g - b) / d) % 6;
+        else if (max == g) hue = (b - r) / d + 2;
+        else hue = (r - g) / d + 4;
+        hue = (hue < 0 ? hue + 6 : hue) / 6f;
+        return hue > 0.17f && hue < 0.5f;
     }
 
     /** Whether a pixel takes the metal's colours: every pixel, or for gear only the grey ones. */

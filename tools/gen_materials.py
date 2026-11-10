@@ -944,5 +944,5 @@ write(os.path.join(ROOT, "tools", "texture_manifest.json"), {
     "block": [f"{b}_overlay" for b, k, m in blocks if k in ("ore", "deepslate_ore")] +
              [b for b, k, m in blocks if k == "storage"],
     "item": [i for i, f, m in items if f not in GENERATED_ITEM_FORMS],
-    "generated": gear_generated + ["block/rubber_log", "block/rubber_log_top", "block/rubber_planks", "block/rubber_leaves"] + [f"block/{b}" for b, k, m in blocks if k in GENERATED_BLOCK_KINDS] +
+    "generated": gear_generated + ["block/rubber_log", "block/rubber_log_top", "block/rubber_planks", "block/rubber_leaves", "block/rubber_sapling"] + [f"block/{b}" for b, k, m in blocks if k in GENERATED_BLOCK_KINDS] +
                  [f"item/{i}" for i, f, m in items if f in GENERATED_ITEM_FORMS]})

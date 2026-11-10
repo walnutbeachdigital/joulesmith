@@ -1479,7 +1479,6 @@ def main():
         "block/sawmill_front_on": sawmill_front(True),
         "item/sawdust": sawdust_item(),
         "item/basic_circuit": basic_circuit_item(),
-        "block/rubber_sapling": sapling_item(),
         "block/rubber_log_spot_dry": rubber_spot("dry"),
         "block/rubber_log_spot_wet": rubber_spot("wet"),
         "item/latex": latex_item(),
