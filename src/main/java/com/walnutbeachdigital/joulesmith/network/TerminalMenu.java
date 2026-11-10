@@ -27,7 +27,8 @@ public class TerminalMenu extends AbstractContainerMenu {
     public static final int GRID_X = 8, GRID_Y = 18, COLUMNS = 9, ROWS = 6, INVENTORY_Y = 140;
     /** The Crafting Terminal's layout: a shorter grid, the crafting grid, then the inventory. */
     public static final int CRAFTING_ROWS = 4, CRAFTING_INVENTORY_Y = 166;
-    public static final int TAKE_STACK = 0, TAKE_HALF = 1, TAKE_TO_INVENTORY = 2, INSERT_ALL = 3, INSERT_ONE = 4;
+    public static final int TAKE_STACK = 0, TAKE_HALF = 1, TAKE_TO_INVENTORY = 2, INSERT_ALL = 3, INSERT_ONE = 4,
+            CRAFT_ONE = 5, CRAFT_STACK = 6, ENCODE = 7;
 
     private final BlockPos pos;
     protected final Player player;
@@ -35,9 +36,11 @@ public class TerminalMenu extends AbstractContainerMenu {
     private final ContainerLevelAccess access;
     /** Client side: what the server last sent. */
     private List<BinContents> shown = List.of();
+    private List<ItemStack> craftable = List.of();
     private boolean online;
     private List<BinContents> lastSent;
     private boolean lastOnline;
+    private int lastCraftable;
     private int ticks;
 
     public TerminalMenu(int id, Inventory inventory, RegistryFriendlyByteBuf buf) {
@@ -77,8 +80,13 @@ public class TerminalMenu extends AbstractContainerMenu {
         return online;
     }
 
-    void receive(List<BinContents> contents, boolean online) {
+    public List<ItemStack> craftable() {
+        return craftable;
+    }
+
+    void receive(List<BinContents> contents, List<ItemStack> craftable, boolean online) {
         this.shown = contents;
+        this.craftable = craftable;
         this.online = online;
     }
 
@@ -92,11 +100,13 @@ public class TerminalMenu extends AbstractContainerMenu {
         if (!(player instanceof ServerPlayer sp) || ticks++ % 10 != 0 && lastSent != null) return;
         Network net = network();
         List<BinContents> now = net.contents();
+        List<ItemStack> canMake = net.craftable();
         boolean on = net.online();
-        if (!now.equals(lastSent) || on != lastOnline) {
+        if (!now.equals(lastSent) || on != lastOnline || canMake.size() != lastCraftable) {
             lastSent = now;
             lastOnline = on;
-            PacketDistributor.sendToPlayer(sp, new TerminalPayloads.Contents(containerId, new ArrayList<>(now), on));
+            lastCraftable = canMake.size();
+            PacketDistributor.sendToPlayer(sp, new TerminalPayloads.Contents(containerId, new ArrayList<>(now), canMake, on));
         }
     }
 
@@ -124,6 +134,13 @@ public class TerminalMenu extends AbstractContainerMenu {
                 }
             }
             case INSERT_ALL -> setCarried(net.insert(carried, false));
+            case CRAFT_ONE, CRAFT_STACK -> {
+                if (like.isEmpty()) return;
+                int per = net.patterns().stream().filter(p -> ItemStack.isSameItemSameComponents(p.output(), like))
+                        .mapToInt(p -> p.output().getCount()).findFirst().orElse(1);
+                sp.displayClientMessage(net.request(like, action == CRAFT_ONE ? per : Math.max(per, like.getMaxStackSize())), true);
+            }
+            case ENCODE -> encode(sp);
             case INSERT_ONE -> {
                 if (carried.isEmpty()) return;
                 if (net.insert(carried.copyWithCount(1), false).isEmpty()) carried.shrink(1);
@@ -132,6 +149,10 @@ public class TerminalMenu extends AbstractContainerMenu {
             default -> { }
         }
         resend();
+    }
+
+    /** Records the crafting grid on a Blank Pattern (the Crafting Terminal does this). */
+    protected void encode(ServerPlayer sp) {
     }
 
     /** Sends the grid's contents again at the next update. */

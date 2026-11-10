@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "joulesmith:block/crafting_cpu"
+    },
+    "facing=east": {
+      "model": "joulesmith:block/crafting_cpu",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "joulesmith:block/crafting_cpu",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "joulesmith:block/crafting_cpu",
+      "y": 270
+    }
+  }
+}

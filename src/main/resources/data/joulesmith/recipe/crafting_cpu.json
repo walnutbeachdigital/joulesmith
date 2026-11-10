@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "QXQ",
+    "PTP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/electrum"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    },
+    "Q": {
+      "tag": "c:gems/quartz"
+    },
+    "X": {
+      "item": "joulesmith:advanced_casing"
+    },
+    "T": {
+      "item": "minecraft:crafting_table"
+    }
+  },
+  "result": {
+    "id": "joulesmith:crafting_cpu",
+    "count": 1
+  }
+}

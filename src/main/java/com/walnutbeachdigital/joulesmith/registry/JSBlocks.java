@@ -158,6 +158,8 @@ public final class JSBlocks {
             () -> new com.walnutbeachdigital.joulesmith.network.NetworkBlock(com.walnutbeachdigital.joulesmith.network.NetworkBlock.Kind.TERMINAL, machine()));
     public static final DeferredBlock<com.walnutbeachdigital.joulesmith.network.NetworkBlock> CRAFTING_TERMINAL = BLOCKS.register("crafting_terminal",
             () -> new com.walnutbeachdigital.joulesmith.network.NetworkBlock(com.walnutbeachdigital.joulesmith.network.NetworkBlock.Kind.CRAFTING_TERMINAL, machine()));
+    public static final DeferredBlock<com.walnutbeachdigital.joulesmith.network.NetworkBlock> CRAFTING_CPU = BLOCKS.register("crafting_cpu",
+            () -> new com.walnutbeachdigital.joulesmith.network.NetworkBlock(com.walnutbeachdigital.joulesmith.network.NetworkBlock.Kind.CPU, machine()));
     public static final DeferredBlock<com.walnutbeachdigital.joulesmith.network.BusBlock> IMPORT_BUS = BLOCKS.register("import_bus",
             () -> new com.walnutbeachdigital.joulesmith.network.BusBlock(false, machine().noOcclusion()));
     public static final DeferredBlock<com.walnutbeachdigital.joulesmith.network.BusBlock> EXPORT_BUS = BLOCKS.register("export_bus",

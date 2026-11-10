@@ -24,11 +24,13 @@ public final class Network {
     public final List<BlockPos> parts;
     public final NetworkCoreBlockEntity core;
     public final List<DriveBayBlockEntity> bays;
+    public final List<CraftingCpuBlockEntity> cpus;
 
-    private Network(List<BlockPos> parts, NetworkCoreBlockEntity core, List<DriveBayBlockEntity> bays) {
+    private Network(List<BlockPos> parts, NetworkCoreBlockEntity core, List<DriveBayBlockEntity> bays, List<CraftingCpuBlockEntity> cpus) {
         this.parts = parts;
         this.core = core;
         this.bays = bays;
+        this.cpus = cpus;
     }
 
     /** The network {@code start} is part of. */
@@ -38,6 +40,7 @@ public final class Network {
         ArrayDeque<BlockPos> queue = new ArrayDeque<>();
         List<NetworkCoreBlockEntity> cores = new ArrayList<>();
         List<DriveBayBlockEntity> bays = new ArrayList<>();
+        List<CraftingCpuBlockEntity> cpus = new ArrayList<>();
         if (level.getBlockState(start).getBlock() instanceof NetworkPart) {
             queue.add(start.immutable());
             seen.add(start.immutable());
@@ -48,6 +51,7 @@ public final class Network {
             BlockEntity be = level.getBlockEntity(p);
             if (be instanceof NetworkCoreBlockEntity core) cores.add(core);
             if (be instanceof DriveBayBlockEntity bay) bays.add(bay);
+            if (be instanceof CraftingCpuBlockEntity cpu) cpus.add(cpu);
             for (Direction d : Direction.values()) {
                 BlockPos n = p.relative(d);
                 if (seen.contains(n) || !level.isLoaded(n)) continue;
@@ -57,7 +61,7 @@ public final class Network {
                 }
             }
         }
-        return new Network(parts, cores.size() == 1 ? cores.get(0) : null, bays);
+        return new Network(parts, cores.size() == 1 ? cores.get(0) : null, bays, cpus);
     }
 
     /** Working: one Network Core, with power. */
@@ -79,6 +83,45 @@ public final class Network {
             }
         }
         return all;
+    }
+
+    /** Every pattern on the network's CPUs. */
+    public List<PatternContents> patterns() {
+        List<PatternContents> all = new ArrayList<>();
+        if (online()) for (CraftingCpuBlockEntity cpu : cpus) all.addAll(cpu.patterns());
+        return all;
+    }
+
+    /** What the network's patterns can make (one of each, for the terminal). */
+    public List<ItemStack> craftable() {
+        List<ItemStack> out = new ArrayList<>();
+        for (PatternContents p : patterns()) {
+            if (out.stream().noneMatch(s -> ItemStack.isSameItemSameComponents(s, p.output()))) out.add(p.output().copyWithCount(1));
+        }
+        return out;
+    }
+
+    /**
+     * Asks a free CPU to make {@code count} of {@code item}. Returns a message for the player: started, no
+     * free CPU, or what's missing.
+     */
+    public net.minecraft.network.chat.Component request(ItemStack item, int count) {
+        if (!online()) return net.minecraft.network.chat.Component.translatable("gui.joulesmith.terminal.offline");
+        CraftingPlan plan = CraftingPlan.make(contents(), patterns(), item, count);
+        if (!plan.ok()) {
+            BinContents first = plan.missing.isEmpty() ? null : plan.missing.get(0);
+            return first == null ? net.minecraft.network.chat.Component.translatable("message.joulesmith.craft.too_big")
+                    : net.minecraft.network.chat.Component.translatable("message.joulesmith.craft.missing",
+                            first.count(), first.item().getHoverName(), plan.missing.size());
+        }
+        for (CraftingCpuBlockEntity cpu : cpus) {
+            if (!cpu.busy()) {
+                return cpu.start(this, plan, item)
+                        ? net.minecraft.network.chat.Component.translatable("message.joulesmith.craft.started", count, item.getHoverName())
+                        : net.minecraft.network.chat.Component.translatable("message.joulesmith.craft.changed");
+            }
+        }
+        return net.minecraft.network.chat.Component.translatable(cpus.isEmpty() ? "message.joulesmith.craft.no_cpu" : "message.joulesmith.craft.busy");
     }
 
     /** Stores what it can of {@code stack}; returns what's left over. */

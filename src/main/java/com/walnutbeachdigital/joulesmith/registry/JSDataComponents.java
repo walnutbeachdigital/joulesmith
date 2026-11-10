@@ -42,5 +42,10 @@ public final class JSDataComponents {
             COMPONENTS.registerComponentType("drive", b -> b.persistent(com.walnutbeachdigital.joulesmith.storage.bin.BinContents.CODEC.listOf())
                     .networkSynchronized(com.walnutbeachdigital.joulesmith.storage.bin.BinContents.STREAM_CODEC.apply(ByteBufCodecs.list())));
 
+    /** The recipe recorded on a Pattern. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<com.walnutbeachdigital.joulesmith.network.PatternContents>> PATTERN =
+            COMPONENTS.registerComponentType("pattern", b -> b.persistent(com.walnutbeachdigital.joulesmith.network.PatternContents.CODEC)
+                    .networkSynchronized(com.walnutbeachdigital.joulesmith.network.PatternContents.STREAM_CODEC));
+
     private JSDataComponents() {}
 }

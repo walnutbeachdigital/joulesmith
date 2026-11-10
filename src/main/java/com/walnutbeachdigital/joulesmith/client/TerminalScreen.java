@@ -51,12 +51,28 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
         search.setMaxLength(50);
         search.setTextColor(0xFFFFFF);
         addRenderableWidget(search);
+        if (menu instanceof com.walnutbeachdigital.joulesmith.network.CraftingTerminalMenu) {
+            addRenderableWidget(net.minecraft.client.gui.components.Button.builder(Component.translatable("gui.joulesmith.terminal.encode"),
+                            b -> PacketDistributor.sendToServer(new TerminalPayloads.Action(menu.containerId, ItemStack.EMPTY, TerminalMenu.ENCODE)))
+                    .bounds(leftPos + 84, topPos + 134, 32, 12)
+                    .tooltip(net.minecraft.client.gui.components.Tooltip.create(Component.translatable("gui.joulesmith.terminal.encode.tip")))
+                    .build());
+        }
+    }
+
+    private boolean craftable(ItemStack item) {
+        for (ItemStack c : menu.craftable()) if (ItemStack.isSameItemSameComponents(c, item)) return true;
+        return false;
     }
 
     private void refresh() {
         String q = search.getValue().toLowerCase(Locale.ROOT).trim();
+        List<BinContents> all = new ArrayList<>(menu.shown());
+        for (ItemStack c : menu.craftable()) {                     // things patterns can make, shown even when none are stored
+            if (all.stream().noneMatch(b -> ItemStack.isSameItemSameComponents(b.item(), c))) all.add(new BinContents(c, 0));
+        }
         List<BinContents> list = new ArrayList<>();
-        for (BinContents c : menu.shown()) {
+        for (BinContents c : all) {
             if (q.isEmpty()) list.add(c);
             else if (q.startsWith("@")) {
                 if (net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(c.item().getItem()).getNamespace().contains(q.substring(1))) list.add(c);
@@ -89,7 +105,7 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
             BinContents c = view.get(index);
             int x = leftPos + TerminalMenu.GRID_X + (i % TerminalMenu.COLUMNS) * 18, y = topPos + TerminalMenu.GRID_Y + (i / TerminalMenu.COLUMNS) * 18;
             g.renderItem(c.item(), x, y);
-            String n = shortCount(c.count());
+            String n = c.count() == 0 ? Component.translatable("gui.joulesmith.terminal.craft").getString() : shortCount(c.count());
             g.pose().pushPose();
             g.pose().translate(x + 16, y + 12, 200);
             g.pose().scale(0.5f, 0.5f, 1);
@@ -105,6 +121,7 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
                 BinContents c = view.get(cell);
                 List<Component> tip = new ArrayList<>(getTooltipFromContainerItem(c.item()));
                 tip.add(Component.translatable("gui.joulesmith.terminal.stored", String.format("%,d", c.count())).withStyle(ChatFormatting.GRAY));
+                if (craftable(c.item())) tip.add(Component.translatable("gui.joulesmith.terminal.craft_hint").withStyle(ChatFormatting.AQUA));
                 g.renderComponentTooltip(font, tip, mouseX, mouseY);
             }
         }
@@ -147,8 +164,13 @@ public class TerminalScreen extends AbstractContainerScreen<TerminalMenu> {
                 action = button == 0 ? TerminalMenu.INSERT_ALL : TerminalMenu.INSERT_ONE;
             } else {
                 if (cell >= view.size()) return true;
-                like = view.get(cell).item();
-                action = Screen.hasShiftDown() ? TerminalMenu.TAKE_TO_INVENTORY : button == 0 ? TerminalMenu.TAKE_STACK : TerminalMenu.TAKE_HALF;
+                BinContents c = view.get(cell);
+                like = c.item();
+                if (craftable(like) && (Screen.hasControlDown() || c.count() == 0)) {
+                    action = Screen.hasShiftDown() ? TerminalMenu.CRAFT_STACK : TerminalMenu.CRAFT_ONE;
+                } else {
+                    action = Screen.hasShiftDown() ? TerminalMenu.TAKE_TO_INVENTORY : button == 0 ? TerminalMenu.TAKE_STACK : TerminalMenu.TAKE_HALF;
+                }
             }
             PacketDistributor.sendToServer(new TerminalPayloads.Action(menu.containerId, like, action));
             return true;

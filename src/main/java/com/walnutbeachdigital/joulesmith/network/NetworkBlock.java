@@ -27,7 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /** The storage network's blocks that face you: the Network Core, the Drive Bay and the Network Terminal. */
 public class NetworkBlock extends BaseEntityBlock implements NetworkPart {
-    public enum Kind { CORE, BAY, TERMINAL, CRAFTING_TERMINAL }
+    public enum Kind { CORE, BAY, TERMINAL, CRAFTING_TERMINAL, CPU }
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     private final Kind kind;
@@ -65,14 +65,16 @@ public class NetworkBlock extends BaseEntityBlock implements NetworkPart {
         return switch (kind) {
             case CORE -> new NetworkCoreBlockEntity(pos, state);
             case BAY -> new DriveBayBlockEntity(pos, state);
+            case CPU -> new CraftingCpuBlockEntity(pos, state);
             case TERMINAL, CRAFTING_TERMINAL -> null;
         };
     }
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide || kind != Kind.CORE ? null
-                : createTickerHelper(type, JSBlockEntities.NETWORK_CORE.get(), NetworkCoreBlockEntity::serverTick);
+        if (level.isClientSide) return null;
+        if (kind == Kind.CPU) return createTickerHelper(type, JSBlockEntities.CRAFTING_CPU.get(), CraftingCpuBlockEntity::serverTick);
+        return kind != Kind.CORE ? null : createTickerHelper(type, JSBlockEntities.NETWORK_CORE.get(), NetworkCoreBlockEntity::serverTick);
     }
 
     @Override
@@ -87,6 +89,18 @@ public class NetworkBlock extends BaseEntityBlock implements NetworkPart {
             }
             case TERMINAL -> player.openMenu(new SimpleMenuProvider((id, inv, p) -> new TerminalMenu(id, inv, pos),
                     Component.translatable("block.joulesmith.network_terminal")), buf -> buf.writeBlockPos(pos));
+            case CPU -> {
+                if (level.getBlockEntity(pos) instanceof CraftingCpuBlockEntity cpu) {
+                    if (player.isShiftKeyDown()) {
+                        player.displayClientMessage(cpu.busy()
+                                ? Component.translatable("message.joulesmith.cpu.busy", cpu.target().getHoverName(), cpu.stepsLeft())
+                                : Component.translatable("message.joulesmith.cpu.idle", cpu.patterns().size()), true);
+                    } else {
+                        player.openMenu(new SimpleMenuProvider((id, inv, p) -> new DriveBayMenu(id, inv, cpu.container(),
+                                stack -> stack.getItem() instanceof PatternItem), Component.translatable("block.joulesmith.crafting_cpu")));
+                    }
+                }
+            }
             case CRAFTING_TERMINAL -> player.openMenu(new SimpleMenuProvider((id, inv, p) -> new CraftingTerminalMenu(id, inv, pos),
                     Component.translatable("block.joulesmith.crafting_terminal")), buf -> buf.writeBlockPos(pos));
             case CORE -> {
@@ -105,6 +119,9 @@ public class NetworkBlock extends BaseEntityBlock implements NetworkPart {
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean moved) {
         if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof DriveBayBlockEntity bay) {
             Containers.dropContents(level, pos, bay.container());
+        }
+        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof CraftingCpuBlockEntity cpu) {
+            cpu.dropAll(level, pos);
         }
         super.onRemove(state, level, pos, newState, moved);
     }

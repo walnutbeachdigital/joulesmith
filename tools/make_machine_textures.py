@@ -2957,9 +2957,47 @@ def crafting_terminal_gui():
     return img
 
 
+def crafting_cpu_front():
+    """A processor die under glass: a grid of green-lit cores round a gold centre."""
+    img = casing4()
+    px = img.load()
+    window(img, 2, 2, 13, 13)
+    for y in range(2, 14):
+        for x in range(2, 14):
+            px[x, y] = rgba("#0b1210")
+    for y in range(3, 13):
+        for x in range(3, 13):
+            if (x % 3 == 0) or (y % 3 == 0):
+                px[x, y] = rgba(NET_GREEN[2])
+            else:
+                px[x, y] = rgba(NET_GREEN[4] if (x + y) % 4 else NET_GREEN[5])
+    for y in range(6, 10):
+        for x in range(6, 10):
+            px[x, y] = rgba(ELECTRUM8[6] if x + y < 15 else ELECTRUM8[3])
+    return img
+
+
+def pattern_item(blank):
+    """A pattern: a thin slate card with a 3x3 grid etched on it (glowing once a recipe's on it)."""
+    body = _mask({y: (3, 12) for y in range(2, 14)})
+    img = _parts((body, EXO8, 2, 6))
+    px = img.load()
+    for row in range(3):
+        for col in range(3):
+            x, y = 4 + col * 3, 3 + row * 3
+            for dx in (0, 1):
+                for dy in (0, 1):
+                    px[x + dx, y + dy] = rgba(EXO8[1] if blank else (NET_GREEN[5] if (row + col) % 2 else NET_GREEN[4]))
+    for x in range(4, 12):
+        px[x, 12] = rgba(ELECTRUM8[5] if x % 2 else ELECTRUM8[3])
+    return img
+
+
 def bus_textures():
     return {"block/import_bus_front": bus_front(False), "block/export_bus_front": bus_front(True),
-            "block/crafting_terminal_front": crafting_terminal_front(), "gui/crafting_terminal": crafting_terminal_gui()}
+            "block/crafting_terminal_front": crafting_terminal_front(), "gui/crafting_terminal": crafting_terminal_gui(),
+            "block/crafting_cpu_front": crafting_cpu_front(),
+            "item/blank_pattern": pattern_item(True), "item/pattern": pattern_item(False)}
 
 
 def main():

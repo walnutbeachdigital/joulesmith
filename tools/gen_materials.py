@@ -1885,7 +1885,7 @@ lang["tooltip.joulesmith.plasma_cannon"] = "Hold to charge, release to fire (25,
 
 # ---- the storage network: Network Core, Drive Bay, Network Terminal, Network Cable and Item Drives
 for bid, name in (("network_core", "Network Core"), ("drive_bay", "Drive Bay"), ("network_terminal", "Network Terminal"),
-                  ("crafting_terminal", "Crafting Terminal")):
+                  ("crafting_terminal", "Crafting Terminal"), ("crafting_cpu", "Auto-Crafting CPU")):
     model(bid, {"parent": "minecraft:block/orientable", "textures": {
         "front": f"{MOD}:block/{bid}_front", "side": f"{MOD}:block/network_side", "top": f"{MOD}:block/network_side"}})
     write(os.path.join(ASSETS, "blockstates", f"{bid}.json"), {"variants": {
@@ -1976,6 +1976,44 @@ DESC["crafting_terminal"] = ("A Network Terminal with a crafting grid", "Craft s
                              "grid tops itself up from the network, so shift-clicking the result crafts a stack at a time. Shift-click "
                              "grid slots to put them back; what's left in the grid goes back when you close it.")
 lang[f"desc.{MOD}.crafting_terminal"], lang[f"jei.{MOD}.info.crafting_terminal"] = DESC["crafting_terminal"]
+for iid, name in (("blank_pattern", "Blank Pattern"), ("pattern", "Pattern")):
+    write(os.path.join(ASSETS, "models", "item", f"{iid}.json"), {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{iid}"}})
+    lang[f"item.{MOD}.{iid}"] = name
+shaped("blank_pattern", ["GPG", "PQP", "GPG"], {"G": "#c:glass_panes", "P": f"{MOD}:plastic_sheet", "Q": "#c:gems/quartz"}, count=4)
+shaped("crafting_cpu", ["PCP", "QXQ", "PTP"], {"P": "#c:plates/electrum", "C": f"{MOD}:advanced_circuit", "Q": "#c:gems/quartz",
+                                             "X": f"{MOD}:advanced_casing", "T": "minecraft:crafting_table"})
+C_DESC = {
+    "crafting_cpu": ("Crafts on request from its Patterns", "Holds nine Patterns; every terminal on its network can craft from them. "
+                     "Ctrl-click a craftable item in a terminal to craft one batch (Ctrl-Shift: a stack); items no one has in store show "
+                     "\"Craft\" and a plain click does the same. It works out every ingredient, crafting ingredients from other patterns "
+                     "too, takes them out of storage, then crafts a batch every quarter second (200 FE each) and puts the results back. "
+                     "One job at a time per CPU. Sneak and right-click it to see what it's doing."),
+    "blank_pattern": ("Records a crafting recipe", "Lay out a recipe in a Crafting Terminal and press Encode with a Blank Pattern in "
+                      "your inventory to make a Pattern."),
+    "pattern": ("A recipe for an Auto-Crafting CPU", "Put it in an Auto-Crafting CPU to let the network craft it on request."),
+}
+DESC.update(C_DESC)
+for iid, (short, info) in C_DESC.items():
+    lang[f"desc.{MOD}.{iid}"] = short
+    lang[f"jei.{MOD}.info.{iid}"] = info
+lang.update({
+    "gui.joulesmith.terminal.encode": "Encode",
+    "gui.joulesmith.terminal.encode.tip": "Record the grid's recipe on a Blank Pattern from your inventory",
+    "gui.joulesmith.terminal.craft": "Craft",
+    "gui.joulesmith.terminal.craft_hint": "Ctrl-click to craft (Ctrl-Shift: a stack)",
+    "tooltip.joulesmith.pattern.makes": "Makes %s %s",
+    "message.joulesmith.pattern.encoded": "Pattern recorded: %s",
+    "message.joulesmith.pattern.no_recipe": "Lay out a recipe in the grid first",
+    "message.joulesmith.pattern.no_blank": "You need a Blank Pattern in your inventory",
+    "message.joulesmith.craft.started": "Crafting %s %s",
+    "message.joulesmith.craft.missing": "Missing %s %s (and %s kinds in all)",
+    "message.joulesmith.craft.too_big": "That job is too big for one CPU",
+    "message.joulesmith.craft.no_cpu": "This network has no Auto-Crafting CPU",
+    "message.joulesmith.craft.busy": "Every CPU is busy",
+    "message.joulesmith.craft.changed": "The network's contents changed; try again",
+    "message.joulesmith.cpu.busy": "Crafting %s: %s batches left",
+    "message.joulesmith.cpu.idle": "Idle, %s patterns",
+})
 shaped("import_bus", [" N ", "PHP"], {"N": f"{MOD}:network_cable", "P": "#c:plates/steel", "H": "minecraft:hopper"})
 shaped("export_bus", [" N ", "PDP"], {"N": f"{MOD}:network_cable", "P": "#c:plates/steel", "D": "minecraft:dropper"})
 BUS = " Use a Filter Card on it to fit one; sneak and use an empty hand to take it back. Moves up to 16 items twice a second."

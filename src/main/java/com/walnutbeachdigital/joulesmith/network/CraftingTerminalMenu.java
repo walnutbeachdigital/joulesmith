@@ -110,6 +110,32 @@ public class CraftingTerminalMenu extends TerminalMenu {
         return room;
     }
 
+    /** Turns a Blank Pattern from the player's inventory into a Pattern of the recipe in the grid. */
+    @Override
+    protected void encode(ServerPlayer sp) {
+        ItemStack out = result.getItem(0);
+        if (out.isEmpty()) {
+            sp.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.joulesmith.pattern.no_recipe"), true);
+            return;
+        }
+        var inv = sp.getInventory();
+        int blank = -1;
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            if (inv.getItem(i).is(com.walnutbeachdigital.joulesmith.registry.JSItems.BLANK_PATTERN.get())) { blank = i; break; }
+        }
+        if (blank < 0) {
+            sp.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.joulesmith.pattern.no_blank"), true);
+            return;
+        }
+        inv.getItem(blank).shrink(1);
+        java.util.List<ItemStack> cells = new java.util.ArrayList<>();
+        for (int i = 0; i < 9; i++) cells.add(grid.getItem(i));
+        ItemStack pattern = new ItemStack(com.walnutbeachdigital.joulesmith.registry.JSItems.PATTERN.get());
+        pattern.set(com.walnutbeachdigital.joulesmith.registry.JSDataComponents.PATTERN.get(), new PatternContents(cells, out));
+        if (!inv.add(pattern)) sp.drop(pattern, false);
+        sp.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.joulesmith.pattern.encoded", out.getHoverName()), true);
+    }
+
     @Override
     public boolean canTakeItemForPickAll(ItemStack stack, Slot slot) {
         return slot.container != result && super.canTakeItemForPickAll(stack, slot);

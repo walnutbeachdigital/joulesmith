@@ -28,6 +28,7 @@ public final class JSCapabilities {
         machine(event, JSBlockEntities.FUSION_CORE.get());
         machine(event, JSBlockEntities.DRONE_HUB.get());
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, JSBlockEntities.NETWORK_CORE.get(), (c, side) -> c.energyHandler());
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, JSBlockEntities.CRAFTING_CPU.get(), (c, side) -> c.energyHandler());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, JSBlockEntities.DRIVE_BAY.get(),
                 (b, side) -> new net.neoforged.neoforge.items.wrapper.InvWrapper(b.container()));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.FUSION_CORE.get(), (f, side) -> f.fluidHandler(side));

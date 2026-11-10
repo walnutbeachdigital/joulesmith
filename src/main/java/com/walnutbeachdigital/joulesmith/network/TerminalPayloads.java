@@ -16,11 +16,12 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /** The Network Terminal's two messages: the grid's contents (to the client) and grid clicks (to the server). */
 public final class TerminalPayloads {
-    public record Contents(int containerId, List<BinContents> contents, boolean online) implements CustomPacketPayload {
+    public record Contents(int containerId, List<BinContents> contents, List<ItemStack> craftable, boolean online) implements CustomPacketPayload {
         public static final Type<Contents> TYPE = new Type<>(Joulesmith.id("terminal_contents"));
         public static final StreamCodec<RegistryFriendlyByteBuf, Contents> CODEC = StreamCodec.composite(
                 ByteBufCodecs.VAR_INT, Contents::containerId,
                 BinContents.STREAM_CODEC.apply(ByteBufCodecs.list()), Contents::contents,
+                ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()), Contents::craftable,
                 ByteBufCodecs.BOOL, Contents::online,
                 Contents::new);
         @Override public Type<? extends CustomPacketPayload> type() { return TYPE; }
@@ -44,7 +45,7 @@ public final class TerminalPayloads {
 
     private static void onContents(Contents msg, IPayloadContext context) {
         if (context.player().containerMenu instanceof TerminalMenu menu && menu.containerId == msg.containerId()) {
-            menu.receive(msg.contents(), msg.online());
+            menu.receive(msg.contents(), msg.craftable(), msg.online());
         }
     }
 

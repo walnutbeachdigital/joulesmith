@@ -40,6 +40,9 @@ public final class JSItems {
     public static final java.util.List<DeferredItem<com.walnutbeachdigital.joulesmith.network.DriveItem>> ITEM_DRIVES = java.util.List.of(
             drive("basic_item_drive", 4_096), drive("advanced_item_drive", 32_768),
             drive("elite_item_drive", 262_144), drive("ultimate_item_drive", 2_097_152));
+    public static final DeferredItem<Item> BLANK_PATTERN = ITEMS.registerSimpleItem("blank_pattern");
+    public static final DeferredItem<com.walnutbeachdigital.joulesmith.network.PatternItem> PATTERN = register("pattern",
+            () -> new com.walnutbeachdigital.joulesmith.network.PatternItem(new Item.Properties()));
     public static final DeferredItem<Item> DRONE = register("drone", () -> new Item(new Item.Properties().stacksTo(4)));
     public static final DeferredItem<com.walnutbeachdigital.joulesmith.automation.MobImprintItem> MOB_IMPRINT = register("mob_imprint",
             () -> new com.walnutbeachdigital.joulesmith.automation.MobImprintItem(new Item.Properties()));
@@ -102,6 +105,7 @@ public final class JSItems {
         blockItem(JSBlocks.NETWORK_TERMINAL);
         blockItem(JSBlocks.NETWORK_CABLE);
         blockItem(JSBlocks.CRAFTING_TERMINAL);
+        blockItem(JSBlocks.CRAFTING_CPU);
         blockItem(JSBlocks.IMPORT_BUS);
         blockItem(JSBlocks.EXPORT_BUS);
         blockItem(JSBlocks.WIND_TURBINE);
