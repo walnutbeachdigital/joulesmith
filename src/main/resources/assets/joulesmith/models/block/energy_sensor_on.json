@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "joulesmith:block/sensor_side",
+    "north": "joulesmith:block/sensor_front",
+    "south": "joulesmith:block/energy_sensor_back_on",
+    "east": "joulesmith:block/sensor_side",
+    "west": "joulesmith:block/sensor_side",
+    "up": "joulesmith:block/sensor_side",
+    "down": "joulesmith:block/sensor_side"
+  }
+}

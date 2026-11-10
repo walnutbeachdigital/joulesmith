@@ -14,6 +14,8 @@ import com.walnutbeachdigital.joulesmith.automation.MechanicalUserBlockEntity;
 import com.walnutbeachdigital.joulesmith.automation.MobFighterBlockEntity;
 import com.walnutbeachdigital.joulesmith.automation.QuarryBlockEntity;
 import com.walnutbeachdigital.joulesmith.energy.cable.EnergyCableBlock;
+import com.walnutbeachdigital.joulesmith.logic.LogicControllerBlock;
+import com.walnutbeachdigital.joulesmith.logic.SensorBlock;
 import com.walnutbeachdigital.joulesmith.machine.MachineBlock;
 import com.walnutbeachdigital.joulesmith.machine.SimpleMachineBlock;
 import com.walnutbeachdigital.joulesmith.machine.battery.BatteryBlockEntity;
@@ -182,6 +184,19 @@ public final class JSBlocks {
             () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.QUARRY::get, QuarryBlockEntity::new));
     public static final DeferredBlock<SimpleMachineBlock<MobFighterBlockEntity>> MOB_FIGHTER = BLOCKS.register("mob_fighter",
             () -> new SimpleMachineBlock<>(machine(), JSBlockEntities.MOB_FIGHTER::get, MobFighterBlockEntity::new));
+
+    // ---- logic
+    public static final Map<SensorBlock.Kind, DeferredBlock<SensorBlock>> SENSORS = new EnumMap<>(SensorBlock.Kind.class);
+
+    static {
+        for (SensorBlock.Kind kind : SensorBlock.Kind.values()) {
+            SENSORS.put(kind, BLOCKS.register(kind.id() + "_sensor", () -> new SensorBlock(kind, BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL).strength(2.0f, 6.0f).requiresCorrectToolForDrops().sound(SoundType.METAL))));
+        }
+    }
+
+    public static final DeferredBlock<LogicControllerBlock> LOGIC_CONTROLLER = BLOCKS.register("logic_controller",
+            () -> new LogicControllerBlock(machine()));
 
     // ---- steam (tier 3)
     public static final DeferredBlock<SimpleMachineBlock<BoilerBlockEntity>> BOILER = BLOCKS.register("boiler",

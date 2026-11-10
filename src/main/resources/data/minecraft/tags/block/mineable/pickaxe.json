@@ -64,6 +64,12 @@
     "joulesmith:fluid_pipe",
     "joulesmith:reinforced_fluid_pipe",
     "joulesmith:advanced_fluid_pipe",
-    "joulesmith:fluid_tank"
+    "joulesmith:fluid_tank",
+    "joulesmith:inventory_sensor",
+    "joulesmith:tank_sensor",
+    "joulesmith:energy_sensor",
+    "joulesmith:time_sensor",
+    "joulesmith:proximity_sensor",
+    "joulesmith:logic_controller"
   ]
 }

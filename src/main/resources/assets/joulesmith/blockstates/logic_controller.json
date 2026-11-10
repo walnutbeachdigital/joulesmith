@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "joulesmith:block/logic_controller"
+    }
+  }
+}

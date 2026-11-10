@@ -9,6 +9,8 @@ import com.walnutbeachdigital.joulesmith.automation.MechanicalUserBlockEntity;
 import com.walnutbeachdigital.joulesmith.automation.MobFighterBlockEntity;
 import com.walnutbeachdigital.joulesmith.automation.QuarryBlockEntity;
 import com.walnutbeachdigital.joulesmith.energy.cable.EnergyCableBlockEntity;
+import com.walnutbeachdigital.joulesmith.logic.LogicControllerBlockEntity;
+import com.walnutbeachdigital.joulesmith.logic.SensorBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.battery.BatteryBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.steam.BoilerBlockEntity;
 import com.walnutbeachdigital.joulesmith.machine.steam.SteamTurbineBlockEntity;
@@ -62,6 +64,14 @@ public final class JSBlockEntities {
     private static int batteryTier(net.minecraft.world.level.block.state.BlockState state) {
         return state.is(JSBlocks.ADVANCED_BATTERY.get()) ? 3 : state.is(JSBlocks.REINFORCED_BATTERY.get()) ? 2 : 1;
     }
+
+    // logic
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SensorBlockEntity>> SENSOR =
+            BLOCK_ENTITIES.register("sensor", () -> BlockEntityType.Builder.of(SensorBlockEntity::new,
+                    JSBlocks.SENSORS.values().stream().map(b -> (Block) b.get()).toArray(Block[]::new)).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LogicControllerBlockEntity>> LOGIC_CONTROLLER =
+            BLOCK_ENTITIES.register("logic_controller", () -> BlockEntityType.Builder.of(LogicControllerBlockEntity::new,
+                    JSBlocks.LOGIC_CONTROLLER.get()).build(null));
 
     // automation
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BlockPlacerBlockEntity>> BLOCK_PLACER =

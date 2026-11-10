@@ -3,6 +3,7 @@ package com.walnutbeachdigital.joulesmith;
 import com.walnutbeachdigital.joulesmith.client.BinRenderer;
 import com.walnutbeachdigital.joulesmith.client.CrateScreen;
 import com.walnutbeachdigital.joulesmith.client.FilterScreen;
+import com.walnutbeachdigital.joulesmith.client.LogicScreen;
 import com.walnutbeachdigital.joulesmith.client.FluidTankRenderer;
 import com.walnutbeachdigital.joulesmith.client.MachineScreen;
 import com.walnutbeachdigital.joulesmith.client.MetalTexturePack;
@@ -66,6 +67,7 @@ public class JoulesmithClient {
         event.register(JSMenus.MACHINE.get(), MachineScreen::new);
         event.register(JSMenus.FILTER.get(), FilterScreen::new);
         event.register(JSMenus.CRATE.get(), CrateScreen::new);
+        event.register(JSMenus.LOGIC.get(), LogicScreen::new);
     }
 
     /** Adds the built-in pack that colours vanilla-shaped metal textures through each metal's gradient. */

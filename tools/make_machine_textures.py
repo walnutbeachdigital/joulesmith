@@ -1553,6 +1553,76 @@ def mob_fighter_front(on):
     return img
 
 
+# ------------------------------------------------------------------ logic
+SENSOR_ICONS = {
+    "inventory": ["#######", "#.....#", "#######", "#..#..#", "#.....#", "#######"],
+    "tank": ["..###..", ".#...#.", "#.....#", "#~~~~~#", "#~~~~~#", ".#####."],
+    "energy": ["....##.", "...##..", "..####.", "...##..", "..##...", ".##...."],
+    "time": [".#####.", "#..#..#", "#..#..#", "#..###.", "#.....#", ".#####."],
+    "proximity": ["..###..", ".#...#.", "#..#..#", ".#...#.", "..###..", "......."],
+}
+
+
+def sensor_side():
+    img = casing3()
+    return img
+
+
+def sensor_front():
+    """The sensing face, against the block it reads: a grille."""
+    img = casing3()
+    px = img.load()
+    for y in range(3, 13):
+        for x in range(3, 13):
+            px[x, y] = rgba(STEEL[1] if (x + y) % 2 else STEEL[3])
+    return img
+
+
+def sensor_back(kind, on):
+    """The face you see: the sensor's symbol in a dark window, and a lamp that lights with the signal."""
+    img = casing3()
+    px = img.load()
+    window(img, 3, 3, 12, 12)
+    for y in range(3, 13):
+        for x in range(3, 13):
+            px[x, y] = rgba("#16181c")
+    for j, row in enumerate(SENSOR_ICONS[kind]):
+        for i, ch in enumerate(row):
+            if ch == "#":
+                px[4 + i, 4 + j] = rgba(STEEL[6])
+            elif ch == "~":
+                px[4 + i, 4 + j] = rgba(WATER[2])
+    for x in range(10, 12):
+        for y in range(10, 12):
+            px[x, y] = rgba(("#ff5a48" if (x, y) == (10, 10) else "#d0281c") if on else "#3a1612")
+    return img
+
+
+def logic_controller_side():
+    """Rows of indicator LEDs and a strip of circuitry."""
+    img = casing3()
+    px = img.load()
+    window(img, 3, 3, 12, 12)
+    board = ["#0d1f3a", "#163266", "#21498e"]
+    for y in range(3, 13):
+        for x in range(3, 13):
+            px[x, y] = rgba(board[1] if (x + y) % 4 else board[2])
+    leds = ["#ff5a48", "#4fd14a", "#ffd24a", "#4fd14a", "#ff5a48", "#4f9ad1"]
+    for i, c in enumerate(leds):
+        px[4 + (i % 3) * 3, 4 + (i // 3) * 3] = rgba(c)
+    for x in range(4, 12):
+        px[x, 11] = rgba(ELECTRUM_TRIM[3] if x % 2 else ELECTRUM_TRIM[1])
+    return img
+
+
+def logic_controller_top():
+    img = casing3()
+    px = img.load()
+    for x, y in ((7, 7), (8, 7), (7, 8), (8, 8)):
+        px[x, y] = rgba("#d0281c")
+    return img
+
+
 # ------------------------------------------------------------------ screen
 LIGHT = (255, 255, 255, 255)
 
@@ -1680,6 +1750,11 @@ def main():
         "block/steam_turbine_front_on": turbine_front(True),
         "item/plastic_sheet": plastic_sheet_item(),
         "item/advanced_circuit": advanced_circuit_item(),
+        "block/sensor_side": sensor_side(),
+        "block/sensor_front": sensor_front(),
+        **{f"block/{k}_sensor_back{'_on' if on else ''}": sensor_back(k, on) for k in SENSOR_ICONS for on in (False, True)},
+        "block/logic_controller": logic_controller_side(),
+        "block/logic_controller_top": logic_controller_top(),
         **{f"block/{name}_front{'_on' if on else ''}": fn(on)
            for name, fn in (("block_placer", block_placer_front), ("block_breaker", block_breaker_front),
                             ("autocrafter", autocrafter_front), ("fluid_placer", fluid_placer_front),

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "joulesmith:block/logic_controller",
+    "top": "joulesmith:block/logic_controller_top",
+    "bottom": "joulesmith:block/machine_bottom"
+  }
+}

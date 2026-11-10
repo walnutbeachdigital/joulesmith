@@ -871,6 +871,60 @@ shaped("mechanical_user", ["PCP", "GDG", "PRP"], dict(T3, P="#c:plates/invar", D
 shaped("quarry", ["PCP", "GAG", "PBP"], dict(T3, A="minecraft:diamond_pickaxe", B="#c:storage_blocks/steel"))
 shaped("mob_fighter", ["PCP", "GSG", "PRP"], dict(T3, S="minecraft:diamond_sword"))
 
+# ---- logic: sensors (their sensing face points at the block they read) and the Logic Controller
+SENSORS = {"inventory": ("Inventory Sensor", "minecraft:chest"), "tank": ("Tank Sensor", "minecraft:bucket"),
+           "energy": ("Energy Sensor", "#c:storage_blocks/redstone"), "time": ("Time Sensor", "minecraft:clock"),
+           "proximity": ("Proximity Sensor", "minecraft:observer")}
+FACING6 = {"north": {}, "south": {"y": 180}, "east": {"y": 90}, "west": {"y": 270}, "up": {"x": 270}, "down": {"x": 90}}
+for kind, (name, part) in SENSORS.items():
+    sid = f"{kind}_sensor"
+    variants = {}
+    for facing, rot in FACING6.items():
+        for powered in ("false", "true"):
+            variants[f"facing={facing},powered={powered}"] = dict({"model": f"{MOD}:block/{sid}" + ("_on" if powered == "true" else "")}, **rot)
+    write(os.path.join(ASSETS, "blockstates", f"{sid}.json"), {"variants": variants})
+    for suffix in ("", "_on"):
+        model(f"{sid}{suffix}", {"parent": "minecraft:block/cube", "textures": {
+            "particle": f"{MOD}:block/sensor_side", "north": f"{MOD}:block/sensor_front", "south": f"{MOD}:block/{sid}_back{suffix}",
+            "east": f"{MOD}:block/sensor_side", "west": f"{MOD}:block/sensor_side", "up": f"{MOD}:block/sensor_side", "down": f"{MOD}:block/sensor_side"}})
+    write(os.path.join(ASSETS, "models", "item", f"{sid}.json"), {"parent": f"{MOD}:block/{sid}"})
+    simple_loot(sid)
+    tag("minecraft", "block", "mineable/pickaxe", f"{MOD}:{sid}")
+    lang[f"block.{MOD}.{sid}"] = name
+    shaped(sid, ["PCP", "RXR", "PRP"], {"P": "#c:plates/steel", "C": f"{MOD}:basic_circuit", "R": "#c:dusts/redstone", "X": part})
+write(os.path.join(ASSETS, "blockstates", "logic_controller.json"), {"variants": {"": {"model": f"{MOD}:block/logic_controller"}}})
+model("logic_controller", {"parent": "minecraft:block/cube_bottom_top", "textures": {
+    "side": f"{MOD}:block/logic_controller", "top": f"{MOD}:block/logic_controller_top", "bottom": f"{MOD}:block/machine_bottom"}})
+write(os.path.join(ASSETS, "models", "item", "logic_controller.json"), {"parent": f"{MOD}:block/logic_controller"})
+simple_loot("logic_controller")
+tag("minecraft", "block", "mineable/pickaxe", f"{MOD}:logic_controller")
+shaped("logic_controller", ["PCP", "RMR", "PCP"],
+       {"P": "#c:plates/steel", "C": f"{MOD}:advanced_circuit", "R": "minecraft:comparator", "M": "#c:storage_blocks/redstone"})
+lang.update({
+    f"block.{MOD}.logic_controller": "Logic Controller",
+    "message.joulesmith.sensor": "%s: %s (signal %s)",
+    "gui.joulesmith.measure.energy": "Energy", "gui.joulesmith.measure.items": "Items",
+    "gui.joulesmith.measure.fluid": "Fluid", "gui.joulesmith.measure.redstone": "Redstone",
+    "gui.joulesmith.measure.time": "Time", "gui.joulesmith.measure.players": "Players",
+    "gui.joulesmith.measure.hostiles": "Hostile mobs", "gui.joulesmith.measure.animals": "Animals",
+    "gui.joulesmith.dir.north": "North", "gui.joulesmith.dir.south": "South", "gui.joulesmith.dir.east": "East",
+    "gui.joulesmith.dir.west": "West", "gui.joulesmith.dir.up": "Up", "gui.joulesmith.dir.down": "Down",
+    "gui.joulesmith.logic.col.reading": "Reading", "gui.joulesmith.logic.col.side": "Side",
+    "gui.joulesmith.logic.col.if": "If", "gui.joulesmith.logic.col.value": "Value", "gui.joulesmith.logic.col.output": "Power",
+    "gui.joulesmith.logic.outputs": "Powered:",
+    "gui.joulesmith.logic.on": "Rule on (lamp: green while it holds, red while it doesn't)",
+    "gui.joulesmith.logic.off": "Rule off",
+    "gui.joulesmith.logic.reading": "%s, now %s",
+    "gui.joulesmith.logic.side": "The side of the controller to read from",
+    "gui.joulesmith.logic.no_side": "This reading doesn't use a side",
+    "gui.joulesmith.logic.above": "Holds when the reading is above the value",
+    "gui.joulesmith.logic.below": "Holds when the reading is below the value",
+    "gui.joulesmith.logic.value": "The value to compare with",
+    "gui.joulesmith.logic.output": "The side to power while the rule holds",
+})
+for (ns, reg, path), values in tags.items():
+    write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
+
 # ---- the new machines, upgrade cards and sawdust
 shaped("alloy_smelter", ["IGI", "BFB", "IRI"],
        {"I": "#c:ingots/iron", "G": "#c:gears/copper", "B": "minecraft:bricks", "F": "minecraft:furnace", "R": "#c:dusts/redstone"})

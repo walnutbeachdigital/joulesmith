@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "RMR",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "joulesmith:advanced_circuit"
+    },
+    "R": {
+      "item": "minecraft:comparator"
+    },
+    "M": {
+      "tag": "c:storage_blocks/redstone"
+    }
+  },
+  "result": {
+    "id": "joulesmith:logic_controller",
+    "count": 1
+  }
+}

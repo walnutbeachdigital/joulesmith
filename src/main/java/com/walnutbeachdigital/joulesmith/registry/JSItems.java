@@ -55,6 +55,8 @@ public final class JSItems {
         blockItem(JSBlocks.ADVANCED_BATTERY);
         blockItem(JSBlocks.BOILER);
         blockItem(JSBlocks.STEAM_TURBINE);
+        JSBlocks.SENSORS.values().forEach(JSItems::blockItem);
+        blockItem(JSBlocks.LOGIC_CONTROLLER);
         blockItem(JSBlocks.BLOCK_PLACER);
         blockItem(JSBlocks.BLOCK_BREAKER);
         blockItem(JSBlocks.AUTOCRAFTER);
