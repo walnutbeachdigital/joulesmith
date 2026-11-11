@@ -371,21 +371,20 @@ CABLES = {"energy_cable": "Energy Cable", "reinforced_energy_cable": "Reinforced
           "advanced_energy_cable": "Advanced Energy Cable", "elite_energy_cable": "Elite Energy Cable",
           "ultimate_energy_cable": "Ultimate Energy Cable"}
 for cid in CABLES:
+    # drawn like the pipes (6 wide, the pipe tile layout), using the pipe parent models defined below
     cable_tex = f"{MOD}:block/{cid}"
-    write(os.path.join(ASSETS, "models", "block", f"{cid}_core.json"), {
-        "parent": "minecraft:block/block", "textures": {"particle": cable_tex, "cable": cable_tex},
-        "elements": [{"from": [6, 6, 6], "to": [10, 10, 10],
-                      "faces": {f: {"texture": "#cable"} for f in SIDES}}]})
-    write(os.path.join(ASSETS, "models", "block", f"{cid}_arm.json"), {
-        "parent": "minecraft:block/block", "textures": {"particle": cable_tex, "cable": cable_tex},
-        "elements": [{"from": [6, 6, 0], "to": [10, 10, 6],
-                      "faces": {f: {"texture": "#cable"} for f in ("east", "west", "up", "down", "north")}}]})
+    for part in ("core", "arm"):
+        write(os.path.join(ASSETS, "models", "block", f"{cid}_{part}.json"),
+              {"parent": f"{MOD}:block/pipe_{part}", "textures": {"pipe": cable_tex}})
     write(os.path.join(ASSETS, "blockstates", f"{cid}.json"), {"multipart":
         [{"apply": {"model": f"{MOD}:block/{cid}_core"}}] +
         [{"when": {side: "true"}, "apply": {"model": f"{MOD}:block/{cid}_arm", **rot}} for side, rot in SIDE_ROT.items()]})
     write(os.path.join(ASSETS, "models", "item", f"{cid}.json"), {
-        "parent": "minecraft:block/block", "textures": {"particle": cable_tex, "cable": cable_tex},
-        "elements": [{"from": [0, 6, 6], "to": [16, 10, 10], "faces": {f: {"texture": "#cable"} for f in SIDES}}]})
+        "parent": "minecraft:block/block", "textures": {"particle": cable_tex, "pipe": cable_tex},
+        "elements": [{"from": [0, 5, 5], "to": [16, 11, 11], "faces": {
+            "east": {"uv": [0, 6, 6, 12], "texture": "#pipe"}, "west": {"uv": [0, 6, 6, 12], "texture": "#pipe"},
+            **{f: {"uv": [0, 0, 16, 6], "texture": "#pipe"} for f in ("north", "south", "up", "down")}}}],
+        "display": {"gui": {"rotation": [30, 45, 0], "scale": [0.8, 0.8, 0.8]}}})
     write(os.path.join(DATA, MOD, "loot_table", "blocks", f"{cid}.json"), {
         "type": "minecraft:block", "random_sequence": f"{MOD}:blocks/{cid}",
         "pools": [{"rolls": 1, "bonus_rolls": 0, "entries": [{"type": "minecraft:item", "name": f"{MOD}:{cid}"}],
@@ -1918,15 +1917,25 @@ for bid, name in (("network_core", "Network Core"), ("drive_bay", "Drive Bay"), 
     tag("minecraft", "block", "mineable/pickaxe", f"{MOD}:{bid}")
     lang[f"block.{MOD}.{bid}"] = name
 NC = f"{MOD}:block/network_cable"
+NC = f"{MOD}:block/network_cable"
+# a 6-wide node cube in the middle, 4-wide striped arms (rows 12-15 of the tile)
+def net_arm_faces(length):
+    f = {"uv": [0, 12, length, 16], "texture": "#cable"}
+    return {"east": f, "west": f, "up": dict(f, rotation=90), "down": dict(f, rotation=90)}
 model("network_cable_core", {"parent": "minecraft:block/block", "textures": {"particle": NC, "cable": NC},
-      "elements": [{"from": [6, 6, 6], "to": [10, 10, 10], "faces": {f: {"texture": "#cable"} for f in SIDES}}]})
+      "elements": [{"from": [5, 5, 5], "to": [11, 11, 11], "faces": {f: {"uv": [0, 6, 6, 12], "texture": "#cable"} for f in SIDES}}]})
 model("network_cable_arm", {"parent": "minecraft:block/block", "textures": {"particle": NC, "cable": NC},
-      "elements": [{"from": [6, 6, 0], "to": [10, 10, 6], "faces": {f: {"texture": "#cable"} for f in ("east", "west", "up", "down", "north")}}]})
+      "elements": [{"from": [6, 6, 0], "to": [10, 10, 5], "faces": net_arm_faces(5)}]})
 write(os.path.join(ASSETS, "blockstates", "network_cable.json"), {"multipart":
     [{"apply": {"model": f"{MOD}:block/network_cable_core"}}] +
     [{"when": {side: "true"}, "apply": {"model": f"{MOD}:block/network_cable_arm", **rot}} for side, rot in SIDE_ROT.items()]})
-write(os.path.join(ASSETS, "models", "item", "network_cable.json"), {"parent": "minecraft:block/block", "textures": {"particle": NC, "cable": NC},
-      "elements": [{"from": [0, 6, 6], "to": [16, 10, 10], "faces": {f: {"texture": "#cable"} for f in SIDES}}]})
+write(os.path.join(ASSETS, "models", "item", "network_cable.json"), {"parent": "minecraft:block/block",
+      "textures": {"particle": NC, "cable": NC},
+      "elements": [{"from": [0, 6, 6], "to": [16, 10, 10], "faces": dict(
+          {f: {"uv": [0, 12, 16, 16], "texture": "#cable"} for f in ("north", "south", "up", "down")},
+          east={"uv": [1, 7, 5, 11], "texture": "#cable"}, west={"uv": [1, 7, 5, 11], "texture": "#cable"})},
+          {"from": [5, 5, 5], "to": [11, 11, 11], "faces": {f: {"uv": [0, 6, 6, 12], "texture": "#cable"} for f in SIDES}}],
+      "display": {"gui": {"rotation": [30, 45, 0], "scale": [0.8, 0.8, 0.8]}}})
 simple_loot("network_cable")
 tag("minecraft", "block", "mineable/pickaxe", f"{MOD}:network_cable")
 lang[f"block.{MOD}.network_cable"] = "Network Cable"

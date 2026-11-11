@@ -41,11 +41,11 @@ public class EnergyCableBlock extends BaseEntityBlock {
 
     /** Shapes by which sides connect, built once: one per block state was slow to build at startup. */
     private static final VoxelShape[] SHAPES = new VoxelShape[64];
-    private static final VoxelShape CORE = box(6, 6, 6, 10, 10, 10);
+    private static final VoxelShape CORE = box(5, 5, 5, 11, 11, 11);
     private static final Map<Direction, VoxelShape> ARMS = Map.of(
-            Direction.NORTH, box(6, 6, 0, 10, 10, 6), Direction.SOUTH, box(6, 6, 10, 10, 10, 16),
-            Direction.WEST, box(0, 6, 6, 6, 10, 10), Direction.EAST, box(10, 6, 6, 16, 10, 10),
-            Direction.DOWN, box(6, 0, 6, 10, 6, 10), Direction.UP, box(6, 10, 6, 10, 16, 10));
+            Direction.NORTH, box(5, 5, 0, 11, 11, 5), Direction.SOUTH, box(5, 5, 11, 11, 11, 16),
+            Direction.WEST, box(0, 5, 5, 5, 11, 11), Direction.EAST, box(11, 5, 5, 16, 11, 11),
+            Direction.DOWN, box(5, 0, 5, 11, 5, 11), Direction.UP, box(5, 11, 5, 11, 16, 11));
 
     private final int tier;
 

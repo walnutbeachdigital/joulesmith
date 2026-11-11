@@ -14,23 +14,46 @@
       "to": [
         10,
         10,
-        6
+        5
       ],
       "faces": {
         "east": {
+          "uv": [
+            0,
+            12,
+            5,
+            16
+          ],
           "texture": "#cable"
         },
         "west": {
+          "uv": [
+            0,
+            12,
+            5,
+            16
+          ],
           "texture": "#cable"
         },
         "up": {
-          "texture": "#cable"
+          "uv": [
+            0,
+            12,
+            5,
+            16
+          ],
+          "texture": "#cable",
+          "rotation": 90
         },
         "down": {
-          "texture": "#cable"
-        },
-        "north": {
-          "texture": "#cable"
+          "uv": [
+            0,
+            12,
+            5,
+            16
+          ],
+          "texture": "#cable",
+          "rotation": 90
         }
       }
     }

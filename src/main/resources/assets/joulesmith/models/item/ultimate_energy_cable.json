@@ -2,40 +2,90 @@
   "parent": "minecraft:block/block",
   "textures": {
     "particle": "joulesmith:block/ultimate_energy_cable",
-    "cable": "joulesmith:block/ultimate_energy_cable"
+    "pipe": "joulesmith:block/ultimate_energy_cable"
   },
   "elements": [
     {
       "from": [
         0,
-        6,
-        6
+        5,
+        5
       ],
       "to": [
         16,
-        10,
-        10
+        11,
+        11
       ],
       "faces": {
-        "down": {
-          "texture": "#cable"
-        },
-        "up": {
-          "texture": "#cable"
-        },
-        "north": {
-          "texture": "#cable"
-        },
-        "south": {
-          "texture": "#cable"
+        "east": {
+          "uv": [
+            0,
+            6,
+            6,
+            12
+          ],
+          "texture": "#pipe"
         },
         "west": {
-          "texture": "#cable"
+          "uv": [
+            0,
+            6,
+            6,
+            12
+          ],
+          "texture": "#pipe"
         },
-        "east": {
-          "texture": "#cable"
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            6
+          ],
+          "texture": "#pipe"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            6
+          ],
+          "texture": "#pipe"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            6
+          ],
+          "texture": "#pipe"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            6
+          ],
+          "texture": "#pipe"
         }
       }
     }
-  ]
+  ],
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        45,
+        0
+      ],
+      "scale": [
+        0.8,
+        0.8,
+        0.8
+      ]
+    }
+  }
 }

@@ -24,7 +24,7 @@ public class NetworkCableBlock extends Block implements NetworkPart {
     public static final Map<Direction, BooleanProperty> CONNECTED = PipeBlock.PROPERTY_BY_DIRECTION;
     /** Shapes by which sides connect, built once: one per block state was slow to build at startup. */
     private static final VoxelShape[] SHAPES = new VoxelShape[64];
-    private static final VoxelShape CORE = box(6, 6, 6, 10, 10, 10);
+    private static final VoxelShape CORE = box(5, 5, 5, 11, 11, 11);
     private static final Map<Direction, VoxelShape> ARMS = Map.of(
             Direction.NORTH, box(6, 6, 0, 10, 10, 6), Direction.SOUTH, box(6, 6, 10, 10, 10, 16),
             Direction.WEST, box(0, 6, 6, 6, 10, 10), Direction.EAST, box(10, 6, 6, 16, 10, 10),

@@ -3142,6 +3142,116 @@ def handbook_textures():
             "gui/handbook/page": handbook_page("#4d7fae", 1)}
 
 
+# ------------------------------------------------------------------ conduit look (Thermal-style ducts)
+# Every duct, pipe and cable tile shares one layout: rows 0-5 are the side, running along u (u 0-1 is the
+# tier-coloured joint band), the 6x6 at (0, 6) is the node seen on the core, and the network cable's thinner
+# 4-row arm runs along rows 12-15.
+FRAME = ["#121317", "#1c1d22", "#2a2c32", "#3a3d45"]
+REDSTONE = ["#5a0a08", "#8c1410", "#c4201a", "#ff4a3a", "#ff9a80"]
+AMBER = ["#5a3a08", "#a87810", "#d8a020", "#f0c030", "#ffe27a"]
+NETG = ["#1c4a0c", "#2e7a14", "#4cb024", "#6ed832", "#9cf05a"]
+
+
+def _conduit_side(px, trim, rows, glint):
+    """Rows 0-5: dark rims top and bottom, then the four given colours; a joint band at u 0-1."""
+    for x in range(16):
+        for y in range(6):
+            if x in (0, 1):
+                c = trim[1] if y in (0, 5) else trim[4] if y in (1, 2) else trim[2]
+                if x == 1 and y not in (0, 5):
+                    c = trim[3] if y in (1, 2) else trim[1]
+            elif y == 0:
+                c = FRAME[2]
+            elif y == 5:
+                c = FRAME[0]
+            else:
+                c = rows[y - 1]
+                if glint and y == 2 and x % 7 == 4:
+                    c = glint
+            px[x, y] = rgba(c)
+
+
+def _conduit_node(px, trim, centre, centre_lit, ring=None):
+    """The 6x6 node: a dark frame, a tier-coloured ring and what the conduit carries in the middle."""
+    for y in range(6):
+        for x in range(6):
+            if x in (0, 5) or y in (0, 5):
+                c = FRAME[2] if (x == 0 or y == 0) and not (x == 5 or y == 5) else FRAME[0]
+            elif x in (1, 4) or y in (1, 4):
+                r = ring or trim
+                c = r[4] if (x == 1 or y == 1) and not (x == 4 or y == 4) else r[2]
+            else:
+                c = centre_lit if (x, y) == (2, 2) else centre
+            px[x, 6 + y] = rgba(c)
+
+
+def energy_conduit(trim):
+    """Energy cable, after Thermal's redstone conduits: a light steel casing with a glowing red core showing
+    along it, banded at the joints in the tier colour; the node is red inside a steel and tier frame."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    _conduit_side(px, trim, ["#cdd1d8", REDSTONE[3], REDSTONE[2], "#8e939c"], REDSTONE[4])
+    _conduit_node(px, trim, REDSTONE[2], REDSTONE[4])
+    return img
+
+
+def fluid_conduit(trim):
+    """Fluid pipe, after Thermal's fluiducts: a tier-coloured metal frame round a long glass window of
+    water blue; the node is a blue dot in the frame."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    _conduit_side(px, trim, [trim[4], WATER[3], WATER[1], trim[2]], WATER[4])
+    _conduit_node(px, trim, WATER[2], WATER[4])
+    return img
+
+
+def item_conduit(trim):
+    """Item duct: a black frame with amber glass panes, a dark mullion every half block."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    _conduit_side(px, trim, [AMBER[4], AMBER[3], AMBER[2], AMBER[1]], "#fff6c8")
+    for y in range(1, 5):
+        px[8, y] = rgba(FRAME[1])
+    _conduit_node(px, trim, AMBER[3], AMBER[4])
+    return img
+
+
+def data_conduit():
+    """Network cable, after the classic data cables: a green-framed cube with a black face and a white status
+    dot at each node, and a thinner striped green and black cable between."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    _conduit_side(px, NETG + [NETG[4]], [NETG[3], "#101410", "#101410", NETG[1]], None)
+    for y in range(6):                       # the node: green frame, black face, white dot
+        for x in range(6):
+            if x in (0, 5) or y in (0, 5):
+                c = NETG[4] if (x == 0 or y == 0) and not (x == 5 or y == 5) else NETG[1]
+                if (x, y) in ((0, 0), (5, 5)):
+                    c = NETG[2]
+            else:
+                c = "#0c0f0c" if (x + y) % 3 else "#141a14"
+            px[x, 6 + y] = rgba(c)
+    px[2, 8], px[3, 8], px[2, 9], px[3, 9] = rgba("#f4f6f4"), rgba("#b8c0b8"), rgba("#b8c0b8"), rgba("#4a524a")
+    stripes = [NETG[4], "#0e110e", NETG[2], "#0e110e"]
+    for x in range(16):                      # the arm: green and black stripes along it
+        for i, c in enumerate(stripes):
+            if c != "#0e110e" and (x + i) % 6 == 0:
+                c = NETG[3] if i == 0 else NETG[1]
+            px[x, 12 + i] = rgba(c)
+    return img
+
+
+def conduit_textures():
+    tiers = (("", COPPER), ("reinforced_", STEEL_TRIM), ("advanced_", ELECTRUM_TRIM), ("elite_", SIGNAL_TRIM),
+             ("ultimate_", PLASMA_TRIM))
+    out = {"block/network_cable": data_conduit()}
+    for prefix, trim in tiers:
+        out[f"block/{prefix}energy_cable"] = energy_conduit(trim)
+        out[f"block/{prefix}fluid_pipe"] = fluid_conduit(trim)
+        out[f"block/{prefix}item_duct"] = item_conduit(trim)
+    return out
+
+
 def main():
     os.makedirs(os.path.join(TEX, "block"), exist_ok=True)
     os.makedirs(os.path.join(TEX, "gui"), exist_ok=True)
@@ -3298,6 +3408,7 @@ def main():
         **network_textures(),
         **bus_textures(),
         **handbook_textures(),
+        **conduit_textures(),
     }
     for name, img in out.items():
         img.save(os.path.join(TEX, name + ".png"))
