@@ -16,7 +16,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 /** Draws the fluid inside a Fluid Tank, filling from the bottom, seen through the glass. */
 public class FluidTankRenderer implements BlockEntityRenderer<FluidTankBlockEntity> {
-    private static final float MIN = 1.02f / 16f, MAX = 14.98f / 16f, BOTTOM = 1.02f / 16f, TOP = 14.98f / 16f;
+    private static final float MIN = 1.02f / 16f, MAX = 14.98f / 16f, BOTTOM = 2.02f / 16f, TOP = 13.98f / 16f;
 
     public FluidTankRenderer(BlockEntityRendererProvider.Context context) {
     }

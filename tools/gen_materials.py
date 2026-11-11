@@ -466,8 +466,20 @@ for pid in PIPES:
 # ---- fluid tank: frame and glass (cut out so the fluid drawn inside shows); keeps its fluid when broken
 for tid in ("fluid_tank", "reinforced_fluid_tank", "advanced_fluid_tank", "elite_fluid_tank", "ultimate_fluid_tank"):
     write(os.path.join(ASSETS, "blockstates", f"{tid}.json"), {"variants": {"": {"model": f"{MOD}:block/{tid}"}}})
-    model(tid, {"parent": "minecraft:block/cube_column", "render_type": "minecraft:cutout",
-          "textures": {"side": f"{MOD}:block/{tid}_side", "end": f"{MOD}:block/{tid}_top"}})
+    # four corner posts and a plate top and bottom (real geometry, so the far edges show through the
+    # glass), and cut-out glass sides between; the fluid is drawn inside (client/FluidTankRenderer)
+    def faces(tex, sides, uv=None):
+        return {f: dict({"texture": tex}, **({"uv": uv} if uv else {})) for f in sides}
+    posts = [{"from": [x, 2, z], "to": [x + 2, 14, z + 2], "faces": faces("#frame", ("north", "south", "east", "west"), [0, 2, 2, 14])}
+             for x in (0, 14) for z in (0, 14)]
+    plates = [{"from": [0, y, 0], "to": [16, y + 2, 16], "faces": dict(
+                  faces("#frame", ("north", "south", "east", "west"), [0, 0, 16, 2]), **faces("#end", ("up", "down")))}
+              for y in (0, 14)]
+    glass = {"from": [0, 2, 0], "to": [16, 14, 16], "faces": faces("#glass", ("north", "south", "east", "west"), [0, 2, 16, 14])}
+    model(tid, {"parent": "minecraft:block/block", "render_type": "minecraft:cutout",
+          "textures": {"particle": f"{MOD}:block/{tid}_top", "frame": f"{MOD}:block/fluid_tank_frame",
+                       "glass": f"{MOD}:block/{tid}_side", "end": f"{MOD}:block/{tid}_top"},
+          "elements": posts + plates + [glass]})
     write(os.path.join(ASSETS, "models", "item", f"{tid}.json"), {"parent": f"{MOD}:block/{tid}"})
     simple_loot(tid, [{"function": "minecraft:copy_components", "source": "block_entity",
                        "include": [f"{MOD}:fluid"]}])

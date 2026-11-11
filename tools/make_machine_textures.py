@@ -3252,6 +3252,76 @@ def conduit_textures():
     return out
 
 
+# ------------------------------------------------------------------ fluid tanks (Mekanism-style)
+TANK_FRAME = ["#16171b", "#22242a", "#2e3138", "#3c4048", "#4c515b"]
+
+
+def tank_frame():
+    """The tank's corner posts and plate edges: dark gunmetal, lit on one side."""
+    img = Image.new("RGBA", (16, 16))
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            c = TANK_FRAME[3] if x % 2 == 0 else TANK_FRAME[1]
+            if y % 8 == 0:
+                c = TANK_FRAME[4] if x % 2 == 0 else TANK_FRAME[2]
+            px[x, y] = rgba(c)
+    return img
+
+
+def tank_glass(trim):
+    """A tank side: clear glass (cut out, so the fluid inside shows) inside a thin tier-coloured edge, with
+    tier-coloured clips stepping up both sides and a couple of glints. Rows 2-13 are what shows between the
+    plates; columns 0-1 and 14-15 sit under the corner posts."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    for y in range(16):
+        px[2, y] = rgba(trim[4])
+        px[13, y] = rgba(trim[1])
+    for y in (4, 7, 10):                       # clips: a lit bar with a shadow under it
+        for x in (2, 3, 4):
+            px[x, y] = rgba(trim[3] if x < 4 else trim[2])
+            px[x, y + 1] = rgba(TANK_FRAME[1])
+        for x in (11, 12, 13):
+            px[x, y] = rgba(trim[3] if x > 11 else trim[2])
+            px[x, y + 1] = rgba(TANK_FRAME[1])
+    for i in range(4):                         # glints
+        px[6 + i, 5 + i] = rgba("#e6f6fb")
+    px[9, 11], px[10, 12] = rgba("#cfe8f0"), rgba("#cfe8f0")
+    return img
+
+
+def tank_end(trim):
+    """The top and bottom plates: a dark rim, a tier-metal plate and a hazard-striped port in the middle."""
+    img = Image.new("RGBA", (16, 16))
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            d = min(x, y, 15 - x, 15 - y)
+            if d <= 1:
+                c = TANK_FRAME[3] if d == 0 and (x == 0 or y == 0) and x != 15 and y != 15 else TANK_FRAME[1]
+            elif d <= 4:
+                lit = x + y < 15
+                c = trim[4] if d == 2 and lit else trim[3] if lit else trim[2]
+                if d == 4:
+                    c = trim[1]
+            elif d == 5:
+                c = "#e0b030" if (x + y) % 2 == 0 else "#1a1a1a"
+            else:
+                c = "#1a1c20" if (x + y) % 3 else "#24272d"
+            px[x, y] = rgba(c)
+    return img
+
+
+def tank_textures():
+    out = {"block/fluid_tank_frame": tank_frame()}
+    for prefix, trim in (("", COPPER), ("reinforced_", STEEL_TRIM), ("advanced_", ELECTRUM_TRIM),
+                         ("elite_", SIGNAL_TRIM), ("ultimate_", PLASMA_TRIM)):
+        out[f"block/{prefix}fluid_tank_side"] = tank_glass(trim)
+        out[f"block/{prefix}fluid_tank_top"] = tank_end(trim)
+    return out
+
+
 def main():
     os.makedirs(os.path.join(TEX, "block"), exist_ok=True)
     os.makedirs(os.path.join(TEX, "gui"), exist_ok=True)
@@ -3409,6 +3479,7 @@ def main():
         **bus_textures(),
         **handbook_textures(),
         **conduit_textures(),
+        **tank_textures(),
     }
     for name, img in out.items():
         img.save(os.path.join(TEX, name + ".png"))
