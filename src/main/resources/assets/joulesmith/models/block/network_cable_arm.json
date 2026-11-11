@@ -2,7 +2,7 @@
   "parent": "minecraft:block/block",
   "textures": {
     "particle": "joulesmith:block/network_cable",
-    "cable": "joulesmith:block/network_cable"
+    "pipe": "joulesmith:block/network_cable"
   },
   "elements": [
     {
@@ -24,7 +24,7 @@
             5,
             16
           ],
-          "texture": "#cable"
+          "texture": "#pipe"
         },
         "west": {
           "uv": [
@@ -33,7 +33,7 @@
             5,
             16
           ],
-          "texture": "#cable"
+          "texture": "#pipe"
         },
         "up": {
           "uv": [
@@ -42,7 +42,7 @@
             5,
             16
           ],
-          "texture": "#cable",
+          "texture": "#pipe",
           "rotation": 90
         },
         "down": {
@@ -52,7 +52,7 @@
             5,
             16
           ],
-          "texture": "#cable",
+          "texture": "#pipe",
           "rotation": 90
         }
       }

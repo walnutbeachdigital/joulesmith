@@ -1,6 +1,0 @@
-{
-  "parent": "joulesmith:block/pipe_core",
-  "textures": {
-    "pipe": "joulesmith:block/reinforced_energy_cable"
-  }
-}

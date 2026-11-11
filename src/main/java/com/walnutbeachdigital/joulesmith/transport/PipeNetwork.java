@@ -114,6 +114,28 @@ public abstract class PipeNetwork {
         });
     }
 
+    /** The pipes from {@code from} to {@code to}, both included (empty if they aren't joined). */
+    protected java.util.List<BlockPos> path(BlockPos from, BlockPos to) {
+        Map<BlockPos, Integer> dist = distancesFrom(to);
+        java.util.List<BlockPos> out = new java.util.ArrayList<>();
+        Integer d = dist.get(from);
+        if (d == null) return out;
+        BlockPos at = from;
+        out.add(at);
+        while (d > 0 && out.size() < 256) {
+            BlockPos next = null;
+            for (Direction dir : Direction.values()) {
+                BlockPos n = at.relative(dir);
+                if (dist.getOrDefault(n, Integer.MAX_VALUE) == d - 1) { next = n; break; }
+            }
+            if (next == null) break;
+            at = next;
+            d--;
+            out.add(at);
+        }
+        return out;
+    }
+
     public int size() {
         return pipes.size();
     }

@@ -39,14 +39,6 @@ public class EnergyCableBlock extends BaseEntityBlock {
     ).apply(i, EnergyCableBlock::new));
     public static final Map<Direction, BooleanProperty> CONNECTED = PipeBlock.PROPERTY_BY_DIRECTION;
 
-    /** Shapes by which sides connect, built once: one per block state was slow to build at startup. */
-    private static final VoxelShape[] SHAPES = new VoxelShape[64];
-    private static final VoxelShape CORE = box(5, 5, 5, 11, 11, 11);
-    private static final Map<Direction, VoxelShape> ARMS = Map.of(
-            Direction.NORTH, box(5, 5, 0, 11, 11, 5), Direction.SOUTH, box(5, 5, 11, 11, 11, 16),
-            Direction.WEST, box(0, 5, 5, 5, 11, 11), Direction.EAST, box(11, 5, 5, 16, 11, 11),
-            Direction.DOWN, box(5, 0, 5, 11, 5, 11), Direction.UP, box(5, 11, 5, 11, 16, 11));
-
     private final int tier;
 
     public EnergyCableBlock(int tier, Properties properties) {
@@ -54,7 +46,7 @@ public class EnergyCableBlock extends BaseEntityBlock {
         this.tier = tier;
         BlockState state = stateDefinition.any();
         for (BooleanProperty p : CONNECTED.values()) state = state.setValue(p, false);
-        registerDefaultState(state);
+        registerDefaultState(state.setValue(com.walnutbeachdigital.joulesmith.transport.PipeShapes.NODE, true));
     }
 
     /** 1 Basic (500 FE/t), 2 Reinforced (2,000), 3 Advanced (10,000). A network runs at its weakest cable's rate. */
@@ -70,6 +62,7 @@ public class EnergyCableBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         CONNECTED.values().forEach(builder::add);
+        builder.add(com.walnutbeachdigital.joulesmith.transport.PipeShapes.NODE);
     }
 
     @Override
@@ -79,15 +72,20 @@ public class EnergyCableBlock extends BaseEntityBlock {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        int key = 0;
-        for (Direction dir : Direction.values()) key = key * 2 + (state.getValue(CONNECTED.get(dir)) ? 1 : 0);
-        VoxelShape cached = SHAPES[key];
-        if (cached != null) return cached;
-        VoxelShape shape = CORE;
+        int[] sides = new int[6];
+        for (Direction dir : Direction.values()) sides[dir.ordinal()] = state.getValue(CONNECTED.get(dir)) ? 1 : 0;
+        return com.walnutbeachdigital.joulesmith.transport.PipeShapes.shape(sides, state.getValue(com.walnutbeachdigital.joulesmith.transport.PipeShapes.NODE));
+    }
+
+    /** Sets the nub: hidden only in the middle of a straight run of cable. */
+    private static BlockState withNode(BlockState state, LevelAccessor level, BlockPos pos) {
+        boolean[] any = new boolean[6], link = new boolean[6];
         for (Direction dir : Direction.values()) {
-            if (state.getValue(CONNECTED.get(dir))) shape = Shapes.or(shape, ARMS.get(dir));
+            any[dir.get3DDataValue()] = state.getValue(CONNECTED.get(dir));
+            link[dir.get3DDataValue()] = level.getBlockState(pos.relative(dir)).getBlock() instanceof EnergyCableBlock;
         }
-        return SHAPES[key] = shape.optimize();
+        return state.setValue(com.walnutbeachdigital.joulesmith.transport.PipeShapes.NODE,
+                com.walnutbeachdigital.joulesmith.transport.PipeShapes.node(any, link));
     }
 
     private static boolean connects(LevelAccessor level, BlockPos pos, Direction dir) {
@@ -102,7 +100,7 @@ public class EnergyCableBlock extends BaseEntityBlock {
         for (Direction dir : Direction.values()) {
             state = state.setValue(CONNECTED.get(dir), connects(context.getLevel(), context.getClickedPos(), dir));
         }
-        return state;
+        return withNode(state, context.getLevel(), context.getClickedPos());
     }
 
     @Override
@@ -110,7 +108,7 @@ public class EnergyCableBlock extends BaseEntityBlock {
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof EnergyCableBlockEntity cable) {
             cable.invalidateNetwork();
         }
-        return state.setValue(CONNECTED.get(dir), connects(level, pos, dir));
+        return withNode(state.setValue(CONNECTED.get(dir), connects(level, pos, dir)), level, pos);
     }
 
     @Override

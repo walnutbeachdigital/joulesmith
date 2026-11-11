@@ -22,6 +22,12 @@ public final class FluidNetwork extends PipeNetwork {
     private FluidStack buffer = FluidStack.EMPTY;
     private int capacity;
     private int nextTarget;
+    // what the pipes show: the fluid seen in the last half second and how full they look
+    private FluidStack seen = FluidStack.EMPTY;
+    private float peak;
+    private boolean moved;
+    private FluidStack shownFluid = FluidStack.EMPTY;
+    private int shownLevel = -1;
 
     private final IFluidHandler intake = new IFluidHandler() {
         @Override public int getTanks() { return 1; }
@@ -100,6 +106,32 @@ public final class FluidNetwork extends PipeNetwork {
 
     @Override
     protected void update(Level level, long gameTime) {
+        move(level);
+        if (!buffer.isEmpty()) {
+            seen = buffer.copyWithAmount(1);
+            peak = Math.max(peak, buffer.getAmount() / (float) capacity);
+        }
+        if (gameTime % 10 == 0) showInPipes();
+    }
+
+    /**
+     * Every half second, tells the pipes what to show: the fluid that went through and how full they look
+     * (flowing fluid shows at least a third full), in eighths; only sends a change.
+     */
+    private void showInPipes() {
+        FluidStack fluid = moved || peak > 0 ? seen : FluidStack.EMPTY;
+        int eighths = fluid.isEmpty() ? 0 : Math.max(moved ? 3 : 1, Math.min(8, Math.round(peak * 8)));
+        moved = false;
+        peak = buffer.isEmpty() ? 0 : buffer.getAmount() / (float) capacity;
+        if (eighths == shownLevel && FluidStack.isSameFluidSameComponents(fluid, shownFluid)) return;
+        shownLevel = eighths;
+        shownFluid = fluid.copy();
+        for (BlockPos pos : pipes) {
+            if (level.isLoaded(pos) && level.getBlockEntity(pos) instanceof FluidPipeBlockEntity pipe) pipe.show(shownFluid, eighths);
+        }
+    }
+
+    private void move(Level level) {
         Set<BlockPos> drainedFrom = new HashSet<>();
         for (Endpoint source : endpoints) {
             if (!source.mode().pulls()) continue;
@@ -129,6 +161,8 @@ public final class FluidNetwork extends PipeNetwork {
             int give = Math.min(buffer.getAmount(), mbPerTick(target.tier()));
             int filled = to.fill(buffer.copyWithAmount(give), IFluidHandler.FluidAction.EXECUTE);
             if (filled > 0) {
+                moved = true;
+                seen = buffer.copyWithAmount(1);
                 buffer.shrink(filled);
                 if (buffer.isEmpty()) buffer = FluidStack.EMPTY;
             }

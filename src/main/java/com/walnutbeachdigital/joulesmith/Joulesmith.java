@@ -38,6 +38,7 @@ public class Joulesmith {
         JSRecipes.SERIALIZERS.register(modEventBus);
         modEventBus.addListener(JSCapabilities::register);
         modEventBus.addListener(com.walnutbeachdigital.joulesmith.network.TerminalPayloads::register);
+        modEventBus.addListener(com.walnutbeachdigital.joulesmith.transport.item.ItemTransits::register);
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.server.ServerStoppedEvent e) ->
                 com.walnutbeachdigital.joulesmith.energy.wireless.WirelessEnergyBlockEntity.clear());
         com.walnutbeachdigital.joulesmith.registry.JSSounds.SOUNDS.register(modEventBus);

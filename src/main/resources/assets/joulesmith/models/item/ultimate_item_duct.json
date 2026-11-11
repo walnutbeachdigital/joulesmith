@@ -4,20 +4,98 @@
     "particle": "joulesmith:block/ultimate_item_duct",
     "pipe": "joulesmith:block/ultimate_item_duct"
   },
+  "render_type": "minecraft:translucent",
   "elements": [
     {
       "from": [
         0,
+        6,
+        6
+      ],
+      "to": [
+        16,
+        10,
+        10
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            12,
+            16,
+            16
+          ],
+          "texture": "#pipe"
+        },
+        "south": {
+          "uv": [
+            0,
+            12,
+            16,
+            16
+          ],
+          "texture": "#pipe"
+        },
+        "up": {
+          "uv": [
+            0,
+            12,
+            16,
+            16
+          ],
+          "texture": "#pipe"
+        },
+        "down": {
+          "uv": [
+            0,
+            12,
+            16,
+            16
+          ],
+          "texture": "#pipe"
+        }
+      }
+    },
+    {
+      "from": [
+        5,
         5,
         5
       ],
       "to": [
-        16,
+        11,
         11,
         11
       ],
       "faces": {
-        "east": {
+        "down": {
+          "uv": [
+            0,
+            6,
+            6,
+            12
+          ],
+          "texture": "#pipe"
+        },
+        "up": {
+          "uv": [
+            0,
+            6,
+            6,
+            12
+          ],
+          "texture": "#pipe"
+        },
+        "north": {
+          "uv": [
+            0,
+            6,
+            6,
+            12
+          ],
+          "texture": "#pipe"
+        },
+        "south": {
           "uv": [
             0,
             6,
@@ -35,39 +113,12 @@
           ],
           "texture": "#pipe"
         },
-        "north": {
+        "east": {
           "uv": [
             0,
-            0,
-            16,
-            6
-          ],
-          "texture": "#pipe"
-        },
-        "south": {
-          "uv": [
-            0,
-            0,
-            16,
-            6
-          ],
-          "texture": "#pipe"
-        },
-        "up": {
-          "uv": [
-            0,
-            0,
-            16,
-            6
-          ],
-          "texture": "#pipe"
-        },
-        "down": {
-          "uv": [
-            0,
-            0,
-            16,
-            6
+            6,
+            6,
+            12
           ],
           "texture": "#pipe"
         }
@@ -82,9 +133,9 @@
         0
       ],
       "scale": [
-        0.8,
-        0.8,
-        0.8
+        0.9,
+        0.9,
+        0.9
       ]
     }
   }

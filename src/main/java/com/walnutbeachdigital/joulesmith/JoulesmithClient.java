@@ -34,6 +34,8 @@ public class JoulesmithClient {
         modEventBus.addListener(JoulesmithClient::renderers);
         modEventBus.addListener(JoulesmithClient::fluids);
         modEventBus.addListener(JoulesmithClient::setup);
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(com.walnutbeachdigital.joulesmith.client.ItemTransitRenderer::onRender);
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(com.walnutbeachdigital.joulesmith.client.ItemTransitRenderer::onTick);
         // the Wireless Transmitter's and Receiver's lamp shows its channel colour
         modEventBus.addListener((net.neoforged.neoforge.client.event.RegisterColorHandlersEvent.Block e) -> e.register(
                 (state, level, pos, tint) -> tint == 0 ? state.getValue(com.walnutbeachdigital.joulesmith.energy.wireless.WirelessEnergyBlock.CHANNEL).getTextureDiffuseColor() : -1,
@@ -66,6 +68,7 @@ public class JoulesmithClient {
 
     private static void renderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(JSBlockEntities.FLUID_TANK.get(), FluidTankRenderer::new);
+        event.registerBlockEntityRenderer(JSBlockEntities.FLUID_PIPE.get(), com.walnutbeachdigital.joulesmith.client.FluidPipeRenderer::new);
         event.registerBlockEntityRenderer(JSBlockEntities.BULK_BIN.get(), BinRenderer::new);
     }
 

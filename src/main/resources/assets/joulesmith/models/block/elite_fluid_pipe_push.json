@@ -1,6 +1,131 @@
 {
-  "parent": "joulesmith:block/pipe_push",
+  "parent": "minecraft:block/block",
   "textures": {
-    "pipe": "joulesmith:block/elite_fluid_pipe"
-  }
+    "particle": "joulesmith:block/elite_fluid_pipe",
+    "pipe": "joulesmith:block/elite_fluid_pipe",
+    "attach": "joulesmith:block/pipe_attachment"
+  },
+  "render_type": "minecraft:translucent",
+  "elements": [
+    {
+      "from": [
+        6,
+        6,
+        2
+      ],
+      "to": [
+        10,
+        10,
+        5
+      ],
+      "faces": {
+        "east": {
+          "uv": [
+            0,
+            12,
+            3,
+            16
+          ],
+          "texture": "#pipe"
+        },
+        "west": {
+          "uv": [
+            0,
+            12,
+            3,
+            16
+          ],
+          "texture": "#pipe"
+        },
+        "up": {
+          "uv": [
+            0,
+            12,
+            3,
+            16
+          ],
+          "texture": "#pipe",
+          "rotation": 90
+        },
+        "down": {
+          "uv": [
+            0,
+            12,
+            3,
+            16
+          ],
+          "texture": "#pipe",
+          "rotation": 90
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        4,
+        0
+      ],
+      "to": [
+        12,
+        12,
+        2
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            8,
+            8
+          ],
+          "texture": "#attach"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            8,
+            8
+          ],
+          "texture": "#attach"
+        },
+        "up": {
+          "uv": [
+            0,
+            8,
+            8,
+            10
+          ],
+          "texture": "#attach"
+        },
+        "down": {
+          "uv": [
+            0,
+            8,
+            8,
+            10
+          ],
+          "texture": "#attach"
+        },
+        "east": {
+          "uv": [
+            0,
+            8,
+            2,
+            16
+          ],
+          "texture": "#attach"
+        },
+        "west": {
+          "uv": [
+            0,
+            8,
+            2,
+            16
+          ],
+          "texture": "#attach"
+        }
+      }
+    }
+  ]
 }

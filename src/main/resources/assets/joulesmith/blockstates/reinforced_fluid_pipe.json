@@ -1,16 +1,29 @@
 {
   "multipart": [
     {
+      "when": {
+        "node": "true"
+      },
       "apply": {
-        "model": "joulesmith:block/reinforced_fluid_pipe_core"
+        "model": "joulesmith:block/reinforced_fluid_pipe_node"
       }
     },
     {
       "when": {
+        "node": "true",
         "north": "pipe"
       },
       "apply": {
         "model": "joulesmith:block/reinforced_fluid_pipe_arm"
+      }
+    },
+    {
+      "when": {
+        "node": "false",
+        "north": "pipe"
+      },
+      "apply": {
+        "model": "joulesmith:block/reinforced_fluid_pipe_half"
       }
     },
     {
@@ -31,10 +44,21 @@
     },
     {
       "when": {
+        "node": "true",
         "east": "pipe"
       },
       "apply": {
         "model": "joulesmith:block/reinforced_fluid_pipe_arm",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "node": "false",
+        "east": "pipe"
+      },
+      "apply": {
+        "model": "joulesmith:block/reinforced_fluid_pipe_half",
         "y": 90
       }
     },
@@ -58,10 +82,21 @@
     },
     {
       "when": {
+        "node": "true",
         "south": "pipe"
       },
       "apply": {
         "model": "joulesmith:block/reinforced_fluid_pipe_arm",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "node": "false",
+        "south": "pipe"
+      },
+      "apply": {
+        "model": "joulesmith:block/reinforced_fluid_pipe_half",
         "y": 180
       }
     },
@@ -85,10 +120,21 @@
     },
     {
       "when": {
+        "node": "true",
         "west": "pipe"
       },
       "apply": {
         "model": "joulesmith:block/reinforced_fluid_pipe_arm",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "node": "false",
+        "west": "pipe"
+      },
+      "apply": {
+        "model": "joulesmith:block/reinforced_fluid_pipe_half",
         "y": 270
       }
     },
@@ -112,10 +158,21 @@
     },
     {
       "when": {
+        "node": "true",
         "up": "pipe"
       },
       "apply": {
         "model": "joulesmith:block/reinforced_fluid_pipe_arm",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "node": "false",
+        "up": "pipe"
+      },
+      "apply": {
+        "model": "joulesmith:block/reinforced_fluid_pipe_half",
         "x": 270
       }
     },
@@ -139,10 +196,21 @@
     },
     {
       "when": {
+        "node": "true",
         "down": "pipe"
       },
       "apply": {
         "model": "joulesmith:block/reinforced_fluid_pipe_arm",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "node": "false",
+        "down": "pipe"
+      },
+      "apply": {
+        "model": "joulesmith:block/reinforced_fluid_pipe_half",
         "x": 90
       }
     },

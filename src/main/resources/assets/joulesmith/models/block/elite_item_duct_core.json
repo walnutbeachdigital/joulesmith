@@ -1,6 +1,0 @@
-{
-  "parent": "joulesmith:block/pipe_core",
-  "textures": {
-    "pipe": "joulesmith:block/elite_item_duct"
-  }
-}

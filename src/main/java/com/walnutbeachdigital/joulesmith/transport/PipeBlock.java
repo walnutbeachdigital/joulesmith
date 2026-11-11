@@ -36,25 +36,6 @@ public abstract class PipeBlock extends BaseEntityBlock {
         }
     }
 
-    private static final VoxelShape CORE = box(5, 5, 5, 11, 11, 11);
-    private static final Map<Direction, VoxelShape> ARMS = new EnumMap<>(Direction.class);
-    private static final Map<Direction, VoxelShape> PLATES = new EnumMap<>(Direction.class);
-
-    static {
-        ARMS.put(Direction.NORTH, box(5, 5, 0, 11, 11, 5));
-        ARMS.put(Direction.SOUTH, box(5, 5, 11, 11, 11, 16));
-        ARMS.put(Direction.WEST, box(0, 5, 5, 5, 11, 11));
-        ARMS.put(Direction.EAST, box(11, 5, 5, 16, 11, 11));
-        ARMS.put(Direction.DOWN, box(5, 0, 5, 11, 5, 11));
-        ARMS.put(Direction.UP, box(5, 11, 5, 11, 16, 11));
-        PLATES.put(Direction.NORTH, box(4, 4, 0, 12, 12, 2));
-        PLATES.put(Direction.SOUTH, box(4, 4, 14, 12, 12, 16));
-        PLATES.put(Direction.WEST, box(0, 4, 4, 2, 12, 12));
-        PLATES.put(Direction.EAST, box(14, 4, 4, 16, 12, 12));
-        PLATES.put(Direction.DOWN, box(4, 0, 4, 12, 2, 12));
-        PLATES.put(Direction.UP, box(4, 14, 4, 12, 16, 12));
-    }
-
     protected final int tier;
 
     protected PipeBlock(int tier, Properties properties) {
@@ -62,7 +43,7 @@ public abstract class PipeBlock extends BaseEntityBlock {
         this.tier = tier;
         BlockState state = stateDefinition.any();
         for (EnumProperty<PipeConnection> p : CONNECTION.values()) state = state.setValue(p, PipeConnection.NONE);
-        registerDefaultState(state);
+        registerDefaultState(state.setValue(PipeShapes.NODE, true));
     }
 
     public int tier() {
@@ -78,6 +59,7 @@ public abstract class PipeBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         CONNECTION.values().forEach(builder::add);
+        builder.add(PipeShapes.NODE);
     }
 
     @Override
@@ -85,34 +67,25 @@ public abstract class PipeBlock extends BaseEntityBlock {
         return RenderShape.MODEL;
     }
 
-    /**
-     * Shapes by what each side shows (nothing, an arm, or an arm with an attachment plate): 729 at most,
-     * built once and shared by every pipe. Joining shapes is slow, and pipes have tens of thousands of
-     * block states, so building one per state made the game take minutes to start.
-     */
-    private static final VoxelShape[] SHAPES = new VoxelShape[729];
-
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        int key = 0;
+        int[] sides = new int[6];
         for (Direction dir : Direction.values()) {
             PipeConnection conn = state.getValue(CONNECTION.get(dir));
-            int side = conn == PipeConnection.NONE ? 0 : conn == PipeConnection.PUSH || conn == PipeConnection.PULL ? 2 : 1;
-            key = key * 3 + side;
+            sides[dir.ordinal()] = conn == PipeConnection.NONE ? 0 : conn == PipeConnection.PUSH || conn == PipeConnection.PULL ? 2 : 1;
         }
-        VoxelShape shape = SHAPES[key];
-        if (shape == null) {
-            shape = CORE;
-            int k = key;
-            Direction[] dirs = Direction.values();
-            for (int i = dirs.length - 1; i >= 0; i--, k /= 3) {
-                int side = k % 3;
-                if (side >= 1) shape = Shapes.or(shape, ARMS.get(dirs[i]));
-                if (side == 2) shape = Shapes.or(shape, PLATES.get(dirs[i]));
-            }
-            SHAPES[key] = shape = shape.optimize();
+        return PipeShapes.shape(sides, state.getValue(PipeShapes.NODE));
+    }
+
+    /** Sets the nub from the sides: hidden only in the middle of a straight run. */
+    public static BlockState withNode(BlockState state) {
+        boolean[] any = new boolean[6], link = new boolean[6];
+        for (Direction dir : Direction.values()) {
+            PipeConnection conn = state.getValue(CONNECTION.get(dir));
+            any[dir.get3DDataValue()] = conn != PipeConnection.NONE;
+            link[dir.get3DDataValue()] = conn == PipeConnection.PIPE;
         }
-        return shape;
+        return state.setValue(PipeShapes.NODE, PipeShapes.node(any, link));
     }
 
     // ------------------------------------------------------------------ connections
@@ -137,7 +110,7 @@ public abstract class PipeBlock extends BaseEntityBlock {
         for (Direction dir : Direction.values()) {
             state = state.setValue(CONNECTION.get(dir), connectionTo(level, pos, dir));
         }
-        return state;
+        return withNode(state);
     }
 
     /** Redraws every side, e.g. after a wrench change. */
@@ -157,7 +130,7 @@ public abstract class PipeBlock extends BaseEntityBlock {
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof PipeBlockEntity pipe) {
             pipe.invalidateNetwork();
         }
-        return state.setValue(CONNECTION.get(dir), connectionTo(level, pos, dir));
+        return withNode(state.setValue(CONNECTION.get(dir), connectionTo(level, pos, dir)));
     }
 
     @Override

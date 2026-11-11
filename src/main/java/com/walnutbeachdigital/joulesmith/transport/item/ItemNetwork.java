@@ -62,11 +62,11 @@ public final class ItemNetwork extends PipeNetwork {
         for (int slot = 0; slot < from.getSlots(); slot++) {
             ItemStack offered = from.extractItem(slot, amount, true);
             if (offered.isEmpty() || !duct.passes(source.dir(), offered)) continue;
-            ItemStack left = send(targets, offered, true);
+            ItemStack left = send(targets, offered, true, null, null);
             int fits = offered.getCount() - left.getCount();
             if (fits <= 0) continue;
             ItemStack taken = from.extractItem(slot, fits, false);
-            ItemStack rest = send(targets, taken, false);
+            ItemStack rest = send(targets, taken, false, source.pipe(), source.dir());
             if (!rest.isEmpty()) rest = ItemHandlerHelper.insertItem(from, rest, false);   // put back what did not fit
             if (!rest.isEmpty()) Block.popResource(level, source.pipe(), rest);
             nextTarget.merge(source, 1, Integer::sum);
@@ -95,16 +95,34 @@ public final class ItemNetwork extends PipeNetwork {
     }
 
     /** Offers {@code stack} to each target in turn; returns what none of them could take. */
-    private ItemStack send(List<Endpoint> targets, ItemStack stack, boolean simulate) {
+    private ItemStack send(List<Endpoint> targets, ItemStack stack, boolean simulate, BlockPos fromPipe, Direction fromSide) {
         ItemStack left = stack.copy();
         for (Endpoint target : targets) {
             if (left.isEmpty()) break;
             ItemDuctBlockEntity duct = duct(target.pipe());
             if (duct != null && !duct.passes(target.dir(), left)) continue;
             IItemHandler to = level.getCapability(Capabilities.ItemHandler.BLOCK, target.target(), target.face());
-            if (to != null) left = ItemHandlerHelper.insertItem(to, left, simulate);
+            if (to == null) continue;
+            int before = left.getCount();
+            ItemStack moving = left.copy();
+            left = ItemHandlerHelper.insertItem(to, left, simulate);
+            if (!simulate && left.getCount() < before && fromPipe != null) show(moving, fromPipe, fromSide, target);
         }
         return left;
+    }
+
+    /** Sends the trip just made to nearby players, so they see the item slide along the ducts. */
+    private void show(ItemStack stack, BlockPos fromPipe, Direction fromSide, Endpoint target) {
+        if (!(level instanceof net.minecraft.server.level.ServerLevel server)) return;
+        List<BlockPos> pipes = path(fromPipe, target.pipe());
+        if (pipes.isEmpty() || pipes.size() > ItemTransits.MAX_POINTS - 2) return;
+        List<net.minecraft.world.phys.Vec3> points = new ArrayList<>();
+        net.minecraft.world.phys.Vec3 first = net.minecraft.world.phys.Vec3.atCenterOf(fromPipe);
+        if (fromSide != null) points.add(first.add(fromSide.getStepX() * 0.5, fromSide.getStepY() * 0.5, fromSide.getStepZ() * 0.5));
+        for (BlockPos p : pipes) points.add(net.minecraft.world.phys.Vec3.atCenterOf(p));
+        Direction out = target.dir();
+        points.add(net.minecraft.world.phys.Vec3.atCenterOf(target.pipe()).add(out.getStepX() * 0.5, out.getStepY() * 0.5, out.getStepZ() * 0.5));
+        ItemTransits.send(server, fromPipe, stack, points);
     }
 
     /** Items pushed into the duct at {@code pipe} from outside (a hopper, another mod's pipe). */
@@ -118,7 +136,7 @@ public final class ItemNetwork extends PipeNetwork {
         int start = Math.floorMod(nextIntake, targets.size());
         List<Endpoint> rotated = new ArrayList<>(targets.subList(start, targets.size()));
         rotated.addAll(targets.subList(0, start));
-        ItemStack left = send(rotated, stack, simulate);
+        ItemStack left = send(rotated, stack, simulate, pipe, side);
         if (!simulate && left.getCount() < stack.getCount()) nextIntake++;
         return left;
     }

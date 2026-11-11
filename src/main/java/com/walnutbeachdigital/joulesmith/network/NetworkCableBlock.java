@@ -23,18 +23,11 @@ public class NetworkCableBlock extends Block implements NetworkPart {
     public static final MapCodec<NetworkCableBlock> CODEC = simpleCodec(NetworkCableBlock::new);
     public static final Map<Direction, BooleanProperty> CONNECTED = PipeBlock.PROPERTY_BY_DIRECTION;
     /** Shapes by which sides connect, built once: one per block state was slow to build at startup. */
-    private static final VoxelShape[] SHAPES = new VoxelShape[64];
-    private static final VoxelShape CORE = box(5, 5, 5, 11, 11, 11);
-    private static final Map<Direction, VoxelShape> ARMS = Map.of(
-            Direction.NORTH, box(6, 6, 0, 10, 10, 6), Direction.SOUTH, box(6, 6, 10, 10, 10, 16),
-            Direction.WEST, box(0, 6, 6, 6, 10, 10), Direction.EAST, box(10, 6, 6, 16, 10, 10),
-            Direction.DOWN, box(6, 0, 6, 10, 6, 10), Direction.UP, box(6, 10, 6, 10, 16, 10));
-
     public NetworkCableBlock(Properties properties) {
         super(properties);
         BlockState state = stateDefinition.any();
         for (BooleanProperty p : CONNECTED.values()) state = state.setValue(p, false);
-        registerDefaultState(state);
+        registerDefaultState(state.setValue(com.walnutbeachdigital.joulesmith.transport.PipeShapes.NODE, true));
     }
 
     @Override
@@ -45,17 +38,25 @@ public class NetworkCableBlock extends Block implements NetworkPart {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         CONNECTED.values().forEach(builder::add);
+        builder.add(com.walnutbeachdigital.joulesmith.transport.PipeShapes.NODE);
     }
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        int key = 0;
-        for (Direction dir : Direction.values()) key = key * 2 + (state.getValue(CONNECTED.get(dir)) ? 1 : 0);
-        VoxelShape cached = SHAPES[key];
-        if (cached != null) return cached;
-        VoxelShape shape = CORE;
-        for (Direction dir : Direction.values()) if (state.getValue(CONNECTED.get(dir))) shape = Shapes.or(shape, ARMS.get(dir));
-        return SHAPES[key] = shape.optimize();
+        int[] sides = new int[6];
+        for (Direction dir : Direction.values()) sides[dir.ordinal()] = state.getValue(CONNECTED.get(dir)) ? 1 : 0;
+        return com.walnutbeachdigital.joulesmith.transport.PipeShapes.shape(sides, state.getValue(com.walnutbeachdigital.joulesmith.transport.PipeShapes.NODE));
+    }
+
+    /** Sets the nub: hidden only in the middle of a straight run of cable. */
+    private static BlockState withNode(BlockState state, LevelAccessor level, BlockPos pos) {
+        boolean[] any = new boolean[6], link = new boolean[6];
+        for (Direction dir : Direction.values()) {
+            any[dir.get3DDataValue()] = state.getValue(CONNECTED.get(dir));
+            link[dir.get3DDataValue()] = level.getBlockState(pos.relative(dir)).getBlock() instanceof NetworkCableBlock;
+        }
+        return state.setValue(com.walnutbeachdigital.joulesmith.transport.PipeShapes.NODE,
+                com.walnutbeachdigital.joulesmith.transport.PipeShapes.node(any, link));
     }
 
     @Override
@@ -65,11 +66,11 @@ public class NetworkCableBlock extends Block implements NetworkPart {
             state = state.setValue(CONNECTED.get(dir),
                     context.getLevel().getBlockState(context.getClickedPos().relative(dir)).getBlock() instanceof NetworkPart);
         }
-        return state;
+        return withNode(state, context.getLevel(), context.getClickedPos());
     }
 
     @Override
     protected BlockState updateShape(BlockState state, Direction dir, BlockState neighbor, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-        return state.setValue(CONNECTED.get(dir), neighbor.getBlock() instanceof NetworkPart);
+        return withNode(state.setValue(CONNECTED.get(dir), neighbor.getBlock() instanceof NetworkPart), level, pos);
     }
 }

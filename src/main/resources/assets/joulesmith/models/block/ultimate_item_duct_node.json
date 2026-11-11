@@ -1,9 +1,10 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "particle": "joulesmith:block/network_cable",
-    "cable": "joulesmith:block/network_cable"
+    "particle": "joulesmith:block/ultimate_item_duct",
+    "pipe": "joulesmith:block/ultimate_item_duct"
   },
+  "render_type": "minecraft:translucent",
   "elements": [
     {
       "from": [
@@ -24,7 +25,7 @@
             6,
             12
           ],
-          "texture": "#cable"
+          "texture": "#pipe"
         },
         "up": {
           "uv": [
@@ -33,7 +34,7 @@
             6,
             12
           ],
-          "texture": "#cable"
+          "texture": "#pipe"
         },
         "north": {
           "uv": [
@@ -42,7 +43,7 @@
             6,
             12
           ],
-          "texture": "#cable"
+          "texture": "#pipe"
         },
         "south": {
           "uv": [
@@ -51,7 +52,7 @@
             6,
             12
           ],
-          "texture": "#cable"
+          "texture": "#pipe"
         },
         "west": {
           "uv": [
@@ -60,7 +61,7 @@
             6,
             12
           ],
-          "texture": "#cable"
+          "texture": "#pipe"
         },
         "east": {
           "uv": [
@@ -69,7 +70,7 @@
             6,
             12
           ],
-          "texture": "#cable"
+          "texture": "#pipe"
         }
       }
     }

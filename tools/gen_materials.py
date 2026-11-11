@@ -370,21 +370,60 @@ SIDE_ROT = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 2
 CABLES = {"energy_cable": "Energy Cable", "reinforced_energy_cable": "Reinforced Energy Cable",
           "advanced_energy_cable": "Advanced Energy Cable", "elite_energy_cable": "Elite Energy Cable",
           "ultimate_energy_cable": "Ultimate Energy Cable"}
+def conduit_models(cid, plates=False, render=None):
+    """Models for a duct, pipe or cable (tile layout from make_machine_textures.conduit tiles): a 6-wide nub,
+    4-wide arms (rows 12-15 of the tile, running along u), half-block arms that meet in the middle of a
+    straight run, and on ducts and pipes the push and pull plates. Built facing north."""
+    tex = f"{MOD}:block/{cid}"
+    base = {"parent": "minecraft:block/block", "textures": {"particle": tex, "pipe": tex}}
+    if render:
+        base["render_type"] = render
+    def arm(z0, z1):
+        f = {"uv": [0, 12, z1 - z0, 16], "texture": "#pipe"}
+        return {"from": [6, 6, z0], "to": [10, 10, z1],
+                "faces": {"east": f, "west": f, "up": dict(f, rotation=90), "down": dict(f, rotation=90)}}
+    def put(part, elements, extra=None):
+        obj = dict(base, elements=elements)
+        if extra:
+            obj["textures"] = dict(base["textures"], **extra)
+        write(os.path.join(ASSETS, "models", "block", f"{cid}_{part}.json"), obj)
+    put("node", [{"from": [5, 5, 5], "to": [11, 11, 11], "faces": {f: {"uv": [0, 6, 6, 12], "texture": "#pipe"} for f in SIDES}}])
+    put("arm", [arm(0, 5)])
+    put("half", [arm(0, 8)])
+    if plates:
+        put("push", [arm(2, 5), {"from": [4, 4, 0], "to": [12, 12, 2], "faces": attach_faces(0, 2)}], {"attach": ATTACH})
+        put("pull", [arm(3, 5), {"from": [4, 4, 0], "to": [12, 12, 3], "faces": attach_faces(8, 3)}], {"attach": ATTACH})
+    parts = [{"when": {"node": "true"}, "apply": {"model": f"{MOD}:block/{cid}_node"}}]
+    joined = "pipe" if plates else "true"
+    for side, rot in SIDE_ROT.items():
+        parts.append({"when": {"node": "true", side: joined}, "apply": {"model": f"{MOD}:block/{cid}_arm", **rot}})
+        parts.append({"when": {"node": "false", side: joined}, "apply": {"model": f"{MOD}:block/{cid}_half", **rot}})
+        if plates:
+            for look in ("push", "pull"):
+                parts.append({"when": {side: look}, "apply": {"model": f"{MOD}:block/{cid}_{look}", **rot}})
+        else:
+            pass
+    write(os.path.join(ASSETS, "blockstates", f"{cid}.json"), {"multipart": parts})
+    item = dict(base, elements=[
+        {"from": [0, 6, 6], "to": [16, 10, 10], "faces": {f: {"uv": [0, 12, 16, 16], "texture": "#pipe"} for f in ("north", "south", "up", "down")}},
+        {"from": [5, 5, 5], "to": [11, 11, 11], "faces": {f: {"uv": [0, 6, 6, 12], "texture": "#pipe"} for f in SIDES}}],
+        display={"gui": {"rotation": [30, 45, 0], "scale": [0.9, 0.9, 0.9]}})
+    write(os.path.join(ASSETS, "models", "item", f"{cid}.json"), item)
+
+
+def attach_faces(u0, depth):
+    """The plate where a pipe meets a block: front and back from the attachment sheet, thin edges below."""
+    return {"north": {"uv": [u0, 0, u0 + 8, 8], "texture": "#attach"},
+            "south": {"uv": [u0, 0, u0 + 8, 8], "texture": "#attach"},
+            "up": {"uv": [u0, 8, u0 + 8, 8 + depth], "texture": "#attach"},
+            "down": {"uv": [u0, 8, u0 + 8, 8 + depth], "texture": "#attach"},
+            "east": {"uv": [u0, 8, u0 + depth, 16], "texture": "#attach"},
+            "west": {"uv": [u0, 8, u0 + depth, 16], "texture": "#attach"}}
+
+
+ATTACH = f"{MOD}:block/pipe_attachment"
 for cid in CABLES:
-    # drawn like the pipes (6 wide, the pipe tile layout), using the pipe parent models defined below
-    cable_tex = f"{MOD}:block/{cid}"
-    for part in ("core", "arm"):
-        write(os.path.join(ASSETS, "models", "block", f"{cid}_{part}.json"),
-              {"parent": f"{MOD}:block/pipe_{part}", "textures": {"pipe": cable_tex}})
-    write(os.path.join(ASSETS, "blockstates", f"{cid}.json"), {"multipart":
-        [{"apply": {"model": f"{MOD}:block/{cid}_core"}}] +
-        [{"when": {side: "true"}, "apply": {"model": f"{MOD}:block/{cid}_arm", **rot}} for side, rot in SIDE_ROT.items()]})
-    write(os.path.join(ASSETS, "models", "item", f"{cid}.json"), {
-        "parent": "minecraft:block/block", "textures": {"particle": cable_tex, "pipe": cable_tex},
-        "elements": [{"from": [0, 5, 5], "to": [16, 11, 11], "faces": {
-            "east": {"uv": [0, 6, 6, 12], "texture": "#pipe"}, "west": {"uv": [0, 6, 6, 12], "texture": "#pipe"},
-            **{f: {"uv": [0, 0, 16, 6], "texture": "#pipe"} for f in ("north", "south", "up", "down")}}}],
-        "display": {"gui": {"rotation": [30, 45, 0], "scale": [0.8, 0.8, 0.8]}}})
+    conduit_models(cid)
     write(os.path.join(DATA, MOD, "loot_table", "blocks", f"{cid}.json"), {
         "type": "minecraft:block", "random_sequence": f"{MOD}:blocks/{cid}",
         "pools": [{"rolls": 1, "bonus_rolls": 0, "entries": [{"type": "minecraft:item", "name": f"{MOD}:{cid}"}],
@@ -396,36 +435,6 @@ write(os.path.join(DATA, "minecraft", "tags", "block", "mineable/pickaxe.json"),
 # ---- item ducts and fluid pipes: shared parent models (built facing north), one texture per pipe
 def model(name, obj):
     write(os.path.join(ASSETS, "models", "block", f"{name}.json"), obj)
-
-def face(uv, rotation=0):
-    f = {"uv": uv, "texture": "#pipe"}
-    if rotation:
-        f["rotation"] = rotation
-    return f
-
-def attach_faces(u0, depth):
-    """The plate where a pipe meets a block: front and back from the attachment sheet, thin edges below."""
-    return {"north": {"uv": [u0, 0, u0 + 8, 8], "texture": "#attach"},
-            "south": {"uv": [u0, 0, u0 + 8, 8], "texture": "#attach"},
-            "up": {"uv": [u0, 8, u0 + 8, 8 + depth], "texture": "#attach"},
-            "down": {"uv": [u0, 8, u0 + 8, 8 + depth], "texture": "#attach"},
-            "east": {"uv": [u0, 8, u0 + depth, 16], "texture": "#attach"},
-            "west": {"uv": [u0, 8, u0 + depth, 16], "texture": "#attach"}}
-
-def arm(z0, z1):
-    length = z1 - z0
-    return {"from": [5, 5, z0], "to": [11, 11, z1], "faces": {
-        "east": face([0, 0, length, 6]), "west": face([0, 0, length, 6]),
-        "up": face([0, 0, length, 6], 90), "down": face([0, 0, length, 6], 90)}}
-
-ATTACH = f"{MOD}:block/pipe_attachment"
-model("pipe_core", {"parent": "minecraft:block/block", "textures": {"particle": "#pipe"},
-      "elements": [{"from": [5, 5, 5], "to": [11, 11, 11], "faces": {f: face([0, 6, 6, 12]) for f in SIDES}}]})
-model("pipe_arm", {"parent": "minecraft:block/block", "textures": {"particle": "#pipe"}, "elements": [arm(0, 5)]})
-model("pipe_push", {"parent": "minecraft:block/block", "textures": {"particle": "#pipe", "attach": ATTACH},
-      "elements": [arm(2, 5), {"from": [4, 4, 0], "to": [12, 12, 2], "faces": attach_faces(0, 2)}]})
-model("pipe_pull", {"parent": "minecraft:block/block", "textures": {"particle": "#pipe", "attach": ATTACH},
-      "elements": [arm(3, 5), {"from": [4, 4, 0], "to": [12, 12, 3], "faces": attach_faces(8, 3)}]})
 
 PIPES = {"item_duct": "Item Duct", "reinforced_item_duct": "Reinforced Item Duct", "advanced_item_duct": "Advanced Item Duct",
          "fluid_pipe": "Fluid Pipe", "reinforced_fluid_pipe": "Reinforced Fluid Pipe", "advanced_fluid_pipe": "Advanced Fluid Pipe",
@@ -444,22 +453,7 @@ def simple_loot(bid, functions=None):
                    "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
 
 for pid in PIPES:
-    tex = f"{MOD}:block/{pid}"
-    for part in ("core", "arm", "push", "pull"):
-        model(f"{pid}_{part}", {"parent": f"{MOD}:block/pipe_{part}", "textures": {"pipe": tex}})
-    parts = [{"apply": {"model": f"{MOD}:block/{pid}_core"}}]
-    for side, rot in SIDE_ROT.items():
-        for look in ("pipe", "push", "pull"):
-            part = "arm" if look == "pipe" else look
-            parts.append({"when": {side: look}, "apply": {"model": f"{MOD}:block/{pid}_{part}", **rot}})
-    write(os.path.join(ASSETS, "blockstates", f"{pid}.json"), {"multipart": parts})
-    write(os.path.join(ASSETS, "models", "item", f"{pid}.json"), {
-        "parent": "minecraft:block/block", "textures": {"particle": tex, "pipe": tex},
-        "elements": [{"from": [0, 5, 5], "to": [16, 11, 11], "faces": {
-            "east": face([0, 6, 6, 12]), "west": face([0, 6, 6, 12]),
-            "north": face([0, 0, 16, 6]), "south": face([0, 0, 16, 6]),
-            "up": face([0, 0, 16, 6]), "down": face([0, 0, 16, 6])}}],
-        "display": {"gui": {"rotation": [30, 45, 0], "scale": [0.8, 0.8, 0.8]}}})
+    conduit_models(pid, plates=True, render="minecraft:translucent")
     simple_loot(pid)
     tags[("minecraft", "block", "mineable/pickaxe")].append(f"{MOD}:{pid}")
 
@@ -1929,25 +1923,7 @@ for bid, name in (("network_core", "Network Core"), ("drive_bay", "Drive Bay"), 
     tag("minecraft", "block", "mineable/pickaxe", f"{MOD}:{bid}")
     lang[f"block.{MOD}.{bid}"] = name
 NC = f"{MOD}:block/network_cable"
-NC = f"{MOD}:block/network_cable"
-# a 6-wide node cube in the middle, 4-wide striped arms (rows 12-15 of the tile)
-def net_arm_faces(length):
-    f = {"uv": [0, 12, length, 16], "texture": "#cable"}
-    return {"east": f, "west": f, "up": dict(f, rotation=90), "down": dict(f, rotation=90)}
-model("network_cable_core", {"parent": "minecraft:block/block", "textures": {"particle": NC, "cable": NC},
-      "elements": [{"from": [5, 5, 5], "to": [11, 11, 11], "faces": {f: {"uv": [0, 6, 6, 12], "texture": "#cable"} for f in SIDES}}]})
-model("network_cable_arm", {"parent": "minecraft:block/block", "textures": {"particle": NC, "cable": NC},
-      "elements": [{"from": [6, 6, 0], "to": [10, 10, 5], "faces": net_arm_faces(5)}]})
-write(os.path.join(ASSETS, "blockstates", "network_cable.json"), {"multipart":
-    [{"apply": {"model": f"{MOD}:block/network_cable_core"}}] +
-    [{"when": {side: "true"}, "apply": {"model": f"{MOD}:block/network_cable_arm", **rot}} for side, rot in SIDE_ROT.items()]})
-write(os.path.join(ASSETS, "models", "item", "network_cable.json"), {"parent": "minecraft:block/block",
-      "textures": {"particle": NC, "cable": NC},
-      "elements": [{"from": [0, 6, 6], "to": [16, 10, 10], "faces": dict(
-          {f: {"uv": [0, 12, 16, 16], "texture": "#cable"} for f in ("north", "south", "up", "down")},
-          east={"uv": [1, 7, 5, 11], "texture": "#cable"}, west={"uv": [1, 7, 5, 11], "texture": "#cable"})},
-          {"from": [5, 5, 5], "to": [11, 11, 11], "faces": {f: {"uv": [0, 6, 6, 12], "texture": "#cable"} for f in SIDES}}],
-      "display": {"gui": {"rotation": [30, 45, 0], "scale": [0.8, 0.8, 0.8]}}})
+conduit_models("network_cable")
 simple_loot("network_cable")
 tag("minecraft", "block", "mineable/pickaxe", f"{MOD}:network_cable")
 lang[f"block.{MOD}.network_cable"] = "Network Cable"

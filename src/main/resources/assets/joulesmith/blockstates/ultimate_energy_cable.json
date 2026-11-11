@@ -1,12 +1,16 @@
 {
   "multipart": [
     {
+      "when": {
+        "node": "true"
+      },
       "apply": {
-        "model": "joulesmith:block/ultimate_energy_cable_core"
+        "model": "joulesmith:block/ultimate_energy_cable_node"
       }
     },
     {
       "when": {
+        "node": "true",
         "north": "true"
       },
       "apply": {
@@ -15,6 +19,16 @@
     },
     {
       "when": {
+        "node": "false",
+        "north": "true"
+      },
+      "apply": {
+        "model": "joulesmith:block/ultimate_energy_cable_half"
+      }
+    },
+    {
+      "when": {
+        "node": "true",
         "east": "true"
       },
       "apply": {
@@ -24,6 +38,17 @@
     },
     {
       "when": {
+        "node": "false",
+        "east": "true"
+      },
+      "apply": {
+        "model": "joulesmith:block/ultimate_energy_cable_half",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "node": "true",
         "south": "true"
       },
       "apply": {
@@ -33,6 +58,17 @@
     },
     {
       "when": {
+        "node": "false",
+        "south": "true"
+      },
+      "apply": {
+        "model": "joulesmith:block/ultimate_energy_cable_half",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "node": "true",
         "west": "true"
       },
       "apply": {
@@ -42,6 +78,17 @@
     },
     {
       "when": {
+        "node": "false",
+        "west": "true"
+      },
+      "apply": {
+        "model": "joulesmith:block/ultimate_energy_cable_half",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "node": "true",
         "up": "true"
       },
       "apply": {
@@ -51,10 +98,31 @@
     },
     {
       "when": {
+        "node": "false",
+        "up": "true"
+      },
+      "apply": {
+        "model": "joulesmith:block/ultimate_energy_cable_half",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "node": "true",
         "down": "true"
       },
       "apply": {
         "model": "joulesmith:block/ultimate_energy_cable_arm",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "node": "false",
+        "down": "true"
+      },
+      "apply": {
+        "model": "joulesmith:block/ultimate_energy_cable_half",
         "x": 90
       }
     }

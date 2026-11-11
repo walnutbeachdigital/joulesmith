@@ -3185,59 +3185,71 @@ def _conduit_node(px, trim, centre, centre_lit, ring=None):
             px[x, 6 + y] = rgba(c)
 
 
+def _nub(px, frame, dot, face="#0c0f0c"):
+    """The 6x6 nub at (0, 6), after the data cable's: a lit frame, a black face and a status dot."""
+    for y in range(6):
+        for x in range(6):
+            if x in (0, 5) or y in (0, 5):
+                c = frame[4] if (x == 0 or y == 0) and not (x == 5 or y == 5) else frame[1]
+                if (x, y) in ((0, 0), (5, 5)):
+                    c = frame[2]
+            else:
+                c = face if (x + y) % 3 else "#151a15"
+            px[x, 6 + y] = rgba(c)
+    px[2, 8], px[3, 8], px[2, 9], px[3, 9] = rgba(dot[2]), rgba(dot[1]), rgba(dot[1]), rgba(dot[0])
+
+
+def _arm(px, rows):
+    """Rows 12-15: the 4-wide run, the same all along so a line of them reads as one length.
+    Each row is a colour, or (colour, alpha) for see-through glass."""
+    for x in range(16):
+        for i, c in enumerate(rows):
+            if isinstance(c, tuple):
+                col, alpha = c
+                r = rgba(col)
+                if x % 8 == 3 and i == 1:
+                    r, alpha = rgba("#ffffff"), alpha + 60          # a glint
+                px[x, 12 + i] = (r[0], r[1], r[2], alpha)
+            else:
+                px[x, 12 + i] = rgba(c)
+
+
 def energy_conduit(trim):
-    """Energy cable, after Thermal's redstone conduits: a light steel casing with a glowing red core showing
-    along it, banded at the joints in the tier colour; the node is red inside a steel and tier frame."""
+    """Energy cable: a glowing red core between tier-coloured rims; tier-framed nubs with a red light."""
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     px = img.load()
-    _conduit_side(px, trim, ["#cdd1d8", REDSTONE[3], REDSTONE[2], "#8e939c"], REDSTONE[4])
-    _conduit_node(px, trim, REDSTONE[2], REDSTONE[4])
+    _arm(px, [trim[4], REDSTONE[3], REDSTONE[2], trim[1]])
+    _nub(px, trim, ["#5a0a08", REDSTONE[2], REDSTONE[4]])
     return img
 
 
 def fluid_conduit(trim):
-    """Fluid pipe, after Thermal's fluiducts: a tier-coloured metal frame round a long glass window of
-    water blue; the node is a blue dot in the frame."""
+    """Fluid pipe: tier-coloured rims round clear glass, so the fluid inside shows (client/FluidPipeRenderer)."""
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     px = img.load()
-    _conduit_side(px, trim, [trim[4], WATER[3], WATER[1], trim[2]], WATER[4])
-    _conduit_node(px, trim, WATER[2], WATER[4])
+    _arm(px, [trim[4], ("#dff4ff", 40), ("#dff4ff", 40), trim[1]])
+    _nub(px, trim, [WATER[0], WATER[2], WATER[4]])
     return img
 
 
 def item_conduit(trim):
-    """Item duct: a black frame with amber glass panes, a dark mullion every half block."""
+    """Item duct: tier-coloured rims round smoky glass, so the items sliding through show."""
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     px = img.load()
-    _conduit_side(px, trim, [AMBER[4], AMBER[3], AMBER[2], AMBER[1]], "#fff6c8")
-    for y in range(1, 5):
-        px[8, y] = rgba(FRAME[1])
-    _conduit_node(px, trim, AMBER[3], AMBER[4])
+    _arm(px, [trim[4], ("#2a2d34", 120), ("#2a2d34", 120), trim[1]])
+    _nub(px, trim, ["#5a3a08", AMBER[3], AMBER[4]])
     return img
 
 
+GREY = ["#1e2024", "#3a3d44", "#5c606a", "#8a8f99", "#b8bdc6"]
+
+
 def data_conduit():
-    """Network cable, after the classic data cables: a green-framed cube with a black face and a white status
-    dot at each node, and a thinner striped green and black cable between."""
+    """Network cable: grey and black stripes, grey-framed nubs with a white status dot."""
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     px = img.load()
-    _conduit_side(px, NETG + [NETG[4]], [NETG[3], "#101410", "#101410", NETG[1]], None)
-    for y in range(6):                       # the node: green frame, black face, white dot
-        for x in range(6):
-            if x in (0, 5) or y in (0, 5):
-                c = NETG[4] if (x == 0 or y == 0) and not (x == 5 or y == 5) else NETG[1]
-                if (x, y) in ((0, 0), (5, 5)):
-                    c = NETG[2]
-            else:
-                c = "#0c0f0c" if (x + y) % 3 else "#141a14"
-            px[x, 6 + y] = rgba(c)
-    px[2, 8], px[3, 8], px[2, 9], px[3, 9] = rgba("#f4f6f4"), rgba("#b8c0b8"), rgba("#b8c0b8"), rgba("#4a524a")
-    stripes = [NETG[4], "#0e110e", NETG[2], "#0e110e"]
-    for x in range(16):                      # the arm: green and black stripes along it
-        for i, c in enumerate(stripes):
-            if c != "#0e110e" and (x + i) % 6 == 0:
-                c = NETG[3] if i == 0 else NETG[1]
-            px[x, 12 + i] = rgba(c)
+    _arm(px, [GREY[4], "#0e1012", GREY[2], "#0e1012"])
+    _nub(px, GREY, ["#4a524a", "#b8c0b8", "#f4f6f4"])
     return img
 
 
