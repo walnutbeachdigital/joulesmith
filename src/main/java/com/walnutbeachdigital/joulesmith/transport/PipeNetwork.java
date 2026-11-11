@@ -8,16 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.walnutbeachdigital.joulesmith.transport.conduit.BundleBlockEntity;
-import com.walnutbeachdigital.joulesmith.transport.conduit.ConduitType;
-import com.walnutbeachdigital.joulesmith.transport.conduit.PipeConduit;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Every item duct (or every fluid pipe) joined together, and the blocks they touch. Item and fluid networks build on
+ * Every pipe of one family joined together, and the blocks they touch. Item and fluid networks build on
  * this; it is rebuilt whenever a pipe, a neighbour or a wrench setting changes.
  */
 public abstract class PipeNetwork {
@@ -33,7 +30,6 @@ public abstract class PipeNetwork {
     protected final List<Endpoint> endpoints = new ArrayList<>();
     private final Map<BlockPos, Map<BlockPos, Integer>> distances = new HashMap<>();
     protected Level level;
-    protected ConduitType type;
     private boolean valid = true;
     private long lastTick = -1;
 
@@ -41,57 +37,51 @@ public abstract class PipeNetwork {
         return valid;
     }
 
-    protected PipeConduit pipe(BlockPos pos) {
-        return BundleBlockEntity.conduit(level, pos, type) instanceof PipeConduit p ? p : null;
-    }
-
     /** Finds every pipe joined to {@code start} and the blocks they touch. */
-    protected void build(Level level, BlockPos start, ConduitType type) {
+    protected void build(Level level, BlockPos start) {
         this.level = level;
-        this.type = type;
         ArrayDeque<BlockPos> queue = new ArrayDeque<>();
-        queue.add(start.immutable());
-        pipes.add(start.immutable());
+        queue.add(start);
+        pipes.add(start);
         while (!queue.isEmpty() && pipes.size() < MAX_PIPES) {
             BlockPos pos = queue.poll();
-            PipeConduit pipe = pipe(pos);
-            if (pipe == null) continue;
+            BlockState state = level.getBlockState(pos);
+            if (!(state.getBlock() instanceof PipeBlock block) || !(level.getBlockEntity(pos) instanceof PipeBlockEntity pipe)) continue;
             pipe.network = this;
             joined(pipe);
             for (Direction dir : Direction.values()) {
-                PipeConnection conn = pipe.connection(dir);
+                PipeConnection conn = state.getValue(PipeBlock.CONNECTION.get(dir));
                 if (conn == PipeConnection.PIPE) {
                     BlockPos other = pos.relative(dir);
                     if (level.isLoaded(other) && pipes.add(other)) queue.add(other);
                 } else if (conn != PipeConnection.NONE) {
-                    endpoints.add(new Endpoint(pos, dir, pipe.mode(dir), pipe.tier()));
+                    endpoints.add(new Endpoint(pos, dir, pipe.mode(dir), block.tier()));
                 }
             }
         }
     }
 
     /** Called for each pipe as it joins, so a network can collect what the pipe was holding. */
-    protected void joined(PipeConduit pipe) {
+    protected void joined(PipeBlockEntity pipe) {
     }
 
     /** Called just before the network breaks up, while every pipe still points at it. */
     protected void leaving() {
     }
 
-    public void invalidate() {
+    void invalidate() {
         if (!valid) return;
         leaving();
         valid = false;
         for (BlockPos pos : pipes) {
-            if (level != null && level.isLoaded(pos)) {
-                PipeConduit pipe = pipe(pos);
-                if (pipe != null && pipe.network == this) pipe.network = null;
+            if (level != null && level.isLoaded(pos) && level.getBlockEntity(pos) instanceof PipeBlockEntity pipe && pipe.network == this) {
+                pipe.network = null;
             }
         }
     }
 
     /** Runs {@link #update} once per game tick, however many pipes ask. */
-    public void tick(Level level) {
+    void tick(Level level) {
         long now = level.getGameTime();
         if (now == lastTick || !valid) return;
         lastTick = now;
@@ -109,10 +99,10 @@ public abstract class PipeNetwork {
             queue.add(start);
             while (!queue.isEmpty()) {
                 BlockPos pos = queue.poll();
-                PipeConduit pipe = pipe(pos);
-                if (pipe == null) continue;
+                BlockState state = level.getBlockState(pos);
+                if (!(state.getBlock() instanceof PipeBlock)) continue;
                 for (Direction dir : Direction.values()) {
-                    if (pipe.connection(dir) != PipeConnection.PIPE) continue;
+                    if (state.getValue(PipeBlock.CONNECTION.get(dir)) != PipeConnection.PIPE) continue;
                     BlockPos other = pos.relative(dir);
                     if (pipes.contains(other) && !dist.containsKey(other)) {
                         dist.put(other, dist.get(pos) + 1);

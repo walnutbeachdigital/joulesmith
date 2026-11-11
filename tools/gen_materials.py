@@ -370,12 +370,27 @@ SIDE_ROT = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 2
 CABLES = {"energy_cable": "Energy Cable", "reinforced_energy_cable": "Reinforced Energy Cable",
           "advanced_energy_cable": "Advanced Energy Cable", "elite_energy_cable": "Elite Energy Cable",
           "ultimate_energy_cable": "Ultimate Energy Cable"}
-# (placed as conduit bundles, below; each cable keeps an item model of a straight length)
 for cid in CABLES:
     cable_tex = f"{MOD}:block/{cid}"
+    write(os.path.join(ASSETS, "models", "block", f"{cid}_core.json"), {
+        "parent": "minecraft:block/block", "textures": {"particle": cable_tex, "cable": cable_tex},
+        "elements": [{"from": [6, 6, 6], "to": [10, 10, 10],
+                      "faces": {f: {"texture": "#cable"} for f in SIDES}}]})
+    write(os.path.join(ASSETS, "models", "block", f"{cid}_arm.json"), {
+        "parent": "minecraft:block/block", "textures": {"particle": cable_tex, "cable": cable_tex},
+        "elements": [{"from": [6, 6, 0], "to": [10, 10, 6],
+                      "faces": {f: {"texture": "#cable"} for f in ("east", "west", "up", "down", "north")}}]})
+    write(os.path.join(ASSETS, "blockstates", f"{cid}.json"), {"multipart":
+        [{"apply": {"model": f"{MOD}:block/{cid}_core"}}] +
+        [{"when": {side: "true"}, "apply": {"model": f"{MOD}:block/{cid}_arm", **rot}} for side, rot in SIDE_ROT.items()]})
     write(os.path.join(ASSETS, "models", "item", f"{cid}.json"), {
         "parent": "minecraft:block/block", "textures": {"particle": cable_tex, "cable": cable_tex},
         "elements": [{"from": [0, 6, 6], "to": [16, 10, 10], "faces": {f: {"texture": "#cable"} for f in SIDES}}]})
+    write(os.path.join(DATA, MOD, "loot_table", "blocks", f"{cid}.json"), {
+        "type": "minecraft:block", "random_sequence": f"{MOD}:blocks/{cid}",
+        "pools": [{"rolls": 1, "bonus_rolls": 0, "entries": [{"type": "minecraft:item", "name": f"{MOD}:{cid}"}],
+                   "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
+    tags[("minecraft", "block", "mineable/pickaxe")].append(f"{MOD}:{cid}")
 write(os.path.join(DATA, "minecraft", "tags", "block", "mineable/pickaxe.json"),
       {"replace": False, "values": tags[("minecraft", "block", "mineable/pickaxe")]})
 
@@ -404,6 +419,15 @@ def arm(z0, z1):
         "east": face([0, 0, length, 6]), "west": face([0, 0, length, 6]),
         "up": face([0, 0, length, 6], 90), "down": face([0, 0, length, 6], 90)}}
 
+ATTACH = f"{MOD}:block/pipe_attachment"
+model("pipe_core", {"parent": "minecraft:block/block", "textures": {"particle": "#pipe"},
+      "elements": [{"from": [5, 5, 5], "to": [11, 11, 11], "faces": {f: face([0, 6, 6, 12]) for f in SIDES}}]})
+model("pipe_arm", {"parent": "minecraft:block/block", "textures": {"particle": "#pipe"}, "elements": [arm(0, 5)]})
+model("pipe_push", {"parent": "minecraft:block/block", "textures": {"particle": "#pipe", "attach": ATTACH},
+      "elements": [arm(2, 5), {"from": [4, 4, 0], "to": [12, 12, 2], "faces": attach_faces(0, 2)}]})
+model("pipe_pull", {"parent": "minecraft:block/block", "textures": {"particle": "#pipe", "attach": ATTACH},
+      "elements": [arm(3, 5), {"from": [4, 4, 0], "to": [12, 12, 3], "faces": attach_faces(8, 3)}]})
+
 PIPES = {"item_duct": "Item Duct", "reinforced_item_duct": "Reinforced Item Duct", "advanced_item_duct": "Advanced Item Duct",
          "fluid_pipe": "Fluid Pipe", "reinforced_fluid_pipe": "Reinforced Fluid Pipe", "advanced_fluid_pipe": "Advanced Fluid Pipe",
          "elite_item_duct": "Elite Item Duct", "ultimate_item_duct": "Ultimate Item Duct",
@@ -422,6 +446,14 @@ def simple_loot(bid, functions=None):
 
 for pid in PIPES:
     tex = f"{MOD}:block/{pid}"
+    for part in ("core", "arm", "push", "pull"):
+        model(f"{pid}_{part}", {"parent": f"{MOD}:block/pipe_{part}", "textures": {"pipe": tex}})
+    parts = [{"apply": {"model": f"{MOD}:block/{pid}_core"}}]
+    for side, rot in SIDE_ROT.items():
+        for look in ("pipe", "push", "pull"):
+            part = "arm" if look == "pipe" else look
+            parts.append({"when": {side: look}, "apply": {"model": f"{MOD}:block/{pid}_{part}", **rot}})
+    write(os.path.join(ASSETS, "blockstates", f"{pid}.json"), {"multipart": parts})
     write(os.path.join(ASSETS, "models", "item", f"{pid}.json"), {
         "parent": "minecraft:block/block", "textures": {"particle": tex, "pipe": tex},
         "elements": [{"from": [0, 5, 5], "to": [16, 11, 11], "faces": {
@@ -429,6 +461,8 @@ for pid in PIPES:
             "north": face([0, 0, 16, 6]), "south": face([0, 0, 16, 6]),
             "up": face([0, 0, 16, 6]), "down": face([0, 0, 16, 6])}}],
         "display": {"gui": {"rotation": [30, 45, 0], "scale": [0.8, 0.8, 0.8]}}})
+    simple_loot(pid)
+    tags[("minecraft", "block", "mineable/pickaxe")].append(f"{MOD}:{pid}")
 
 # ---- fluid tank: frame and glass (cut out so the fluid drawn inside shows); keeps its fluid when broken
 for tid in ("fluid_tank", "reinforced_fluid_tank", "advanced_fluid_tank", "elite_fluid_tank", "ultimate_fluid_tank"):
@@ -1256,7 +1290,7 @@ for iid in [f"{u}_upgrade" for u in UPGRADES if u != "range"] + ["sawdust", "bas
           {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{iid}"}})
 lang.update({f"block.{MOD}.{k}": v["name"] for k, v in MACHINES.items()})
 lang.update({f"block.{MOD}.{k}": v for k, v in CREATIVE.items()})
-lang.update({f"item.{MOD}.{c}": n for c, n in CABLES.items()})
+lang.update({f"block.{MOD}.{c}": n for c, n in CABLES.items()})
 lang[f"fluid_type.{MOD}.steam"] = "Steam"
 lang.update({f"item.{MOD}.{u}_upgrade": name for u, name in UPGRADES.items()})
 lang.update({
@@ -1295,7 +1329,7 @@ lang.update({
     "tooltip.joulesmith.upgrade.bonus": "Each card: +10% byproduct chance and 10% chance of an extra output",
     "tooltip.joulesmith.upgrade.eject": "Pushes finished items out of the machine's output faces",
 })
-lang.update({f"item.{MOD}.{k}": v for k, v in PIPES.items()})
+lang.update({f"block.{MOD}.{k}": v for k, v in PIPES.items()})
 lang.update({
     f"block.{MOD}.fluid_tank": "Fluid Tank",
     f"item.{MOD}.wrench": "Wrench",
@@ -1618,7 +1652,7 @@ lang.update({
     "tooltip.joulesmith.upgrade_kit.4": "Use on an Advanced cable, duct, pipe, battery, crate, bin, tank or solar panel to make it Elite",
     "tooltip.joulesmith.upgrade_kit.5": "Use on an Elite cable, duct, pipe, battery, crate, bin, tank or solar panel to make it Ultimate",
 })
-CABLE_INFO = "Connects on its own to anything that stores or uses power. Use a Wrench on a side to switch it on or off."
+CABLE_INFO = "Connects on its own to anything that stores or uses power. Use a Wrench on a side to set it to push, pull or off."
 DUCT_INFO = "Pulls from inventories set to pull with a Wrench and delivers to the rest. Fit a Filter Card to a side to choose what passes."
 PIPE_INFO = "Moves fluids between tanks and machines. Use a Wrench on a side to set it to push, pull or off."
 TANK_INFO = "Stores one fluid and keeps it when broken. Tanks stacked on top of each other act as one tank."
@@ -1884,9 +1918,18 @@ for bid, name in (("network_core", "Network Core"), ("drive_bay", "Drive Bay"), 
     tag("minecraft", "block", "mineable/pickaxe", f"{MOD}:{bid}")
     lang[f"block.{MOD}.{bid}"] = name
 NC = f"{MOD}:block/network_cable"
+model("network_cable_core", {"parent": "minecraft:block/block", "textures": {"particle": NC, "cable": NC},
+      "elements": [{"from": [6, 6, 6], "to": [10, 10, 10], "faces": {f: {"texture": "#cable"} for f in SIDES}}]})
+model("network_cable_arm", {"parent": "minecraft:block/block", "textures": {"particle": NC, "cable": NC},
+      "elements": [{"from": [6, 6, 0], "to": [10, 10, 6], "faces": {f: {"texture": "#cable"} for f in ("east", "west", "up", "down", "north")}}]})
+write(os.path.join(ASSETS, "blockstates", "network_cable.json"), {"multipart":
+    [{"apply": {"model": f"{MOD}:block/network_cable_core"}}] +
+    [{"when": {side: "true"}, "apply": {"model": f"{MOD}:block/network_cable_arm", **rot}} for side, rot in SIDE_ROT.items()]})
 write(os.path.join(ASSETS, "models", "item", "network_cable.json"), {"parent": "minecraft:block/block", "textures": {"particle": NC, "cable": NC},
       "elements": [{"from": [0, 6, 6], "to": [16, 10, 10], "faces": {f: {"texture": "#cable"} for f in SIDES}}]})
-lang[f"item.{MOD}.network_cable"] = "Network Cable"
+simple_loot("network_cable")
+tag("minecraft", "block", "mineable/pickaxe", f"{MOD}:network_cable")
+lang[f"block.{MOD}.network_cable"] = "Network Cable"
 DRIVES = {"basic_item_drive": ("Basic Item Drive", 4_096), "advanced_item_drive": ("Advanced Item Drive", 32_768),
           "elite_item_drive": ("Elite Item Drive", 262_144), "ultimate_item_drive": ("Ultimate Item Drive", 2_097_152)}
 for iid, (name, cap) in DRIVES.items():
@@ -2131,28 +2174,6 @@ for aid, parent, icon, needs, frame, title, desc in ADV:
     write(os.path.join(DATA, MOD, "advancement", f"{aid}.json"), adv)
     lang[f"advancement.{MOD}.{aid}"] = title
     lang[f"advancement.{MOD}.{aid}.desc"] = desc
-
-# ---- conduit bundles: every duct, pipe and cable is placed as one; up to one of each kind share a block.
-# Drawn in code from what it holds (client/BundleModel.java), so the block model only names a particle.
-write(os.path.join(ASSETS, "blockstates", "conduit_bundle.json"), {"variants": {"": {"model": f"{MOD}:block/conduit_bundle"}}})
-write(os.path.join(ASSETS, "models", "block", "conduit_bundle.json"), {"textures": {"particle": f"{MOD}:block/item_duct"}})
-write(os.path.join(DATA, MOD, "loot_table", "blocks", "conduit_bundle.json"),     # drops are worked out in code
-      {"type": "minecraft:block", "random_sequence": f"{MOD}:blocks/conduit_bundle", "pools": []})
-tag("minecraft", "block", "mineable/pickaxe", f"{MOD}:conduit_bundle")
-for (ns, reg, path), values in tags.items():
-    write(os.path.join(DATA, ns, "tags", reg, f"{path}.json"), {"replace": False, "values": values})
-lang[f"block.{MOD}.conduit_bundle"] = "Conduit Bundle"
-lang["message.joulesmith.conduit.on"] = "Connected"
-lang["message.joulesmith.conduit.off"] = "Disconnected"
-SHARE = (" Ducts, pipes and cables of different kinds fit in one block: use one on another's block to add it, "
-         "and breaking takes out the one you're looking at.")
-for _cid in list(CABLES) + list(PIPES) + ["network_cable"]:
-    _k = f"jei.{MOD}.info.{_cid}"
-    if _k in lang:
-        if _cid in CABLES:
-            lang[_k] = lang[_k].replace("set it to push, pull or off", "switch it on or off")
-        lang[_k] += SHARE
-lang[f"tooltip.{MOD}.wrench.pipe"] = "Pipe side: push, pull, both or off (cables: on or off)"
 
 write(os.path.join(ASSETS, "lang", "en_us.json"), lang)
 

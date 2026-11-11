@@ -69,10 +69,11 @@ public final class JSCapabilities {
         machine(event, JSBlockEntities.BIOFUEL_GENERATOR.get());
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.BIOFUEL_GENERATOR.get(), (g, side) -> g.fluidHandler(side));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.PUMP.get(), (pump, side) -> pump.fluidHandler(side));
-        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, JSBlockEntities.CONDUIT_BUNDLE.get(), (b, side) -> b.itemHandler(side));
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.CONDUIT_BUNDLE.get(), (b, side) -> b.fluidHandler(side));
-        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, JSBlockEntities.CONDUIT_BUNDLE.get(), (b, side) -> b.energyHandler(side));
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, JSBlockEntities.ITEM_DUCT.get(), (duct, side) -> duct.itemHandler(side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.FLUID_PIPE.get(), (pipe, side) -> pipe.fluidHandler(side));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, JSBlockEntities.FLUID_TANK.get(), (tank, side) -> tank.columnHandler());
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, JSBlockEntities.ENERGY_CABLE.get(),
+                (cable, side) -> cable.energyHandler());
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, JSBlockEntities.CHARGING_PAD.get(), (pad, side) -> pad.energyHandler());
         for (var holder : JSGear.POWERED) {
             var item = holder.get();

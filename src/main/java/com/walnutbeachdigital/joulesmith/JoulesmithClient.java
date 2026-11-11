@@ -34,14 +34,6 @@ public class JoulesmithClient {
         modEventBus.addListener(JoulesmithClient::renderers);
         modEventBus.addListener(JoulesmithClient::fluids);
         modEventBus.addListener(JoulesmithClient::setup);
-        // conduit bundles are drawn from what they hold
-        modEventBus.addListener((net.neoforged.neoforge.client.event.ModelEvent.ModifyBakingResult e) -> {
-            for (var entry : e.getModels().entrySet()) {
-                if (com.walnutbeachdigital.joulesmith.client.BundleModel.isBundle(entry.getKey().id())) {
-                    entry.setValue(new com.walnutbeachdigital.joulesmith.client.BundleModel(entry.getValue()));
-                }
-            }
-        });
         // the Wireless Transmitter's and Receiver's lamp shows its channel colour
         modEventBus.addListener((net.neoforged.neoforge.client.event.RegisterColorHandlersEvent.Block e) -> e.register(
                 (state, level, pos, tint) -> tint == 0 ? state.getValue(com.walnutbeachdigital.joulesmith.energy.wireless.WirelessEnergyBlock.CHANNEL).getTextureDiffuseColor() : -1,

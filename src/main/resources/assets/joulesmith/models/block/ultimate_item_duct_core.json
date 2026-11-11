@@ -1,0 +1,6 @@
+{
+  "parent": "joulesmith:block/pipe_core",
+  "textures": {
+    "pipe": "joulesmith:block/ultimate_item_duct"
+  }
+}

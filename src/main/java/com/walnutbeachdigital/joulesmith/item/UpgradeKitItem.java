@@ -42,6 +42,12 @@ public class UpgradeKitItem extends Item {
     private Map<Block, Block> upgrades() {
         if (upgrades == null) {
             List<List<Supplier<? extends Block>>> chains = List.of(
+                    List.of(JSBlocks.ENERGY_CABLE, JSBlocks.REINFORCED_ENERGY_CABLE, JSBlocks.ADVANCED_ENERGY_CABLE,
+                            JSBlocks.ELITE_ENERGY_CABLE, JSBlocks.ULTIMATE_ENERGY_CABLE),
+                    List.of(JSBlocks.ITEM_DUCT, JSBlocks.REINFORCED_ITEM_DUCT, JSBlocks.ADVANCED_ITEM_DUCT,
+                            JSBlocks.ELITE_ITEM_DUCT, JSBlocks.ULTIMATE_ITEM_DUCT),
+                    List.of(JSBlocks.FLUID_PIPE, JSBlocks.REINFORCED_FLUID_PIPE, JSBlocks.ADVANCED_FLUID_PIPE,
+                            JSBlocks.ELITE_FLUID_PIPE, JSBlocks.ULTIMATE_FLUID_PIPE),
                     List.of(JSBlocks.BASIC_BATTERY, JSBlocks.REINFORCED_BATTERY, JSBlocks.ADVANCED_BATTERY,
                             JSBlocks.ELITE_BATTERY, JSBlocks.ULTIMATE_BATTERY),
                     List.of(JSBlocks.BASIC_CRATE, JSBlocks.REINFORCED_CRATE, JSBlocks.ADVANCED_CRATE,
@@ -65,9 +71,6 @@ public class UpgradeKitItem extends Item {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         BlockState state = level.getBlockState(pos);
-        if (level.getBlockEntity(pos) instanceof com.walnutbeachdigital.joulesmith.transport.conduit.BundleBlockEntity bundle) {
-            return upgradeConduit(context, bundle);
-        }
         Block next = upgrades().get(state.getBlock());
         if (next == null) return InteractionResult.PASS;
         if (level.isClientSide) return InteractionResult.SUCCESS;
@@ -87,26 +90,6 @@ public class UpgradeKitItem extends Item {
         BlockState now = level.getBlockState(pos);
         level.sendBlockUpdated(pos, now, now, Block.UPDATE_ALL);
         level.updateNeighborsAt(pos, next);
-        level.playSound(null, pos, SoundEvents.SMITHING_TABLE_USE, SoundSource.BLOCKS, 0.8f, 1.2f);
-        Player player = context.getPlayer();
-        if (player == null || !player.getAbilities().instabuild) context.getItemInHand().shrink(1);
-        return InteractionResult.CONSUME;
-    }
-
-    /** A duct, pipe or cable in a bundle: the one clicked, if it's a tier below the kit (else any that is). */
-    private InteractionResult upgradeConduit(UseOnContext context, com.walnutbeachdigital.joulesmith.transport.conduit.BundleBlockEntity bundle) {
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-        var clicked = com.walnutbeachdigital.joulesmith.transport.conduit.BundleBlock.target(level, pos, context.getClickLocation());
-        com.walnutbeachdigital.joulesmith.transport.conduit.Conduit target = clicked == null ? null : bundle.get(clicked);
-        if (target == null || target.tier() != tier - 1 || target.type.maxTier < tier) {
-            target = null;
-            for (var c : bundle.all()) if (c.tier() == tier - 1 && c.type.maxTier >= tier) { target = c; break; }
-        }
-        if (target == null) return InteractionResult.PASS;
-        if (level.isClientSide) return InteractionResult.SUCCESS;
-        target.setTier(tier);
-        level.invalidateCapabilities(pos);
         level.playSound(null, pos, SoundEvents.SMITHING_TABLE_USE, SoundSource.BLOCKS, 0.8f, 1.2f);
         Player player = context.getPlayer();
         if (player == null || !player.getAbilities().instabuild) context.getItemInHand().shrink(1);

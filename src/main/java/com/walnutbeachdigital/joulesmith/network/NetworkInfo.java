@@ -25,7 +25,7 @@ public final class NetworkInfo {
                     Component.translatable("color.minecraft." + state.getValue(WirelessEnergyBlock.CHANNEL).getName())));
             return lines;
         }
-        if (!NetworkPart.at(level, pos)) return lines;
+        if (!(state.getBlock() instanceof NetworkPart) || state.getBlock() instanceof NetworkCableBlock) return lines;
         Network net = Network.scan(level, pos);
         lines.add(net.core == null ? Component.translatable("info.joulesmith.network.no_core")
                 : net.online() ? Component.translatable("info.joulesmith.network.online", net.bays.size(), net.cpus.size())

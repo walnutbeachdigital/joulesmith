@@ -8,8 +8,6 @@ import java.util.Map;
 
 import com.walnutbeachdigital.joulesmith.transport.PipeNetwork;
 import com.walnutbeachdigital.joulesmith.transport.RoutingMode;
-import com.walnutbeachdigital.joulesmith.transport.conduit.ConduitType;
-import com.walnutbeachdigital.joulesmith.transport.conduit.ItemConduit;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,9 +29,9 @@ public final class ItemNetwork extends PipeNetwork {
     private final Map<Endpoint, Integer> nextTarget = new HashMap<>();
     private int nextIntake;
 
-    public static ItemNetwork create(Level level, BlockPos start) {
+    static ItemNetwork create(Level level, BlockPos start) {
         ItemNetwork net = new ItemNetwork();
-        net.build(level, start, ConduitType.ITEM);
+        net.build(level, start);
         return net;
     }
 
@@ -49,14 +47,14 @@ public final class ItemNetwork extends PipeNetwork {
         }
     }
 
-    private ItemConduit duct(BlockPos pos) {
-        return pipe(pos) instanceof ItemConduit duct ? duct : null;
+    private ItemDuctBlockEntity duct(BlockPos pos) {
+        return level.getBlockEntity(pos) instanceof ItemDuctBlockEntity duct ? duct : null;
     }
 
     /** Takes up to one move's worth of one item from {@code source}'s block and sends it on. */
     private void pull(Level level, Endpoint source) {
         IItemHandler from = level.getCapability(Capabilities.ItemHandler.BLOCK, source.target(), source.face());
-        ItemConduit duct = duct(source.pipe());
+        ItemDuctBlockEntity duct = duct(source.pipe());
         if (from == null || duct == null) return;
         List<Endpoint> targets = targetsFor(source, duct);
         if (targets.isEmpty()) return;
@@ -77,7 +75,7 @@ public final class ItemNetwork extends PipeNetwork {
     }
 
     /** The pushing sides {@code source} may send to, ordered by its routing mode. */
-    private List<Endpoint> targetsFor(Endpoint source, ItemConduit duct) {
+    private List<Endpoint> targetsFor(Endpoint source, ItemDuctBlockEntity duct) {
         List<Endpoint> targets = new ArrayList<>();
         for (Endpoint e : endpoints) {
             if (e.mode().pushes() && !e.target().equals(source.target())) targets.add(e);
@@ -101,7 +99,7 @@ public final class ItemNetwork extends PipeNetwork {
         ItemStack left = stack.copy();
         for (Endpoint target : targets) {
             if (left.isEmpty()) break;
-            ItemConduit duct = duct(target.pipe());
+            ItemDuctBlockEntity duct = duct(target.pipe());
             if (duct != null && !duct.passes(target.dir(), left)) continue;
             IItemHandler to = level.getCapability(Capabilities.ItemHandler.BLOCK, target.target(), target.face());
             if (to != null) left = ItemHandlerHelper.insertItem(to, left, simulate);
@@ -110,7 +108,7 @@ public final class ItemNetwork extends PipeNetwork {
     }
 
     /** Items pushed into the duct at {@code pipe} from outside (a hopper, another mod's pipe). */
-    public ItemStack deliver(BlockPos pipe, Direction side, ItemStack stack, boolean simulate) {
+    ItemStack deliver(BlockPos pipe, Direction side, ItemStack stack, boolean simulate) {
         List<Endpoint> targets = new ArrayList<>();
         for (Endpoint e : endpoints) {
             boolean isSender = side != null && e.pipe().equals(pipe) && e.dir() == side;
